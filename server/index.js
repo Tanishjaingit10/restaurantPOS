@@ -1,0 +1,11 @@
+const express = require('express')
+const app = express()
+const mongoose = require('mongoose')
+const routesUrls = require('./routes/registered_users')
+const cors = require('cors')
+mongoose.connect('mongodb+srv://Restaurant_database:Restaurant_database@cluster0.xwjxx.mongodb.net/Restaurant_database?retryWrites=true&w=majority', ()=>console.log("Database connected"))
+
+app.use(express.json())
+app.use(cors())
+app.use('/app', routesUrls)
+app.listen(4000, ()=>console.log("server is up and running"))
