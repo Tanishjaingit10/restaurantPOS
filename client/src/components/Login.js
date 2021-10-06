@@ -9,7 +9,7 @@ const Login = () => {
     const loginUser = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("/app/signin", {
+        const res = await fetch("app/signin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

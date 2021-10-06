@@ -1,9 +1,12 @@
 const express = require('express')
+const dotenv = require('dotenv')
 const app = express()
 const mongoose = require('mongoose')
+dotenv.config({path: './config.env'});
 const routesUrls = require('./routes/registered_users')
 const cors = require('cors')
-mongoose.connect('mongodb+srv://Restaurant_database:Restaurant_database@cluster0.xwjxx.mongodb.net/Restaurant_database?retryWrites=true&w=majority', ()=>console.log("Database connected"))
+const DB = process.env.DATABASE
+mongoose.connect(DB, ()=>console.log("Database connected"))
 
 app.use(express.json())
 app.use(cors())
