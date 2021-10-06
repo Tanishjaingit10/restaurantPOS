@@ -1,6 +1,5 @@
 import React from 'react'
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.css';
 import Home from './components/Home'
 import Navbar from './components/Navbar'
 import {Route} from 'react-router-dom';
@@ -14,7 +13,7 @@ function App() {
       <Navbar />
       <Route exact path='/'>
       <Home /></Route>
-      <Route path='/aboutus'>
+      <Route path='/about'>
       <AboutUs /></Route>
       <Route path='/signup'>
       <SignUp /></Route>
