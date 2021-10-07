@@ -6,21 +6,21 @@ const bcrypt = require('bcrypt')
 
 router.post('/signup', async (request, response)=>{
 
-    const{fullName,email_id,password}=request.body;
-    if(!fullName||!email_id||!password)
+    const{fullName,email_id,contact,position,password}=request.body;
+    if(!fullName||!email_id||!contact||!position||!password)
             return response.status(422).json({error:"Please fill out all the fields!"})
     const saltPassword = await bcrypt.genSalt(10)
     const securePassword = await bcrypt.hash(password, saltPassword)
     await signup_template_copy.findOne({email_id:email_id}).then((userExist)=>{
         if(userExist){
-            return response.status(422).json({error:"User Already Exists!"})
+            return response.status(402).json({error:"User Already Exists!"})
         }
-        const user = new signup_template_copy({fullName, email_id,password:securePassword})
+        const user = new signup_template_copy({fullName, email_id,contact,position,password:securePassword})
         user.save().then(()=>{
             response.status(201).json({message: "User registered successfully!"})
         })
         .catch(error =>{
-            response.status(422).json({error: "Registeration Failed!"})
+            response.status(401).json({error: "Registeration Failed!"})
         })
 
     });

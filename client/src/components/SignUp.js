@@ -1,67 +1,85 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 const SignUp = () => {
     const history = useHistory();
-    const [user, setUser] = useState({fullName:"", email_id:"",password:""});
-
+    const [user, setUser] = useState({ fullName: "", email_id: "", contact: "", position: "", password: "" });
     let name, value;
-    const handleInputs = (e)=> {
-          console.log(e);
-          name = e.target.name;
-          value = e.target.value;
-          setUser({...user,[name]:value});
+    const handleInputs = (e) => {
+        console.log(e);
+        name = e.target.name;
+        value = e.target.value;
+        setUser({ ...user, [name]: value });
     }
+    
+    
 
-    const registerUser = async (e) =>{
+    const registerUser = async (e) => {
         e.preventDefault();
-        const {fullName, email_id, password} = user;
-        const res = await fetch("/app/signup",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
+        const { fullName, email_id, contact, position, password} = user;
+        const res = await fetch("/app/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             },
-            body:JSON.stringify({
-                fullName, email_id, password
+            body: JSON.stringify({
+                fullName, email_id, contact, position, password
             })
         });
-        
-        const data = await res.json();
 
-        if(data.status=== 422 || !data)
-        {
-            window.alert("Invalid registration");
-            console.log("Invalid Registration");
+        const data = await res.json();
+        console.log(contact);
+        console.log(position);
+
+        if (res.status === 422 || !data) {
+            window.alert("Please fill out all the fields");
+            console.log("Please fill out all the fields");
         }
-        else{
+        else if (res.status === 402) {
+            window.alert("User already exists!");
+        }
+        else if (res.status === 401) {
+            window.alert("Registration failed!");
+        }
+        else {
             window.alert("Successful registration");
             console.log("Successful Registration");
 
             history.push("/login");
         }
     }
+    const options = [
+        {
+            label: "Manager",
+            value: "manager",
+          },
+          {
+            label: "Supermanager",
+            value: "supermanager",
+          },
+        ];
 
     return (
-       /* <div>
-            <form method="POST" className="container mt-4 mx-auto">
-            <div className="form-group">
-                    <label htmlFor="name">Full Name</label>
-                    <input type="text" className="form-control" name="fullName" id="name" value={user.fullName} onChange={handleInputs} />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="email">Email address</label>
-                    <input type="email" className="form-control" name="email_id" id="email" value={user.email_id} onChange={handleInputs}/>
-
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input type="password" className="form-control" name="password" id="password" value={user.password} onChange={handleInputs}/>
-                </div>
-                <button type="submit" className="btn btn-primary" onClick={PostData}>Submit</button>
-                <p>Already have an account?<a href="/login">Login</a></p>
-            </form>
-           
-        </div>*/
+        /* <div>
+             <form method="POST" className="container mt-4 mx-auto">
+             <div className="form-group">
+                     <label htmlFor="name">Full Name</label>
+                     <input type="text" className="form-control" name="fullName" id="name" value={user.fullName} onChange={handleInputs} />
+                 </div>
+                 <div className="form-group">
+                     <label htmlFor="email">Email address</label>
+                     <input type="email" className="form-control" name="email_id" id="email" value={user.email_id} onChange={handleInputs}/>
+ 
+                 </div>
+                 <div className="form-group">
+                     <label htmlFor="password">Password</label>
+                     <input type="password" className="form-control" name="password" id="password" value={user.password} onChange={handleInputs}/>
+                 </div>
+                 <button type="submit" className="btn btn-primary" onClick={PostData}>Submit</button>
+                 <p>Already have an account?<a href="/login">Login</a></p>
+             </form>
+            
+         </div>*/
         <figure className="h-screen flex bg-gray-100">
             <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
                 <blockquote className="text-2xl font-medium text-center">
@@ -96,6 +114,28 @@ const SignUp = () => {
                                 "w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4"
                             }
                         />
+                        <label>Contact Number:</label>
+                        <input
+                            name="contact"
+                            type="phone"
+                            value={user.contact}
+                            onChange={handleInputs}
+                            placeholder="Contact Number"
+                            className={
+                                "w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4"
+                            }
+                        />
+                        <label>Position:</label>
+                        <select name="position" className = "mr-2" onChange={handleInputs} value={user.position}>
+                            <option>Select</option>
+        
+                            {options.map((option)=>(
+                                <option value={option.value}>{option.label}</option>
+
+                            )) }
+                            
+                        </select>
+                        <br/>
                         <label>Password:</label>
                         <input
                             name="password"

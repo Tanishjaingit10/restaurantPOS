@@ -18,10 +18,10 @@ const Login = () => {
                 email_id, password
             })
         });
-
+        // console.log(res.status);
         const data = await res.json();
 
-        if (data.status === 422 || !data) {
+        if (res.status === 401 || !data) {
             window.alert("Invalid credentials");
             console.log("Invalid credentails");
         }
