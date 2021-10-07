@@ -80,7 +80,7 @@ const SignUp = () => {
              </form>
             
          </div>*/
-        <figure className="h-screen flex bg-gray-100">
+        <figure className="h-screen flex bg-gray-800">
             <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
                 <blockquote className="text-2xl font-medium text-center">
                     <p className="text-lg font-semibold">Welcome to My-App</p>

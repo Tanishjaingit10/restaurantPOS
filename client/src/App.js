@@ -1,23 +1,22 @@
 import React from 'react'
 import './App.css';
 import Home from './components/Home'
-import Navbar from './components/Navbar'
 import {Route} from 'react-router-dom';
-import AboutUs from './components/AboutUs';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
+import Landing from './components/Landing';
 
 function App() {
   return (
     <div>
-      <Navbar />
+     
       <Route exact path='/'>
+      <Landing /></Route>
+      <Route exact path='/home'>
       <Home /></Route>
-      <Route path='/about'>
-      <AboutUs /></Route>
-      <Route path='/signup'>
+      <Route exact path='/signup'>
       <SignUp /></Route>
-      <Route path='/login'>
+      <Route exact path='/login'>
       <Login /></Route>
       
     </div>

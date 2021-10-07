@@ -9,7 +9,7 @@ const Login = () => {
     const loginUser = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("app/signin", {
+        const res = await fetch("/app/signin", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -18,10 +18,10 @@ const Login = () => {
                 email_id, password
             })
         });
-        // console.log(res.status);
+
         const data = await res.json();
 
-        if (res.status === 401 || !data) {
+        if (data.status === 422 || !data) {
             window.alert("Invalid credentials");
             console.log("Invalid credentails");
         }
@@ -29,7 +29,7 @@ const Login = () => {
             window.alert("Successful");
             console.log("Successful");
 
-            history.push("/");
+            history.push("/home");
         }
     }
 
@@ -49,7 +49,7 @@ const Login = () => {
                 <p>Create account<a href="/signup">Sign Up</a></p>
             </form>
         </div>*/
-        <figure className="h-screen flex bg-gray-100">
+        <figure className="h-screen flex bg-gray-800">
             <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
                 <blockquote className="text-2xl font-medium text-center">
                     <p className="text-lg font-semibold">Welcome to My-App</p>
