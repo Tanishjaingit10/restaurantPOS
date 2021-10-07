@@ -34,21 +34,6 @@ const Login = () => {
     }
 
     return (
-        /*<div>
-            <form method="POST" className="container">
-                <div className="form-group">
-                    <label htmlFor="email">Email address</label>
-                    <input type="email" className="form-control" name="email_id" id="email" value={email_id} onChange={(e) => setEmail(e.target.value)} />
-
-                </div>
-                <div className="form-group">
-                    <label htmlFor="password">Password</label>
-                    <input type="password" className="form-control" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <button type="submit" className="btn btn-primary" value="Log In" onClick={loginUser}>Submit</button>
-                <p>Create account<a href="/signup">Sign Up</a></p>
-            </form>
-        </div>*/
         <figure className="h-screen flex bg-gray-800">
             <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
                 <blockquote className="text-2xl font-medium text-center">
