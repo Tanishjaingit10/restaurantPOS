@@ -6,6 +6,8 @@ import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Landing from './components/Landing';
 import Menu from './components/Menu';
+import CategoryForm from './components/CategoryForm';
+import ItemForm from './components/ItemForm';
 
 function App() {
   return (
@@ -21,6 +23,12 @@ function App() {
       <Login /></Route>
       <Route exact path='/menu'>
       <Menu /></Route>
+      <Route exact path='/addcategory'>
+        <CategoryForm />
+      </Route>
+      <Route exact path='/additem'>
+        <ItemForm />
+      </Route>
       
     </div>
   )
