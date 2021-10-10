@@ -5,6 +5,7 @@ import {Route} from 'react-router-dom';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
 import Landing from './components/Landing';
+import Menu from './components/Menu';
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
       <SignUp /></Route>
       <Route exact path='/login'>
       <Login /></Route>
+      <Route exact path='/menu'>
+      <Menu /></Route>
       
     </div>
   )

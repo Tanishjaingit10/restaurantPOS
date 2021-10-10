@@ -50,4 +50,4 @@ signup_template.methods.generateAuthToken = async function () {
     }
     
 }
-module.exports = mongoose.model('Restaurant_database', signup_template)
+module.exports = mongoose.model('Registered_users', signup_template)
