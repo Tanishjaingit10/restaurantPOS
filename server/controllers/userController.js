@@ -48,7 +48,7 @@ const login = async (request, response, next)=>{
         let token;
         const{email_id,password}=request.body;
         if(!email_id||!password)
-            return response.status(401).json({error:"Please fill out all the fields!"})
+            return response.status(402).json({error:"Please fill out all the fields!"})
 
         const userLogin = await signup_template_copy.findOne({email_id : email_id})
         
@@ -61,7 +61,7 @@ const login = async (request, response, next)=>{
                 response.status(401).json({error:"Invalid Credentials"});
             }
             else{
-                response.json({message:"User Sign in successfully"});
+                response.status(201).json({message:"User Sign in successfully"});
             }
 
         }

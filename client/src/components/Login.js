@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
+import options from '../levels';
+import Logo from '../images/logo.PNG';
+import signin from '../signin';
 
 const Login = () => {
     const history = useHistory();
     const [email_id, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [position, setPosition] = useState('');
 
     const loginUser = async (e) => {
         e.preventDefault();
@@ -15,26 +19,84 @@ const Login = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                email_id, password
+                position,email_id, password
             })
         });
 
         const data = await res.json();
 
-        if (data.status === 401 || !data) {
-            window.alert("Invalid credentials");
-            console.log("Invalid credentails");
-        }
-        else {
+        
+        if(res.status===201)
+        {
             window.alert("Successful");
             console.log("Successful");
 
             history.push("/home");
         }
+        else
+        {
+            let obj = signin.find((msg)=>msg.id===res.status);
+            console.log(obj.title); 
+            window.alert(obj.title);
+        }
     }
 
     return (
-        <figure className="h-screen flex bg-gray-800">
+        <div className="h-screen overflow-hidden">
+        <div className="bg-gray-300 py-2">
+        <img className="mx-auto w-36 h-auto" src={Logo}/>
+        </div>
+        <div>
+            <form className="w-1/2 md:w-1/3 mx-auto py-10 font-bold font-roboto text-lg">
+                <div className="shadow-2xl">
+                <div className="bg-white px-6 py-4">
+                <label className="text-left text-black mr-4">Enter as</label>
+                <select name="position" className ="p-2 border-black border-2 w-4/5 text-md" onChange={(e) => setPosition(e.target.value)} value={position}>
+                            {options.map((option)=>(
+                                <option value={option.value} className="bg-gray-300 border-black border-2 p-2">{option.label}</option>
+
+                            )) }
+                            
+                        </select>
+                </div>
+               
+                <div className="bg-primary px-6 pt-4">
+                <label className="text-left text-white">Enter User Id</label>
+                        <input
+                        name="email_id"
+                        type="email"
+                        value={email_id}
+                        onChange={(e) => setEmail(e.target.value)}
+                            
+                            className={
+                                "w-full p-2 border-black border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
+                            }
+                        />
+                </div>
+               
+                <div className="bg-primary px-6 pb-4">
+                <label className="text-white text-left">Password</label>
+                        <input
+                            name="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                           
+                            className={
+                                "w-full p-2 border-black border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
+                            }
+                        />
+                </div>
+                </div>
+                <div className="bg-white w-full my-6">
+                    <button className="bg-green w-full py-4 text-white font-semibold text-2xl focus:outline-none"
+                      value="Login" onClick={loginUser} type="submit">Sign In</button>
+                </div>
+                {/*<p className="text-center">Already registered ? <a href="/login" className="underline">Login</a></p>*/}
+            </form>
+        </div>
+    </div>
+        /* <figure className="h-screen flex bg-gray-800">
             <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
                 <blockquote className="text-2xl font-medium text-center">
                     <p className="text-lg font-semibold">Welcome to My-App</p>
@@ -87,7 +149,7 @@ const Login = () => {
                 </div>
 
             </div>
-        </figure>
+        </figure>*/
     )
 
 }
