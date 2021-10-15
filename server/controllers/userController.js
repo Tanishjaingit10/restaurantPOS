@@ -55,7 +55,11 @@ const login = async (request, response, next)=>{
         if(userLogin){
             const isMatch = await bcrypt.compare(password, userLogin.password);
             token = await userLogin.generateAuthToken();
-            // console.log(token);
+            
+           /* res.cookie("jwtoken", token, {
+                expired:new Date(Date.now()+ 25892000000),
+                httpOnly : true
+            });*/
 
             if(!isMatch){
                 response.status(401).json({error:"Invalid Credentials"});

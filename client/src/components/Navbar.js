@@ -9,16 +9,7 @@ const Navbar = () => {
 		setshow(!show);
 	}
 
-	/*window.onclick = function (e) {
-		var x = document.getElementById("drop");
-		/*if (show === true) {
-			setshow(!show);
-		}
-		/*else if (show === false && (e.target.matches("#drop"))) {
-			setshow(!show);
-		}
-	}*/
-
+	
 
 
 	return (
@@ -27,11 +18,12 @@ const Navbar = () => {
 				<div className="">
 					<ul className="flex flex-1 md:flex-none w-1/3 ml-28">
 						<li className="flex-1 md:flex-none md:mr-3 border-primary border-4 px-4 py-2 w-full text-center">
-							<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="#">Counter Dashboard</a>
+						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="#"><i className="far fa-clock mr-2"></i><span>Counter Dashboard</span></a>
 						</li>
 						<li className="flex-1 md:flex-none md:mr-3 border-primary border-4 px-4 py-2 w-full text-center">
-							<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="#">POS</a>
+						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="#"><i className="far fa-clone mr-2"></i><span>POS</span></a>
 						</li>
+						
 					</ul>
 				</div>
 			</nav>

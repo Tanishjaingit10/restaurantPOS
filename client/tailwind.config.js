@@ -13,7 +13,16 @@ module.exports = {
         pink: "#BE19A4",
         blue: "#195BBE",
         yellow: "#BE9A19",
-        red: "#BE2D19"
+        red: "#BE2D19",
+        tealblue: "#39BEB9",
+        teal: "#16B6AA",
+        mustard : "#F2AD22",
+        lightgreen: "#BCD63D",
+        purple: "#5B64AF",
+        orange: "#F15A25",
+        magenta: "#E71880",
+        lightorange: "#F47621"
+
       }
     },
   },

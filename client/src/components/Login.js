@@ -3,12 +3,15 @@ import { useHistory } from 'react-router-dom';
 import options from '../levels';
 import Logo from '../images/logo.PNG';
 import signin from '../signin';
+import Popup from './Popup';
 
 const Login = () => {
     const history = useHistory();
     const [email_id, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [position, setPosition] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [msg, setMsg] = useState("");
 
     const loginUser = async (e) => {
         e.preventDefault();
@@ -24,20 +27,19 @@ const Login = () => {
         });
 
         const data = await res.json();
-
+        setIsOpen(!isOpen);
         
         if(res.status===201)
         {
-            window.alert("Successful");
+           
             console.log("Successful");
-
             history.push("/home");
         }
         else
         {
-            let obj = signin.find((msg)=>msg.id===res.status);
-            console.log(obj.title); 
-            window.alert(obj.title);
+            let obj = signin.find((pop) => pop.id === res.status);
+            setMsg(obj.title);
+            console.log(msg);  
         }
     }
 
@@ -95,6 +97,14 @@ const Login = () => {
                 {/*<p className="text-center">Already registered ? <a href="/login" className="underline">Login</a></p>*/}
             </form>
         </div>
+        {isOpen && <Popup
+      content={<>
+       
+        <p className="pb-4 text-red font-bold">{msg}</p>
+        <button className="bg-green px-10 py-2" onClick={loginUser}>Try Again</button>
+      </>}
+      handleClose={loginUser}
+    />}
     </div>
         /* <figure className="h-screen flex bg-gray-800">
             <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
