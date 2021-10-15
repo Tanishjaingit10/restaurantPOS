@@ -38,7 +38,7 @@ const all_items = async (request,response) =>{
 }
 
 const update_item = async (request, response, next)=>{
-    let itemId = request.body._id;
+    let itemId = request.params.id;
     const{foodItem,category,image,description,price,availability}=request.body;
     let updatedData = {
         foodItem:foodItem,
@@ -51,21 +51,21 @@ const update_item = async (request, response, next)=>{
     if(!foodItem||!category||!price||!availability)
             return response.status(422).json({error:"Please fill out the required fields!"})
     items_template_copy.findByIdAndUpdate(itemId, {$set: updatedData}).then(() =>{
-        res.json({message: 'Item updated successfully!'})
+        response.json({message: 'Item updated successfully!'})
     })
     .catch(error =>{
-        res.json({message: 'Item could not be updated!'})
+        response.json({message: 'Item could not be updated!'})
     })
 
 }
 
 const remove_item = async (request,response,next)=>{
-    let itemId = request.body._id;
+    let itemId = request.params.id;
     items_template_copy.findByIdAndRemove(itemId).then(() =>{
-        res.json({message: 'Item removed successfully!'})
+        response.json({message: 'Item removed successfully!'})
     })
     .catch(error =>{
-        res.json({message: 'Item could not be removed!'})
+        response.json({message: 'Item could not be removed!'})
     })
 
 }
