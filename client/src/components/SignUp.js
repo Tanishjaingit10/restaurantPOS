@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import signup from '../popup';
 import options from '../levels';
-import Logo from '../images/logo.PNG'
+// import Logo from '../images/logo.PNG'
 import Popup from './Popup';
 
 const SignUp = () => {
@@ -51,12 +51,12 @@ const SignUp = () => {
 
 
     return (
-        <div className="h-screen overflow-hidden">
+        <div className="h-screen">
             <div className="bg-gray-300 py-2">
-                <img className="mx-auto w-36 h-auto" src={Logo} />
+                {/* <img className="mx-auto w-36 h-auto" src={Logo} /> */}
             </div>
             <div>
-                <form className="w-1/2 md:w-1/3 mx-auto py-4 font-bold font-roboto text-lg">
+                <form className="w-1/2 md:w-1/3 mx-auto py-4 font-bold font-roboto text-lg justify">
                     <div className="shadow-2xl">
                         <div className="bg-white px-6 py-4">
                             <label className="text-left text-black mr-4">Position</label>

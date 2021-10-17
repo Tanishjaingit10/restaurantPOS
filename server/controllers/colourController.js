@@ -1,20 +1,31 @@
-const category_template_copy = require('../models/category')
-const add_category =async (request, response, next)=>{
-    const{category,description,color}=request.body;
-    if(!category||!color)
+const colour_template_copy = require('../models/colour')
+
+const show_colours = async (request, response, next)=>{
+    colour_template_copy.find({},(err,data) =>{
+        if(!err)
+            response.send(data);
+        else 
+            console.log(err);
+
+    });
+}
+
+const add_colour =async (request, response, next)=>{
+    const{name,code,check}=request.body;
+    if(!code)
     {
         console.log(4);
         return response.status(422).json({error:"Please fill out the required fields!"})
     }
             
 
-    await category_template_copy.findOne({category:category}).then((categoryExist)=>{
+    await colour_template_copy.findOne({code:code}).then((categoryExist)=>{
         if(categoryExist){
             console.log(1)
             return response.status(402).json({error:"Item Already Exists!"})
         }
-        const cat = new category_template_copy({category,description,color})
-        cat.save().then(()=>{
+        const col = new colour_template_copy({name,code,check})
+        col.save().then(()=>{
             console.log(2)
             response.status(201).json({message: "Item added successfully!"})
         })
@@ -28,5 +39,5 @@ const add_category =async (request, response, next)=>{
 }
 
 module.exports = {
-    add_category
+    show_colours, add_colour
 }

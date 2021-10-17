@@ -7,6 +7,7 @@ const bcrypt = require('bcrypt')
 const userController = require('../controllers/userController')
 const itemController = require('../controllers/itemController');
 const categoryController= require('../controllers/categoryController')
+const colourController = require('../controllers/colourController')
 router.get('/', async (request, response)=>{
     response.json('hey!');
 })
@@ -21,4 +22,6 @@ router.get('/item/:id', itemController.get_item)
 router.put('/updateItem/:id', itemController.update_item)
 router.delete('/removeItem/:id', itemController.remove_item)
 router.post('/addCategory', categoryController.add_category)
+router.post('/addColour', colourController.add_colour)
+router.get('/colours', colourController.show_colours)
 module.exports = router

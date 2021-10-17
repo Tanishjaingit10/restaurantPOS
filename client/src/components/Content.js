@@ -3,7 +3,7 @@ import React from 'react'
 const Content = () => {
     return (
         <div className="mt-24 overflow-x-hidden flex flex-col w-full px-10">
-            <div className="w-3/4 flex flex-wrap mx-auto pl-20 text-white text-3xl text-center font-semibold">
+            <div className="w-full flex flex-wrap mx-auto pl-20 text-white text-3xl text-center font-semibold">
                 <div className="bg-green w-64 h-32 m-10 p-2">
                     <p>Lifetime Orders</p>
                     <p className="text-5xl">127</p>
