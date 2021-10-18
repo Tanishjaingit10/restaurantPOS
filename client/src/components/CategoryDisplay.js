@@ -29,8 +29,8 @@ const CategoryDisplay = () => {
                     <div className=" flex flex-col w-96 justify-center mx-auto text-xl my-auto">
                     <button className=" bg-primary text-white font-bold py-4 my-4"><a href="/categorydisplay">View Food Items in Category</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/addcategory">Add New Food Item</a></button>
-                    <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Edit Category Details</a></button>
-                    <button className="bg-gray-400 hover:bg-red text-white font-bold py-4  my-4"><a href="/additem">Delete</a></button>
+                    <button className="bg-primary text-white font-bold py-4  my-4"><a href="/editcategory">Edit Category Details</a></button>
+                    <button className="bg-gray-400 hover:bg-red text-white font-bold py-4  my-4"><a href="/deletecategory">Delete</a></button>
                     </div>
                 </div>
             </div>

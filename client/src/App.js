@@ -9,6 +9,7 @@ import Menu from './components/Menu';
 import CategoryForm from './components/CategoryForm';
 import ItemForm from './components/ItemForm';
 import CategoryDisplay from './components/CategoryDisplay';
+import EditCategory from './components/EditCategory';
 
 
 function App() {
@@ -30,6 +31,9 @@ function App() {
       </Route>
       <Route exact path='/addcategory'>
         <CategoryForm />
+      </Route>
+      <Route exact path='/editcategory'>
+        <EditCategory />
       </Route>
       <Route exact path='/additem'>
         <ItemForm />
