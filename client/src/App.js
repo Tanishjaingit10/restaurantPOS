@@ -25,10 +25,13 @@ function App() {
       <Login /></Route>
       <Route exact path='/menu'>
       <Menu /></Route>
-      <Route exact path='/categorydisplay'>
+      <Route exact path='/categorydisplay/:id'>
         <CategoryDisplay />
       </Route>
       <Route exact path='/addcategory'>
+        <CategoryForm />
+      </Route>
+      <Route exact path='/editcategory/:id'>
         <CategoryForm />
       </Route>
       <Route exact path='/additem'>
