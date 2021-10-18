@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 
 
 const show_users = async (request, response, next)=>{
+    console.log(request.body)
     signup_template_copy.find({},(err,data) =>{
         if(!err)
             response.send(data);

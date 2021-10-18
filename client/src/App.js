@@ -14,11 +14,11 @@ function App() {
   return (
     <div>
      
-      <Route exact path='/'>
-      <Landing /></Route>
+      {/* <Route exact path='/'>
+      <Landing /></Route> */}
       <Route exact path='/home'>
       <Home /></Route>
-      <Route exact path='/signup'>
+      <Route exact path='/'>
       <SignUp /></Route>
       <Route exact path='/login'>
       <Login /></Route>

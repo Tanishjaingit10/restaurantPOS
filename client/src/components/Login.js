@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import options from '../levels';
-// import Logo from '../images/logo.PNG';
+import Logo from '../images/logo.jpeg';
 import signin from '../signin';
 import Popup from './Popup';
 
@@ -44,9 +44,9 @@ const Login = () => {
     }
 
     return (
-        <div className="h-screen overflow-hidden">
+        <div className="h-screen">
         <div className="bg-gray-300 py-2">
-        {/* <img className="mx-auto w-36 h-auto" src={Logo}/> */}
+        <img className="mx-auto w-36 h-auto" src={Logo}/>
         </div>
         <div>
             <form className="w-1/2 md:w-1/3 mx-auto py-10 font-bold font-roboto text-lg">
@@ -94,7 +94,7 @@ const Login = () => {
                     <button className="bg-green w-full py-4 text-white font-semibold text-2xl focus:outline-none"
                       value="Login" onClick={loginUser} type="submit">Sign In</button>
                 </div>
-                {/*<p className="text-center">Already registered ? <a href="/login" className="underline">Login</a></p>*/}
+                <p className="text-center">New User ? <a href="/" className="underline">Sign Up</a></p>
             </form>
         </div>
         {isOpen && <Popup

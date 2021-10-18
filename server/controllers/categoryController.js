@@ -26,7 +26,38 @@ const add_category =async (request, response, next)=>{
 
     });
 }
+const get_category = async(request,response) =>{
+    console.log(request.body)
+    console.log(request.body.category)
+    console.log(1)
+    items_template_copy.find({category:request.body.category},(err,data) =>{
+        if(!err)
+            response.send(data);
+        else 
+            console.log(err);
 
+    });
+}
+const all_category = async (request, response) => {
+    category_template_copy.find({}, (err, data) => {
+        if (!err)
+            response.send(data);
+        else
+            console.log(err);
+
+    });
+}
+
+const remove_category = async (request, response, next) => {
+    let itemId = request.params.id;
+    category_template_copy.findOneAndDelete({category:itemId}).then(() => {
+        response.json({ message: 'Item removed successfully!' })
+    })
+        .catch(error => {
+            response.json({ message: 'Item could not be removed!' })
+        })
+
+}
 module.exports = {
-    add_category
+    add_category, get_category, all_category, remove_category
 }

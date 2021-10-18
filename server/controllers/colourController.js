@@ -3,15 +3,64 @@ const colour_template_copy = require('../models/colour')
 const show_colours = async (request, response, next)=>{
     colour_template_copy.find({},(err,data) =>{
         if(!err)
+        {
+            response.send(data);
+        }
+        else 
+            console.log(err);
+
+    });
+}
+// const get_colour = async(request,response, next) =>{
+//     console.log(1)
+//     console.log(request.body._id)
+//     colour_template_copy.find({name:request.body.name},(err,data) =>{
+//         if(!err)
+//             response.send(data);
+//         else 
+//             console.log(err);
+
+//     });
+// }
+const get_colour = async(request,response) =>{
+    const{name,code,check}=request.body;
+    console.log(request.body)
+    console.log(1)
+    console.log(request.params.id)
+    colour_template_copy.findById(request.params.id,(err,data) =>{
+        if(!err)
             response.send(data);
         else 
             console.log(err);
 
     });
 }
+const update_colour = async (request, response, next)=>{
+    let itemId = request.params.id;
+    console.log(itemId)
+    const{name,code,check}=request.body;
+    let updatedData = {
+        name: name,
+        code: code,
+        check: check
+    }
+    if(!name||!code)
+            return response.status(422).json({error:"Please fill out the required fields!"})
+    await colour_template_copy.findOneAndUpdate({name:itemId}, {$set: updatedData}).then((data) =>{
+        if(data===null)
+            response.json({message: 'colour not found!'})
+        else response.json({message: 'colour updated successfully!'})
+    })
+    .catch(error =>{
+        response.json({message: 'Item could not be updated!'})
+    })
+
+}
+
 
 const add_colour =async (request, response, next)=>{
     const{name,code,check}=request.body;
+    console.log(request.body)
     if(!code)
     {
         console.log(4);
@@ -39,5 +88,5 @@ const add_colour =async (request, response, next)=>{
 }
 
 module.exports = {
-    show_colours, add_colour
+    show_colours, get_colour, add_colour, update_colour
 }

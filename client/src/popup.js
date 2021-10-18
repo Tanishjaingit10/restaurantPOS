@@ -1,7 +1,7 @@
 let signup = [
     {
         id: 402,
-        title: "Already Registered !"
+        title: "Already Exists !"
     },
     {
         id: 422,
@@ -9,8 +9,9 @@ let signup = [
     },
     {
         id: 401,
-        title: "Registration failed !"
+        title: "Failed !"
     }
+
 
 ]
 
