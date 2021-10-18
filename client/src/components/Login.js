@@ -94,7 +94,7 @@ const Login = () => {
                     <button className="bg-green w-full py-4 text-white font-semibold text-2xl focus:outline-none"
                       value="Login" onClick={loginUser} type="submit">Sign In</button>
                 </div>
-                {/*<p className="text-center">Already registered ? <a href="/login" className="underline">Login</a></p>*/}
+                <p className="text-center">New User ? <a href="/" className="underline">Sign Up</a></p>
             </form>
         </div>
         {isOpen && <Popup

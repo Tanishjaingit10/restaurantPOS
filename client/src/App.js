@@ -8,6 +8,7 @@ import Landing from './components/Landing';
 import Menu from './components/Menu';
 import CategoryForm from './components/CategoryForm';
 import ItemForm from './components/ItemForm';
+import CategoryDisplay from './components/CategoryDisplay';
 
 
 function App() {
@@ -15,15 +16,16 @@ function App() {
     <div>
      
       <Route exact path='/'>
-      <Landing /></Route>
+      <SignUp /></Route>
       <Route exact path='/home'>
       <Home /></Route>
-      <Route exact path='/signup'>
-      <SignUp /></Route>
       <Route exact path='/login'>
       <Login /></Route>
       <Route exact path='/menu'>
       <Menu /></Route>
+      <Route exact path='/categorydisplay'>
+        <CategoryDisplay />
+      </Route>
       <Route exact path='/addcategory'>
         <CategoryForm />
       </Route>
