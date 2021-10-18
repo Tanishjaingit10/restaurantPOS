@@ -1,11 +1,28 @@
 import React, {useState} from 'react'
-
+import Popup from './Popup';
+import { useHistory } from 'react-router-dom';
 const Menu = () => {
+    const history = useHistory();
     const [show, setShow] = useState(false);
     const [displayCategory, setDisplayCategory] = useState(false);
 
-    const openMenu = ()=> {
+    const openCategory = (e)=>{
+        history.push('/categorydisplay')
+    }
+    const openMenu = async (e) => {
+         e.preventDefault();
          setShow(!show);
+         await fetch(
+            "/app/category")
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                setDisplayCategory(json.map((option) => {
+                    return (<button value={option.category} name="color" onClick={openCategory} className="hover:bg-black-700 block align-middle w-24 h-20 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
+                }))
+            })
+
+
     }
 
     return (
@@ -21,9 +38,14 @@ const Menu = () => {
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/addcategory">Add new category</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Add new food item</a></button>
             </div>
-            {show && <div className="flex flex-wrap  bg-white py-4 pb-2 px-6 mx-auto">
+            
+            {show &&<Popup
+                content={<>
                    {displayCategory}
-                </div>}
+            </>}
+            handleClose={openMenu}
+            />}
+            
         </div>
     )
 }
