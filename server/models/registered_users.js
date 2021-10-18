@@ -50,4 +50,4 @@ signup_template.methods.generateAuthToken = async function () {
     }
     
 }
-module.exports = mongoose.model('Registered_users', signup_template)
+module.exports = mongoose.model('registered_users', signup_template)

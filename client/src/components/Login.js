@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import options from '../levels';
-import Logo from '../images/logo.PNG';
+import Logo from '../images/logo.jpeg';
 import signin from '../signin';
 import Popup from './Popup';
 
@@ -28,7 +28,7 @@ const Login = () => {
 
         const data = await res.json();
         setIsOpen(!isOpen);
-        
+        console.log(res.status)
         if(res.status===201)
         {
            
@@ -44,7 +44,7 @@ const Login = () => {
     }
 
     return (
-        <div className="h-screen overflow-hidden">
+        <div className="h-screen">
         <div className="bg-gray-300 py-2">
         <img className="mx-auto w-36 h-auto" src={Logo}/>
         </div>

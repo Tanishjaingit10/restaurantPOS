@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import signup from '../popup';
 import options from '../levels';
-import Logo from '../images/logo.PNG'
+import Logo from '../images/logo.jpeg'
 import Popup from './Popup';
 
 const SignUp = () => {
