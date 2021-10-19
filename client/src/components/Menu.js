@@ -6,8 +6,9 @@ const Menu = () => {
     const [show, setShow] = useState(false);
     const [displayCategory, setDisplayCategory] = useState(false);
 
-    const openCategory = (e)=>{
-        history.push('/categorydisplay')
+    const openCategory = (id)=> (e)=>{
+        console.log(id)
+        history.push(`/categorydisplay/${id}`)
     }
     const openMenu = async (e) => {
          e.preventDefault();
@@ -18,7 +19,7 @@ const Menu = () => {
             .then((json) => {
                 console.log(json)
                 setDisplayCategory(json.map((option) => {
-                    return (<button value={option.category} name="color" onClick={openCategory} className="hover:bg-black-700 block align-middle w-24 h-20 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
+                    return (<button value={option.category} name="color" onClick={openCategory(option.category)} className="hover:bg-black-700 block align-middle w-24 h-20 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
                 }))
             })
 

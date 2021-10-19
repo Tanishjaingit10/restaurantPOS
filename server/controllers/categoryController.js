@@ -26,15 +26,40 @@ const add_category =async (request, response, next)=>{
 
     });
 }
-const get_category = async(request,response) =>{
-    console.log(request.body)
-    console.log(request.body.category)
+const update_category = async (request, response, next) => {
+    let itemId = request.params.id;
+    console.log(itemId)
+    const { category,description,color } = request.body;
+    let updatedData = {
+        category: category,
+        description: description,
+        color: color
+    }
+    if (!category || !color)
+        return response.status(422).json({ error: "Please fill out the required fields!" })
+    category_template_copy.findOneAndUpdate({ category: category }, { $set: updatedData }).then((data) => {
+        if (data === null)
+            response.json({ message: 'Item not found!' })
+        else response.status(201).json({ message: 'Item updated successfully!' })
+    })
+        .catch(error => {
+            response.status(401).json({ message: 'Item could not be updated!' })
+        })
+
+}
+const get_category = async (request, response) => {
+    console.log(request.params.id)
     console.log(1)
-    items_template_copy.find({category:request.body.category},(err,data) =>{
-        if(!err)
-            response.send(data);
-        else 
-            console.log(err);
+    category_template_copy.findOne({ category: request.params.id }, (err, data) => {
+        if (!err) {
+            if (data === null)
+                response.json({ message: 'Item not found!' })
+            else response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
 
     });
 }
@@ -59,5 +84,5 @@ const remove_category = async (request, response, next) => {
 
 }
 module.exports = {
-    add_category, get_category, all_category, remove_category
+    add_category, get_category, update_category, all_category, remove_category
 }

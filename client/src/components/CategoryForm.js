@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import colour from '../color';
 import Popup from './Popup';
 import signup from '../popup';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 const CategoryForm = () => {
     const history = useHistory();
     const [show, setShow] = useState(false);
     const [col, setCol] = useState('primary');
-    const [text,setText]=useState('Select Colour')
+    const [text, setText] = useState('Select Colour')
     const [cat, setCat] = useState({ category: "", description: "", color: "" });
     const [displayColor, setdisplayColor] = useState();
     const [isOpen, setIsOpen] = useState(false);
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
-    let name, value, key;
-
+    const { id } = useParams();
+    let name, value;
 
     const handleInputs = (e) => {
         e.preventDefault();
@@ -34,23 +34,54 @@ const CategoryForm = () => {
         value = e.target.value;
         setCol(value)
         setText(value)
-        // console.log(key)
         setCat({ ...cat, [name]: value });
     }
+
+
+    const loadCategory = async () => {
+        const result = await fetch(`/app/category/${id}`).then((res) => res.json())
+            .then((json) => {
+                setCol(json.color)
+                setText(json.color)
+                setCat(json)
+            })
+    }
+    useEffect(() => {
+        console.log(id)
+        if (id) {
+            loadCategory();
+        }
+    }, [])
 
     const addCategory = async (e) => {
         e.preventDefault();
         const { category, description, color } = cat;
-        const res = await fetch("/app/addCategory", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                category, description, color
-            })
+        let res;
+        if (id) {
+            res = await fetch(`/app/updateCategory/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    category, description, color
+                })
 
-        });
+            });
+        }
+        else {
+            res = await fetch("/app/addCategory", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    category, description, color
+                })
+
+            });
+
+        }
 
         const data = await res.json();
         console.log(cat);
@@ -59,8 +90,10 @@ const CategoryForm = () => {
         if (res.status === 201) {
             setMsg('Added Successfully');
             let code;
+
             colour.map((option) => {
                 if (option.name === cat.color) { code = option.code; }
+
             })
             setIsOpen(!isOpen);
             await fetch(
@@ -73,9 +106,9 @@ const CategoryForm = () => {
                     name: color, code: code, check: false
                 })
             })
-                    .then((res) => res.json())
-                    .then((json) => console.log(json))
-            
+                .then((res) => res.json())
+                .then((json) => console.log(json))
+
         }
         else {
             let obj = signup.find((pop) => pop.id === res.status);
@@ -108,8 +141,8 @@ const CategoryForm = () => {
         <div>
             <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                 <div className="flex flex-wrap items-center">
-                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/menu"><i className="fas fa-arrow-left mr-4"></i>Back</a></div>
-                    <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">Add Category</div>
+                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white"><a href="/menu"><i className="fas fa-arrow-left mr-4"></i>Back</a></div>
+                    <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">{id ? 'Edit Category' : 'Add Category'}</div>
                 </div>
             </nav>
             <div className="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 md:px-24 lg:px-32 w-2/3 mx-auto">
@@ -127,7 +160,7 @@ const CategoryForm = () => {
                     <div className="flex flex-col pt-4 ">
                         <label for="color" className="">Category Colour</label>
                         <div className=" w-full mt-1 text-white ">
-                            <div className=" flex flex-row bg-primary" style = {{backgroundColor: col}}>
+                            <div className=" flex flex-row bg-primary" style={{ backgroundColor: col }}>
                                 <a href="#" className="block  align-middle  no-underline p-4 " onClick={openDrop}>
                                     {text}<span ><i className="fas fa-chevron-down ml-72"></i></span></a>
                             </div>

@@ -29,5 +29,6 @@ router.get('/colour/:id', colourController.get_colour)
 router.post('/addColour', colourController.add_colour)
 router.get('/colours', colourController.show_colours)
 router.put('/updateColour/:id', colourController.update_colour)
-router.post('/category/:id', categoryController.get_category)
+router.get('/category/:id', categoryController.get_category)
+router.put('/updateCategory/:id', categoryController.update_category)
 module.exports = router
