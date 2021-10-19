@@ -50,16 +50,24 @@ router.post('/upload', itemController.upload_image)
 router.post('/addItem',(req,res)=>{
     console.log(1)
     console.log(req.body)
-    const item = new items_template_copy({ foodItem:req.body.foodItem, category:req.body.category,
-        image:req.body.image, description:req.body.description, price:req.body.price, 
+    const item = new items_template_copy({ foodItem:req.body.foodItem, category:req.body.category,time:req.body.time,
+        description:req.body.description, price:req.body.price, 
         availability:req.body.availability, discount: req.body.discount})
     console.log(item)
-    item.save().then(() => {
+    console.log(item.foodItem)
+    if(!item.foodItem||!item.category||!item.price||!item.availability)
+    {
+        console.log(4);
+        res.status(422).json({message:"Please fill out the required fields!"})
+    }
+    else
+    {item.save().then(() => {
         res.status(201).json({ message: "Item added successfully!" })
     })
         .catch(error => {
-            res.status(401).json({ error: "Item could not be added!" })
+            res.status(401).json({ message: "Item could not be added!" })
         })
+    }
 
 
 })

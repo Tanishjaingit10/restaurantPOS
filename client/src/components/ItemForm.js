@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Popup from './Popup';
 import days from '../days';
+import signup from '../popup';
 // import TimePicker from 'react-time-picker';
 import TimePicker from 'react-gradient-timepicker';
 
@@ -8,23 +9,41 @@ import TimePicker from 'react-gradient-timepicker';
 const ItemForm = () => {
     const [show, setShow] = useState(false);
     const [open, setOpen] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const [cat, setCat] = useState(false);
     const [displayCat, setdisplayCat] = useState()
-    const [fileName, setfileName] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "", image: "", description: "", price: 0, availability: false, discount: 0 })
-
-    const onChangeFile = (e) => {
-        setfileName(e.target.files[0])
-        console.log(fileName)
-    }
-    const [isOpen, setIsOpen] = useState(false);
     const [displayDays, setDisplayDays] = useState();
     const [showDays, setShowDays] = useState(false);
     const [showTime, setShowTime] = useState(false);
-
+    const [avail, setAvail]= useState(true)
+    const [isError, setIsError] = useState(false);
+    const [msg, setMsg] = useState("");
+    const [item, setItem] = useState({ foodItem: "", category: "",time:"", description: "", price: 0, availability: "", discount: 0 })
+   
     // const [clock, setClock] = useState("");
     const openDrop = () => {
         setShow(!show);
+    }
+    let name, value;
+    const handleInputs = (e) => {
+        
+        e.preventDefault();
+        name = e.target.name;
+        value = e.target.value;
+        console.log(name)
+        console.log(value)
+        setItem({ ...item, [name]: value });
+
+    }
+    const handleAvail = (e)=>{
+        e.preventDefault();
+        name = e.target.name;
+        value = e.target.value;
+        if(value==='Yes')
+            setAvail(true);
+        else setAvail(false);
+        setItem({ ...item, [name]: value });
+        console.log(item.availability)
     }
     const openCat = async (e) => {
         e.preventDefault();
@@ -35,47 +54,11 @@ const ItemForm = () => {
             .then((json) => {
                 console.log(json)
                 setdisplayCat(json.map((option) => {
-                    return (<li className="py-2">{option.category}</li>)
+                    return (<li><button className="py-2" onClick={handleInputs} name="category" value={option.category}>{option.category}</button></li>)
                 }))
             })
 
     }
-    const onsubmit = async (e) => {
-        e.preventDefault();
-        console.log(fileName)
-        // const formData = new FormData();
-        // formData.append("foodItem", item.foodItem)
-        // formData.append("category", item.category)
-        // formData.append("image", fileName)
-        // formData.append("description", item.description)
-        // formData.append("price", item.price)
-        // formData.append("availability", item.availability)
-        // formData.append("discount", item.discount)
-        // formData.append("variant", item.variant)
-        // console.log(formData)
-
-
-        // await fetch("/app/addItem", {
-        //     method: "POST",
-        //     body: formData
-
-
-        // });
-        const { foodItem, category, image, description, price, availability, discount } = item;
-        await fetch("/app/addItem", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                foodItem, category, image, description, price, availability, discount
-            })
-
-        });
-
-    }
-
-
     let clock,st,et;
     const showStart = (e) => {
         st = e;
@@ -98,6 +81,36 @@ const ItemForm = () => {
     const openPop = () => {
         setIsOpen(!isOpen);
     }
+    const onsubmit =async (e)=>{
+        e.preventDefault();
+        const { foodItem, category, time, description, price, availability, discount } = item;
+        console.log(item)
+        console.log(availability)
+        const res= await fetch("/app/addItem", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                foodItem, category, time, description, price, availability, discount
+            })
+
+        });
+        setIsError(!isError);
+        if (res.status === 201) {
+            setMsg('Added Successfully');
+        }
+        else 
+        {
+                
+                let obj = signup.find((pop) => pop.id === res.status);
+                setMsg(obj.title);
+                console.log(msg);
+                
+    
+         }
+
+    }
 
     return (
         <div className="h-screen justify-items-conter">
@@ -109,47 +122,25 @@ const ItemForm = () => {
 
             </nav>
             <div className=" w-full p-4 px-8">
-                <form className=" w-full px-10 text-xl font-semibold font-roboto justify-items-center flex flex-col space-y-4" onSubmit={onsubmit}>
+                <form className=" w-full px-10 text-xl font-semibold font-roboto justify-items-center flex flex-col space-y-4">
                     <div className=" flex flex-col md:flex-row md:space-x-10 px-8 py-6">
-                    <div className=" w-1/2 space-y-2 p-4">
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="name" className="mb-2">Name</label>
-                    <input type ="text" name="name" className=" border-2 border-black py-2" />
-                    </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="description" className="mb-2">Description</label>
-                    <input type ="text" name="description" className=" border-2 border-black py-2" />
-                    </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="time" className="mb-2">Time to Cook</label>
-                    <input type ="text" name="time" className=" border-2 border-black py-2" />
-                    </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="description" className="mb-2">Available</label>
-                    <ul className="bg-primary text-center text-white" onClick={openDrop}><li className="py-2">Select</li>
-                {show?<><li className="py-2">Everyday/All Time</li>
-                    <li className="py-2">Select Day/Time</li></>: null}
-                    </ul>
-                    </div>
-                    <div className="flex flex-row bg-white space-x-4">
-                    <div className="flex flex-col w-2/3 space-y-2">
-                    <label className="mb-2">Image</label>
-                    <div className="border-gray-200 border-2 py-2">Image.png</div>
-                    <button className="bg-primary text-white py-2 font-bold">Choose File</button>
-                    </div>
-                    <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
-                    </div>
-                {/* <div className="form-group"> 
-                            <label htmlFor="file">Choose image</label>
-                            <input
-                            type="file"
-                            fileName="image"
-                            name="image"
-                            className="form-control-file"
-                            onChange={onChangeFile}
-                            />
-
+                        <div className=" w-1/2 space-y-2 p-4">
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="name" className="mb-2">Name</label>
+                                <input type="text" name="foodItem" onChange={handleInputs} value={item.foodItem} className=" border-2 border-black py-2" />
                             </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="description" className="mb-2">Description</label>
+                                <input type="text" name="description" onChange={handleInputs} value={item.description} className=" border-2 border-black py-2" />
+                            </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="time" className="mb-2">Time to Cook (in minutes)</label>
+                                <input type="text" name="time" onChange={handleInputs} value={item.time} className=" border-2 border-black py-2" />
+                            </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="description" className="mb-2">Available</label>
+                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={openDrop}><li className="py-2">Select</li>
+                                    {show ? <><li className="py-2">Everyday/All Time</li>
                                         <li className="py-2" onClick={openPop}>Select Day/Time</li></> : null}
                                 </ul>
                             </div>
@@ -161,38 +152,37 @@ const ItemForm = () => {
                                 </div>
                                 <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
                             </div>
-                        </div> */}
-                    <div className=" w-1/2 space-y-2 p-4">
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="discount" className="mb-2">Discount</label>
-                    <input type ="text" name="discount" className=" border-2 border-black py-2" />
+                        </div>
+                        <div className=" w-1/2 space-y-2 p-4">
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="discount" className="mb-2">Discount</label>
+                                <input type="text" name="discount" onChange={handleInputs} value={item.discount} className=" border-2 border-black py-2" />
+                            </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="variant" className="mb-2">Variant</label>
+                                <div className="bg-primary text-center py-2 text-white cursor-pointer">+</div>
+                            </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="price" className="mb-2">Item Unit Price</label>
+                                <input type="text" name="price" onChange={handleInputs} value={item.price} className=" border-2 border-black py-2" />
+                            </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="description" className="mb-2">Current Availability</label>
+                                <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li><button className="py-2" name="availability" value="Yes" onClick={handleAvail}> {avail?'Yes':'No'}</button></li>
+                                    {open ? <li><button className="py-2" name="availability" value="No" onClick={handleAvail}>{avail?'No':'Yes'}</button></li> : null}
+                                </ul>
+                            </div>
+                            <div className="flex flex-col bg-white">
+                                <label htmlFor="description" className="mb-2">Category</label>
+                                <ul className="bg-primary text-center py-2 text-white cursor-pointer" onClick={openCat}>{item.category? item.category:'Select Category'}
+                                {cat ? <>{displayCat}</> : null}
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="variant" className="mb-2">Variant</label>
-                    <div className="bg-primary text-center py-2 text-white">+</div>
-                    </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="price" className="mb-2">Item Unit Price</label>
-                    <input type ="text" name="price" className=" border-2 border-black py-2" />
-                    </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="description" className="mb-2">Current Availability</label>
-                    <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li className="py-2">Yes</li>
-                {open?<li className="py-2">No</li>: null}
-                    </ul>
-                    </div>
-                    <div className="flex flex-col bg-white">
-                    <label htmlFor="description" className="mb-2">Category</label>
-                    <div className="bg-primary text-center py-2 text-white">Select Category</div>
-                    </div>
-                    </div>
-                    </div>
-                    <button className="bg-green w-72 mx-auto text-white py-2 font-bold">Done</button>
-                </div>
+                    <button type="submit" className="bg-green w-72 mx-auto text-white py-2 font-bold" onClick={onsubmit}>Done</button>
                 </form>
-                </div>
-               
-            
+            </div>
             {isOpen && <Popup
                 content={<>
                     <div className="flex flex-col px-8 space-y-4 text-white">
@@ -238,6 +228,14 @@ const ItemForm = () => {
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={() => setShowTime(!showTime)}>Done</button>
                 </div>
             </div>}
+            {isError && <Popup
+                content={<>
+
+                    <p className='pb-4 font-bold text-red'>{msg}</p>
+                    <button className="bg-green px-10 py-2" onClick={onsubmit}>Ok</button>
+                </>}
+                handleClose={onsubmit}
+            />}
            
 
           
@@ -246,5 +244,3 @@ const ItemForm = () => {
 }
 
 export default ItemForm
-
-
