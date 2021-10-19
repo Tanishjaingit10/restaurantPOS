@@ -19,7 +19,7 @@ const Menu = () => {
             .then((json) => {
                 console.log(json)
                 setDisplayCategory(json.map((option) => {
-                    return (<button value={option.category} name="color" onClick={openCategory(option.category)} className="hover:bg-black-700 block align-middle w-24 h-20 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
+                    return (<button value={option.category} name="color" onClick={openCategory(option.category)} className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
                 }))
             })
 
@@ -40,12 +40,12 @@ const Menu = () => {
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Add new food item</a></button>
             </div>
             
-            {show &&<Popup
-                content={<>
-                   {displayCategory}
-            </>}
-            handleClose={openMenu}
-            />}
+            {show && <div className="popup-box">
+                <div className="flex flex-wrap w-96 mx-auto font-roboto font-bold mt-52 bg-white">
+                    {displayCategory}
+               
+                </div>
+            </div>}
             
         </div>
     )
