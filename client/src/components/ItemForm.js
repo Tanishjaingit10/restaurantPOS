@@ -12,6 +12,7 @@ const ItemForm = () => {
     const [displayDays, setDisplayDays] = useState();
     const [showDays, setShowDays] = useState(false);
     const [showTime, setShowTime] = useState(false);
+    const [variant, setVariant] = useState(false);
    
     // const [clock, setClock] = useState("");
     const openDrop = () => {
@@ -89,7 +90,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="variant" className="mb-2">Variant</label>
-                                <div className="bg-primary text-center py-2 text-white">+</div>
+                                <div className="bg-primary text-center py-2 text-white"  onClick={()=>{setVariant(!variant)}}>+</div>
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="price" className="mb-2">Item Unit Price</label>
@@ -155,6 +156,26 @@ const ItemForm = () => {
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={() => setShowTime(!showTime)}>Done</button>
                 </div>
             </div>}
+            
+            {variant && <div className="popup-box">
+                <div className="bg-white p-4 px-10 w-96 mx-auto font-roboto font-bold mt-40">
+                    <form className="flex flex-col">
+                        <div className="flex flex-col py-2">
+                        <label htmlFor="variant" className="mb-2">Variant</label>
+                                <input type="text" name="variant" className=" border-2 border-black py-2" />
+                        </div>
+                        <div className="flex flex-col py-2">
+                        <label htmlFor="description" className="mb-2">Description</label>
+                                <input type="text" name="description" className=" border-2 border-black py-2" />
+                        </div>
+                        <div className="flex flex-col py-2">
+                        <label htmlFor="price" className="mb-2">Price</label>
+                                <input type="text" name="price" className=" border-2 border-black py-2" />
+                        </div>
+                        <button className="bg-green p-2 text-white text-center font-bold px-6 my-4" onClick={()=>{setVariant(!variant)}}>Done</button>
+                    </form>
+                    </div>
+                </div>}
            
 
           
