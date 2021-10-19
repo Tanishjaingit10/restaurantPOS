@@ -12,7 +12,7 @@ const ItemForm = () => {
     const [displayDays, setDisplayDays] = useState();
     const [showDays, setShowDays] = useState(false);
     const [showTime, setShowTime] = useState(false);
-    const [time, setTime] = useState(new Date());
+   
     // const [clock, setClock] = useState("");
     const openDrop = () => {
         setShow(!show);
@@ -122,27 +122,31 @@ const ItemForm = () => {
                 </div>
             </div>}
             {showTime && <div className="popup-box">
-                <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-72 bg-white">
-                    <label>Start Time</label>
+                <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-72 bg-primary">
+                    <div className="flex flex-row py-2">
+                    <label className="text-white w-1/2 ml-2">Start Time:</label>
                     <TimePicker
                         time={clock}
                         theme="Bourbon"
-                        className="timepicker w-80 bg-primary text-white"
-                        placeholder="Start Time"
+                        className="timepicker bg-primary text-white"
+                  
                         onSet={(val) => {
                             showClock(val.format12);
                           }}
                     />
-                    <label>End Time</label>
+                    </div>
+                    <div className="flex flex-row py-2">
+                    <label className="text-white w-1/2 ml-2">End Time:</label>
                       <TimePicker
                         time={clock}
                         theme="Bourbon"
-                        className="timepicker w-80 bg-primary text-white"
-                        placeholder="End Time"
+                        className="timepicker bg-primary text-white"
+                       
                         onSet={(val) => {
                             showClock(val.format12);
                           }}
                     />
+                    </div> 
                     {/* <button className="bg-primary p-2 text-white text-left px-6" onClick={showClock}>Start Time</button>
                    {clock &&  <TimePicker className="bg-primary p-2 text-black text-left px-6"
         placeholder="Start Time" onChange={setTime}
