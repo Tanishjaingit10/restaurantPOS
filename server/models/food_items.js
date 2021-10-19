@@ -11,22 +11,23 @@ const food_item_template = new mongoose.Schema({
         required:true
     },
     image:{
-        data: Buffer,
-        contentType: String
+        type:String,
+        required:true
     },
     description:{
         type:String,
-        required:true
     },
     price:{
         type:Number,
         required:true
     },
     availability:{
-        type:Number,
+        type:Boolean,
         required:true
     },
-
+    discount:{
+        type:Number
+    },
 
 })
 

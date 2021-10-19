@@ -1,25 +1,24 @@
 const items_template_copy = require('../models/food_items')
-const add_item = async (request, response, next) => {
-    const { foodItem, category, image, description, price, availability } = request.body;
-    if (!foodItem || !category || !price || !availability)
-        return response.status(422).json({ error: "Please fill out the required fields!" })
+// const add_item = async (request, response, next) => {
+//     const { foodItem, category, image, description, price, availability } = request.body;
+//     if (!foodItem || !category || !price || !availability)
+//         return response.status(422).json({ error: "Please fill out the required fields!" })
 
-    await items_template_copy.findOne({ foodItem: foodItem }).then((itemExist) => {
-        if (itemExist) {
-            return response.status(402).json({ error: "Item Already Exists!" })
-        }
-        const item = new items_template_copy({ foodItem, category, image, description, price, availability })
-        item.save().then(() => {
-            response.status(201).json({ message: "Item added successfully!" })
-        })
-            .catch(error => {
-                response.status(401).json({ error: "Item could not be added!" })
-            })
+//     await items_template_copy.findOne({ foodItem: foodItem }).then((itemExist) => {
+//         if (itemExist) {
+//             return response.status(402).json({ error: "Item Already Exists!" })
+//         }
+//         const item = new items_template_copy({ foodItem, category, image, description, price, availability })
+//         item.save().then(() => {
+//             response.status(201).json({ message: "Item added successfully!" })
+//         })
+//             .catch(error => {
+//                 response.status(401).json({ error: "Item could not be added!" })
+//             })
 
-    });
-}
+//     });
+// }
 const get_item = async (request, response) => {
-    console.log(request.params.id)
     items_template_copy.findOne({ foodItem: request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)
@@ -45,7 +44,6 @@ const all_items = async (request, response) => {
 
 const update_item = async (request, response, next) => {
     let itemId = request.params.id;
-    console.log(itemId)
     const { foodItem, category, image, description, price, availability } = request.body;
     let updatedData = {
         foodItem: foodItem,
@@ -79,7 +77,27 @@ const remove_item = async (request, response, next) => {
 
 }
 
+const upload_image = async(request, response, next) => {
+    console.log(request)
+    console.log(1)
+    console.log(request.files)
+    if(request.files===null)
+    {
+        return response.status(400).json({message: 'Item could not be uploaded!'})
+    }
+    const file = request.files.file;
+    file.mv(`${__dirname}/client/public/uploads/${file.name}`,err=>{
+        if(err)
+        {
+            console.error(err)
+            return response.status(500).send(err);
+
+        }
+        response.json({fileName: file.name, filePath: `/uploads/${file.name}`});
+    })
+}
+
 
 module.exports = {
-    add_item, get_item, all_items, update_item, remove_item
+     get_item, all_items, update_item, remove_item, upload_image
 }

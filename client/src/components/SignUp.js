@@ -10,12 +10,16 @@ const SignUp = () => {
     const [user, setUser] = useState({ fullName: "", email_id: "", contact: "", position: "", password: "" });
     const [isOpen, setIsOpen] = useState(false);
     const [msg, setMsg] = useState("");
+    const [isError, setIsError] = useState(false);
     let name, value;
     const handleInputs = (e) => {
         console.log(e);
         name = e.target.name;
         value = e.target.value;
         setUser({ ...user, [name]: value });
+    }
+    const onLogin = (e) => {
+        history.push('/login');
     }
 
     const registerUser = async (e) => {
@@ -33,19 +37,19 @@ const SignUp = () => {
        
         const data = await res.json();
         console.log(res.status);
-        setIsOpen(!isOpen);
        
         if (res.status === 201) {
             let ans = "Registration Successful";
-            //setMsg(ans);
+            setMsg(ans);
             console.log(ans);
-            history.push("/login");
+            setIsOpen(!isOpen);
            
         }
         else {
                 let obj = signup.find((pop) => pop.id === res.status);
                 setMsg(obj.title);
                 console.log(msg);
+                setIsError(!isError);
         }
     }
 
@@ -128,14 +132,22 @@ const SignUp = () => {
                     <p className="text-center">Already registered ? <a href="/login" className="underline">Login</a></p>
                 </form>
             </div>
-            {isOpen && <Popup
+            {isError && <Popup
       content={<>
        
         <p className="pb-4 text-red font-bold">{msg}</p>
         <button className="bg-green px-10 py-2" onClick={registerUser}>Try Again</button>
       </>}
-      handleClose={registerUser}
+      handleClose={registerUser}   
     />}
+    {isOpen && <Popup
+                content={<>
+
+                    <p className='pb-4 font-bold text-green'>{msg}</p>
+                    <button className="bg-primary px-10 py-2" onClick={onLogin}>Ok</button>
+                </>}
+                handleClose={onLogin}
+            />}
   </div>
        
        

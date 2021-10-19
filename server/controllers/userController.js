@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt')
 
 
 const show_users = async (request, response, next)=>{
-    console.log(request.body)
     signup_template_copy.find({},(err,data) =>{
         if(!err)
             response.send(data);
@@ -22,16 +21,7 @@ const get_user = async(request,response) =>{
 
     });
 }
-// const get_user_email = async(request,response) =>{
-//     const{email_id}=request.body;
-//     signup_template_copy.findById(request.params.id,(err,data) =>{
-//         if(!err)
-//             response.send(data);
-//         else 
-//             console.log(err);
 
-//     });
-// }
 
 const add_user =async (request, response, next)=>{
     const{fullName,email_id,contact,position,password}=request.body;
