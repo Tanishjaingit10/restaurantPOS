@@ -11,7 +11,7 @@ const ItemForm = () => {
     const [cat, setCat] = useState(false);
     const [displayCat, setdisplayCat] = useState()
     const [fileName, setfileName] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "", image:"", description: "", price: 0, availability: false, discount: 0 })
+    const [item, setItem] = useState({ foodItem: "", category: "", image: "", description: "", price: 0, availability: false, discount: 0 })
 
     const onChangeFile = (e) => {
         setfileName(e.target.files[0])
@@ -21,7 +21,7 @@ const ItemForm = () => {
     const [displayDays, setDisplayDays] = useState();
     const [showDays, setShowDays] = useState(false);
     const [showTime, setShowTime] = useState(false);
-   
+
     // const [clock, setClock] = useState("");
     const openDrop = () => {
         setShow(!show);
@@ -53,28 +53,28 @@ const ItemForm = () => {
         // formData.append("discount", item.discount)
         // formData.append("variant", item.variant)
         // console.log(formData)
-        
-        
+
+
         // await fetch("/app/addItem", {
         //     method: "POST",
         //     body: formData
 
 
         // });
-        const { foodItem, category, image, description, price, availability, discount} = item;
+        const { foodItem, category, image, description, price, availability, discount } = item;
         await fetch("/app/addItem", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                foodItem,category, image, description, price, availability, discount
+                foodItem, category, image, description, price, availability, discount
             })
 
         });
 
     }
-    
+
 
     let clock;
     const showClock = (e) => {
@@ -107,35 +107,35 @@ const ItemForm = () => {
             <div className=" w-full p-4 px-8">
                 <form className=" w-full px-10 text-xl font-semibold font-roboto justify-items-center flex flex-col space-y-4" onSubmit={onsubmit}>
                     <div className=" flex flex-col md:flex-row md:space-x-10 px-8 py-6">
-                        <div className=" w-1/2 space-y-2 p-4">
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="name" className="mb-2">Name</label>
-                                <input type="text" name="name" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="description" className="mb-2">Description</label>
-                                <input type="text" name="description" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="time" className="mb-2">Time to Cook</label>
-                                <input type="text" name="time" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="description" className="mb-2">Available</label>
-                                <ul className="bg-primary text-center text-white" onClick={openDrop}><li className="py-2">Select</li>
-                                    {show ? <><li className="py-2">Everyday/All Time</li>
-                                        <li className="py-2">Select Day/Time</li></> : null}
-                                </ul>
-                            </div>
-                            {/* <div className="flex flex-row bg-white space-x-4">
-                        <div className="flex flex-col w-2/3 space-y-2">
-                          <label className="mb-2">Image</label>
-                          <div className="border-gray-200 border-2 py-2">Image.png</div>
-                          <button className="bg-primary text-white py-2 font-bold">Choose File</button>
-                        </div>
-                        <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
-                    </div> */}
-                            <div className="form-group"> 
+                    <div className=" w-1/2 space-y-2 p-4">
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="name" className="mb-2">Name</label>
+                    <input type ="text" name="name" className=" border-2 border-black py-2" />
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="description" className="mb-2">Description</label>
+                    <input type ="text" name="description" className=" border-2 border-black py-2" />
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="time" className="mb-2">Time to Cook</label>
+                    <input type ="text" name="time" className=" border-2 border-black py-2" />
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="description" className="mb-2">Available</label>
+                    <ul className="bg-primary text-center text-white" onClick={openDrop}><li className="py-2">Select</li>
+                {show?<><li className="py-2">Everyday/All Time</li>
+                    <li className="py-2">Select Day/Time</li></>: null}
+                    </ul>
+                    </div>
+                    <div className="flex flex-row bg-white space-x-4">
+                    <div className="flex flex-col w-2/3 space-y-2">
+                    <label className="mb-2">Image</label>
+                    <div className="border-gray-200 border-2 py-2">Image.png</div>
+                    <button className="bg-primary text-white py-2 font-bold">Choose File</button>
+                    </div>
+                    <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
+                    </div>
+                {/* <div className="form-group"> 
                             <label htmlFor="file">Choose image</label>
                             <input
                             type="file"
@@ -157,34 +157,35 @@ const ItemForm = () => {
                                 </div>
                                 <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
                             </div>
-                        </div>
-                        <div className=" w-1/2 space-y-2 p-4">
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="discount" className="mb-2">Discount</label>
-                                <input type="text" name="discount" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="variant" className="mb-2">Variant</label>
-                                <div className="bg-primary text-center py-2 text-white">+</div>
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="price" className="mb-2">Item Unit Price</label>
-                                <input type="text" name="price" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="description" className="mb-2">Current Availability</label>
-                                <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li className="py-2">Yes</li>
-                                    {open ? <li className="py-2">No</li> : null}
-                                </ul>
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="description" className="mb-2">Category</label>
-                                <div className="bg-primary text-center py-2 text-white">Select Category</div>
-                            </div>
-                        </div>
+                        </div> */}
+                    <div className=" w-1/2 space-y-2 p-4">
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="discount" className="mb-2">Discount</label>
+                    <input type ="text" name="discount" className=" border-2 border-black py-2" />
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="variant" className="mb-2">Variant</label>
+                    <div className="bg-primary text-center py-2 text-white">+</div>
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="price" className="mb-2">Item Unit Price</label>
+                    <input type ="text" name="price" className=" border-2 border-black py-2" />
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="description" className="mb-2">Current Availability</label>
+                    <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li className="py-2">Yes</li>
+                {open?<li className="py-2">No</li>: null}
+                    </ul>
+                    </div>
+                    <div className="flex flex-col bg-white">
+                    <label htmlFor="description" className="mb-2">Category</label>
+                    <div className="bg-primary text-center py-2 text-white">Select Category</div>
+                    </div>
+                    </div>
                     </div>
                     <button className="bg-green w-72 mx-auto text-white py-2 font-bold">Done</button>
                 </form>
+                </div>
             </div>
             {isOpen && <Popup
                 content={<>
@@ -204,29 +205,29 @@ const ItemForm = () => {
             {showTime && <div className="popup-box">
                 <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-72 bg-primary">
                     <div className="flex flex-row py-2">
-                    <label className="text-white w-1/2 ml-2">Start Time:</label>
-                    <TimePicker
-                        time={clock}
-                        theme="Bourbon"
-                        className="timepicker bg-primary text-white"
-                  
-                        onSet={(val) => {
-                            showClock(val.format12);
-                          }}
-                    />
+                        <label className="text-white w-1/2 ml-2">Start Time:</label>
+                        <TimePicker
+                            time={clock}
+                            theme="Bourbon"
+                            className="timepicker bg-primary text-white"
+
+                            onSet={(val) => {
+                                showClock(val.format12);
+                            }}
+                        />
                     </div>
                     <div className="flex flex-row py-2">
-                    <label className="text-white w-1/2 ml-2">End Time:</label>
-                      <TimePicker
-                        time={clock}
-                        theme="Bourbon"
-                        className="timepicker bg-primary text-white"
-                       
-                        onSet={(val) => {
-                            showClock(val.format12);
-                          }}
-                    />
-                    </div> 
+                        <label className="text-white w-1/2 ml-2">End Time:</label>
+                        <TimePicker
+                            time={clock}
+                            theme="Bourbon"
+                            className="timepicker bg-primary text-white"
+
+                            onSet={(val) => {
+                                showClock(val.format12);
+                            }}
+                        />
+                    </div>
                     {/* <button className="bg-primary p-2 text-white text-left px-6" onClick={showClock}>Start Time</button>
                    {clock &&  <TimePicker className="bg-primary p-2 text-black text-left px-6"
         placeholder="Start Time" onChange={setTime}
@@ -238,8 +239,7 @@ const ItemForm = () => {
                     {/* <button className="bg-primary p-2 text-white text-left px-6">Start Time</button>
                   <button className="bg-primary p-2 text-white text-left px-6">End Time</button> */}
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={() => setShowTime(!showTime)}>Done</button>
-                </div>
-            </div>}
+                
             {/* {showDays && <Popup
                 content={<div className="flex flex-col mx-8 space-y-2">
                     {displayDays}
@@ -281,13 +281,14 @@ const ItemForm = () => {
                                 {/* <div className={cat ? " flex flex-wrap  bg-white py-4 pb-2 px-6 mx-auto" : "hidden"}>
                             {displayCat}
                         </div> */}
-                            </div>
+            {/* </div>
                         </div>
-                    </div>
-                    <button className="bg-green w-72 mx-auto text-white py-2 font-bold">Done</button>
-                </form>
-            </div>
-        </div>
+                    </div> */}
+            <button className="bg-green w-72 mx-auto text-white py-2 font-bold">Done</button>
+        {/* </form> */}
+            </div >
+        </div >
+ } </div>
     )
 }
 
