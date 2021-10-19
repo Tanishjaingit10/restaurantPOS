@@ -24,9 +24,7 @@ const show_colours = async (request, response, next)=>{
 // }
 const get_colour = async(request,response) =>{
     const{name,code,check}=request.body;
-    console.log(request.body)
-    console.log(1)
-    console.log(request.params.id)
+
     colour_template_copy.findById(request.params.id,(err,data) =>{
         if(!err)
             response.send(data);
@@ -37,7 +35,7 @@ const get_colour = async(request,response) =>{
 }
 const update_colour = async (request, response, next)=>{
     let itemId = request.params.id;
-    console.log(itemId)
+
     const{name,code,check}=request.body;
     let updatedData = {
         name: name,
@@ -60,7 +58,6 @@ const update_colour = async (request, response, next)=>{
 
 const add_colour =async (request, response, next)=>{
     const{name,code,check}=request.body;
-    console.log(request.body)
     if(!code)
     {
         console.log(4);

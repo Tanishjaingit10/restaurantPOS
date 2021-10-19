@@ -28,7 +28,6 @@ const add_category =async (request, response, next)=>{
 }
 const update_category = async (request, response, next) => {
     let itemId = request.params.id;
-    console.log(itemId)
     const { category,description,color } = request.body;
     let updatedData = {
         category: category,
@@ -48,8 +47,6 @@ const update_category = async (request, response, next) => {
 
 }
 const get_category = async (request, response) => {
-    console.log(request.params.id)
-    console.log(1)
     category_template_copy.findOne({ category: request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)

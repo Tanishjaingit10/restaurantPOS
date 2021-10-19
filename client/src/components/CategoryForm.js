@@ -14,9 +14,11 @@ const CategoryForm = () => {
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
     const { id } = useParams();
+    
     let name, value;
 
     const handleInputs = (e) => {
+        
         e.preventDefault();
         name = e.target.name;
         value = e.target.value;
