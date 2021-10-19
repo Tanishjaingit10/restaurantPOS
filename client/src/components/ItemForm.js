@@ -76,9 +76,13 @@ const ItemForm = () => {
     }
 
 
-    let clock;
-    const showClock = (e) => {
-        clock = e;
+    let clock,st,et;
+    const showStart = (e) => {
+        st = e;
+    }
+
+    const showEnd = (e)=>{
+        et = e;
     }
 
     const showWeek = () => {
@@ -184,9 +188,11 @@ const ItemForm = () => {
                     </div>
                     </div>
                     <button className="bg-green w-72 mx-auto text-white py-2 font-bold">Done</button>
+                </div>
                 </form>
                 </div>
-            </div>
+               
+            
             {isOpen && <Popup
                 content={<>
                     <div className="flex flex-col px-8 space-y-4 text-white">
@@ -205,90 +211,37 @@ const ItemForm = () => {
             {showTime && <div className="popup-box">
                 <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-72 bg-primary">
                     <div className="flex flex-row py-2">
-                        <label className="text-white w-1/2 ml-2">Start Time:</label>
-                        <TimePicker
-                            time={clock}
-                            theme="Bourbon"
-                            className="timepicker bg-primary text-white"
-
-                            onSet={(val) => {
-                                showClock(val.format12);
-                            }}
-                        />
+                    <label className="text-white w-1/2 ml-2">Start Time:</label>
+                    <TimePicker
+                        time={st}
+                        theme="Bourbon"
+                        className="timepicker bg-primary text-white"
+                  
+                        onSet={(val) => {
+                            showStart(val.format12);
+                          }}
+                    />
                     </div>
                     <div className="flex flex-row py-2">
-                        <label className="text-white w-1/2 ml-2">End Time:</label>
-                        <TimePicker
-                            time={clock}
-                            theme="Bourbon"
-                            className="timepicker bg-primary text-white"
+                    <label className="text-white w-1/2 ml-2">End Time:</label>
+                      <TimePicker
+                        time={et}
+                        theme="Bourbon"
+                        className="timepicker bg-primary text-white"
+                       
+                        onSet={(val) => {
+                            showEnd(val.format12);
+                          }}
+                    />
+                    </div> 
 
-                            onSet={(val) => {
-                                showClock(val.format12);
-                            }}
-                        />
-                    </div>
-                    {/* <button className="bg-primary p-2 text-white text-left px-6" onClick={showClock}>Start Time</button>
-                   {clock &&  <TimePicker className="bg-primary p-2 text-black text-left px-6"
-        placeholder="Start Time" onChange={setTime}
-        value={time} amPmAriaLabel="AM"
-    >
-    </TimePicker> } */}
-
-
-                    {/* <button className="bg-primary p-2 text-white text-left px-6">Start Time</button>
-                  <button className="bg-primary p-2 text-white text-left px-6">End Time</button> */}
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={() => setShowTime(!showTime)}>Done</button>
-                
-            {/* {showDays && <Popup
-                content={<div className="flex flex-col mx-8 space-y-2">
-                    {displayDays}
-                </div>}
-                handleClose={showWeek}
-            />} */}
+                </div>
+            </div>}
+           
 
-            {/* <div class="w-full flex flex-row">
-
-
-
-                <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-
-                        </div>
-                        <div className=" w-1/2 space-y-2 p-4">
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="discount" className="mb-2">Discount</label>
-                                <input type="text" name="discount" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="variant" className="mb-2">Variant</label>
-                                <div className="bg-primary text-center py-2 text-white">+</div>
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="price" className="mb-2">Item Unit Price</label>
-                                <input type="text" name="price" className=" border-2 border-black py-2" />
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="description" className="mb-2">Current Availability</label>
-                                <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li className="py-2">Yes</li>
-                                    {open ? <li className="py-2">No</li> : null}
-                                </ul>
-                            </div>
-                            <div className="flex flex-col bg-white">
-                                <label htmlFor="description" className="mb-2">Category</label>
-                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={openCat}><li className="py-2">Select Category</li>
-                                    {cat ? <>{displayCat}</> : null}
-                                </ul>
-                                {/* <div className={cat ? " flex flex-wrap  bg-white py-4 pb-2 px-6 mx-auto" : "hidden"}>
-                            {displayCat}
-                        </div> */}
-            {/* </div>
-                        </div>
-                    </div> */}
-            <button className="bg-green w-72 mx-auto text-white py-2 font-bold">Done</button>
-        {/* </form> */}
-            </div >
-        </div >
- } </div>
+          
+        </div>
     )
 }
 
