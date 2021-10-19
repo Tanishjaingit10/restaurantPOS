@@ -18,9 +18,13 @@ const ItemForm = () => {
         setShow(!show);
     }
 
-    let clock;
-    const showClock = (e) => {
-        clock = e;
+    let clock,st,et;
+    const showStart = (e) => {
+        st = e;
+    }
+
+    const showEnd = (e)=>{
+        et = e;
     }
 
     const showWeek = () => {
@@ -126,128 +130,34 @@ const ItemForm = () => {
                     <div className="flex flex-row py-2">
                     <label className="text-white w-1/2 ml-2">Start Time:</label>
                     <TimePicker
-                        time={clock}
+                        time={st}
                         theme="Bourbon"
                         className="timepicker bg-primary text-white"
                   
                         onSet={(val) => {
-                            showClock(val.format12);
+                            showStart(val.format12);
                           }}
                     />
                     </div>
                     <div className="flex flex-row py-2">
                     <label className="text-white w-1/2 ml-2">End Time:</label>
                       <TimePicker
-                        time={clock}
+                        time={et}
                         theme="Bourbon"
                         className="timepicker bg-primary text-white"
                        
                         onSet={(val) => {
-                            showClock(val.format12);
+                            showEnd(val.format12);
                           }}
                     />
                     </div> 
-                    {/* <button className="bg-primary p-2 text-white text-left px-6" onClick={showClock}>Start Time</button>
-                   {clock &&  <TimePicker className="bg-primary p-2 text-black text-left px-6"
-        placeholder="Start Time" onChange={setTime}
-        value={time} amPmAriaLabel="AM"
-    >
-    </TimePicker> } */}
 
-
-                    {/* <button className="bg-primary p-2 text-white text-left px-6">Start Time</button>
-                  <button className="bg-primary p-2 text-white text-left px-6">End Time</button> */}
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={() => setShowTime(!showTime)}>Done</button>
                 </div>
             </div>}
-            {/* {showDays && <Popup
-                content={<div className="flex flex-col mx-8 space-y-2">
-                    {displayDays}
-                </div>}
-                handleClose={showWeek}
-            />} */}
+           
 
-            {/* <div class="w-full flex flex-row">
-
-
-
-                <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-
-                    <form class="flex flex-col pt-3 md:pt-8" onsubmit="event.preventDefault();">
-                        <div class="flex flex-col pt-4">
-                            <label for="name" class="text-lg">Name</label>
-                            <input type="text" id="name" placeholder="John Smith" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="description" class="text-lg">Description</label>
-                            <input type="text" id="description" placeholder="Describe your item" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="time" class="text-lg">Time to cook</label>
-                            <input type="text" id="time" placeholder="Time to cook" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="available" class="text-lg">Available</label>
-                            <select id="available" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-                                <option>Select</option>
-                                <option>Everyday/All time</option>
-                                <option>Select Day/Time</option>
-                            </select>
-
-                        </div>
-                        <div class="flex flex-col pt-4">
-                            <label for="image" class="text-lg">Add image</label>
-                            <input type="text" id="time" placeholder="Time to cook" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <input type="submit" value="Register" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8" />
-                    </form>
-
-                </div>
-                <div class="flex flex-col justify-center md:justify-start my-auto pt-8 md:pt-0 px-8 md:px-24 lg:px-32">
-
-                    <form class="flex flex-col pt-3 md:pt-8" onsubmit="event.preventDefault();">
-                        <div class="flex flex-col pt-4">
-                            <label for="discount" class="text-lg">Discount</label>
-                            <input type="text" id="name" placeholder="Discount" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="description" class="text-lg">Variant</label>
-                            <select>
-                                <option></option>
-                            </select>
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="time" class="text-lg">Time to cook</label>
-                            <input type="text" id="time" placeholder="Time to cook" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <div class="flex flex-col pt-4">
-                            <label for="available" class="text-lg">Available</label>
-                            <select id="available" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline">
-                                <option>Select</option>
-                                <option>Everyday/All time</option>
-                                <option>Select Day/Time</option>
-                            </select>
-
-                        </div>
-                        <div class="flex flex-col pt-4">
-                            <label for="image" class="text-lg">Add image</label>
-                            <input type="text" id="time" placeholder="Time to cook" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mt-1 leading-tight focus:outline-none focus:shadow-outline" />
-                        </div>
-
-                        <input type="submit" value="Register" class="bg-black text-white font-bold text-lg hover:bg-gray-700 p-2 mt-8" />
-                    </form>
-
-                </div>
-
-
-            </div> */}
+          
         </div>
     )
 }
