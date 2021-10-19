@@ -64,7 +64,7 @@ const CategoryDisplay = () => {
                     </div>
                     <div className=" w-1/2 font-bold font-roboto px-12 flex flex-col justify-center mx-auto text-xl py-8 my-auto">
                     <div className="flex flex-row pt-4 bg-white">
-                            <label className="text-black w-1/2">Category Color</label><span className="text-primary w-1/2" style = {{backgroundColor: cat.color}}></span>
+                            <label className="text-black w-1/2">Category Color</label><span className="p-8 w-1/2" style = {{backgroundColor: cat.color}}></span>
                         </div>
                     </div>
                 </div>
