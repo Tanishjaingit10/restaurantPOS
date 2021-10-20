@@ -7,6 +7,19 @@
   pointer-events: none;
 }
 
+.img-holder{
+  margin: auto;
+  width: 180px;
+  height: 150px;
+  
+}
+
+#img{
+  width: 180px;
+  height: 150px;
+  object-fit: cover;
+}
+
 
 .popup-box {
   position: fixed;

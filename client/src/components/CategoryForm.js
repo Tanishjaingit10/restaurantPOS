@@ -25,7 +25,6 @@ const CategoryForm = () => {
         console.log(name)
         console.log(value)
         setCat({ ...cat, [name]: value });
-
     }
     const onMenu = (e) => {
         history.push('/menu');
