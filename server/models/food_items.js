@@ -32,7 +32,15 @@ const food_item_template = new mongoose.Schema({
     },
     variant: {
         type: [String]
+    },
+    finalAvailable: {
+        type: [{
+            day: String,
+            startTime: String,
+            endTime: String
+        }]
     }
+
 
 })
 

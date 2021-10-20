@@ -55,7 +55,7 @@ router.post('/addItem',(req,res)=>{
     console.log(req.body)
     const item = new items_template_copy({ foodItem:req.body.foodItem, category:req.body.category,time:req.body.time,
         description:req.body.description, price:req.body.price, 
-        availability:req.body.availability, discount: req.body.discount, image: req.body.image, variant: req.body.variant})
+        availability:req.body.availability, discount: req.body.discount, image: req.body.image, variant: req.body.variant, finalAvailable: req.body.finalAvailable})
     console.log(item)
     console.log(item.foodItem)
     if(!item.foodItem||!item.category||!item.price||!item.availability)

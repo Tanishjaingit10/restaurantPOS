@@ -21,14 +21,16 @@ const ItemForm = () => {
     const [avail, setAvail] = useState(true)
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "",  time: "", description: "", price: 0, availability: "", discount: 0, image: "", variant: [] })
+    const [item, setItem] = useState({ foodItem: "", category: "",  time: "", description: "", price: 0, availability: "", discount: 0, image: "", finalVariant: [], finalAvailable: [] })
     const [Var, setVar] = useState({ variant: "", description: "", price: "" })
     const [variant, setVariant] = useState(false);
     const [check,setCheck]=useState([]);
     const [showAvailable, setShowAvailable] = useState(false);
     const [availabilty, setAvailability] = useState({ day: "", startTime: "", endTime: "" });
     const [list, setList] = useState();
- 
+    const [set, setAvailable]=useState(false);
+    const [finalAvail, setFinalAvail]=useState([]);
+    const [finalVar, setFinalVariant]=useState([]);
     let name,value;
 
     const imageHandler = (e) => {
@@ -96,20 +98,20 @@ const ItemForm = () => {
     }
     const addVariant = async (e) => {
         e.preventDefault();
-        const {variant,description,price}= Var;
         
         setVariant(!variant)
-        const res = await fetch("/app/addVariant", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                variant,description,price
-            })
+        // const res = await fetch("/app/addVariant", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         variant,description,price
+        //     })
 
-        });
-        setCheck(oldArray => [...oldArray, variant])
+        // });
+        setFinalVariant(oldArray => [...oldArray, Var])
+        setItem({...item, ['finalVariant']:finalVar})
 
 
     }
@@ -130,7 +132,12 @@ const ItemForm = () => {
         console.log(et);
     }
  
+    const handleAvailable=(e)=>{
+        setIsOpen(!isOpen)
+        setAvailable(true)
+        setItem({...item, ['finalAvailable']:finalAvail})
 
+    }
     const handleDay = (e) => {
         e.preventDefault();
         setShowDays(!showDays);
@@ -152,32 +159,36 @@ const ItemForm = () => {
      
     const showDayTime = ()=> {
         setShowDays(!showDays);
-        setShowAvailable(true);
         setList(
-           <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
-        )
+            finalAvail.map((obj)=>{
+            return (<button className="bg-primary px-10 py-2">{obj.day} | {obj.startTime} - {obj.endTime}</button>)
+            }))
+        //    <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
+        
+
        
     }
 
     const dayTime = (e)=> {
         setShowTime(!showTime)
-        
+        setShowAvailable(true);
+        setFinalAvail(oldArray => [...oldArray, availabilty])
         console.log(availabilty);
     }
     const onsubmit = async (e) => {
 
         e.preventDefault();
-        item.variant=check;
-        const { foodItem, category, time, description, price, availability, discount,image, variant } = item;
+        const { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
         console.log(item)
         console.log(availability)
+        console.log(finalVariant)
         const res = await fetch("/app/addItem", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                foodItem, category, time, description, price, availability, discount, image, variant
+                foodItem, category, time, description, price, availability, discount, image, finalVariant, finalAvailable
             })
 
         });
@@ -223,7 +234,10 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
-                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}><li className="py-2">Select</li>
+                                {set?<div>{list}</div>:null}
+                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
+                                    
+                                    <li className="py-2">Select</li>
                                     {show ? <><li className="py-2">Everyday/All Time</li>
                                         <li className="py-2" onClick={()=>{setIsOpen(!isOpen)}}>Select Day/Time</li></> : null}
                                 </ul>
@@ -282,7 +296,7 @@ const ItemForm = () => {
                     <div className="flex flex-col px-8 space-y-4 text-white">
                         {showAvailable ? <div className="">{list}</div>:null}
                         <button className="bg-green px-10 py-2" onClick={showWeek}>+</button>
-                        <button className="bg-green px-10 py-2" onClick={()=>{setIsOpen(!isOpen)}}>Done</button>
+                        <button className="bg-green px-10 py-2" onClick={handleAvailable}>Done</button>
                     </div>
                 </>}
                 handleClose={()=>{setIsOpen(!isOpen)}}

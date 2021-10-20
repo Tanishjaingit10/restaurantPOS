@@ -18,7 +18,14 @@ let colour = [
         name: "teal",
         code: "#16B6AA",
         check: true
+    },
+    {
+        name: "purple",
+        code: "#5B64AF",
+        check: true
     }
+    
+
 
 ]
 
