@@ -9,7 +9,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const ItemForm = () => {
     const history = useHistory();
-    const [img,setImg] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
+    const [img,setImg] = useState("");
     const [show, setShow] = useState(false);
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +31,7 @@ const ItemForm = () => {
     const [set, setAvailable]=useState(false);
     const [finalAvail, setFinalAvail]=useState([]);
     const [finalVar, setFinalVariant]=useState([]);
+    const [imageStatus, setImageStatus]=useState('Upload')
     let name,value;
 
     const imageHandler = (e) => {
@@ -57,6 +58,8 @@ const ItemForm = () => {
         name = e.target.name;
         value = e.target.value;
         setItem({ ...item, [name]: value });
+        if(name==='image')
+            setImageStatus('Image Uploaded')
         
 
     }
@@ -110,7 +113,9 @@ const ItemForm = () => {
         //     })
 
         // });
+        console.log(Var)
         setFinalVariant(oldArray => [...oldArray, Var])
+
         setItem({...item, ['finalVariant']:finalVar})
 
 
@@ -247,7 +252,7 @@ const ItemForm = () => {
                                     <label className="mb-2">Image</label>
                                     <div className="border-gray-200 border-2 py-2"><input type="file" accept="image/*" name="image-upload" id="input" onChange={imageHandler} /></div>
                                     
-                                    <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>Upload</button>
+                                    <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>{imageStatus}</button>
                                 </div>
                                 <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" className="img" /></div>
                             </div>

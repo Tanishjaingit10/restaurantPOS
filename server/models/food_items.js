@@ -30,8 +30,12 @@ const food_item_template = new mongoose.Schema({
     image: {
         type:String
     },
-    variant: {
-        type: [String]
+    finalVariant: {
+        type: [{
+            variant: String,
+            description: String,
+            price: Number
+        }]
     },
     finalAvailable: {
         type: [{
