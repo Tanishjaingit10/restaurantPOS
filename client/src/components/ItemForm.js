@@ -30,6 +30,7 @@ const ItemForm = () => {
     const [set, setAvailable]=useState(false);
     const [finalAvail, setFinalAvail]=useState([]);
     const [finalVar, setFinalVariant]=useState([]);
+    const [imageStatus, setImageStatus]=useState('Upload')
     const [addList, setAddList] = useState();
     const [add, setAdd] = useState(false);
     const [popup, setPopup] = useState(false);
@@ -59,6 +60,8 @@ const ItemForm = () => {
         name = e.target.name;
         value = e.target.value;
         setItem({ ...item, [name]: value });
+        if(name==='image')
+            setImageStatus('Image Uploaded')
         
 
     }
@@ -119,6 +122,12 @@ const ItemForm = () => {
         //     })
 
         // });
+        console.log(Var)
+        setFinalVariant(oldArray => [...oldArray, Var])
+
+        setItem({...item, ['finalVariant']:finalVar})
+
+
         
         
         
@@ -268,7 +277,7 @@ const ItemForm = () => {
                                     <label className="mb-2">Image</label>
                                     <div className="border-gray-200 border-2 py-2"><input type="file" accept="image/*" name="image-upload" id="input" onChange={imageHandler} /></div>
                                     
-                                    <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>Upload</button>
+                                    <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>{imageStatus}</button>
                                 </div>
                                 <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" className="img" /></div>
                             </div>
