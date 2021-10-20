@@ -7,6 +7,7 @@ import TimePicker from 'react-gradient-timepicker';
 
 
 const ItemForm = () => {
+    const [img,setImg] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
     const [show, setShow] = useState(false);
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +27,17 @@ const ItemForm = () => {
  
     let name,value;
     let st,et;
+
+    const imageHandler = (e) => {
+        const reader = new FileReader();
+        reader.onload = () =>{
+          if(reader.readyState === 2){
+            setImg(reader.result)
+          }
+        }
+        reader.readAsDataURL(e.target.files[0])
+      };
+   
    
     // const [clock, setClock] = useState("");
     const openDrop = () => {
@@ -105,7 +117,7 @@ const ItemForm = () => {
      
     const showDayTime = ()=> {
         setShowDays(!showDays);
-        setShowAvailable(!showAvailable);
+        setShowAvailable(true);
         setList(
            <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
         )
@@ -183,10 +195,11 @@ const ItemForm = () => {
                             <div className="flex flex-row bg-white space-x-4">
                                 <div className="flex flex-col w-2/3 space-y-2">
                                     <label className="mb-2">Image</label>
-                                    <div className="border-gray-200 border-2 py-2">Image.png</div>
-                                    <button className="bg-primary text-white py-2 font-bold">Choose File</button>
+                                    <div className="border-gray-200 border-2 py-2"><input type="file" accept="image/*" name="image-upload" id="input" onChange={imageHandler} /></div>
+                                    
+                                    <button className="bg-primary text-white py-2 font-bold">Upload</button>
                                 </div>
-                                <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
+                                <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" className="img" /></div>
                             </div>
                         </div>
                         <div className=" w-1/2 space-y-2 p-4">

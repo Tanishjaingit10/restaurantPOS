@@ -9,8 +9,7 @@ import Menu from './components/Menu';
 import CategoryForm from './components/CategoryForm';
 import ItemForm from './components/ItemForm';
 import CategoryDisplay from './components/CategoryDisplay';
-import EditCategory from './components/EditCategory';
-
+import Image from './components/Image';
 
 function App() {
   return (
@@ -38,7 +37,9 @@ function App() {
       <Route exact path='/additem'>
         <ItemForm />
       </Route>
-      
+      <Route exact path='/image'>
+        <Image />
+      </Route>
     </div>
   )
 }
