@@ -9,7 +9,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const ItemForm = () => {
     const history = useHistory();
-    const [img,setImg] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
+    const [img,setImg] = useState("");
     const [show, setShow] = useState(false);
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -24,13 +24,14 @@ const ItemForm = () => {
     const [item, setItem] = useState({ foodItem: "", category: "",  time: "", description: "", price: 0, availability: "", discount: 0, image: "", finalVariant: [], finalAvailable: [] })
     const [Var, setVar] = useState({ variant: "", description: "", price: "" })
     const [variant, setVariant] = useState(false);
-    const [check,setCheck]=useState([]);
     const [showAvailable, setShowAvailable] = useState(false);
     const [availabilty, setAvailability] = useState({ day: "", startTime: "", endTime: "" });
     const [list, setList] = useState();
     const [set, setAvailable]=useState(false);
     const [finalAvail, setFinalAvail]=useState([]);
     const [finalVar, setFinalVariant]=useState([]);
+    const [addList, setAddList] = useState();
+    const [add, setAdd] = useState(false);
     let name,value;
 
     const imageHandler = (e) => {
@@ -92,14 +93,21 @@ const ItemForm = () => {
         console.log(name)
         console.log(value)
         setVar({ ...Var, [name]: value });
-        
+       
         // item.variant.push(value);
         // console.log(item.variant)
     }
+
+    const newVariant = ()=>{
+        setItem({...item, ['finalVariant']:finalVar})
+    }
+
     const addVariant = async (e) => {
         e.preventDefault();
-        
+        setAdd(true);
         setVariant(!variant)
+        setFinalVariant(oldArray => [...oldArray, Var])
+        newVariant();
         // const res = await fetch("/app/addVariant", {
         //     method: "POST",
         //     headers: {
@@ -110,10 +118,17 @@ const ItemForm = () => {
         //     })
 
         // });
-        setFinalVariant(oldArray => [...oldArray, Var])
-        setItem({...item, ['finalVariant']:finalVar})
-
-
+        
+        
+        
+        setAddList(
+            finalVar.map((obj)=>{
+            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.variant} / $ {obj.price}</button>)
+            }))
+     
+       console.log(Var)
+       console.log(finalVar)
+     
     }
     let clock, st, et;
     const showStart = (e) => {
@@ -161,7 +176,7 @@ const ItemForm = () => {
         setShowDays(!showDays);
         setList(
             finalAvail.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2">{obj.day} | {obj.startTime} - {obj.endTime}</button>)
+            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.day} | {obj.startTime} - {obj.endTime}</button>)
             }))
         //    <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
         
@@ -234,7 +249,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
-                                {set?<div>{list}</div>:null}
+                                {set?<div className="text-white w-full">{list}</div>:null}
                                 <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
                                     
                                     <li className="py-2">Select</li>
@@ -268,6 +283,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="variant" className="mb-2">Variant</label>
+                                {add?<div className="text-white w-full">{addList}</div>:null}
                                 <div className="bg-primary text-center py-2 text-white cursor-pointer" onClick={() => { setVariant(!variant) }}>+</div>
                             </div>
                             <div className="flex flex-col bg-white">

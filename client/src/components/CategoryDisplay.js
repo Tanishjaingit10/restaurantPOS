@@ -18,7 +18,7 @@ const CategoryDisplay = () => {
             setDisplayItem(json.map((option) => {
                 if(option.category===id)
                 {
-                    return(<div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
+                    return(<div className="rounded-2xl shadow-2xl m-4 w-44 font-roboto text-xl"><div className=" text-right">$ {option.price}</div><img src={option.image} className="image" alt="" id="img" className="img" /><div className="text-center">{option.foodItem}</div></div>)
                 }
             }))
 
@@ -96,13 +96,12 @@ const CategoryDisplay = () => {
                     </div>
                 </div>
             </div>
-            {show && <Popup
-                content={<>
-
+            {show && <div className="popup-box">
+                <div className="w-1/2 bg-white mx-auto flex flex-wrap">
                     {displayitem}
-                </>}
-                handleClose={showItems}
-            />}
+                </div>
+                
+            </div>}
         </div>
     )
 }

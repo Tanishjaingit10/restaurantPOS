@@ -15,7 +15,7 @@ const ItemDisplay = () => {
             json.map((option) => {
                 if(option.category===cat)
                 {
-                    return(<div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
+                    return(<div className="bg-gray-200 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
                 }
             })
 
