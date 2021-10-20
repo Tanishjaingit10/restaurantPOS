@@ -32,6 +32,7 @@ const ItemForm = () => {
     const [finalVar, setFinalVariant]=useState([]);
     const [addList, setAddList] = useState();
     const [add, setAdd] = useState(false);
+    const [popup, setPopup] = useState(false);
     let name,value;
 
     const imageHandler = (e) => {
@@ -190,6 +191,10 @@ const ItemForm = () => {
         setFinalAvail(oldArray => [...oldArray, availabilty])
         console.log(availabilty);
     }
+    const onMenu = (e) => {
+        history.push('/menu');
+    }
+
     const onsubmit = async (e) => {
 
         e.preventDefault();
@@ -207,12 +212,13 @@ const ItemForm = () => {
             })
 
         });
-        setIsError(!isError);
+        
         if (res.status === 201) {
             setMsg('Added Successfully');
+            setPopup(!popup);
         }
         else {
-
+            setIsError(!isError);
             let obj = signup.find((pop) => pop.id === res.status);
             setMsg(obj.title);
             console.log(msg);
@@ -359,6 +365,14 @@ const ItemForm = () => {
                     <button className="bg-green px-10 py-2" onClick={onsubmit}>Ok</button>
                 </>}
                 handleClose={onsubmit}
+            />}
+            {popup && <Popup
+                content={<>
+
+                    <p className='pb-4 font-bold text-green'>{msg}</p>
+                    <button className="bg-primary px-10 py-2" onClick={onMenu}>Ok</button>
+                </>}
+                handleClose={onMenu}
             />}
 
             {variant && <div className="popup-box">
