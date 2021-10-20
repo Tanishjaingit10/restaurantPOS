@@ -10,12 +10,11 @@ const food_item_template = new mongoose.Schema({
         type:String,
         
     },
-    // image:{
-    //     type:String,
-    //     required:true
-    // },
+    variant:{
+        type:[String]
+    },
     time:{
-        type:String,
+        type:String
     },
     description:{
         type:String,

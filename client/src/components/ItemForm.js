@@ -15,19 +15,21 @@ const ItemForm = () => {
     const [displayDays, setDisplayDays] = useState();
     const [showDays, setShowDays] = useState(false);
     const [showTime, setShowTime] = useState(false);
-    const [avail, setAvail]= useState(true)
+    const [avail, setAvail] = useState(true)
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "",time:"", description: "", price: 0, availability: "", discount: 0 })
+    const [item, setItem] = useState({ foodItem: "", category: "", variant: [], time: "", description: "", price: 0, availability: "", discount: 0 })
+    const [Var, setVar] = useState({ variant: "", description: "", price: "" })
     const [variant, setVariant] = useState(false);
-   
+    // const [fileName, setfileName]= useState("");
+
     // const [clock, setClock] = useState("");
     const openDrop = () => {
         setShow(!show);
     }
     let name, value;
     const handleInputs = (e) => {
-        
+
         e.preventDefault();
         name = e.target.name;
         value = e.target.value;
@@ -36,11 +38,11 @@ const ItemForm = () => {
         setItem({ ...item, [name]: value });
 
     }
-    const handleAvail = (e)=>{
+    const handleAvail = (e) => {
         e.preventDefault();
         name = e.target.name;
         value = e.target.value;
-        if(value==='Yes')
+        if (value === 'Yes')
             setAvail(true);
         else setAvail(false);
         setItem({ ...item, [name]: value });
@@ -60,12 +62,39 @@ const ItemForm = () => {
             })
 
     }
-    let clock,st,et;
+    const handleVar = (e) => {
+        name = e.target.name;
+        value = e.target.value;
+        console.log(name)
+        console.log(value)
+        setVar({ ...Var, [name]: value });
+        item.variant.push(value);
+        console.log(item.variant)
+    }
+    const addVariant = async (e) => {
+        e.preventDefault();
+        const {variant,description,price}= Var;
+        
+        setVariant(!variant)
+        const res = await fetch("/app/addVariant", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                variant,description,price
+            })
+
+        });
+
+
+    }
+    let clock, st, et;
     const showStart = (e) => {
         st = e;
     }
 
-    const showEnd = (e)=>{
+    const showEnd = (e) => {
         et = e;
     }
 
@@ -82,12 +111,12 @@ const ItemForm = () => {
     const openPop = () => {
         setIsOpen(!isOpen);
     }
-    const onsubmit =async (e)=>{
+    const onsubmit = async (e) => {
         e.preventDefault();
         const { foodItem, category, time, description, price, availability, discount } = item;
         console.log(item)
         console.log(availability)
-        const res= await fetch("/app/addItem", {
+        const res = await fetch("/app/addItem", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -101,15 +130,14 @@ const ItemForm = () => {
         if (res.status === 201) {
             setMsg('Added Successfully');
         }
-        else 
-        {
-                
-                let obj = signup.find((pop) => pop.id === res.status);
-                setMsg(obj.title);
-                console.log(msg);
-                
-    
-         }
+        else {
+
+            let obj = signup.find((pop) => pop.id === res.status);
+            setMsg(obj.title);
+            console.log(msg);
+
+
+        }
 
     }
 
@@ -123,7 +151,7 @@ const ItemForm = () => {
 
             </nav>
             <div className=" w-full p-4 px-8">
-                <form className=" w-full px-10 text-xl font-semibold font-roboto justify-items-center flex flex-col space-y-4">
+                <form className=" w-full px-10 text-xl font-semibold font-roboto justify-items-center flex flex-col space-y-4" method="POST" action="/additem" enctype="multipart/form-data">
                     <div className=" flex flex-col md:flex-row md:space-x-10 px-8 py-6">
                         <div className=" w-1/2 space-y-2 p-4">
                             <div className="flex flex-col bg-white">
@@ -153,6 +181,15 @@ const ItemForm = () => {
                                 </div>
                                 <div className="bg-gray-200 w-1/3 border-primary border-2">Item Picture</div>
                             </div>
+                            {/* <form method="POST" action="/upload-profile-pic" enctype="multipart/form-data"> */}
+                                {/* <div>
+                                    <label>Select your profile picture:</label>
+                                    <input type="file" name="profile_pic" />
+                                </div>
+                                <div>
+                                    <input type="submit" name="btn_upload_profile_pic" value="Upload" />
+                                </div> */}
+                            {/* </form> */}
                         </div>
                         <div className=" w-1/2 space-y-2 p-4">
                             <div className="flex flex-col bg-white">
@@ -161,7 +198,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="variant" className="mb-2">Variant</label>
-                                <div className="bg-primary text-center py-2 text-white"  onClick={()=>{setVariant(!variant)}}>+</div>
+                                <div className="bg-primary text-center py-2 text-white cursor-pointer" onClick={() => { setVariant(!variant) }}>+</div>
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="price" className="mb-2">Item Unit Price</label>
@@ -169,14 +206,14 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Current Availability</label>
-                                <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li><button className="py-2" name="availability" value="Yes" onClick={handleAvail}> {avail?'Yes':'No'}</button></li>
-                                    {open ? <li><button className="py-2" name="availability" value="No" onClick={handleAvail}>{avail?'No':'Yes'}</button></li> : null}
+                                <ul className="bg-primary text-center text-white" onClick={() => setOpen(!open)}><li><button className="py-2" name="availability" value="Yes" onClick={handleAvail}> {avail ? 'Yes' : 'No'}</button></li>
+                                    {open ? <li><button className="py-2" name="availability" value="No" onClick={handleAvail}>{avail ? 'No' : 'Yes'}</button></li> : null}
                                 </ul>
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Category</label>
-                                <ul className="bg-primary text-center py-2 text-white cursor-pointer" onClick={openCat}>{item.category? item.category:'Select Category'}
-                                {cat ? <>{displayCat}</> : null}
+                                <ul className="bg-primary text-center py-2 text-white cursor-pointer" onClick={openCat}>{item.category ? item.category : 'Select Category'}
+                                    {cat ? <>{displayCat}</> : null}
                                 </ul>
                             </div>
                         </div>
@@ -202,29 +239,29 @@ const ItemForm = () => {
             {showTime && <div className="popup-box">
                 <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-72 bg-primary">
                     <div className="flex flex-row py-2">
-                    <label className="text-white w-1/2 ml-2">Start Time:</label>
-                    <TimePicker
-                        time={st}
-                        theme="Bourbon"
-                        className="timepicker bg-primary text-white"
-                  
-                        onSet={(val) => {
-                            showStart(val.format12);
-                          }}
-                    />
+                        <label className="text-white w-1/2 ml-2">Start Time:</label>
+                        <TimePicker
+                            time={st}
+                            theme="Bourbon"
+                            className="timepicker bg-primary text-white"
+
+                            onSet={(val) => {
+                                showStart(val.format12);
+                            }}
+                        />
                     </div>
                     <div className="flex flex-row py-2">
-                    <label className="text-white w-1/2 ml-2">End Time:</label>
-                      <TimePicker
-                        time={et}
-                        theme="Bourbon"
-                        className="timepicker bg-primary text-white"
-                       
-                        onSet={(val) => {
-                            showEnd(val.format12);
-                          }}
-                    />
-                    </div> 
+                        <label className="text-white w-1/2 ml-2">End Time:</label>
+                        <TimePicker
+                            time={et}
+                            theme="Bourbon"
+                            className="timepicker bg-primary text-white"
+
+                            onSet={(val) => {
+                                showEnd(val.format12);
+                            }}
+                        />
+                    </div>
 
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={() => setShowTime(!showTime)}>Done</button>
                 </div>
@@ -237,29 +274,29 @@ const ItemForm = () => {
                 </>}
                 handleClose={onsubmit}
             />}
-            
+
             {variant && <div className="popup-box">
                 <div className="bg-white p-4 px-10 w-96 mx-auto font-roboto font-bold mt-40">
                     <form className="flex flex-col">
                         <div className="flex flex-col py-2">
-                        <label htmlFor="variant" className="mb-2">Variant</label>
-                                <input type="text" name="variant" className=" border-2 border-black py-2" />
+                            <label htmlFor="variant" className="mb-2">Variant</label>
+                            <input type="text" name="variant" value={Var.variant} onChange={handleVar} className=" border-2 border-black py-2" />
                         </div>
                         <div className="flex flex-col py-2">
-                        <label htmlFor="description" className="mb-2">Description</label>
-                                <input type="text" name="description" className=" border-2 border-black py-2" />
+                            <label htmlFor="description" className="mb-2">Description</label>
+                            <input type="text" name="description" value={Var.description} onChange={handleVar} className=" border-2 border-black py-2" />
                         </div>
                         <div className="flex flex-col py-2">
-                        <label htmlFor="price" className="mb-2">Price</label>
-                                <input type="text" name="price" className=" border-2 border-black py-2" />
+                            <label htmlFor="price" className="mb-2">Price</label>
+                            <input type="text" name="price" value={Var.price} onChange={handleVar} className=" border-2 border-black py-2" />
                         </div>
-                        <button className="bg-green p-2 text-white text-center font-bold px-6 my-4" onClick={()=>{setVariant(!variant)}}>Done</button>
+                        <button className="bg-green p-2 text-white text-center font-bold px-6 my-4" onClick={addVariant}>Done</button>
                     </form>
-                    </div>
-                </div>}
-           
+                </div>
+            </div>}
 
-          
+
+
         </div>
     )
 }

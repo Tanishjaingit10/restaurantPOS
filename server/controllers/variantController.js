@@ -14,11 +14,6 @@ const get_variant = async(request,response) =>{
 
 const add_variant =async (request, response, next)=>{
     const{variant,description,price}=request.body;
-    if(!code)
-    {
-        console.log(4);
-        return response.status(422).json({error:"Please fill out the required fields!"})
-    }
             
 
     await variant_template_copy.findOne({variant:variant}).then((variantExist)=>{

@@ -9,9 +9,6 @@ import Menu from './components/Menu';
 import CategoryForm from './components/CategoryForm';
 import ItemForm from './components/ItemForm';
 import CategoryDisplay from './components/CategoryDisplay';
-import EditCategory from './components/EditCategory';
-
-
 function App() {
   return (
     <div>
