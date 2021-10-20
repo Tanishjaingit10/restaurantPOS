@@ -12,7 +12,6 @@ const itemController = require('../controllers/itemController');
 const categoryController= require('../controllers/categoryController')
 const colourController = require('../controllers/colourController')
 const variantController = require('../controllers/variantController')
-const items = require('../controllers/items')
 // router.get('/', async (request, response)=>{
 //     response.json('hey!');
 // })
@@ -30,7 +29,6 @@ const items = require('../controllers/items')
 //         callback(null,file.originalname)
 //     }
 // })
-const upload = multer({dest: 'uploads/'});
 
 
 router.post('/signup', userController.add_user)
@@ -51,14 +49,13 @@ router.put('/updateColour/:id', colourController.update_colour)
 router.get('/category/:id', categoryController.get_category)
 router.put('/updateCategory/:id', categoryController.update_category)
 router.post('/addVariant', variantController.add_variant)
-// router.post('/upload', itemController.upload_image)
 
 router.post('/addItem',(req,res)=>{
     console.log(1)
     console.log(req.body)
     const item = new items_template_copy({ foodItem:req.body.foodItem, category:req.body.category,time:req.body.time,
         description:req.body.description, price:req.body.price, 
-        availability:req.body.availability, discount: req.body.discount})
+        availability:req.body.availability, discount: req.body.discount, image: req.body.image, variant: req.body.variant})
     console.log(item)
     console.log(item.foodItem)
     if(!item.foodItem||!item.category||!item.price||!item.availability)
@@ -78,32 +75,6 @@ router.post('/addItem',(req,res)=>{
 
 })
 
-
-
-router.post('/addImage',upload.single('image'), (req,res)=>{
-    console.log(req.file)
-    // console.log(req.body)
-    // const side = new side_template_copy({})
-    // side.save()
-    // .then(result => {
-    //   console.log(result);
-    //   res.status(201).json({
-    //     message: "Created product successfully",
-    //     createdProduct: {
-    //         request: {
-    //             type: 'GET',
-    //             url: "http://localhost:3000/products/" + result._id
-    //         }
-    //     }
-    //   });
-    // })
-    // .catch(err => {
-    //   console.log(err);
-    //   res.status(500).json({
-    //     error: err
-    //   });
-    // });
-});
 
 
 module.exports = router

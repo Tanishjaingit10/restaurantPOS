@@ -10,9 +10,7 @@ const food_item_template = new mongoose.Schema({
         type:String,
         
     },
-    variant:{
-        type:[String]
-    },
+
     time:{
         type:String
     },
@@ -29,6 +27,12 @@ const food_item_template = new mongoose.Schema({
     discount:{
         type:Number
     },
+    image: {
+        type:String
+    },
+    variant: {
+        type: [String]
+    }
 
 })
 

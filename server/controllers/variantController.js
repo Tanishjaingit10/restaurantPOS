@@ -19,7 +19,7 @@ const add_variant =async (request, response, next)=>{
     await variant_template_copy.findOne({variant:variant}).then((variantExist)=>{
         if(variantExist){
             console.log(1)
-            return response.status(402).json({error:"Item Already Exists!"})
+            return response.status(200).json({error:"Item Already Exists!"})
         }
         const col = new variant_template_copy({variant,description,price})
         col.save().then(()=>{

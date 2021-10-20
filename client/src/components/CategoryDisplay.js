@@ -1,11 +1,30 @@
 import React, { useState,useEffect } from 'react'
 import { useHistory, useParams} from 'react-router-dom';
 import colour from '../color';
+import Popup from './Popup';
 const CategoryDisplay = () => {
     const history = useHistory();
     const [cat, setCat]=useState({category:"", description:"",color:""})
     const {id}= useParams();
+    const [displayitem, setDisplayItem]=useState();
     console.log(id);
+    const [show, setShow] = useState(false);
+    const showItems= async (e)=>{
+        e.preventDefault();
+        setShow(!show)
+        const result = await fetch('/app/items').then((res) => res.json())
+        .then((json) => {
+            console.log(json)
+            setDisplayItem(json.map((option) => {
+                if(option.category===id)
+                {
+                    return(<div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
+                }
+            }))
+
+        })
+    
+    }
     const loadCategory = async ()=>{
         const result = await fetch(`/app/category/${id}`).then((res) => res.json())
         .then((json) => {
@@ -70,13 +89,20 @@ const CategoryDisplay = () => {
                 </div>
                 <div className=" w-full">
                     <div className=" flex flex-col w-96 justify-center mx-auto text-xl my-auto">
-                    <button className=" bg-primary text-white font-bold py-4 my-4"><a href="/categorydisplay">View Food Items in Category</a></button>
+                    <button className=" bg-primary text-white font-bold py-4 my-4" onClick={showItems}><a href={"/itemdisplay/"+id}>View Food Items in Category</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Add New Food Item</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href={"/editcategory/"+id}>Edit Category Details</a></button>
                     <button className="bg-gray-400 hover:bg-red text-white font-bold py-4  my-4" onClick={deleteCat}>Delete</button>
                     </div>
                 </div>
             </div>
+            {show && <Popup
+                content={<>
+
+                    {displayitem}
+                </>}
+                handleClose={showItems}
+            />}
         </div>
     )
 }

@@ -4,9 +4,11 @@ import days from '../days';
 import signup from '../popup';
 // import TimePicker from 'react-time-picker';
 import TimePicker from 'react-gradient-timepicker';
+import { useHistory, useParams } from 'react-router-dom';
 
 
 const ItemForm = () => {
+    const history = useHistory();
     const [img,setImg] = useState("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
     const [show, setShow] = useState(false);
     const [open, setOpen] = useState(false);
@@ -19,9 +21,10 @@ const ItemForm = () => {
     const [avail, setAvail] = useState(true)
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "", variant: [], time: "", description: "", price: 0, availability: "", discount: 0 })
+    const [item, setItem] = useState({ foodItem: "", category: "",  time: "", description: "", price: 0, availability: "", discount: 0, image: "", variant: [] })
     const [Var, setVar] = useState({ variant: "", description: "", price: "" })
     const [variant, setVariant] = useState(false);
+    const [check,setCheck]=useState([]);
     const [showAvailable, setShowAvailable] = useState(false);
     const [availabilty, setAvailability] = useState({ day: "", startTime: "", endTime: "" });
     const [list, setList] = useState();
@@ -36,6 +39,7 @@ const ItemForm = () => {
           }
         }
         reader.readAsDataURL(e.target.files[0])
+        console.log({img})
       };
    
    
@@ -43,17 +47,19 @@ const ItemForm = () => {
     const openDrop = () => {
         setShow(!show);
     }
+   
     
     const handleInputs = (e) => {
 
         e.preventDefault();
         name = e.target.name;
         value = e.target.value;
-        console.log(name)
-        console.log(value)
         setItem({ ...item, [name]: value });
+        
 
     }
+
+
     const handleAvail = (e) => {
         e.preventDefault();
         name = e.target.name;
@@ -84,8 +90,9 @@ const ItemForm = () => {
         console.log(name)
         console.log(value)
         setVar({ ...Var, [name]: value });
-        item.variant.push(value);
-        console.log(item.variant)
+        
+        // item.variant.push(value);
+        // console.log(item.variant)
     }
     const addVariant = async (e) => {
         e.preventDefault();
@@ -102,6 +109,7 @@ const ItemForm = () => {
             })
 
         });
+        setCheck(oldArray => [...oldArray, variant])
 
 
     }
@@ -157,8 +165,10 @@ const ItemForm = () => {
         console.log(availabilty);
     }
     const onsubmit = async (e) => {
+
         e.preventDefault();
-        const { foodItem, category, time, description, price, availability, discount } = item;
+        item.variant=check;
+        const { foodItem, category, time, description, price, availability, discount,image, variant } = item;
         console.log(item)
         console.log(availability)
         const res = await fetch("/app/addItem", {
@@ -167,7 +177,7 @@ const ItemForm = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                foodItem, category, time, description, price, availability, discount
+                foodItem, category, time, description, price, availability, discount, image, variant
             })
 
         });
@@ -213,7 +223,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
-                                <ul className="bg-primary text-center text-white" onClick={()=>{setShow(!show)}}><li className="py-2">Select</li>
+                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}><li className="py-2">Select</li>
                                     {show ? <><li className="py-2">Everyday/All Time</li>
                                         <li className="py-2" onClick={()=>{setIsOpen(!isOpen)}}>Select Day/Time</li></> : null}
                                 </ul>
@@ -223,7 +233,7 @@ const ItemForm = () => {
                                     <label className="mb-2">Image</label>
                                     <div className="border-gray-200 border-2 py-2"><input type="file" accept="image/*" name="image-upload" id="input" onChange={imageHandler} /></div>
                                     
-                                    <button className="bg-primary text-white py-2 font-bold">Upload</button>
+                                    <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>Upload</button>
                                 </div>
                                 <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" className="img" /></div>
                             </div>

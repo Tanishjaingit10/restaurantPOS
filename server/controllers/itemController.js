@@ -77,27 +77,8 @@ const remove_item = async (request, response, next) => {
 
 }
 
-const upload_image = async(request, response, next) => {
-    console.log(request)
-    console.log(1)
-    console.log(request.files)
-    if(request.files===null)
-    {
-        return response.status(400).json({message: 'Item could not be uploaded!'})
-    }
-    const file = request.files.file;
-    file.mv(`${__dirname}/client/public/uploads/${file.name}`,err=>{
-        if(err)
-        {
-            console.error(err)
-            return response.status(500).send(err);
-
-        }
-        response.json({fileName: file.name, filePath: `/uploads/${file.name}`});
-    })
-}
 
 
 module.exports = {
-     get_item, all_items, update_item, remove_item, upload_image
+     get_item, all_items, update_item, remove_item
 }

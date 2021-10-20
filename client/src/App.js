@@ -4,12 +4,11 @@ import Home from './components/Home'
 import {Route} from 'react-router-dom';
 import SignUp from './components/SignUp';
 import Login from './components/Login';
-import Landing from './components/Landing';
 import Menu from './components/Menu';
 import CategoryForm from './components/CategoryForm';
 import ItemForm from './components/ItemForm';
 import CategoryDisplay from './components/CategoryDisplay';
-import Image from './components/Image';
+import ItemDisplay from './components/ItemDisplay';
 
 function App() {
   return (
@@ -37,8 +36,8 @@ function App() {
       <Route exact path='/additem'>
         <ItemForm />
       </Route>
-      <Route exact path='/image'>
-        <Image />
+      <Route exact path='/itemdisplay/:id'>
+        <ItemDisplay />
       </Route>
     </div>
   )
