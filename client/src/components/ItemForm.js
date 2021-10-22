@@ -48,7 +48,7 @@ const ItemForm = () => {
       };
    
    
-    // const [clock, setClock] = useState("");
+    
     const openDrop = () => {
         setShow(!show);
     }
@@ -110,7 +110,7 @@ const ItemForm = () => {
         e.preventDefault();
         setAdd(true);
         setVariant(!variant)
-        setFinalVariant(oldArray => [...oldArray, Var])
+        
         newVariant();
         // const res = await fetch("/app/addVariant", {
         //     method: "POST",
