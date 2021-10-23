@@ -62,8 +62,7 @@ const ItemForm = () => {
         setItem({ ...item, [name]: value });
         if(name==='image')
             setImageStatus('Image Uploaded')
-        
-
+    
     }
 
 

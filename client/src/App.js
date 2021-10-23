@@ -9,6 +9,8 @@ import CategoryForm from './components/CategoryForm';
 import ItemForm from './components/ItemForm';
 import CategoryDisplay from './components/CategoryDisplay';
 import ItemDisplay from './components/ItemDisplay';
+import Tables from './components/Tables';
+import Pos from './components/Pos';
 
 function App() {
   return (
@@ -38,6 +40,12 @@ function App() {
       </Route>
       <Route exact path='/itemdisplay/:id'>
         <ItemDisplay />
+      </Route>
+      <Route exact path='/tables'>
+        <Tables />
+      </Route>
+      <Route exact path='/pos'>
+        <Pos />
       </Route>
     </div>
   )

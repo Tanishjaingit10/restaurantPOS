@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 
 const Navbar = () => {
 
-   const [show, setshow] = useState(false);
-
-   const openDrop = ()=> {
-	   setshow(!show);
-   }
+  
 
 
     return (
@@ -19,7 +15,7 @@ const Navbar = () => {
 						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="#"><i className="far fa-clock mr-2"></i><span>Counter Dashboard</span></a>
 						</li>
 						<li className="flex-1 md:flex-none md:mr-3 border-primary border-4 px-4 py-2 w-full text-center">
-						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="#"><i className="far fa-clone mr-2"></i><span>POS</span></a>
+						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="/pos"><i className="far fa-clone mr-2"></i><span>POS</span></a>
 						</li>
 						
 					</ul>

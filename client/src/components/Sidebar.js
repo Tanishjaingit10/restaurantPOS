@@ -25,7 +25,7 @@ const Sidebar = () => {
                                 </a>
                             </li>
                             <li className=" flex-1 border-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="#" className="block py-1 md:py-3 pl-1 align-middle  no-underline  ">
+                                <a href="/tables" className="block py-1 md:py-3 pl-1 align-middle  no-underline  ">
                                     <i className="fas fa-table pr-0 md:pr-3 "></i><span className="pb-1 md:pb-0 block md:inline-block">Tables</span>
                                 </a>
                             </li>
