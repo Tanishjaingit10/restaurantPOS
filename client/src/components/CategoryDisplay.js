@@ -9,6 +9,8 @@ const CategoryDisplay = () => {
     const [displayitem, setDisplayItem]=useState();
     console.log(id);
     const [show, setShow] = useState(false);
+    const [check, setCheck]=useState(false);
+    const [Open,setOpen]=useState(false);
     const showItems= async (e)=>{
         e.preventDefault();
         setShow(!show)
@@ -31,6 +33,9 @@ const CategoryDisplay = () => {
             console.log(json)
             setCat(json)
         })
+    }
+    const onMenu = async()=>{
+        history.push('/menu');
     }
     const deleteCat= async ()=>{
         let code;
@@ -56,7 +61,12 @@ const CategoryDisplay = () => {
         })
             .then((res) => res.json())
             .then((json) => console.log(json))
-        history.push('/menu')
+            setOpen(!Open)
+
+    }
+    const delCheck = async (e)=>{
+        e.preventDefault();
+        setCheck(!check);
 
     }
 
@@ -92,7 +102,7 @@ const CategoryDisplay = () => {
                     <button className=" bg-primary text-white font-bold py-4 my-4" onClick={showItems}><a href={"/itemdisplay/"+id}>View Food Items in Category</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Add New Food Item</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href={"/editcategory/"+id}>Edit Category Details</a></button>
-                    <button className="bg-gray-400 hover:bg-red text-white font-bold py-4  my-4" onClick={deleteCat}>Delete</button>
+                    <button className="bg-gray-400 hover:bg-red text-white font-bold py-4  my-4" onClick={delCheck}>Delete</button>
                     </div>
                 </div>
             </div>
@@ -102,6 +112,25 @@ const CategoryDisplay = () => {
                 </div>
                 
             </div>}
+            {check && <Popup
+                content={<>
+
+                    <p className='font-bold text-green'>Please confirm to delete the category?</p>
+                    <button className="mt-10 bg-primary px-10 py-2" onClick={deleteCat}>Confirm</button>
+                </>}
+                handleClose={delCheck}
+            />}
+            {Open && <Popup
+                content={<>
+
+                    <p className='font-bold text-green'>Deleted Successfully</p>
+                    <button className="mt-10 bg-primary px-10 py-2" onClick={onMenu}>Ok</button>
+                </>}
+                handleClose={onMenu}
+            />}
+            
+
+            
         </div>
     )
 }

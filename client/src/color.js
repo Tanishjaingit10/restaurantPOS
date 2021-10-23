@@ -23,6 +23,18 @@ let colour = [
         name: "purple",
         code: "#5B64AF",
         check: true
+    },
+    {
+        name: "orange",
+        code: "#F15A25",
+        check: true
+    },
+    {
+        name: 'yellow',
+        code:"#BE9A19",
+
+        check: true
+    
     }
     
 

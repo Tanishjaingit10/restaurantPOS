@@ -12,6 +12,7 @@ const itemController = require('../controllers/itemController');
 const categoryController= require('../controllers/categoryController')
 const colourController = require('../controllers/colourController')
 const variantController = require('../controllers/variantController')
+const tableController = require('../controllers/tableController')
 // router.get('/', async (request, response)=>{
 //     response.json('hey!');
 // })
@@ -49,6 +50,7 @@ router.put('/updateColour/:id', colourController.update_colour)
 router.get('/category/:id', categoryController.get_category)
 router.put('/updateCategory/:id', categoryController.update_category)
 router.post('/addVariant', variantController.add_variant)
+router.post('/addTable', tableController.add_table)
 
 router.post('/addItem',(req,res)=>{
     console.log(1)
