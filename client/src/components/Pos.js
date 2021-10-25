@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const Pos = () => {
     const [list, showList] = useState(false);
@@ -6,7 +6,39 @@ const Pos = () => {
     const [pop, showPop] = useState(false);
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
+    const [displayCategory, setDisplayCategory] = useState(false);
+    const [displayItems, setDisplayItems] = useState();
+    const showCategory = async (e) => {
+        await fetch(
+            "/app/category")
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                setDisplayCategory(json.map((option) => {
+                    return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
+                }))
+            })
 
+
+    }
+    const showItems= async (e)=>{
+
+        const result = await fetch('/app/items').then((res) => res.json())
+        .then((json) => {
+            console.log(json)
+            setDisplayItems(json.map((option) => {
+                if(option.category===e.target.value)
+                {
+                    return(<div className="bg-gray-200 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
+                }
+            }))
+
+        })
+    
+    }
+    useEffect(() => {
+        showCategory();
+    }, [])
     return (
         <div className="flex flex-row h-full">
             <div className="w-3/5 border-r-2 border-primary h-full shadow-2xl">
@@ -17,10 +49,10 @@ const Pos = () => {
                         <div className="flex flex-row w-full mx-24 relative">
                             <ul className=" text-white text-left" onClick={() => { showList(!list) }}>
                                 <li className="p-2">Order New<span><i class="fas fa-chevron-down ml-8"></i></span></li>
-                                {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2" onClick={()=>{showPop(!pop)}}>Take Away-Ordered Online</li>
+                                {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
                                     <li className="border-b-2 border-white py-2">Takeaway New</li>
                                     <li className="border-b-2 border-white py-2">Dine In New</li>
-                                    <li className="py-2" onClick={()=>{setOpen(!open)}}>Dine In Ordered Online</li></ul> : null}
+                                    <li className="py-2" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
                             </ul>
                             <div className="ml-10 text-center p-2" onClick={() => { showCust(!cust) }}>Walk In <span><i class="fas fa-chevron-down ml-8"></i></span>
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
@@ -43,10 +75,10 @@ const Pos = () => {
                     </div>
                     <div className="bg-gray-300 flex flex-col">
                         <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">
-                        <div className="relative py-4"><label className="">Subtotal</label><span className="absolute right-0">0.00</span></div>
-                        <div className="relative py-4"><label className="">Tax</label><span className="absolute right-0">0.00</span></div>
-                        <div className="relative py-4"><label className="">Discount</label><span className="absolute right-0">0.00</span></div>
-                        <div className="relative py-4 font-bold"><label className="">Total</label><span className="absolute right-0">$0.00</span></div>
+                            <div className="relative py-4"><label className="">Subtotal</label><span className="absolute right-0">0.00</span></div>
+                            <div className="relative py-4"><label className="">Tax</label><span className="absolute right-0">0.00</span></div>
+                            <div className="relative py-4"><label className="">Discount</label><span className="absolute right-0">0.00</span></div>
+                            <div className="relative py-4 font-bold"><label className="">Total</label><span className="absolute right-0">$0.00</span></div>
                         </div>
                         <div className="flex flex-row w-full text-white text-xl font-roboto">
                             <button className="bg-primary w-1/2 py-4 font-bold">All Payments</button>
@@ -65,28 +97,38 @@ const Pos = () => {
                     <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input type="type" className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
                     </div>
                 </nav>
-                Hello
+
+                <div className=" w-96 mx-auto font-roboto font-bold mt-52 bg-white">
+                    <div className="flex flex-wrap">
+
+                        {displayCategory}
+                    </div>
+                    <div>
+                        {displayItems}
+                    </div>
+                </div>
+
             </div>
 
             {pop && <div className="bg-primary absolute top-16 left-40 p-20">
-                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
-                     <label>Enter Order Id</label>
-                     <input type="text" className="py-2 border-black border-2"></input>
-                     <button className="bg-white text-primary py-2 font-bold">Search</button>
-                     </div>
+                <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
+                    <label>Enter Order Id</label>
+                    <input type="text" className="py-2 border-black border-2"></input>
+                    <button className="bg-white text-primary py-2 font-bold">Search</button>
+                </div>
             </div>}
 
             {open && <div className="bg-primary absolute top-16 left-40 p-20">
-                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
-                     <label>Enter Table No.</label>
+                <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
+                    <label>Enter Table No.</label>
                     <ul className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
-                        <li onClick={()=>{showTable(!Table)}} className="py-2 border-b-2 border-t-2 border-black">Table 1</li>
-                     {Table?  <><li className="py-2 border-b-2 border-black">Table 2</li>
-                        <li className="py-2 border-b-2 border-black">Table 2</li>
-                        <li className="py-2 border-b-2 border-black">Table 4</li></>:null}
+                        <li onClick={() => { showTable(!Table) }} className="py-2 border-b-2 border-t-2 border-black">Table 1</li>
+                        {Table ? <><li className="py-2 border-b-2 border-black">Table 2</li>
+                            <li className="py-2 border-b-2 border-black">Table 2</li>
+                            <li className="py-2 border-b-2 border-black">Table 4</li></> : null}
                     </ul>
-                     <button className="bg-white text-primary py-2 font-bold">Search</button>
-                     </div>
+                    <button className="bg-white text-primary py-2 font-bold">Search</button>
+                </div>
             </div>}
         </div>
     )
