@@ -28,7 +28,7 @@ const add_table =async (request, response, next)=>{
 }
 
 const get_table = async (request, response) => {
-    category_template_copy.findOne({ category: request.params.id }, (err, data) => {
+    table_template_copy.findOne({ category: request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)
                 response.json({ message: 'Item not found!' })
@@ -51,10 +51,20 @@ const all_table = async (request, response) => {
 
     });
 }
+const remove_table = async (request, response, next) => {
+    let itemId = request.params.id;
+    table_template_copy.findOneAndDelete({number:itemId}).then(() => {
+        response.json({ message: 'Table removed successfully!' })
+    })
+        .catch(error => {
+            response.json({ message: 'Table could not be removed!' })
+        })
+
+}
 
 
 module.exports = {
-    add_table,get_table,all_table
+    add_table,get_table,all_table, remove_table
 }
 
 

@@ -124,7 +124,7 @@ const ItemForm = () => {
         console.log(Var)
         setFinalVariant(oldArray => [...oldArray, Var])
 
-        setItem({...item, ['finalVariant']:finalVar})
+        
 
 
         
@@ -206,6 +206,7 @@ const ItemForm = () => {
     const onsubmit = async (e) => {
 
         e.preventDefault();
+        setItem({...item, ['finalVariant']:finalVar})
         const { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
         console.log(item)
         console.log(availability)

@@ -3,6 +3,13 @@ import React, { useState, useEffect } from 'react';
 const Tables = () => {
     const [displayTable, setDisplayTable] = useState();
     let code;
+    const deleteTable = async (e)=>{
+        await fetch(`/app/removeTable/${e.target.value}`,{
+            method: "DELETE",
+        }).then((res) => res.json())
+        .then((json)=>{console.log(json)})
+
+    }
     const loadTables = async ()=>{
         await fetch(
             "/app/table")
@@ -21,7 +28,7 @@ const Tables = () => {
                             <div className="w-1/2 bg-gray-400 "><img src={obj.image} className="w-full h-32"/></div>
                             <div className="w-1/2 bg-pink flex flex-col text-xl font-roboto">
                                 <button className="w-full bg-lightprimary text-primary py-2 font-bold h-1/2">Reorder</button>
-                                <button className="w-full bg-primary text-white py-2 font-bold h-1/2">Remove</button>
+                                <button className="w-full bg-primary text-white py-2 font-bold h-1/2" value={obj.number} onClick={deleteTable}>Remove</button>
                             </div>
                         </div>
                         <div className="flex flex-col text-white p-4 text-lg font-roboto" style={{backgroundColor:code}}>
