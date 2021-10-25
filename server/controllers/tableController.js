@@ -27,9 +27,34 @@ const add_table =async (request, response, next)=>{
     });
 }
 
+const get_table = async (request, response) => {
+    category_template_copy.findOne({ category: request.params.id }, (err, data) => {
+        if (!err) {
+            if (data === null)
+                response.json({ message: 'Item not found!' })
+            else response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
+
+    });
+}
+
+const all_table = async (request, response) => {
+    table_template_copy.find({}, (err, data) => {
+        if (!err)
+            response.send(data);
+        else
+            console.log(err);
+
+    });
+}
+
 
 module.exports = {
-    add_table
+    add_table,get_table,all_table
 }
 
 

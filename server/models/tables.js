@@ -13,6 +13,9 @@ const table_template = new mongoose.Schema({
     },
     image:{
         type:String,
+    },
+    status:{
+        type:String
     }
 })
 

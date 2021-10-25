@@ -51,6 +51,7 @@ router.get('/category/:id', categoryController.get_category)
 router.put('/updateCategory/:id', categoryController.update_category)
 router.post('/addVariant', variantController.add_variant)
 router.post('/addTable', tableController.add_table)
+router.get('/table', tableController.all_table)
 
 router.post('/addItem',(req,res)=>{
     console.log(1)

@@ -11,6 +11,7 @@ import CategoryDisplay from './components/CategoryDisplay';
 import ItemDisplay from './components/ItemDisplay';
 import Tables from './components/Tables';
 import Pos from './components/Pos';
+import TableForm from './components/TableForm';
 
 function App() {
   return (
@@ -46,6 +47,9 @@ function App() {
       </Route>
       <Route exact path='/pos'>
         <Pos />
+      </Route>
+      <Route exact path='/addTable'>
+        <TableForm />
       </Route>
     </div>
   )
