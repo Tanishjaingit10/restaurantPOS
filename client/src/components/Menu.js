@@ -41,8 +41,8 @@ const Menu = () => {
             </div>
             
             {show && <div className="popup-box">
-                <div className=" w-96 mx-auto font-roboto font-bold mt-52 bg-white">
-                    <div className="text-gray-400 text-right mr-4" onClick={()=>{setShow(!show)}}>x</div>
+                <div className=" w-96 mx-auto font-roboto font-bold mt-52 bg-white relative">
+                    <div className="text-gray-400 text-center cursor-pointer rounded-full w-8 h-8 absolute -top-2 -right-4 bg-white" onClick={()=>{setShow(!show)}}><span className="text-lg">x</span></div>
                     <div className="flex flex-wrap">
                     {displayCategory}
                </div>

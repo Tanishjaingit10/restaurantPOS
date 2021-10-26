@@ -109,7 +109,7 @@ const ItemForm = () => {
     useEffect(() => {
         setAddList(
             finalVar.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.variant} / $ {obj.price}</button>)
+            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
             }))
     }, [finalVar])
 
@@ -189,7 +189,7 @@ const ItemForm = () => {
         setShowDays(!showDays);
         setList(
             finalAvail.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.day} | {obj.startTime} - {obj.endTime}</button>)
+            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.day} | {obj.startTime} - {obj.endTime}</a><span className="absolute right-4">x</span></button>)
             }))
         //    <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
         
@@ -274,7 +274,7 @@ const ItemForm = () => {
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
                                 {set?<div className="text-white w-full">{list}</div>:null}
-                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white">Everyday / All Time</button>:null}
+                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white relative"><a>Everyday / All Time</a><span className="absolute right-4">x</span></button>:null}
                                 <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
                                     
                                     <li className="py-2">Select</li>

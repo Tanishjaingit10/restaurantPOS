@@ -16,7 +16,7 @@ const Pos = () => {
             .then((json) => {
                 console.log(json)
                 setDisplayCategory(json.map((option) => {
-                    return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
+                    return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 m-2 text-white" onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
                 }))
             })
 
@@ -106,11 +106,11 @@ const Pos = () => {
                     </div>
                 </nav>
 
-                <div className="w-full p-2 mx-auto font-roboto font-bold mt-4 bg-white pb-4">
-                    <div className="flex flex-wrap justify-evenly px-6">
+                <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
+                    <div className="flex flex-wrap justify-evenly px-6 mt-4">
                         {displayCategory}
                     </div>
-                    <div className="flex flex-wrap justify-evenly mt-4">
+                    <div className="flex flex-wrap justify-evenly mt-4 h-full">
                         {displayItems}
                     </div>
                 </div>
