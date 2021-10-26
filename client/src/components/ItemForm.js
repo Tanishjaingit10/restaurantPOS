@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popup from './Popup';
 import days from '../days';
 import signup from '../popup';
@@ -105,6 +105,13 @@ const ItemForm = () => {
         setItem({...item, ['finalVariant']:finalVar})
     }
 
+    useEffect(() => {
+        setAddList(
+            finalVar.map((obj)=>{
+            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.variant} / $ {obj.price}</button>)
+            }))
+    }, [finalVar])
+
     const addVariant = async (e) => {
         e.preventDefault();
         setAdd(true);
@@ -130,10 +137,6 @@ const ItemForm = () => {
         
         
         
-        setAddList(
-            finalVar.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.variant} / $ {obj.price}</button>)
-            }))
      
        console.log(Var)
        console.log(finalVar)
