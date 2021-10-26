@@ -1,14 +1,28 @@
 import React, { useState, useEffect } from 'react';
-
+import Popup from './Popup';
+import { useHistory} from 'react-router-dom';
 const Tables = () => {
+    const history = useHistory();
     const [displayTable, setDisplayTable] = useState();
+    const [check, setCheck]=useState(false);
+    const [Open,setOpen]=useState(false);
+    
     let code;
     const deleteTable = async (e)=>{
         await fetch(`/app/removeTable/${e.target.value}`,{
             method: "DELETE",
         }).then((res) => res.json())
         .then((json)=>{console.log(json)})
+        setOpen(!Open)
 
+    }
+    const delCheck = async (e)=>{
+        e.preventDefault();
+        setCheck(!check);
+
+    }
+    const onTable = async()=>{
+        history.push('/tables');
     }
     const loadTables = async ()=>{
         await fetch(
@@ -28,7 +42,7 @@ const Tables = () => {
                             <div className="w-1/2 bg-gray-400 "><img src={obj.image} className="w-full h-32"/></div>
                             <div className="w-1/2 bg-pink flex flex-col text-xl font-roboto">
                                 <button className="w-full bg-lightprimary text-primary py-2 font-bold h-1/2">Reorder</button>
-                                <button className="w-full bg-primary text-white py-2 font-bold h-1/2" value={obj.number} onClick={deleteTable}>Remove</button>
+                                <button className="w-full bg-primary text-white py-2 font-bold h-1/2" value={obj.number} onClick={delCheck}>Remove</button>
                             </div>
                         </div>
                         <div className="flex flex-col text-white p-4 text-lg font-roboto" style={{backgroundColor:code}}>
@@ -104,6 +118,22 @@ const Tables = () => {
                 </div>
                 <button className="bg-green w-80 mx-auto py-2 text-white font-roboto font-bold text-lg"><a href="/addTable">Add Table</a></button>
             </div>
+            {check && <Popup
+                content={<>
+
+                    <p className='font-bold text-green'>Please confirm to delete the category?</p>
+                    <button className="mt-10 bg-primary px-10 py-2" onClick={deleteTable}>Confirm</button>
+                </>}
+                handleClose={delCheck}
+            />}
+            {Open && <Popup
+                content={<>
+
+                    <p className='font-bold text-green'>Deleted Successfully</p>
+                    <button className="mt-10 bg-primary px-10 py-2" onClick={onTable}>Ok</button>
+                </>}
+                handleClose={onTable}
+            />}
           
           
             

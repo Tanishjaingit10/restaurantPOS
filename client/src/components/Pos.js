@@ -36,6 +36,7 @@ const Pos = () => {
         })
     
     }
+    
     useEffect(() => {
         showCategory();
     }, [])
