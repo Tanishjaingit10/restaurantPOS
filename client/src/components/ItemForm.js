@@ -211,7 +211,12 @@ const ItemForm = () => {
 
         e.preventDefault();
         setItem({...item, ['finalVariant']:finalVar})
-        const { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
+        let { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
+        if(allTime){finalAvailable = [{
+            "day": "everyday",
+            "startTime": "12:00 AM",
+            "endTime": "11:59 PM"
+        }]}
         console.log(item)
         console.log(availability)
         console.log(finalVariant)
