@@ -34,6 +34,7 @@ const ItemForm = () => {
     const [addList, setAddList] = useState();
     const [add, setAdd] = useState(false);
     const [popup, setPopup] = useState(false);
+    const [allTime, showAllTime] = useState(false);
     let name,value;
 
     const imageHandler = (e) => {
@@ -268,10 +269,11 @@ const ItemForm = () => {
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
                                 {set?<div className="text-white w-full">{list}</div>:null}
+                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white">Everyday / All Time</button>:null}
                                 <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
                                     
                                     <li className="py-2">Select</li>
-                                    {show ? <><li className="py-2">Everyday/All Time</li>
+                                    {show ? <><li className="py-2" onClick={()=>{showAllTime(!allTime)}}>Everyday/All Time</li>
                                         <li className="py-2" onClick={()=>{setIsOpen(!isOpen)}}>Select Day/Time</li></> : null}
                                 </ul>
                             </div>
