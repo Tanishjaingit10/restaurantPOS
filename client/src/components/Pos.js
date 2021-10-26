@@ -8,6 +8,7 @@ const Pos = () => {
     const [Table, showTable] = useState(false);
     const [displayCategory, setDisplayCategory] = useState(false);
     const [displayItems, setDisplayItems] = useState();
+    const [order, showOrder] = useState(false);
     const showCategory = async (e) => {
         await fetch(
             "/app/category")
@@ -15,7 +16,7 @@ const Pos = () => {
             .then((json) => {
                 console.log(json)
                 setDisplayCategory(json.map((option) => {
-                    return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
+                    return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 m-2 text-white" onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
                 }))
             })
 
@@ -29,14 +30,20 @@ const Pos = () => {
             setDisplayItems(json.map((option) => {
                 if(option.category===e.target.value)
                 {
-                    return(<div className="bg-gray-200 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
+                    return(<div className="bg-white m-2 relative rounded-xl shadow-2xl w-40" onClick={setOrder}><img src={option.image} className="w-40 object-fill" alt="" />
+                    <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span>
+                    <div className="text-center bg-white py-2">{option.foodItem}</div></div>)
                 }
             }))
 
         })
     
     }
-    
+
+    const setOrder = ()=> {
+         showOrder(!order);
+    }
+
     useEffect(() => {
         showCategory();
     }, [])
@@ -99,15 +106,28 @@ const Pos = () => {
                     </div>
                 </nav>
 
-                <div className=" w-96 mx-auto font-roboto font-bold mt-52 bg-white">
-                    <div className="flex flex-wrap">
-
+                <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
+                    <div className="flex flex-wrap justify-evenly px-6 mt-4">
                         {displayCategory}
                     </div>
-                    <div>
+                    <div className="flex flex-wrap justify-evenly mt-4 h-full">
                         {displayItems}
                     </div>
                 </div>
+                {order && <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
+                      <div className="w-72 mt-6 bg-gray-500 mx-auto h-36">Image Picture</div>
+                      <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity and Variant</h1>
+                      <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
+                            <button className="bg-primary text-white py-2 font-bold">Variant</button>
+                            <button className="bg-green text-center text-white py-2 font-bold">+</button>
+                      </div>
+                      <div className="bg-gray-300 w-full relative text-gray-600 px-6 py-8 text-xl font-bold font-roboto">
+                          <label>Subtotal</label><span className="absolute right-4">$0.00</span>
+                          </div>
+                          <div className="px-8 py-4">
+                              <button className="bg-green text-white text-center text-lg font-bold w-full py-2">Add to Cart</button>
+                          </div>
+                    </div>}
 
             </div>
 

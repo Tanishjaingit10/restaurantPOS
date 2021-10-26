@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Popup from './Popup';
 import days from '../days';
 import signup from '../popup';
@@ -34,6 +34,7 @@ const ItemForm = () => {
     const [addList, setAddList] = useState();
     const [add, setAdd] = useState(false);
     const [popup, setPopup] = useState(false);
+    const [allTime, showAllTime] = useState(false);
     let name,value;
 
     const imageHandler = (e) => {
@@ -105,6 +106,13 @@ const ItemForm = () => {
         setItem({...item, ['finalVariant']:finalVar})
     }
 
+    useEffect(() => {
+        setAddList(
+            finalVar.map((obj)=>{
+            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
+            }))
+    }, [finalVar])
+
     const addVariant = async (e) => {
         e.preventDefault();
         setAdd(true);
@@ -130,10 +138,6 @@ const ItemForm = () => {
         
         
         
-        setAddList(
-            finalVar.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.variant} / $ {obj.price}</button>)
-            }))
      
        console.log(Var)
        console.log(finalVar)
@@ -185,7 +189,7 @@ const ItemForm = () => {
         setShowDays(!showDays);
         setList(
             finalAvail.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2">{obj.day} | {obj.startTime} - {obj.endTime}</button>)
+            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.day} | {obj.startTime} - {obj.endTime}</a><span className="absolute right-4">x</span></button>)
             }))
         //    <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
         
@@ -207,7 +211,12 @@ const ItemForm = () => {
 
         e.preventDefault();
         setItem({...item, ['finalVariant']:finalVar})
-        const { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
+        let { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
+        if(allTime){finalAvailable = [{
+            "day": "everyday",
+            "startTime": "12:00 AM",
+            "endTime": "11:59 PM"
+        }]}
         console.log(item)
         console.log(availability)
         console.log(finalVariant)
@@ -265,10 +274,11 @@ const ItemForm = () => {
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
                                 {set?<div className="text-white w-full">{list}</div>:null}
+                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white relative"><a>Everyday / All Time</a><span className="absolute right-4">x</span></button>:null}
                                 <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
                                     
                                     <li className="py-2">Select</li>
-                                    {show ? <><li className="py-2">Everyday/All Time</li>
+                                    {show ? <><li className="py-2" onClick={()=>{showAllTime(!allTime)}}>Everyday/All Time</li>
                                         <li className="py-2" onClick={()=>{setIsOpen(!isOpen)}}>Select Day/Time</li></> : null}
                                 </ul>
                             </div>

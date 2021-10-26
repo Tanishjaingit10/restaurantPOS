@@ -20,7 +20,12 @@ const CategoryDisplay = () => {
             setDisplayItem(json.map((option) => {
                 if(option.category===id)
                 {
-                    return(<div className="rounded-2xl shadow-2xl m-4 w-44 font-roboto text-xl"><div className=" text-right">$ {option.price}</div><img src={option.image} className="image" alt="" id="img" className="img" /><div className="text-center">{option.foodItem}</div></div>)
+                     return(<div className="relative rounded-2xl shadow-2xl m-4 w-44 font-roboto text-xl"><img src={option.image} alt="" id="img" />
+                     <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span><div className="text-center py-2">{option.foodItem}</div></div>
+                    //  <div className="bg-white m-2 relative rounded-xl shadow-2xl w-52"><img src={option.image} className="w-40 object-fill" alt="" />
+                    // <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span>
+                    // <div className="text-center bg-white py-2">{option.foodItem}</div></div>
+                     )
                 }
             }))
 
@@ -107,7 +112,10 @@ const CategoryDisplay = () => {
                 </div>
             </div>
             {show && <div className="popup-box">
-                <div className="w-1/2 bg-white mx-auto flex flex-wrap">
+                <div className="w-1/2 bg-white mx-auto flex flex-wrap justify-evenly mt-10">
+                    <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white text-center cursor-pointer" onClick={()=>{setShow(!show)}} >
+                    <span className=" text-gray-500 text-center object-center text-xl">x</span>
+                    </div>
                     {displayitem}
                 </div>
                 
