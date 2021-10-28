@@ -98,15 +98,12 @@ const ItemForm = () => {
         console.log(value)
         setVar({ ...Var, [name]: value });
        
-        // item.variant.push(value);
-        // console.log(item.variant)
     }
 
-    // const newVariant = ()=>{
-    //     setItem({...item, ['finalVariant']:finalVar})
-    // }
 
     useEffect(() => {
+        console.log(finalVar)
+        setItem({...item, ['finalVariant']:finalVar})
         setAddList(
             finalVar.map((obj)=>{
             return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
@@ -118,10 +115,7 @@ const ItemForm = () => {
         setAdd(true);
         setVariant(!variant)
         
-        // newVariant();
-        console.log(Var)
         setFinalVariant(oldArray => [...oldArray, Var])
-       console.log(Var)
        console.log(finalVar)
      
     }
@@ -188,7 +182,8 @@ const ItemForm = () => {
     const onsubmit = async (e) => {
 
         e.preventDefault();
-        setItem({...item, ['finalVariant']:finalVar})
+        console.log(finalVar)
+        // setItem({...item, ['finalVariant']:finalVar})
         let { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
         if(allTime){finalAvailable = [{
             "day": "everyday",
@@ -196,8 +191,7 @@ const ItemForm = () => {
             "endTime": "11:59 PM"
         }]}
         console.log(item)
-        console.log(availability)
-        console.log(finalVariant)
+        
         const res = await fetch("/app/addItem", {
             method: "POST",
             headers: {
