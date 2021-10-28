@@ -1,6 +1,6 @@
 const table_template_copy = require('../models/tables')
 const add_table =async (request, response, next)=>{
-    const{number,capacity,location,image}=request.body;
+    const{number,capacity,location,image,status}=request.body;
     if(!number||!capacity)
     {
         console.log(4);
@@ -13,7 +13,7 @@ const add_table =async (request, response, next)=>{
             console.log(1)
             return response.status(402).json({error:"Item Already Exists!"})
         }
-        const table = new table_template_copy({number,capacity,location,image})
+        const table = new table_template_copy({number,capacity,location,image,status})
         table.save().then(()=>{
             console.log(2)
             response.status(201).json({message: "Item added successfully!"})

@@ -29,7 +29,7 @@ const TableForm = () => {
         name = e.target.name;
         value = e.target.value;
         setTable({ ...Table, [name]: value });
-        setTable({ ...Table, ["status"]: Table.status });
+    
         if (name === 'image')
             setImageStatus('Image Uploaded')
 

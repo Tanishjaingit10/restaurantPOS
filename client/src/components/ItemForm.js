@@ -102,9 +102,9 @@ const ItemForm = () => {
         // console.log(item.variant)
     }
 
-    const newVariant = ()=>{
-        setItem({...item, ['finalVariant']:finalVar})
-    }
+    // const newVariant = ()=>{
+    //     setItem({...item, ['finalVariant']:finalVar})
+    // }
 
     useEffect(() => {
         setAddList(
@@ -118,32 +118,14 @@ const ItemForm = () => {
         setAdd(true);
         setVariant(!variant)
         
-        newVariant();
-        // const res = await fetch("/app/addVariant", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify({
-        //         variant,description,price
-        //     })
-
-        // });
+        // newVariant();
         console.log(Var)
         setFinalVariant(oldArray => [...oldArray, Var])
-
-        
-
-
-        
-        
-        
-     
        console.log(Var)
        console.log(finalVar)
      
     }
-    let clock, st, et;
+    let st, et;
     const showStart = (e) => {
         st = e;
         name = "startTime";
@@ -191,10 +173,6 @@ const ItemForm = () => {
             finalAvail.map((obj)=>{
             return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.day} | {obj.startTime} - {obj.endTime}</a><span className="absolute right-4">x</span></button>)
             }))
-        //    <button className="bg-primary px-10 py-2">{availabilty.day} | {availabilty.startTime} - {availabilty.endTime}</button>
-        
-
-       
     }
 
     const dayTime = (e)=> {

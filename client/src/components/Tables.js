@@ -1,144 +1,154 @@
-import React, { useState, useEffect } from 'react';
-import Popup from './Popup';
-import { useHistory} from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Popup from "./Popup";
+
 const Tables = () => {
-    const history = useHistory();
-    const [displayTable, setDisplayTable] = useState();
-    const [check, setCheck]=useState(false);
-    const [Open,setOpen]=useState(false);
-    
-    let code;
-    const deleteTable = async (e)=>{
-        await fetch(`/app/removeTable/${e.target.value}`,{
-            method: "DELETE",
-        }).then((res) => res.json())
-        .then((json)=>{console.log(json)})
-        setOpen(!Open)
+  const [displayTable, setDisplayTable] = useState();
+  const [check, setCheck] = useState(false);
+  const [Open, setOpen] = useState(false);
+  const [id, setId] = useState();
 
-    }
-    const delCheck = async (e)=>{
-        e.preventDefault();
-        setCheck(!check);
+  let code;
+  const deleteTable = async () => {
+    await fetch(`/app/removeTable/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+      });
+    setOpen(!Open);
+    setCheck(!check);
+    loadTables();
+  };
 
-    }
-    const onTable = async()=>{
-        history.push('/tables');
-    }
-    const loadTables = async ()=>{
-        await fetch(
-            "/app/table")
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json) 
-                setDisplayTable(json.map((obj,index) => {
-                    if(index%3==0)
-                        code = "#BE2D19";
-                    else if(index%3==1)
-                       code = "#1DBE19";
-                    else
-                       code = "#e58f55";
-                      return (  <div className="flex flex-col w-96 mx-4">
-                        <div className="flex flex-row">
-                            <div className="w-1/2 bg-gray-400 "><img src={obj.image} className="w-full h-32"/></div>
-                            <div className="w-1/2 bg-pink flex flex-col text-xl font-roboto">
-                                <button className="w-full bg-lightprimary text-primary py-2 font-bold h-1/2">Reorder</button>
-                                <button className="w-full bg-primary text-white py-2 font-bold h-1/2" value={obj.number} onClick={delCheck}>Remove</button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col text-white p-4 text-lg font-roboto" style={{backgroundColor:code}}>
-                            <div className="relative font-semibold"><label>Table : {obj.number}</label><span className="absolute right-0">{obj.status}</span></div>
-                            <div className="relative font-semibold"><label>Person : {obj.capacity}</label><span className="absolute right-0">{obj.location}</span></div>
-                        </div>
-                        <div className="relative rounded-full -top-6 bg-white w-10 h-10 mx-auto shadow-lg text-red text-center text-xl" style={{color:code}}><i className="fas fa-chevron-down mt-2"></i></div>
-                    </div>
-                       ) 
-                })  )
-            })
-    }
+  const delCheck = (e) => {
+    setId(e.target.value);
+    setCheck(!check);
+  };
 
-    useEffect(() => {
-        loadTables();
-    }, [])
-   
-    return (
-        <div>
-            <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
-                <div className="flex flex-wrap items-center">
-                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
-                    <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">Tables</div>
+  const loadTables = async () => {
+    await fetch("/app/table")
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        setDisplayTable(
+          json.map((obj, index) => {
+            if (index % 3 == 0) code = "#BE2D19";
+            else if (index % 3 == 1) code = "#1DBE19";
+            else code = "#e58f55";
+            return (
+              <div className="flex flex-col w-96 mx-4">
+                <div className="flex flex-row">
+                  <div className="w-1/2 bg-gray-400 ">
+                    <img src={obj.image} className="w-full h-32" />
+                  </div>
+                  <div className="w-1/2 bg-pink flex flex-col text-xl font-roboto">
+                    <button className="w-full bg-lightprimary text-primary py-2 font-bold h-1/2">
+                      Reorder
+                    </button>
+                    <button
+                      className="w-full bg-primary text-white py-2 font-bold h-1/2"
+                      value={obj.number}
+                      onClick={delCheck}
+                    >
+                      Remove
+                    </button>
+                  </div>
                 </div>
-            </nav>
-            <div className="flex flex-col">
-                <div className="flex flex-wrap p-8 w-full justify-evenly">
-                    {displayTable}
-                    {/* <div className="flex flex-col w-96 mx-4">
-                        <div className="flex flex-row bg-primary">
-                            <div className="w-1/2 bg-gray-400">Hello</div>
-                            <div className="w-1/2 bg-pink flex flex-col text-lg font-roboto">
-                                <button className="w-full bg-lightprimary text-primary py-2 font-bold">Reorder</button>
-                                <button className="w-full bg-primary text-white py-2 font-bold">Remove</button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col bg-red text-white p-4 text-lg font-roboto">
-                            <div className="relative font-semibold"><label>Table : 1</label><span className="absolute right-0">Occupied</span></div>
-                            <div className="relative font-semibold"><label>Person : 4</label><span className="absolute right-0">East Wing</span></div>
-                        </div>
-                        <div className="relative rounded-full -top-4 bg-white w-8 h-8 mx-auto shadow-lg text-red text-center"><i className="fas fa-chevron-down mt-2"></i></div>
-                    </div> */}
-                    {/* <div className="flex flex-col w-96 mx-4">
-                        <div className="flex flex-row bg-primary">
-                            <div className="w-1/2 bg-gray-400">Hello</div>
-                            <div className="w-1/2 bg-pink flex flex-col text-lg font-roboto">
-                                <button className="w-full bg-lightprimary text-primary py-2 font-bold">Reorder</button>
-                                <button className="w-full bg-primary text-white py-2 font-bold">Remove</button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col bg-red text-white p-4 text-lg font-roboto">
-                            <div className="relative font-semibold"><label>Table : 1</label><span className="absolute right-0">Occupied</span></div>
-                            <div className="relative font-semibold"><label>Person : 4</label><span className="absolute right-0">East Wing</span></div>
-                        </div>
-                        <div className="relative rounded-full -top-4 bg-white w-8 h-8 mx-auto shadow-lg text-red text-center"><i className="fas fa-chevron-down mt-2"></i></div>
-                    </div>
-                    <div className="flex flex-col w-96 mx-4">
-                        <div className="flex flex-row bg-primary">
-                            <div className="w-1/2 bg-gray-400">Hello</div>
-                            <div className="w-1/2 bg-pink flex flex-col text-lg font-roboto">
-                                <button className="w-full bg-lightprimary text-primary py-2 font-bold">Reorder</button>
-                                <button className="w-full bg-primary text-white py-2 font-bold">Remove</button>
-                            </div>
-                        </div>
-                        <div className="flex flex-col bg-red text-white p-4 text-lg font-roboto">
-                            <div className="relative font-semibold"><label>Table : 1</label><span className="absolute right-0">Occupied</span></div>
-                            <div className="relative font-semibold"><label>Person : 4</label><span className="absolute right-0">East Wing</span></div>
-                        </div>
-                        <div className="relative rounded-full -top-4 bg-white w-8 h-8 mx-auto shadow-lg text-red text-center"><i className="fas fa-chevron-down mt-2"></i></div>
-                    </div> */}
-                   
-                    
+                <div
+                  className="flex flex-col text-white p-4 text-lg font-roboto"
+                  style={{ backgroundColor: code }}
+                >
+                  <div className="relative font-semibold">
+                    <label>Table : {obj.number}</label>
+                    <span className="absolute right-0">{obj.status}</span>
+                  </div>
+                  <div className="relative font-semibold">
+                    <label>Person : {obj.capacity}</label>
+                    <span className="absolute right-0">{obj.location}</span>
+                  </div>
                 </div>
-                <button className="bg-green w-80 mx-auto py-2 text-white font-roboto font-bold text-lg"><a href="/addTable">Add Table</a></button>
-            </div>
-            {check && <Popup
-                content={<>
+                <div
+                  className="relative rounded-full -top-6 bg-white w-10 h-10 mx-auto shadow-lg text-red text-center text-xl"
+                  style={{ color: code }}
+                >
+                  <i className="fas fa-chevron-down mt-2"></i>
+                </div>
+              </div>
+            );
+          })
+        );
+      });
+  };
 
-                    <p className='font-bold text-green'>Please confirm to delete the category?</p>
-                    <button className="mt-10 bg-primary px-10 py-2" onClick={deleteTable}>Confirm</button>
-                </>}
-                handleClose={delCheck}
-            />}
-            {Open && <Popup
-                content={<>
+  useEffect(() => {
+    loadTables();
+  }, []);
 
-                    <p className='font-bold text-green'>Deleted Successfully</p>
-                    <button className="mt-10 bg-primary px-10 py-2" onClick={onTable}>Ok</button>
-                </>}
-                handleClose={onTable}
-            />}
-          
-          
-            
+  return (
+    <div>
+      <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
+        <div className="flex flex-wrap items-center">
+          <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4">
+            <a href="/home">
+              <i className="fas fa-home font-semibold"></i>
+            </a>
+          </div>
+          <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">
+            Tables
+          </div>
         </div>
-    )
-}
+      </nav>
+      <div className="flex flex-col">
+        <div className="flex flex-wrap p-8 w-full justify-evenly">
+          {displayTable}
+        </div>
+        <button className="bg-green w-80 mx-auto py-2 text-white font-roboto font-bold text-lg">
+          <a href="/addTable">Add Table</a>
+        </button>
+      </div>
+      {check && (
+        <Popup
+          content={
+            <>
+              <p className="font-bold text-green">
+                Please confirm to delete the category?
+              </p>
+              <button
+                className="mt-10 bg-primary px-10 py-2"
+                onClick={deleteTable}
+              >
+                Confirm
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setCheck(!check);
+          }}
+        />
+      )}
+      {Open && (
+        <Popup
+          content={
+            <>
+              <p className="font-bold text-green">Deleted Successfully</p>
+              <button
+                className="mt-10 bg-primary px-10 py-2"
+                onClick={() => {
+                  setOpen(!Open);
+                }}
+              >
+                Ok
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setOpen(!Open);
+          }}
+        />
+      )}
+    </div>
+  );
+};
 
-export default Tables
+export default Tables;
