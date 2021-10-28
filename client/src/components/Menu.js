@@ -35,7 +35,7 @@ const Menu = () => {
            </div>
             </nav>
             <div className="flex flex-col w-96 justify-center mx-auto h-auto top-36 mt-44 text-xl">
-                    <button className=" bg-primary text-white font-bold py-4 my-4" onClick={openMenu}><a href="/categorydisplay">View Menu</a></button>
+                    <button className=" bg-primary text-white font-bold py-4 my-4" onClick={openMenu}>View Menu</button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/addcategory">Add new category</a></button>
                     <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Add new food item</a></button>
             </div>

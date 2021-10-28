@@ -1,8 +1,8 @@
-import changeTheNumber from "./UpDown";
 import { combineReducers } from "redux";
+import { CategoryReducer } from "./CategoryReducer";
 
-const rootReducer = combineReducers({
-    changeTheNumber
-})
+const reducers = combineReducers({
+    allCategories : CategoryReducer,
+});
 
-export default rootReducer;
+export default reducers;

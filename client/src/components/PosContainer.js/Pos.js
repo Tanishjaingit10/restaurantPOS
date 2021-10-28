@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import CategoryList from './CategoryList';
 
 const Pos = () => {
     const [list, showList] = useState(false);
@@ -12,19 +13,19 @@ const Pos = () => {
     const [Variant, setVariant] = useState();
     const [finalVar, setFinalVariant]=useState([]);
     const [addList, setAddList] = useState();
-    const showCategory = async (e) => {
-        await fetch(
-            "/app/category")
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json)
-                setDisplayCategory(json.map((option) => {
-                    return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 m-2 text-white" onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
-                }))
-            })
+    // const showCategory = async (e) => {
+    //     await fetch(
+    //         "/app/category")
+    //         .then((res) => res.json())
+    //         .then((json) => {
+    //             console.log(json)
+    //             setDisplayCategory(json.map((option) => {
+    //                 return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 m-2 text-white" onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
+    //             }))
+    //         })
 
 
-    }
+    // }
     const showVariant = async(e)=>{
         console.log(e)
         setFinalVariant(oldArray => [...oldArray, Variant])
@@ -99,9 +100,9 @@ const Pos = () => {
        
     }
 
-    useEffect(() => {
-        showCategory();
-    }, [])
+    // useEffect(() => {
+    //     showCategory();
+    // }, [])
     return (
         <div className="flex flex-row h-full">
             <div className="w-3/5 border-r-2 border-primary h-full shadow-2xl">
@@ -163,7 +164,7 @@ const Pos = () => {
 
                 <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
                     <div className="flex flex-wrap justify-evenly px-6 mt-4">
-                        {displayCategory}
+                        {/* {displayCategory} */}<CategoryList/>
                     </div>
                     <div className="flex flex-wrap justify-evenly mt-4 h-full">
                         {displayItems}

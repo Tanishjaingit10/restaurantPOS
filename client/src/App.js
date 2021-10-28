@@ -10,15 +10,13 @@ import ItemForm from './components/ItemForm';
 import CategoryDisplay from './components/CategoryDisplay';
 import ItemDisplay from './components/ItemDisplay';
 import Tables from './components/Tables';
-import Pos from './components/Pos';
+import Pos from './components/PosContainer.js/Pos';
 import TableForm from './components/TableForm';
+import CategoryList from './components/PosContainer.js/CategoryList';
 
 function App() {
   return (
     <div>
-     
-      {/* <Route exact path='/'>
-      <Landing /></Route> */}
       <Route exact path='/home'>
       <Home /></Route>
       <Route exact path='/'>
@@ -50,6 +48,9 @@ function App() {
       </Route>
       <Route exact path='/addTable'>
         <TableForm />
+      </Route>
+      <Route exact path='/categoryList'>
+        <CategoryList />
       </Route>
     </div>
   )
