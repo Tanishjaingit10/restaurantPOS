@@ -32,12 +32,11 @@ const CategoryList = () => {
     showList(!list);
     setAddList(
         e.map((obj)=>{
-        return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
+        return (<button className="bg-primary px-10 py-2 w-full relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
         }))
-    setOrder("chowmein");
-
-
 }
+
+
   const setOrder = async (e) => {
     if(e){
     const result = await fetch(`/app/item/${e}`).then((res) => res.json())
@@ -119,6 +118,7 @@ const CategoryList = () => {
             <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity</h1>
            
             <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
+           
               {list ? <div>{addList}</div>:null}
               <button className="bg-green text-center text-white py-2 font-bold" onClick={() => showVariant(order.finalVariant)}>+</button>
             </div>
