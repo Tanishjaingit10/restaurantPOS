@@ -5,10 +5,11 @@ import { setCategories } from "../../actions/CategoryActions";
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
   const [displayItems, setDisplayItems] = useState();
-  const [order, showOrder] = useState(<div></div>);
+  const [order, showOrder] = useState({image: "", variant: [],price: 0});
     const [Variant, setVariant] = useState();
     const [finalVar, setFinalVariant]=useState([]);
     const [addList, setAddList] = useState();
+    const [list, showList] = useState(false);
   const showItems = async (e) => {
 
     const result = await fetch('/app/items').then((res) => res.json())
@@ -28,38 +29,48 @@ const CategoryList = () => {
   const showVariant = async(e)=>{
     console.log(e)
     setFinalVariant(oldArray => [...oldArray, Variant])
+    showList(!list);
     setAddList(
         e.map((obj)=>{
         return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
         }))
+    setOrder("chowmein");
 
 
 }
   const setOrder = async (e) => {
+    if(e){
     const result = await fetch(`/app/item/${e}`).then((res) => res.json())
       .then((json) => {
-        showOrder(
-          <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
-            <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={json.image} /></div>
-            <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity and Variant</h1>
+        showOrder({
+          "image": json.image,
+          "variant": json.finalVariant,
+          "price": json.price
+        }
+          // <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
+          //   <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={json.image} /></div>
+          //   <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity</h1>
            
-            <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
-               <div>{addList}</div>
-              <button className="bg-green text-center text-white py-2 font-bold" onClick={() => showVariant(json.finalVariant)}>+</button>
-            </div>
-            <div className="bg-gray-300 w-full relative text-gray-600 px-6 py-8 text-xl font-bold font-roboto">
-              <label>Subtotal</label><span className="absolute right-4">{json.price}</span>
-            </div>
-            <div className="px-8 py-4">
-              <button className="bg-green text-white text-center text-lg font-bold w-full py-2">Add to Cart</button>
-            </div>
-          </div>
+          //   <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
+          //     {list ? <div>{addList}</div>:null}
+          //     <button className="bg-green text-center text-white py-2 font-bold" onClick={() => showVariant(json.finalVariant)}>+</button>
+          //   </div>
+          //   <div className="bg-gray-300 w-full relative text-gray-600 px-6 py-8 text-xl font-bold font-roboto">
+          //     <label>Subtotal</label><span className="absolute right-4">{json.price}</span>
+          //   </div>
+          //   <div className="px-8 py-4">
+          //     <button className="bg-green text-white text-center text-lg font-bold w-full py-2">Add to Cart</button>
+          //   </div>
+          // </div>
         )
       }
 
       )
+    }
 
   }
+
+  
 
   const renderList = categories.map((cat) => {
     const { category, description, color } = cat;
@@ -81,7 +92,10 @@ const CategoryList = () => {
   };
   useEffect(() => {
     fetchCategories();
+    
   }, []);
+
+ 
   console.log("Categories:", categories);
 
   return (
@@ -94,10 +108,25 @@ const CategoryList = () => {
       <div>
         {displayItems}
       </div>
-      <div>
+      {/* <div>
         {order}
-      </div>
-      <div>{addList}</div>
+      </div> */}
+    
+      {order.image?<div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
+            <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={order.image} /></div>
+            <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity</h1>
+           
+            <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
+              {list ? <div>{addList}</div>:null}
+              <button className="bg-green text-center text-white py-2 font-bold" onClick={() => showVariant(order.finalVariant)}>+</button>
+            </div>
+            <div className="bg-gray-300 w-full relative text-gray-600 px-6 py-8 text-xl font-bold font-roboto">
+              <label>Subtotal</label><span className="absolute right-4">{order.price}</span>
+            </div>
+            <div className="px-8 py-4">
+              <button className="bg-green text-white text-center text-lg font-bold w-full py-2">Add to Cart</button>
+            </div>
+          </div>:null}
 
     </div>
   );
