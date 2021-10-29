@@ -93,20 +93,7 @@ const Pos = () => {
                         {displayItems}
                     </div> */}
                 </div>
-                {/* {order && <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
-                      <div className="w-72 mt-6 bg-gray-500 mx-auto h-36">Image Picture</div>
-                      <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity and Variant</h1>
-                      <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
-                            <button className="bg-primary text-white py-2 font-bold">Variant</button>
-                            <button className="bg-green text-center text-white py-2 font-bold">+</button>
-                      </div>
-                      <div className="bg-gray-300 w-full relative text-gray-600 px-6 py-8 text-xl font-bold font-roboto">
-                          <label>Subtotal</label><span className="absolute right-4">$0.00</span>
-                          </div>
-                          <div className="px-8 py-4">
-                              <button className="bg-green text-white text-center text-lg font-bold w-full py-2">Add to Cart</button>
-                          </div>
-                    </div>} */}
+    
                     {/* {order} */}
 
             </div>
