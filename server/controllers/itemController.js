@@ -20,6 +20,7 @@ const items_template_copy = require('../models/food_items')
 // }
 const get_item = async (request, response) => {
     items_template_copy.findOne({ foodItem: request.params.id }, (err, data) => {
+
         if (!err) {
             if (data === null)
                 response.json({ message: 'Item not found!' })
