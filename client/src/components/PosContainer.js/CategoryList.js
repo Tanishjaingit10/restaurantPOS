@@ -5,7 +5,7 @@ import { setCategories } from "../../actions/CategoryActions";
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
   const [displayItems, setDisplayItems] = useState();
-  const [order, showOrder] = useState({image: "", variant: [],price: 0});
+  const [order, showOrder] = useState({image: "", finalVariant: [],price: 0});
     const [Variant, setVariant] = useState();
     const [finalVar, setFinalVariant]=useState([]);
     const [addList, setAddList] = useState();
@@ -42,9 +42,11 @@ const CategoryList = () => {
     if(e){
     const result = await fetch(`/app/item/${e}`).then((res) => res.json())
       .then((json) => {
+        console.log(json)
+        console.log(json.finalVariant)
         showOrder({
           "image": json.image,
-          "variant": json.finalVariant,
+          "finalVariant": json.finalVariant,
           "price": json.price
         }
           // <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
