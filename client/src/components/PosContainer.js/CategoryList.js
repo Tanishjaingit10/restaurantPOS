@@ -41,7 +41,7 @@ const CategoryList = () => {
         showOrder(
           <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
             <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={json.image} /></div>
-            <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity</h1>
+            <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity and Variant</h1>
            
             <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
                <div>{addList}</div>

@@ -5,7 +5,6 @@ const multer = require('multer')
 const signup_template_copy = require('../models/registered_users')
 const items_template_copy = require('../models/food_items')
 const colour_template_copy = require('../models/colour')
-const side_template_copy = require('../models/side_items')
 const bcrypt = require('bcrypt')
 const userController = require('../controllers/userController')
 const itemController = require('../controllers/itemController');
