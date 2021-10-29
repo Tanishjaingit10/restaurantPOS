@@ -97,7 +97,6 @@ const CategoryList = () => {
       <div>
         {order}
       </div>
-    
       <div>{addList}</div>
 
     </div>
