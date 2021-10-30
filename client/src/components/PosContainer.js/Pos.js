@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import CategoryList from './CategoryList';
-
+import {finalOrder} from './CategoryList';
 const Pos = () => {
     const [list, showList] = useState(false);
     const [cust, showCust] = useState(false);
@@ -40,6 +40,13 @@ const Pos = () => {
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
                             <p className=" text-gray-600 text-center">Add Food items</p>
                         </div>
+                        {/* <finalOrder.Consumer>
+                        {(order)=>{
+                            return <div>{order.foodItem}</div>
+                        }
+
+                        }
+                        </finalOrder.Consumer> */}
                     </div>
                     <div className="bg-gray-300 flex flex-col">
                         <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">

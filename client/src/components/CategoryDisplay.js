@@ -16,7 +16,7 @@ const CategoryDisplay = () => {
         setShow(!show)
         await fetch('/app/items').then((res) => res.json())
         .then((json) => {
-            console.log(json)
+            // console.log(json)
             setDisplayItem(json.map((option) => {
                 if(option.category===id)
                 {

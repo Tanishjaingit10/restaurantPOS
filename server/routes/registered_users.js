@@ -1,7 +1,6 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
-const multer = require('multer')
 const signup_template_copy = require('../models/registered_users')
 const items_template_copy = require('../models/food_items')
 const colour_template_copy = require('../models/colour')
@@ -12,25 +11,10 @@ const categoryController= require('../controllers/categoryController')
 const colourController = require('../controllers/colourController')
 const variantController = require('../controllers/variantController')
 const tableController = require('../controllers/tableController')
-// router.get('/', async (request, response)=>{
-//     response.json('hey!');
-// })
-
-// const storage = multer.diskStorage({
-//     destination: (req, file, callback)=>{
-//         console.log(file)
-//         callback(null, ".../client/public/uploads/")
-//         // console.log(req);
-//         // console.log(file)
-//     },
-//     filename: (req, file, callback)=>{
-//         console.log(file)
-//         console.log(1)
-//         callback(null,file.originalname)
-//     }
-// })
+const orderController = require('../controllers/orderController')
 
 
+router.post('/addOrder', orderController.add_order)
 router.post('/signup', userController.add_user)
 router.get('/users', userController.show_users)
 router.get('/user/:id', userController.get_user)
