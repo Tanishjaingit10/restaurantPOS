@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import CategoryList from './CategoryList';
 
 const Pos = () => {
@@ -68,8 +68,8 @@ const Pos = () => {
                             <div className="relative py-4 font-bold"><label className="">Total</label><span className="absolute right-0">$0.00</span></div>
                         </div>
                         <div className="flex flex-row w-full text-white text-xl font-roboto">
-                            <button className="bg-primary w-1/2 py-4 font-bold">All Payments</button>
-                            <button className="bg-green w-1/2 py-4 font-bold">Cash</button>
+                            <button className="bg-primary w-1/2 py-4 font-bold"><a href="/payments">All Payments</a></button>
+                            <button className="bg-green w-1/2 py-4 font-bold"><a href="/cash">Cash</a></button>
                         </div>
                         <div className="flex flex-row w-full text-xl font-roboto">
                             <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>

@@ -33,14 +33,14 @@ const Tables = () => {
         console.log(json);
         setDisplayTable(
           json.map((obj, index) => {
-            if (index % 3 == 0) code = "#BE2D19";
-            else if (index % 3 == 1) code = "#1DBE19";
+            if (index % 3 === 0) code = "#BE2D19";
+            else if (index % 3 === 1) code = "#1DBE19";
             else code = "#e58f55";
             return (
               <div className="flex flex-col w-96 mx-4">
                 <div className="flex flex-row">
                   <div className="w-1/2 bg-gray-400 ">
-                    <img src={obj.image} className="w-full h-32" />
+                    <img src={obj.image} alt="" className="w-full h-32" />
                   </div>
                   <div className="w-1/2 bg-pink flex flex-col text-xl font-roboto">
                     <button className="w-full bg-lightprimary text-primary py-2 font-bold h-1/2">
@@ -83,7 +83,7 @@ const Tables = () => {
 
   useEffect(() => {
     loadTables();
-  }, []);
+  });
 
   return (
     <div>
