@@ -14,7 +14,7 @@ const CategoryDisplay = () => {
     const showItems= async (e)=>{
         e.preventDefault();
         setShow(!show)
-        const result = await fetch('/app/items').then((res) => res.json())
+        await fetch('/app/items').then((res) => res.json())
         .then((json) => {
             console.log(json)
             setDisplayItem(json.map((option) => {
@@ -22,18 +22,16 @@ const CategoryDisplay = () => {
                 {
                      return(<div className="relative rounded-2xl shadow-2xl m-4 w-44 font-roboto text-xl"><img src={option.image} alt="" id="img" />
                      <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span><div className="text-center py-2">{option.foodItem}</div></div>
-                    //  <div className="bg-white m-2 relative rounded-xl shadow-2xl w-52"><img src={option.image} className="w-40 object-fill" alt="" />
-                    // <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span>
-                    // <div className="text-center bg-white py-2">{option.foodItem}</div></div>
                      )
                 }
+                return null;
             }))
 
         })
     
     }
     const loadCategory = async ()=>{
-        const result = await fetch(`/app/category/${id}`).then((res) => res.json())
+        await fetch(`/app/category/${id}`).then((res) => res.json())
         .then((json) => {
             console.log(json)
             setCat(json)
@@ -51,7 +49,7 @@ const CategoryDisplay = () => {
 
         colour.map((option) => {
             if (option.name === cat.color) { code = option.code; }
-
+            return null;
         })
 
         await fetch(
@@ -77,7 +75,7 @@ const CategoryDisplay = () => {
 
     useEffect(() => {
         loadCategory();
-    }, [])
+    })
     return (
         <div className="justify-content-center h-screen">
             <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">

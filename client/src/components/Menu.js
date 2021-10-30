@@ -1,5 +1,4 @@
 import React, {useState} from 'react'
-import Popup from './Popup';
 import { useHistory } from 'react-router-dom';
 const Menu = () => {
     const history = useHistory();

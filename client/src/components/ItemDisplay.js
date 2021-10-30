@@ -9,14 +9,15 @@ const ItemDisplay = () => {
     const showItems= async (e)=>{
         console.log(cat)
 
-        const result = await fetch('/app/items').then((res) => res.json())
+        await fetch('/app/items').then((res) => res.json())
         .then((json) => {
             console.log(json)
             json.map((option) => {
                 if(option.category===cat)
                 {
-                    return(<div className="bg-gray-200 img-holder"><img src={option.image} className="image" alt="" id="img" className="img" /></div>)
+                    return(<div className="bg-gray-200 img-holder"><img src={option.image} className="image" alt="" id="img" /></div>)
                 }
+                return null;
             })
 
         })

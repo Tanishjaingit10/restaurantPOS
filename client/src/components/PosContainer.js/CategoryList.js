@@ -24,6 +24,7 @@ const CategoryList = () => {
               <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span>
               <div className="text-center bg-white py-2">{option.foodItem}</div></div>);
           }
+          return null
         }))
 
       })
@@ -43,7 +44,7 @@ const CategoryList = () => {
     setAddList(
       e.map((obj) => {
         console.log(obj)
-        return (<li><button className="bg-primary px-10 py-2 w-full relative" onClick={() => handleVariant(obj)} name="category" value={obj}><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button></li>)
+        return (<li><button className="bg-primary px-10 py-2 w-full relative" onClick={() => handleVariant(obj)} name="category" value={obj}>{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button></li>)
       }))
   }
 
@@ -52,7 +53,7 @@ const CategoryList = () => {
   }
   const setOrder = async (e) => {
     if (e) {
-      const result = await fetch(`/app/item/${e}`).then((res) => res.json())
+      await fetch(`/app/item/${e}`).then((res) => res.json())
         .then((json) => {
           // console.log(json)
           // console.log(json.finalVariant)
@@ -93,10 +94,10 @@ const CategoryList = () => {
   };
   useEffect(() => {
     fetchCategories();
-  }, []);
+  });
   useEffect(() => {
     setFinal(finalVar.map((obj) => {
-      return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
+      return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
     }))
   }, [finalVar]);
 
@@ -119,7 +120,7 @@ const CategoryList = () => {
       </div> */}
 
       {order.image ? <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
-        <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={order.image} /></div>
+        <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={order.image} alt="" /></div>
         <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity and Variant</h1>
 
         <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">

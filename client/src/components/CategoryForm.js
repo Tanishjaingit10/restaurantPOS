@@ -38,9 +38,8 @@ const CategoryForm = () => {
         setCat({ ...cat, [name]: value });
     }
 
-
     const loadCategory = async () => {
-        const result = await fetch(`/app/category/${id}`).then((res) => res.json())
+        await fetch(`/app/category/${id}`).then((res) => res.json())
             .then((json) => {
                 setCol(json.color)
                 setText(json.color)
@@ -52,7 +51,7 @@ const CategoryForm = () => {
         if (id) {
             loadCategory();
         }
-    }, [])
+    })
 
     const addCategory = async (e) => {
         e.preventDefault();
@@ -84,17 +83,16 @@ const CategoryForm = () => {
 
         }
 
-        const data = await res.json();
+        await res.json();
         console.log(cat);
 
         console.log(res.status)
         if (res.status === 201) {
             setMsg('Added Successfully');
             let code;
-
             colour.map((option) => {
                 if (option.name === cat.color) { code = option.code; }
-
+                return null;
             })
             setIsOpen(!isOpen);
             await fetch(
@@ -162,8 +160,8 @@ const CategoryForm = () => {
                         <label for="color" className="">Category Colour</label>
                         <div className=" w-full mt-1 text-white ">
                             <div className=" flex flex-row bg-primary" style={{ backgroundColor: col }}>
-                                <a href="#" className="block  align-middle  no-underline p-4 " onClick={openDrop}>
-                                    {text}<span ><i className="fas fa-chevron-down ml-72"></i></span></a>
+                                <button className="block  align-middle  no-underline p-4 " onClick={openDrop}>
+                                    {text}<span ><i className="fas fa-chevron-down ml-72"></i></span></button>
                             </div>
                             <div className={show ? " flex flex-wrap  bg-white py-4 pb-2 px-6 mx-auto" : "hidden"}>
                                 {displayColor}

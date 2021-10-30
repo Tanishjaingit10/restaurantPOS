@@ -26,7 +26,7 @@ const Login = () => {
             })
         });
 
-        const data = await res.json();
+        await res.json();
         setIsOpen(!isOpen);
         console.log(res.status)
         if(res.status===201)
@@ -46,7 +46,7 @@ const Login = () => {
     return (
         <div className="h-screen">
         <div className="bg-gray-300 py-2">
-        <img className="mx-auto w-36 h-auto" src={Logo}/>
+        <img className="mx-auto w-36 h-auto" src={Logo} alt=""/>
         </div>
         <div>
             <form className="w-1/2 md:w-1/3 mx-auto py-10 font-bold font-roboto text-lg">
@@ -105,61 +105,7 @@ const Login = () => {
       </>}
       handleClose={loginUser}
     />}
-    </div>
-        /* <figure className="h-screen flex bg-gray-800">
-            <div className="w-full max-w-md m-auto bg-white rounded-lg border border-primaryBorder shadow-default py-10 px-1">
-                <blockquote className="text-2xl font-medium text-center">
-                    <p className="text-lg font-semibold">Welcome to My-App</p>
-                </blockquote>
-
-                <div className="text-primary m-6">
-                    <div className="flex items-center mt-3 justify-center">
-                        <h1 className="text-2xl font-medium text-primary mt-4 mb-2">
-                            Login to your account
-                        </h1>
-                    </div>
-                    <form>
-                        <label className="text-left">Username:</label>
-                        <input
-                            name="email_id"
-                            type="email"
-                            value={email_id}
-                            onChange={(e) => setEmail(e.target.value)} 
-                            placeholder="Username"
-                            className={
-                                "w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4"
-                            }
-                        />
-                        <label>Password:</label>
-                        <input
-                            name="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Password"
-                            className={
-                                "w-full p-2 text-primary border rounded-md outline-none text-sm transition duration-150 ease-in-out mb-4"
-                            }
-                        />
-                        <div className="flex items-center mt-3 justify-center">
-                            <button
-                                className={
-                                    "bg-blue-700 hover:bg-blue-500 py-2 px-4 text-md text-white rounded border border-blue focus:outline-none focus:border-black"
-                                }
-                                value="Login" onClick={loginUser} type="submit">
-                                Login
-                            </button>
-                        </div>
-                    </form>
-                    <div className="flex items-center mt-3 justify-center">
-                        <button className={"justify-center text-blue-500 hover:underline"} >
-                            Need to register? <a href="/signup">SignUp</a>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </figure>*/
+    </div>                     
     )
 
 }
