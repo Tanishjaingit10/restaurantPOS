@@ -35,7 +35,6 @@ const SignUp = () => {
             })
         });
        
-        const data = await res.json();
         console.log(res.status);
        
         if (res.status === 201) {
@@ -57,7 +56,7 @@ const SignUp = () => {
     return (
         <div className="h-screen">
             <div className="bg-gray-300 py-2">
-                <img className="mx-auto w-36 h-auto" src={Logo} />
+                <img className="mx-auto w-36 h-auto" src={Logo} alt="" />
             </div>
             <div>
                 <form className="w-1/2 md:w-1/3 mx-auto py-4 font-bold font-roboto text-lg justify">

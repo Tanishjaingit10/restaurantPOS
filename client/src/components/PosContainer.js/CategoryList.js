@@ -16,15 +16,16 @@ const CategoryList = () => {
   const [show, setShow] = useState(false)
   const showItems = async (e) => {
 
-    const result = await fetch('/app/items').then((res) => res.json())
+    await fetch('/app/items').then((res) => res.json())
       .then((json) => {
         console.log(json)
         setDisplayItems(json.map((option) => {
           if (option.category === e.target.value) {
             return (<div className="bg-white m-2 relative rounded-xl shadow-2xl w-40 cursor-pointer" onClick={() => setOrder(option.foodItem)}><img src={option.image} className="w-40 object-fill" alt="" />
               <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">{option.price}</span>
-              <div className="text-center bg-white py-2">{option.foodItem}</div></div>)
+              <div className="text-center bg-white py-2">{option.foodItem}</div></div>);
           }
+          return null
         }))
 
       })
@@ -41,7 +42,7 @@ const CategoryList = () => {
     setAddList(
       e.map((obj) => {
         console.log(obj)
-        return (<li><button className="bg-primary px-10 py-2 w-full relative" onClick={() => handleVariant(obj)} name="category" value={obj}><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button></li>)
+        return (<li><button className="bg-primary px-10 py-2 w-full relative" onClick={() => handleVariant(obj)} name="category" value={obj}>{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button></li>)
       }))
   }
 
@@ -52,7 +53,7 @@ const CategoryList = () => {
   }
   const setOrder = async (e) => {
     if (e) {
-      const result = await fetch(`/app/item/${e}`).then((res) => res.json())
+      await fetch(`/app/item/${e}`).then((res) => res.json())
         .then((json) => {
           // console.log(json)
           // console.log(json.finalVariant)
@@ -76,7 +77,7 @@ const CategoryList = () => {
 
 
   const renderList = categories.map((cat) => {
-    const { category, description, color } = cat;
+    const { category, color } = cat;
     return (
       <div>
         <button value={category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " onClick={showItems} style={{ backgroundColor: color }}>{category}</button>
@@ -95,10 +96,10 @@ const CategoryList = () => {
   };
   useEffect(() => {
     fetchCategories();
-  }, []);
+  });
   useEffect(() => {
     setFinal(finalVar.map((obj) => {
-      return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
+      return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
     }))
   }, [finalVar]);
 

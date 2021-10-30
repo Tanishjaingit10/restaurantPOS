@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Popup from './Popup';
 import days from '../days';
 import signup from '../popup';
-// import TimePicker from 'react-time-picker';
 import TimePicker from 'react-gradient-timepicker';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory} from 'react-router-dom';
 
 
 const ItemForm = () => {
@@ -47,13 +46,6 @@ const ItemForm = () => {
         reader.readAsDataURL(e.target.files[0])
         console.log({img})
       };
-   
-   
-    
-    const openDrop = () => {
-        setShow(!show);
-    }
-   
     
     const handleInputs = (e) => {
 
@@ -103,10 +95,10 @@ const ItemForm = () => {
 
     useEffect(() => {
         console.log(finalVar)
-        setItem({...item, ['finalVariant']:finalVar})
+        setItem({...item, ["finalVariant"]:finalVar})
         setAddList(
             finalVar.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.variant} / $ {obj.price}</a><span className="absolute right-4">x</span></button>)
+            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
             }))
     }, [finalVar])
 
@@ -165,7 +157,7 @@ const ItemForm = () => {
         setShowDays(!showDays);
         setList(
             finalAvail.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative"><a>{obj.day} | {obj.startTime} - {obj.endTime}</a><span className="absolute right-4">x</span></button>)
+            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.day} | {obj.startTime} - {obj.endTime}<span className="absolute right-4">x</span></button>)
             }))
     }
 
@@ -246,7 +238,7 @@ const ItemForm = () => {
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
                                 {set?<div className="text-white w-full">{list}</div>:null}
-                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white relative"><a>Everyday / All Time</a><span className="absolute right-4">x</span></button>:null}
+                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white relative">Everyday / All Time<span className="absolute right-4">x</span></button>:null}
                                 <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
                                     
                                     <li className="py-2">Select</li>
@@ -261,17 +253,9 @@ const ItemForm = () => {
                                     
                                     <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>{imageStatus}</button>
                                 </div>
-                                <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" className="img" /></div>
+                                <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img"/></div>
                             </div>
-                            {/* <form method="POST" action="/upload-profile-pic" enctype="multipart/form-data"> */}
-                                {/* <div>
-                                    <label>Select your profile picture:</label>
-                                    <input type="file" name="profile_pic" />
-                                </div>
-                                <div>
-                                    <input type="submit" name="btn_upload_profile_pic" value="Upload" />
-                                </div> */}
-                            {/* </form> */}
+                           
                         </div>
                         <div className=" w-1/2 space-y-2 p-4">
                             <div className="flex flex-col bg-white">

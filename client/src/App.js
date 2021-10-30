@@ -13,6 +13,8 @@ import Tables from './components/Tables';
 import Pos from './components/PosContainer.js/Pos';
 import TableForm from './components/TableForm';
 import CategoryList from './components/PosContainer.js/CategoryList';
+import Payment from './components/PosContainer.js/Payment';
+import Cash from './components/PosContainer.js/Cash';
 
 function App() {
   return (
@@ -52,6 +54,13 @@ function App() {
       <Route exact path='/categoryList'>
         <CategoryList />
       </Route>
+      <Route exact path='/payments'>
+        <Payment />
+      </Route>
+      <Route exact path='/cash'>
+        <Cash />
+      </Route>
+      
     </div>
   )
 }

@@ -62,7 +62,7 @@ const TableForm = () => {
             })
         });
 
-        const data = await res.json();
+      
         console.log(res.status);
         console.log(Table);
 
@@ -111,7 +111,7 @@ const TableForm = () => {
 
                             <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>{imageStatus}</button>
                         </div>
-                        <div className=" w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" className="img" /></div>
+                        <div className=" w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" /></div>
                     </div>
                     <button className="bg-green p-2 text-white text-center font-bold px-6 mt-10" onClick={addTable}>Done</button>
                 </form>
@@ -120,7 +120,7 @@ const TableForm = () => {
                 content={<>
 
                     <p className="pb-4 text-red font-bold">{msg}</p>
-                    <button className="bg-green px-10 py-2" onClick={addTable}><a href="">Try Again</a></button>
+                    <button className="bg-green px-10 py-2" onClick={addTable}>Try Again</button>
                 </>}
                 handleClose={addTable}
             />}
@@ -128,7 +128,7 @@ const TableForm = () => {
                 content={<>
 
                     <p className='pb-4 font-bold text-green'>{msg}</p>
-                    <button className="bg-primary px-10 py-2" onClick={onAdd}><a href="">Ok</a></button>
+                    <button className="bg-primary px-10 py-2" onClick={onAdd}>Ok</button>
                 </>}
                 handleClose={onAdd}
             />}
