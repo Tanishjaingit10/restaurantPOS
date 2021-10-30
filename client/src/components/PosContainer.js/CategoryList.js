@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../actions/CategoryActions";
-
+import Pos from "./Pos"
+const finalOrder =createContext();
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({ foodItem: "", image: "", orderedVariant: [], price: 0,subtotal:0 });
-  // const [finalOrder, showfinalOrder] = useState({ foodItem: "", price: 0, , subtotal: "" })
+  const [order, showOrder] = useState([])
   const [varList, setVarList]=useState();
   const [Variant, setVariant] = useState([]);
   const [finalVar, setFinalVariant] = useState([]);
@@ -14,6 +15,8 @@ const CategoryList = () => {
   const [final, setFinal] = useState();
   const [list, showList] = useState(false);
   const [show, setShow] = useState(false)
+  const [open, setOpen]=useState(false)
+  // console.log(categories)
   const showItems = async (e) => {
 
     await fetch('/app/items').then((res) => res.json())
@@ -47,16 +50,19 @@ const CategoryList = () => {
   }
 
   const addCart = async (e) => {
-    showItem({...item, ['orderedVariant']:finalVar})
-
+    // showItem({...item, ['orderedVariant']:finalVar})
+    console.log(item)
+    setOpen(false)
+    setFinalVariant([])
+    showOrder(oldArray => [...oldArray, item])
+    console.log(order)
 
   }
   const setOrder = async (e) => {
+    setOpen(true)
     if (e) {
       await fetch(`/app/item/${e}`).then((res) => res.json())
         .then((json) => {
-          // console.log(json)
-          // console.log(json.finalVariant)
           setVarList(json.finalVariant)
           showItem({
             "foodItem": json.foodItem,
@@ -95,19 +101,26 @@ const CategoryList = () => {
     dispatch(setCategories(response));
   };
   useEffect(() => {
-    fetchCategories();
+    // if(!categories)
+      // fetchCategories();
+    // console.log(categories)
   });
   useEffect(() => {
+    showItem({...item, ['orderedVariant']:finalVar})
     setFinal(finalVar.map((obj) => {
       return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
     }))
   }, [finalVar]);
 
 
-
-  console.log("Categories:", categories);
+  // console.log("Categories:", categories);
 
   return (
+    <>
+    <finalOrder.Provider value={order}>
+      <Pos/>
+    </finalOrder.Provider>
+    
 
     <div>
 
@@ -121,8 +134,8 @@ const CategoryList = () => {
         {order}
       </div> */}
 
-      {item.image ? <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
-        <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img src={item.image} /></div>
+      {open? <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
+        <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img alt="" src={item.image} /></div>
         <h1 className="text-gray-500 text-left text-xl my-4 font-semibold font-roboto ml-4">Select Quantity and Variant</h1>
 
         <div className="flex flex-col px-8 space-y-4 text-xl font-roboto py-4">
@@ -143,7 +156,9 @@ const CategoryList = () => {
       </div> : null}
 
     </div>
+    </>
   );
 };
 
 export default CategoryList;
+export {finalOrder};
