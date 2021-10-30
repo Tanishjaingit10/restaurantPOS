@@ -1,5 +1,6 @@
 const signup_template_copy = require('../models/registered_users')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
 
 
 const show_users = async (request, response, next)=>{
@@ -55,16 +56,17 @@ const login = async (request, response, next)=>{
         
         if(userLogin){
             const isMatch = await bcrypt.compare(password, userLogin.password);
-            token = await userLogin.generateAuthToken();
-            // console.log(token);
-            // response.cookie("jwtoken",token,{
-            //     expires: new Date(Date.now()+25892000000),
-            //     httpOnly: true
-            // })
+          
+           
             if(!isMatch){
                 response.status(401).json({error:"Invalid Credentials"});
             }
             else{
+                token = await userLogin.generateAuthToken();
+                response.cookie("jwtoken",token,{
+                    expires: new Date(Date.now()+25892000000),
+                    httpOnly: true
+                })
                 response.status(201).json({message:"User Sign in successfully"});
             }
 

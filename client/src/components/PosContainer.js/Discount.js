@@ -18,8 +18,8 @@ const Discount = () => {
       <div className="flex flex-col p-8">
       
         <div className="w-1/3 mx-auto flex flex-col shadow-2xl mt-10">
-            <div className="bg-white relative px-2 font-roboto py-4"><div className="absolute top-2 right-2 text-4xl font-bold">$0.00<i className="far fa-times-circle ml-2 text-2xl"></i></div></div>
-            <div className="bg-gray-300 justify-evenly flex flex-row text-3xl py-2 text-primary font-semibold"><div className="text-center">Exact</div><div className="text-center">$10.00</div><div className="text-center">$10.00</div></div>
+            <div className="bg-white px-2 font-roboto py-4"><div className=" text-right text-4xl font-bold">0%<i className="far fa-times-circle ml-4 text-2xl"></i></div></div>
+            <div className="bg-gray-300 justify-evenly flex flex-row text-2xl py-4 text-primary font-bold border-2"><div className="text-center w-full">10%</div><div className="text-center w-full">15%</div><div className="text-center w-full">20%</div></div>
             <div className="grid grid-cols-3 bg-white font-roboto font-semibold text-2xl">
                 <div className="text-center border-2 py-2">1</div>
                 <div className="text-center border-2 py-2">2</div>
