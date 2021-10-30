@@ -15,6 +15,7 @@ import TableForm from './components/TableForm';
 import CategoryList from './components/PosContainer.js/CategoryList';
 import Payment from './components/PosContainer.js/Payment';
 import Cash from './components/PosContainer.js/Cash';
+import Discount from './components/PosContainer.js/Discount';
 
 function App() {
   return (
@@ -59,6 +60,9 @@ function App() {
       </Route>
       <Route exact path='/cash'>
         <Cash />
+      </Route>
+      <Route exact path='/discount'>
+        <Discount />
       </Route>
       
     </div>

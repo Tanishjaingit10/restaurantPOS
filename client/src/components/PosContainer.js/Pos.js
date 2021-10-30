@@ -54,7 +54,7 @@ const Pos = () => {
                         </div>
                         <div className="flex flex-row w-full text-xl font-roboto">
                             <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>
-                            <button className=" w-1/2 py-4 font-bold">Discount</button>
+                            <button className=" w-1/2 py-4 font-bold"><a href="/discount">Discount</a></button>
                         </div>
                     </div>
 
