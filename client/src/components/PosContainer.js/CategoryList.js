@@ -2,7 +2,7 @@ import React, { useEffect, useState, createContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../actions/CategoryActions";
 import Pos from "./Pos"
-const finalOrder =createContext();
+// const finalOrder =createContext();
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
   const [displayItems, setDisplayItems] = useState();
@@ -102,7 +102,7 @@ const CategoryList = () => {
   };
   useEffect(() => {
     // if(!categories)
-      // fetchCategories();
+      fetchCategories();
     // console.log(categories)
   });
   useEffect(() => {
@@ -116,10 +116,11 @@ const CategoryList = () => {
   // console.log("Categories:", categories);
 
   return (
-    <>
-    <finalOrder.Provider value={order}>
-      <Pos/>
-    </finalOrder.Provider>
+  //  <>
+  //   <finalOrder.Provider value={order}>
+  //     <Pos/>
+  //   </finalOrder.Provider>
+    
     
 
     <div>
@@ -156,9 +157,9 @@ const CategoryList = () => {
       </div> : null}
 
     </div>
-    </>
+    // </>
   );
 };
 
 export default CategoryList;
-export {finalOrder};
+// export {finalOrder};
