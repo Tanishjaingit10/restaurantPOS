@@ -15,18 +15,30 @@ const Cash = () => {
           </div>
         </div>
       </nav>
-      <div className="bg-pink flex flex-col p-8">
-        <div className="bg-yellow flex flex-col p-6 w-96 mx-auto font-roboto">
-          <div className="bg-white text-center py-2">Amount Due</div>
-          <div className="bg-blue text-center py-2 text-3xl text-primary">$14.00</div>
+      <div className="flex flex-col p-8">
+        <div className="flex flex-col p-6 w-96 mx-auto font-roboto">
+          <div className="text-center font-semibold">Amount Due</div>
+          <div className="text-center mt-2 text-3xl text-primary">$14.00</div>
         </div>
-        <div className="bg-green w-1/3 mx-auto flex flex-col">
-            <div className="bg-white relative py-2 px-2"><p>Amount tendered<span className="absolute right-4">$0.00</span></p></div>
-            <div className="bg-gray-300 justify-evenly flex flex-row text-2xl py-2"><div>Exact</div><div className="">$10.00</div><div className="">$10.00</div></div>
-            <div>
-                
+        <div className="w-1/3 mx-auto flex flex-col shadow-2xl">
+            <div className="bg-white relative py-4 px-2 font-roboto"><p>Amount tendered</p><span className="absolute top-2 right-2 text-4xl font-bold">$0.00<i className="far fa-times-circle ml-2 text-2xl"></i></span></div>
+            <div className="bg-gray-300 justify-evenly flex flex-row text-3xl py-2 text-primary font-semibold"><div className="text-center">Exact</div><div className="text-center">$10.00</div><div className="text-center">$10.00</div></div>
+            <div className="grid grid-cols-3 bg-white font-roboto font-semibold text-2xl">
+                <div className="text-center border-2 py-2">1</div>
+                <div className="text-center border-2 py-2">2</div>
+                <div className="text-center border-2 py-2">3</div>
+                <div className="text-center border-2 py-2">4</div>
+                <div className="text-center border-2 py-2">5</div>
+                <div className="text-center border-2 py-2">6</div>
+                <div className="text-center border-2 py-2">7</div>
+                <div className="text-center border-2 py-2">8</div>
+                <div className="text-center border-2 py-2">9</div>
+                <div className="text-center border-2 py-2">0</div>
+                <div className="text-center border-2 py-2">00</div>
+                <div className="text-center border-2 py-2"><i class="fas fa-backspace"></i></div>
             </div>
         </div>
+        <div className="w-96 bg-green mt-10 mx-auto py-4 text-white text-center text-2xl font-roboto font-bold">Proceed</div>
       </div>
     </div>
   );

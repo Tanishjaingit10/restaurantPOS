@@ -8,31 +8,12 @@ const Pos = () => {
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
 
-    // const showCategory = async (e) => {
-    //     await fetch(
-    //         "/app/category")
-    //         .then((res) => res.json())
-    //         .then((json) => {
-    //             console.log(json)
-    //             setDisplayCategory(json.map((option) => {
-    //                 return (<button value={option.category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 m-2 text-white" onClick={showItems} style={{ backgroundColor: option.color }}>{option.category}</button>)
-    //             }))
-    //         })
-
-
-    // }
-  
-
-    // useEffect(() => {
-    //     showCategory();
-    // }, [])
     return (
         <div className="flex flex-row h-full">
             <div className="w-3/5 border-r-2 border-primary h-full shadow-2xl">
                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold">
                     <div className="flex flex-row px-6 justify-items-center">
                         <div className=" justify-center md:justify-start text-white py-2"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
-                        {/* <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">Menu</div> */}
                         <div className="flex flex-row w-full mx-24 relative">
                             <ul className=" text-white text-left" onClick={() => { showList(!list) }}>
                                 <li className="p-2">Order New<span><i class="fas fa-chevron-down ml-8"></i></span></li>
