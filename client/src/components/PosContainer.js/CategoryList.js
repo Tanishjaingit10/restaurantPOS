@@ -1,9 +1,11 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../actions/CategoryActions";
-import Pos from "./Pos"
+import { OrderContext } from "../../context/Auth";
+
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
+  const [cart, setCart] = useContext(OrderContext);
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({ foodItem: "", image: "", orderedVariant: [], price: 0,subtotal:0 });
   const [order, showOrder] = useState([])
@@ -48,12 +50,22 @@ const CategoryList = () => {
   }
 
   const addCart = async (e) => {
-    console.log(item)
+    setCart([
+      {fooditem:item.foodItem,
+       Image: item.image,
+       orderedvariant: item.orderedVariant,
+       Price: item.price,
+       subTotal: item.subtotal
+    },]
+);
+  console.log("cart:",cart);
+    // showItem({...item, ['orderedVariant']:finalVar})
+    console.log(item.foodItem)
     setOpen(false)
     setFinalVariant([])
     showOrder(oldArray => [...oldArray, item])
-    console.log(order)
-
+    // console.log(order)
+   
   }
   const setOrder = async (e) => {
     setOpen(true)
@@ -68,16 +80,10 @@ const CategoryList = () => {
             "price": json.price,
             "subtotal":json.price
           })
-
-
         }
-
         )
     }
-
   }
-
-
 
   const renderList = categories.map((cat) => {
     const { category, color } = cat;
@@ -108,12 +114,6 @@ const CategoryList = () => {
   }, [finalVar]);
 
   return (
-  //  <>
-  //   <finalOrder.Provider value={order}>
-  //     <Pos/>
-  //   </finalOrder.Provider>
-    
-    
 
     <div>
 

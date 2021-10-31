@@ -34,7 +34,7 @@ const SignUp = () => {
                 fullName, email_id, contact, position, password
             })
         });
-       
+      
         console.log(res.status);
        
         if (res.status === 201) {

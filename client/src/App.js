@@ -15,11 +15,17 @@ import TableForm from './components/TableForm';
 import CategoryList from './components/PosContainer.js/CategoryList';
 import Payment from './components/PosContainer.js/Payment';
 import Cash from './components/PosContainer.js/Cash';
+import Discount from './components/PosContainer.js/Discount';
+import { OrderProvider } from './context/Auth';
+import Routes from './Routes';
 
 function App() {
   return (
     <div>
-      <Route exact path='/home'>
+      <OrderProvider>
+        <Routes />
+      </OrderProvider>
+      {/* <Route exact path='/home'>
       <Home /></Route>
       <Route exact path='/'>
       <SignUp /></Route>
@@ -60,7 +66,10 @@ function App() {
       <Route exact path='/cash'>
         <Cash />
       </Route>
-      
+      <Route exact path='/discount'>
+        <Discount />
+      </Route>
+       */}
     </div>
   )
 }

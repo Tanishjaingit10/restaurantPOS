@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState,useContext } from 'react'
 import CategoryList from './CategoryList';
-import {finalOrder} from './CategoryList';
+import { OrderContext } from '../../context/Auth';
+import Order from './Order';
+
 const Pos = () => {
     const [list, showList] = useState(false);
     const [cust, showCust] = useState(false);
     const [pop, showPop] = useState(false);
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
+    const [cart, setCart] = useContext(OrderContext);
 
     return (
         <div className="flex flex-row h-full">
@@ -26,7 +29,7 @@ const Pos = () => {
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     <li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col"><p>Customer Name</p><p>+91-8574635362</p></div><i class="fas fa-arrow-right absolute right-0 p-2"></i></li>
-                                    <li className="bg-green py-2">+ New Customer</li>
+                                    <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
                             </div>
                             <div className="absolute text-center py-2 right-0"><i class="fas fa-trash-alt ml-10"></i></div>
@@ -35,18 +38,12 @@ const Pos = () => {
                 </nav>
                 <div className="flex flex-col">
                     <div className="bg-white h-80">
-                        <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
-                            <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
+                    {cart.foodItem ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
+                        <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
                             <p className=" text-gray-600 text-center">Add Food items</p>
-                        </div>
-                        {/* <finalOrder.Consumer>
-                        {(order)=>{
-                            return <div>{order.foodItem}</div>
-                        }
-
-                        }
-                        </finalOrder.Consumer> */}
+                        </div>}
+                       
                     </div>
                     <div className="bg-gray-300 flex flex-col">
                         <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">
@@ -61,7 +58,7 @@ const Pos = () => {
                         </div>
                         <div className="flex flex-row w-full text-xl font-roboto">
                             <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>
-                            <button className=" w-1/2 py-4 font-bold">Discount</button>
+                            <button className=" w-1/2 py-4 font-bold"><a href="/discount">Discount</a></button>
                         </div>
                     </div>
 
