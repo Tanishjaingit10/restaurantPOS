@@ -2,7 +2,6 @@ import React, { useEffect, useState, createContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../actions/CategoryActions";
 import Pos from "./Pos"
-// const finalOrder =createContext();
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
   const [displayItems, setDisplayItems] = useState();
@@ -16,7 +15,6 @@ const CategoryList = () => {
   const [list, showList] = useState(false);
   const [show, setShow] = useState(false)
   const [open, setOpen]=useState(false)
-  // console.log(categories)
   const showItems = async (e) => {
 
     await fetch('/app/items').then((res) => res.json())
@@ -50,7 +48,6 @@ const CategoryList = () => {
   }
 
   const addCart = async (e) => {
-    // showItem({...item, ['orderedVariant']:finalVar})
     console.log(item)
     setOpen(false)
     setFinalVariant([])
@@ -101,9 +98,7 @@ const CategoryList = () => {
     dispatch(setCategories(response));
   };
   useEffect(() => {
-    // if(!categories)
       fetchCategories();
-    // console.log(categories)
   });
   useEffect(() => {
     showItem({...item, ['orderedVariant']:finalVar})
@@ -111,9 +106,6 @@ const CategoryList = () => {
       return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
     }))
   }, [finalVar]);
-
-
-  // console.log("Categories:", categories);
 
   return (
   //  <>
@@ -131,9 +123,6 @@ const CategoryList = () => {
       <div>
         {displayItems}
       </div>
-      {/* <div>
-        {order}
-      </div> */}
 
       {open? <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
         <div className="w-72 mt-6 bg-gray-500 mx-auto h-36"><img alt="" src={item.image} /></div>
@@ -157,9 +146,7 @@ const CategoryList = () => {
       </div> : null}
 
     </div>
-    // </>
   );
 };
 
 export default CategoryList;
-// export {finalOrder};
