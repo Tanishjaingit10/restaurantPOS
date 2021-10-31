@@ -38,11 +38,12 @@ const Pos = () => {
                 </nav>
                 <div className="flex flex-col">
                     <div className="bg-white h-80">
-                    {cart.foodItem ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
+                    <Order/> 
+                    {/* {cart.foodItem ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
                             <p className=" text-gray-600 text-center">Add Food items</p>
-                        </div>}
+                        </div>} */}
                        
                     </div>
                     <div className="bg-gray-300 flex flex-col">
