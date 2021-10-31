@@ -29,7 +29,7 @@ const Pos = () => {
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     <li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col"><p>Customer Name</p><p>+91-8574635362</p></div><i class="fas fa-arrow-right absolute right-0 p-2"></i></li>
-                                    <li className="bg-green py-2">+ New Customer</li>
+                                    <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
                             </div>
                             <div className="absolute text-center py-2 right-0"><i class="fas fa-trash-alt ml-10"></i></div>
