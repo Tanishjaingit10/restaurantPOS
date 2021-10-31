@@ -12,7 +12,7 @@ const colourController = require('../controllers/colourController')
 const variantController = require('../controllers/variantController')
 const tableController = require('../controllers/tableController')
 const orderController = require('../controllers/orderController')
-
+const customerController = require('../controllers/customerController')
 
 router.post('/addOrder', orderController.add_order)
 router.post('/signup', userController.add_user)
@@ -36,6 +36,8 @@ router.post('/addVariant', variantController.add_variant)
 router.post('/addTable', tableController.add_table)
 router.get('/table', tableController.all_table)
 router.delete('/removeTable/:id', tableController.remove_table)
+router.post('/addCustomer', customerController.add_customer)
+router.get('/customers', customerController.all_customers)
 
 router.post('/addItem',(req,res)=>{
     console.log(1)

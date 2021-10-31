@@ -1,4 +1,4 @@
-import React, { useState,useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import CategoryList from './CategoryList';
 import { OrderContext } from '../../context/Auth';
 import Order from './Order';
@@ -10,6 +10,22 @@ const Pos = () => {
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
     const [cart, setCart] = useContext(OrderContext);
+    const [Cust, setCust] = useState()
+    const [customer, setCustomer]=useState()
+
+    const custList = async (e) => {
+
+        await fetch('/app/customers').then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                setCust(json.map((option) => {
+                    return (<li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col"><p>{option.name}</p><p>{option.contact}</p></div><i onClick={() => { setCustomer(option.name) }} class="fas fa-arrow-right absolute right-0 p-2"></i></li>)
+                }))
+            })
+    }
+    useEffect(() => {
+        custList();
+    })
 
     return (
         <div className="flex flex-row h-full">
@@ -25,10 +41,10 @@ const Pos = () => {
                                     <li className="border-b-2 border-white py-2">Dine In New</li>
                                     <li className="py-2" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
                             </ul>
-                            <div className="ml-10 text-center p-2" onClick={() => { showCust(!cust) }}>Walk In <span><i class="fas fa-chevron-down ml-8"></i></span>
+                            <div className="ml-10 text-center p-2" onClick={() => { showCust(!cust) }}>{customer? customer:'Walk In'}<span><i class="fas fa-chevron-down ml-8"></i></span>
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
-                                    <li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col"><p>Customer Name</p><p>+91-8574635362</p></div><i class="fas fa-arrow-right absolute right-0 p-2"></i></li>
+                                    {Cust}
                                     <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
                             </div>
@@ -38,12 +54,12 @@ const Pos = () => {
                 </nav>
                 <div className="flex flex-col">
                     <div className="bg-white h-80">
-                    {cart.foodItem ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
-                        <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
+                        {cart.foodItem ? <Order /> : <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
+                            <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
                             <p className=" text-gray-600 text-center">Add Food items</p>
                         </div>}
-                       
+
                     </div>
                     <div className="bg-gray-300 flex flex-col">
                         <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">
@@ -72,14 +88,14 @@ const Pos = () => {
 
                 <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
                     <div className="flex flex-wrap justify-evenly px-6 mt-4">
-                        {/* {displayCategory} */}<CategoryList/>
+                        {/* {displayCategory} */}<CategoryList />
                     </div>
                     {/* <div className="flex flex-wrap justify-evenly mt-4 h-full">
                         {displayItems}
                     </div> */}
                 </div>
-    
-                    {/* {order} */}
+
+                {/* {order} */}
 
             </div>
 

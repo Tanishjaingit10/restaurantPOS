@@ -5,25 +5,16 @@ import Popup from '../Popup';
 
 const AddCustomer = () => {
     const history = useHistory();
-    const [customer, setCustomer] = useState({ name: "", phone: "", mailId: "" });
+    const [customer, setCustomer] = useState({ name: "", contact: "", email: "" });
     const [isOpen, setIsOpen] = useState(false);
     const [msg, setMsg] = useState("");
     const [isError, setIsError] = useState(false);
-
-    const handleInputs = (e) => {
-
-        e.preventDefault();
-        name = e.target.name;
-        value = e.target.value;
-        setCustomer({ ...customer, [name]: value });
-    
-    }
-
     let name, value;
     const handleCustomer = (e) => {
         name = e.target.name;
         value = e.target.value;
-
+        console.log(name)
+        console.log(value)
         setCustomer({ ...customer, [name]: value });
     }
 
@@ -33,15 +24,16 @@ const AddCustomer = () => {
 
     const addCustomer = async (e) => {
         e.preventDefault();
-       
-        const { name, phone, mailId } = customer;
+        
+        const { name, contact, email } = customer;
+        console.log(customer)
         const res = await fetch("/app/addCustomer", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name, phone, mailId
+                name, contact, email
             })
         });
 
@@ -74,15 +66,15 @@ const AddCustomer = () => {
                 <form className="flex flex-col w-1/3 mx-auto mt-10 font-roboto font-bold text-xl">
                     <div className="flex flex-col py-2">
                         <label htmlFor="name" className="mb-2">Name</label>
-                        <input type="text" name="number" value={customer.name} onChange={handleCustomer} className=" border-2 border-black py-2" />
+                        <input type="text" name="name" value={customer.name} onChange={handleCustomer} className=" border-2 border-black py-2" />
                     </div>
                     <div className="flex flex-col py-2">
                         <label htmlFor="phone" className="mb-2">Phone no.</label>
-                        <input type="phone" name="phone" value={customer.phone} onChange={handleCustomer} className=" border-2 border-black py-2" />
+                        <input type="phone" name="contact" value={customer.contact} onChange={handleCustomer} className=" border-2 border-black py-2" />
                     </div>
                     <div className="flex flex-col py-2">
                         <label htmlFor="email" className="mb-2">Mail id</label>
-                        <input type="email" name="mailId" value={customer.mailId} onChange={handleCustomer} className=" border-2 border-black py-2" />
+                        <input type="email" name="email" value={customer.email} onChange={handleCustomer} className=" border-2 border-black py-2" />
                     </div>
                     <button className="bg-green p-2 text-white text-center font-bold px-6 mt-10" onClick={addCustomer}>Done</button>
                 </form>
