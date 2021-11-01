@@ -50,7 +50,7 @@ const CustomerDetails = () => {
           </div>
         </div>
         <div className="flex flex-col w-4/5 relative">
-          <div>
+          <div className="border-b-2 border-primary h-3/4">
             <table className="w-full">
               <thead>
                 <tr className="">
@@ -64,16 +64,24 @@ const CustomerDetails = () => {
               </thead>
               <tbody>
                   <tr>
-                      <td className="">01</td>
+                      <td className="bg-secondary py-2 text-center">01</td>
+                      <td className="bg-secondary py-2 text-center">020505</td>
+                      <td className="bg-secondary py-2 text-center">Take Away</td>
+                      <td className="bg-secondary py-2 text-center">Completed</td>
+                      <td className="bg-secondary py-2 text-center">$29.50</td>
+                      <td className="bg-secondary py-2 text-center flex flex-col">
+                          <div>01/24/18</div>
+                          <div>20:58:09</div>
+                      </td>
                   </tr>
               </tbody>
             </table>
           </div>
-          <div className="border-t-2 border-primary w-full absolute top-96">
-            <button className="bg-green text-white py-2 text-xl w-96 mx-auto">
-              Done
+         
+            <button className="bg-green text-white py-4 text-xl w-1/3 font-semibold mt-8 mx-auto">
+             <a href="/pos"> Done</a>
             </button>
-          </div>
+         
         </div>
       </div>
     </div>

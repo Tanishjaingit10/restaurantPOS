@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react'
-import { OrderContext } from '../../context/Auth'
+import { OrderContext } from '../../context/Cart'
 
 const Order = () => {
     const [cart, setCart] = useContext(OrderContext);
@@ -38,9 +38,9 @@ const Order = () => {
      )
     },[cart])
     return (
-      <>
+      <div className="h-96">
        {display}
-       </>
+       </div>
     )
 }
 
