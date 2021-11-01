@@ -3,6 +3,7 @@ import { PaymentContext } from '../../context/Payment'
 
 const FinalPay = () => {
     const [payment, setPayment] = useContext(PaymentContext)
+    console.log(payment.total);
     return (
         <div>
              <nav className="bg-gray-400 py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">

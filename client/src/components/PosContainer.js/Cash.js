@@ -1,7 +1,9 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
+import { PaymentContext } from "../../context/Payment";
 
 const Cash = () => {
-  const [cal,setCal]=useState(0)
+  const [cal,setCal]=useState(0);
+  const [payment, setPayment] = useContext(PaymentContext)
   const calculate = async (e) => {
     if(e===11)
       setCal(100*cal)
@@ -27,7 +29,7 @@ const Cash = () => {
       <div className="flex flex-col p-8">
         <div className="flex flex-col p-6 w-96 mx-auto font-roboto">
           <div className="text-center font-semibold">Amount Due</div>
-          <div className="text-center mt-2 text-3xl text-primary">$14.00</div>
+          <div className="text-center mt-2 text-3xl text-primary">${payment.total}</div>
         </div>
         <div className="w-1/3 mx-auto flex flex-col shadow-2xl">
             <div className="bg-white relative py-4 px-2 font-roboto"><p>Amount tendered</p><span className="absolute top-2 right-2 text-4xl font-bold">${cal}<i onClick = {() => { setCal(0) }} className="far fa-times-circle ml-2 text-2xl cursor-pointer"></i></span></div>

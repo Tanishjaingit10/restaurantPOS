@@ -1,13 +1,32 @@
-import React, {useContext} from 'react'
+import React, {useContext,useEffect} from 'react'
 import { PaymentContext } from '../../context/Payment';
 import { useHistory } from 'react-router-dom';
+import { OrderContext } from '../../context/Cart';
 
 const PaymentSummary = () => {
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
+    const [cart, setCart] = useContext(OrderContext);
     const setDis = (e)=>{
         history.push('/discount');
     }
+
+    useEffect(()=>{
+        setPayment((prev) => ({
+            ...prev,
+            total: payment.subTotal - payment.discount + payment.tax,
+          }));
+    },[])
+
+    const finalPay = (e)=> {
+        e.preventDefault();
+        history.push('/payments')
+    }
+    const cashPay = (e)=> {
+        e.preventDefault();
+        history.push('/cash')
+    }
+
     return (
         <div>
             <div className="bg-gray-300 flex flex-col">
@@ -18,8 +37,8 @@ const PaymentSummary = () => {
                             <div className="relative py-4 font-bold"><label className="">Total</label><span className="absolute right-0">${payment.total}</span></div>
                         </div>
                         <div className="flex flex-row w-full text-white text-xl font-roboto">
-                            <button className="bg-primary w-1/2 py-4 font-bold"><a href="/payments">All Payments</a></button>
-                            <button className="bg-green w-1/2 py-4 font-bold"><a href="/cash">Cash</a></button>
+                            <button className="bg-primary w-1/2 py-4 font-bold" onClick={finalPay}>All Payments</button>
+                            <button className="bg-green w-1/2 py-4 font-bold" onClick={cashPay}>Cash</button>
                         </div>
                         <div className="flex flex-row w-full text-xl font-roboto">
                             <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>
