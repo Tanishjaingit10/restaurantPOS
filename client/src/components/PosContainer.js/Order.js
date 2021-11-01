@@ -8,6 +8,11 @@ const Order = () => {
   const [payment, setPayment] = useContext(PaymentContext);
   const removeVar = (e) => {
     setCart(cart.filter((i) => i !== e));
+    setPayment((prev) => ({
+      ...prev,
+      subTotal: payment.subTotal - e.subtotal,
+    }));
+    console.log(payment.subTotal)
   };
   useEffect(() => {
    

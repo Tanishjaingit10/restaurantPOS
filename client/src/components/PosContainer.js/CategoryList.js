@@ -58,7 +58,8 @@ const CategoryList = () => {
   }
   const removeVar = (e) => {
     setFinalVariant(finalVar.filter(i => i !== e))
-    item.subtotal = item.subtotal-e.price;
+    showItem({...item, ['subtotal']:item.subtotal-e.price})
+    // setItem(item.subtotal = item.subtotal-e.price;
     console.log(item.subtotal)
 }
 
