@@ -4,15 +4,7 @@ export const OrderContext = createContext();
 
 export const OrderProvider= (props)=>{
 
-    const [cart, setCart]= useState([
-        {
-         fooditem:"pizza",
-         Image:null,
-         orderedvariant: [],
-         Price: 24,
-         subTotal: null  
-    },
-])
+    const [cart, setCart]= useState([])
 
     return (
         <div>
