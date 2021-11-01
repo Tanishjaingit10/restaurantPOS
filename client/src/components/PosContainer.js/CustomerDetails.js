@@ -1,6 +1,21 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import { useParams } from 'react-router'
 
 const CustomerDetails = () => {
+    const {id} = useParams()
+    // console.log(id)
+    const [cust, setCust]=useState({name:"", contact:"",email:""});
+    const loadCustomer = async ()=>{
+        // console.log(id)
+        await fetch(`/app/customer/${id}`).then((res) => res.json())
+        .then((json) => {
+            // console.log(json)
+            setCust(json)
+        })
+    }
+    useEffect(() => {
+        loadCustomer();
+    },[id])
     return (
         <div className="h-screen justify-items-conter">
             <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -13,17 +28,17 @@ const CustomerDetails = () => {
             <div className="h-screen border-r-2 border-primary w-1/5 flex flex-col font-roboto py-4">
                 <div className="flex flex-col my-2 px-6">
                     <label>Name</label>
-                    <p className="text-primary text-xl font-semibold">Customer name</p>
+                    <p className="text-primary text-l font-semibold">{cust.name}</p>
                 </div>
                 <div className="flex flex-col my-2 px-6">
                     <label>Phone</label>
-                    <p className="text-primary text-xl font-semibold">+1234536378</p>
+                    <p className="text-primary text-l font-semibold">{cust.contact}</p>
                 </div>
                 <div className="flex flex-col my-2 px-6">
                     <label>Email address</label>
-                    <p className="text-primary text-xl font-semibold">name@gmail.com</p>
+                    <p className="text-primary text-l font-semibold">{cust.email}</p>
                 </div>
-                <div className="bg-primary text-white py-4 my-2 text-xl text-center font-semibold">Edit</div>
+                <div className="bg-primary text-white py-4 my-2 text-xl text-center font-semibold"><a href={"/editcustomer/"+id}>Edit</a></div>
             </div>
             <div className="flex flex-col w-4/5 relative">
                  <div>

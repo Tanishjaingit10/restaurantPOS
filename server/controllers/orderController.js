@@ -8,12 +8,6 @@ const add_order =async (request, response, next)=>{
         return response.status(422).json({error:"Please fill out the required fields!"})
     }
             
-
-    // await category_template_copy.findOne({category:category}).then((categoryExist)=>{
-    //     if(categoryExist){
-    //         console.log(1)
-    //         return response.status(402).json({error:"Item Already Exists!"})
-    //     }
         const new_order = new order_template_copy({order})
         new_order.save().then(()=>{
             console.log(2)

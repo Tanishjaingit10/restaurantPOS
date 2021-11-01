@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useState,useEffect } from 'react';
+import { useHistory,useParams } from 'react-router-dom';
 import signup from '../../popup';
 import Popup from '../Popup';
 
@@ -9,7 +9,20 @@ const AddCustomer = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [msg, setMsg] = useState("");
     const [isError, setIsError] = useState(false);
+    const { id } = useParams();
     let name, value;
+    const loadCustomer = async () => {
+        console.log(id)
+        await fetch(`/app/customer/${id}`).then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                setCustomer(json)
+            })
+    }
+    useEffect(() => {
+        if (id)
+            loadCustomer();
+    }, [id])
     const handleCustomer = (e) => {
         name = e.target.name;
         value = e.target.value;
@@ -18,31 +31,48 @@ const AddCustomer = () => {
         setCustomer({ ...customer, [name]: value });
     }
 
-    const onAdd = ()=> {
-        history.push('/pos');
+    const onAdd = () => {
+        if(id)
+            history.push(`/customerDetails/${id}`);
+        else 
+            history.push('/pos');
     }
 
     const addCustomer = async (e) => {
         e.preventDefault();
-        
         const { name, contact, email } = customer;
-        console.log(customer)
-        const res = await fetch("/app/addCustomer", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                name, contact, email
-            })
-        });
+        let res;
+        if (id) {
+            res = await fetch(`/app/updateCustomer/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name, contact, email
+                })
 
-        if (res.status === 201) {
-            let ans = "Customer added successfully";
-            setMsg(ans);
-            console.log(ans);
+            });
+
+        }
+        else {
+            res = await fetch("/app/addCustomer", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    name, contact, email
+                })
+            });
+
+        }
+
+        if (res.status === 201||res.status===200) {
+            let obj = signup.find((pop) => pop.id === res.status);
+            setMsg(obj.title);
             setIsOpen(!isOpen);
-         
+
 
         }
         else {
@@ -54,13 +84,13 @@ const AddCustomer = () => {
     }
 
     return (
-        
-             <div>
+
+        <div>
             <div className="bg-white w-full h-full top-0 fixed">
                 <nav className="bg-green py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                     <div className="flex flex-wrap items-center">
-                        <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/pos"><i class="fas fa-arrow-left mr-4"></i>Back</a></div>
-                        <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">New Customer</div>
+                        <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href={id?`/customerDetails/${id}`:"/pos"}><i class="fas fa-arrow-left mr-4"></i>Back</a></div>
+                        <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">{id ? 'Edit Customer' : 'New Customer'}</div>
                     </div>
                 </nav>
                 <form className="flex flex-col w-1/3 mx-auto mt-10 font-roboto font-bold text-xl">
@@ -96,7 +126,7 @@ const AddCustomer = () => {
                 handleClose={onAdd}
             />}
         </div>
-        
+
     )
 }
 
