@@ -10,6 +10,13 @@ const Payment = () => {
         history.push("/finalPay");
         console.log(payment.total);
     }
+
+    const cashPay = (e)=> {
+        e.preventDefault();
+        history.push("/cashPay");
+       
+    }
+
     return (
         <div className="h-screen justify-items-conter">
              <nav className="bg-gray-400 py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -19,9 +26,9 @@ const Payment = () => {
                 </div>  
                 </nav> 
                 <div className=" m-20 justify-evenly flex flex-wrap p-6 px-20">
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
-                      <a href="/cash">  <div className=" py-2 text-center">Cash</div>
-                       <div className=" py-2 text-center">Logo</div></a>
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white" onClick={cashPay}>
+                       <div className=" py-2 text-center">Cash</div>
+                       <div className=" py-2 text-center">Logo</div>
                     </div>
                     <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white" onClick={onPay}>
                         <div className=" py-2 text-center">Credit / Debit Card</div>
