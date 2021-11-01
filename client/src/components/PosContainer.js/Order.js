@@ -8,6 +8,7 @@ const Order = () => {
       setCart(cart.filter(i => i !== e))
   }
     useEffect(()=>{
+      console.log(cart)
      setDisplay(
        cart.map((order)=>{
          return (
