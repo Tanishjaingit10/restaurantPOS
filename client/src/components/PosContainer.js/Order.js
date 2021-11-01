@@ -1,15 +1,22 @@
 import React, {useContext, useState, useEffect} from 'react'
-import { OrderContext } from '../../context/Cart'
+import { OrderContext } from '../../context/Cart';
+import { PaymentContext } from "../../context/Payment";
 
 const Order = () => {
     const [cart, setCart] = useContext(OrderContext);
     const [display, setDisplay] = useState();
+    const [payment,setPayment]  = useContext(PaymentContext);
     const removeVar = (e) => {
       setCart(cart.filter(i => i !== e))
   }
     useEffect(()=>{
      setDisplay(
        cart.map((order)=>{
+        setPayment(prev => ({
+          ...prev, subTotal: payment.subTotal + order.subtotal,
+    }));
+    setPayment(prev => ({
+      ...prev, total:payment.subTotal-payment.discount+payment.tax,}))
          return (
           <div className="flex flex-row p-4 border-2 font-roboto">
           <div className=" w-1/3 text-left flex flex-col pl-6">
@@ -36,6 +43,8 @@ const Order = () => {
          )
        })
      )
+
+     
     },[cart])
     return (
       <div className="h-96">

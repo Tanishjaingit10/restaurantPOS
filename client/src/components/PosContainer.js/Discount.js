@@ -18,7 +18,7 @@ const Discount = () => {
   const addDiscount = ()=> {
     
     setPayment(prev => ({
-      ...prev, discount: cal,}))
+      ...prev, discount: cal*payment.subTotal/100,}))
 
       history.push("/pos");
 
