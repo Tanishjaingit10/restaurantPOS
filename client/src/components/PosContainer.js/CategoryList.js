@@ -99,7 +99,7 @@ const CategoryList = () => {
     const { category, color } = cat;
     return (
       <div>
-        <button value={category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " onClick={showItems} style={{ backgroundColor: color }}>{category}</button>
+        <button value={category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2 " onClick={showItems} style={{ backgroundColor: color }}>{category}</button>
       </div>
     )
   })
@@ -127,12 +127,12 @@ const CategoryList = () => {
 
   return (
 
-    <div>
+    <div className="h-screen">
 
-      <div className="flex flex-wrap justify-evenly">
+      <div className="flex flex-wrap justify-start">
         {renderList}
       </div>
-      <div>
+      <div className="mt-10 flex flex-wrap">
         {displayItems}
       </div>
 
