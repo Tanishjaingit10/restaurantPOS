@@ -11,16 +11,16 @@ const Payment = () => {
                 </nav> 
                 <div className=" m-20 justify-evenly flex flex-wrap p-6 px-20">
                     <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
-                        <div className=" py-2 text-center">Cash</div>
-                       <div className=" py-2 text-center">Logo</div>
+                      <a href="/cash">  <div className=" py-2 text-center">Cash</div>
+                       <div className=" py-2 text-center">Logo</div></a>
                     </div>
                     <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
-                        <div className=" py-2 text-center">Credit / Debit Card</div>
-                       <div className=" py-2 text-center"><i class="far fa-credit-card text-3xl"></i></div>
+                        <a href="/finalPay"><div className=" py-2 text-center">Credit / Debit Card</div>
+                       <div className=" py-2 text-center"><i class="far fa-credit-card text-3xl"></i></div></a>
                     </div>
                     <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
-                        <div className=" py-2 text-center">External Payment</div>
-                       <div className=" py-2 text-center">Logo</div>
+                       <a href="finalPay"> <div className=" py-2 text-center">External Payment</div>
+                       <div className=" py-2 text-center">Logo</div></a>
                     </div>
                     <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
                         <div className=" py-2 text-center">Pay Later</div>

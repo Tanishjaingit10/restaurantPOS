@@ -12,6 +12,7 @@ import Cash from "./components/PosContainer.js/Cash";
 import CategoryList from "./components/PosContainer.js/CategoryList";
 import CustomerDetails from "./components/PosContainer.js/CustomerDetails";
 import Discount from "./components/PosContainer.js/Discount";
+import FinalPay from "./components/PosContainer.js/FinalPay";
 import Payment from "./components/PosContainer.js/Payment";
 import Pos from "./components/PosContainer.js/Pos";
 import SignUp from "./components/SignUp";
@@ -42,6 +43,7 @@ const Routes = () => {
           <Route exact path="/newCustomer" component={AddCustomer} />
           <Route exact path="/editcustomer/:id" component={AddCustomer} />
           <Route exact path="/customerDetails/:id" component={CustomerDetails} />
+          <Route exact path="/finalPay" component={FinalPay} />
         </Switch>
       </Router>
     
