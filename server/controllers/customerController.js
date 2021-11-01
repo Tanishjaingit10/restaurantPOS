@@ -10,7 +10,6 @@ const add_customer =async (request, response, next)=>{
 
     await customer_template_copy.findOne({contact:contact}).then((customerExist)=>{
         if(customerExist){
-            console.log(1)
             return response.status(402).json({error:"Customer Already Exists!"})
         }
         const cat = new customer_template_copy({name,contact,email})
@@ -35,6 +34,42 @@ const all_customers = async (request, response) => {
 
     });
 }
+const get_customer = async (request, response) => {
+    console.log(1)
+    console.log(request.params.id)
+    customer_template_copy.findOne({ contact: request.params.id }, (err, data) => {
+        if (!err) {
+            if (data === null)
+                response.json({ message: 'Customer not found!' })
+            else response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Customer could not be shown!' })
+        }
+
+    });
+}
+const update_customer = async (request, response, next) => {
+    const { name,contact,email } = request.body;
+    let updatedData = {
+        name: name,
+        contact: contact,
+        email: email
+    }
+    if (!name || !contact)
+        return response.status(422).json({ error: "Please fill out the required fields!" })
+    customer_template_copy.findOneAndUpdate({ contact: contact }, { $set: updatedData }).then((data) => {
+        if (data === null)
+            response.json({ message: 'Customer not found!' })
+        else response.status(200).json({ message: 'Customer updated successfully!' })
+    })
+        .catch(error => {
+            response.status(401).json({ message: 'Customer could not be updated!' })
+        })
+
+}
+
 module.exports = {
-    add_customer, all_customers
+    add_customer, all_customers, get_customer, update_customer
 }

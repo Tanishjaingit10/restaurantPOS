@@ -1,23 +1,5 @@
 const items_template_copy = require('../models/food_items')
-// const add_item = async (request, response, next) => {
-//     const { foodItem, category, image, description, price, availability } = request.body;
-//     if (!foodItem || !category || !price || !availability)
-//         return response.status(422).json({ error: "Please fill out the required fields!" })
 
-//     await items_template_copy.findOne({ foodItem: foodItem }).then((itemExist) => {
-//         if (itemExist) {
-//             return response.status(402).json({ error: "Item Already Exists!" })
-//         }
-//         const item = new items_template_copy({ foodItem, category, image, description, price, availability })
-//         item.save().then(() => {
-//             response.status(201).json({ message: "Item added successfully!" })
-//         })
-//             .catch(error => {
-//                 response.status(401).json({ error: "Item could not be added!" })
-//             })
-
-//     });
-// }
 const get_item = async (request, response) => {
     items_template_copy.findOne({ foodItem: request.params.id }, (err, data) => {
 

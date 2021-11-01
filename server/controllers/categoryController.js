@@ -39,7 +39,7 @@ const update_category = async (request, response, next) => {
     category_template_copy.findOneAndUpdate({ category: category }, { $set: updatedData }).then((data) => {
         if (data === null)
             response.json({ message: 'Item not found!' })
-        else response.status(201).json({ message: 'Item updated successfully!' })
+        else response.status(200).json({ message: 'Item updated successfully!' })
     })
         .catch(error => {
             response.status(401).json({ message: 'Item could not be updated!' })

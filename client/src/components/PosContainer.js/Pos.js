@@ -19,7 +19,7 @@ const Pos = () => {
             .then((json) => {
                
                 setCust(json.map((option) => {
-                    return (<li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer(option.name) }}><p>{option.name}</p><p>{option.contact}</p></div><a href="/customerDetails"><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+                    return (<li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer(option.name) }}><p>{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                 }))
             })
     }
