@@ -1,7 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react';
+import { useHistory, Redirect } from 'react-router-dom';
+import { PaymentContext } from '../../context/Payment';
 
 const Discount = () => {
-  const [cal,setCal]=useState(0)
+  const [cal,setCal]=useState(0);
+  const history = useHistory();
+  const [payment, setPayment] = useContext(PaymentContext);
   const calculate = async (e) => {
     if(e===11)
       setCal(100*cal)
@@ -9,6 +13,15 @@ const Discount = () => {
       setCal(Math.floor(cal/10))
     else
     setCal(10*cal+e)
+
+  }
+  const addDiscount = ()=> {
+    
+    setPayment(prev => ({
+      ...prev, discount: cal,}))
+
+      history.push("/pos");
+
   }
     return (
         <div className="h-screen justify-items-conter">
@@ -44,7 +57,7 @@ const Discount = () => {
                 <div className="text-center border-2 py-2"><i onClick= {() => { calculate(12) }} className="fas fa-backspace cursor-pointer"></i></div>
             </div>
         </div>
-        <div className="w-96 bg-green mt-10 mx-auto py-4 text-white text-center text-2xl font-roboto font-bold">Proceed</div>
+        <div className="w-96 bg-green mt-10 mx-auto py-4 text-white text-center text-2xl font-roboto font-bold" onClick={addDiscount}>Done</div>
       </div>
     </div>
     )

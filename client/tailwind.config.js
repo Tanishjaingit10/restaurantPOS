@@ -22,8 +22,8 @@ module.exports = {
         purple: "#5B64AF",
         orange: "#F15A25",
         magenta: "#E71880",
-        lightorange: "#F47621"
-
+        lightorange: "#F47621",
+        secondary: "#f7e3d5"
       }
     },
   },

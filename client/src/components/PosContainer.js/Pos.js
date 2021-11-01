@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import CategoryList from './CategoryList';
-import { OrderContext } from '../../context/Auth';
+import { OrderContext } from '../../context/Cart';
 import Order from './Order';
+import PaymentSummary from './PaymentSummary';
 
 const Pos = () => {
     const [list, showList] = useState(false);
@@ -53,16 +54,18 @@ const Pos = () => {
                     </div>
                 </nav>
                 <div className="flex flex-col">
-                    <div className="bg-white h-80">
+                    
                     {/* <Order/>  */}
-                    {cart[0] ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
+                    {cart[0] ?<Order/> : <div className="bg-white h-80">
+                         <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
                             <p className=" text-gray-600 text-center">Add Food items</p>
+                        </div>
                         </div>}
                        
-                    </div>
-                    <div className="bg-gray-300 flex flex-col">
+                    <PaymentSummary />
+                    {/* <div className="bg-gray-300 flex flex-col">
                         <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">
                             <div className="relative py-4"><label className="">Subtotal</label><span className="absolute right-0">0.00</span></div>
                             <div className="relative py-4"><label className="">Tax</label><span className="absolute right-0">0.00</span></div>
@@ -77,7 +80,7 @@ const Pos = () => {
                             <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>
                             <button className=" w-1/2 py-4 font-bold"><a href="/discount">Discount</a></button>
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
             </div>

@@ -16,14 +16,17 @@ import CategoryList from './components/PosContainer.js/CategoryList';
 import Payment from './components/PosContainer.js/Payment';
 import Cash from './components/PosContainer.js/Cash';
 import Discount from './components/PosContainer.js/Discount';
-import { OrderProvider } from './context/Auth';
+import { OrderProvider } from './context/Cart';
 import Routes from './Routes';
+import { PaymentProvider } from './context/Payment';
 
 function App() {
   return (
     <div>
       <OrderProvider>
+        <PaymentProvider>
         <Routes />
+        </PaymentProvider>
       </OrderProvider>
       {/* <Route exact path='/home'>
       <Home /></Route>
