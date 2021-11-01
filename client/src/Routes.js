@@ -10,6 +10,7 @@ import Menu from "./components/Menu";
 import AddCustomer from "./components/PosContainer.js/AddCustomer";
 import Cash from "./components/PosContainer.js/Cash";
 import CategoryList from "./components/PosContainer.js/CategoryList";
+import CustomerDetails from "./components/PosContainer.js/CustomerDetails";
 import Discount from "./components/PosContainer.js/Discount";
 import Payment from "./components/PosContainer.js/Payment";
 import Pos from "./components/PosContainer.js/Pos";
@@ -39,6 +40,7 @@ const Routes = () => {
           <Route exact path="/cash" component={Cash} />
           <Route exact path="/discount" component={Discount} />
           <Route exact path="/newCustomer" component={AddCustomer} />
+          <Route exact path="/customerDetails" component={CustomerDetails} />
         </Switch>
       </Router>
     
