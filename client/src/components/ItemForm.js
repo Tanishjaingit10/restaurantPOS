@@ -3,12 +3,12 @@ import Popup from './Popup';
 import days from '../days';
 import signup from '../popup';
 import TimePicker from 'react-gradient-timepicker';
-import { useHistory} from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 
 const ItemForm = () => {
     const history = useHistory();
-    const [img,setImg] = useState("");
+    const [img, setImg] = useState("");
     const [show, setShow] = useState(false);
     const [open, setOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -20,42 +20,42 @@ const ItemForm = () => {
     const [avail, setAvail] = useState(true)
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "",  time: "", description: "", price: 0, availability: "", discount: 0, image: "", finalVariant: [], finalAvailable: [] })
+    const [item, setItem] = useState({ foodItem: "", category: "", time: "", description: "", price: 0, availability: "", discount: 0, image: "", finalVariant: [], finalAvailable: [] })
     const [Var, setVar] = useState({ variant: "", description: "", price: "" })
     const [variant, setVariant] = useState(false);
     const [showAvailable, setShowAvailable] = useState(false);
     const [availabilty, setAvailability] = useState({ day: "", startTime: "", endTime: "" });
     const [list, setList] = useState();
-    const [set, setAvailable]=useState(false);
-    const [finalAvail, setFinalAvail]=useState([]);
-    const [finalVar, setFinalVariant]=useState([]);
-    const [imageStatus, setImageStatus]=useState('Upload')
+    const [set, setAvailable] = useState(false);
+    const [finalAvail, setFinalAvail] = useState([]);
+    const [finalVar, setFinalVariant] = useState([]);
+    const [imageStatus, setImageStatus] = useState('Upload')
     const [addList, setAddList] = useState();
     const [add, setAdd] = useState(false);
     const [popup, setPopup] = useState(false);
     const [allTime, showAllTime] = useState(false);
-    let name,value;
+    let name, value;
 
     const imageHandler = (e) => {
         const reader = new FileReader();
-        reader.onload = () =>{
-          if(reader.readyState === 2){
-            setImg(reader.result)
-          }
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setImg(reader.result)
+            }
         }
         reader.readAsDataURL(e.target.files[0])
-        console.log({img})
-      };
-    
+        console.log({ img })
+    };
+
     const handleInputs = (e) => {
 
         e.preventDefault();
         name = e.target.name;
         value = e.target.value;
         setItem({ ...item, [name]: value });
-        if(name==='image')
+        if (name === 'image')
             setImageStatus('Image Uploaded')
-    
+
     }
 
 
@@ -89,27 +89,38 @@ const ItemForm = () => {
         console.log(name)
         console.log(value)
         setVar({ ...Var, [name]: value });
-       
+
+    }
+    const removeVar = (e) => {
+        setFinalVariant(finalVar.filter(i => i !== e))
+    }
+    const removeAvail = (e) => {
+        console.log(e)
+        setFinalAvail(finalAvail.filter(i => i !== e))
     }
 
 
     useEffect(() => {
         console.log(finalVar)
-        setItem({...item, ["finalVariant"]:finalVar})
+        setItem({ ...item, ["finalVariant"]: finalVar })
         setAddList(
-            finalVar.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
+            finalVar.map((obj) => {
+                return (<div className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span onClick={() => { removeVar(obj) }} className="absolute right-4 cursor-pointer">x</span></div>)
             }))
-    }, [finalVar])
+        setList(
+            finalAvail.map((obj) => {
+                return (<div className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.day} | {obj.startTime} - {obj.endTime}<span onClick={() => { removeAvail(obj) }} className="absolute right-4 cursor-pointer">x</span></div>)
+            }))
+    }, [finalVar, finalAvail])
 
     const addVariant = async (e) => {
         e.preventDefault();
         setAdd(true);
         setVariant(!variant)
-        
+
         setFinalVariant(oldArray => [...oldArray, Var])
-       console.log(finalVar)
-     
+        console.log(finalVar)
+
     }
     let st, et;
     const showStart = (e) => {
@@ -127,11 +138,11 @@ const ItemForm = () => {
         setAvailability({ ...availabilty, [name]: value });
         console.log(et);
     }
- 
-    const handleAvailable=(e)=>{
+
+    const handleAvailable = (e) => {
         setIsOpen(!isOpen)
         setAvailable(true)
-        setItem({...item, ['finalAvailable']:finalAvail})
+        setItem({ ...item, ['finalAvailable']: finalAvail })
 
     }
     const handleDay = (e) => {
@@ -152,16 +163,16 @@ const ItemForm = () => {
         )
 
     }
-     
-    const showDayTime = ()=> {
+
+    const showDayTime = () => {
         setShowDays(!showDays);
         setList(
-            finalAvail.map((obj)=>{
-            return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.day} | {obj.startTime} - {obj.endTime}<span className="absolute right-4">x</span></button>)
+            finalAvail.map((obj) => {
+                return (<div className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.day} | {obj.startTime} - {obj.endTime}<span onClick={() => { removeAvail(obj) }} className="absolute right-4 cursor-pointer">x</span></div>)
             }))
     }
 
-    const dayTime = (e)=> {
+    const dayTime = (e) => {
         setShowTime(!showTime)
         setShowAvailable(true);
         setFinalAvail(oldArray => [...oldArray, availabilty])
@@ -176,14 +187,16 @@ const ItemForm = () => {
         e.preventDefault();
         console.log(finalVar)
         // setItem({...item, ['finalVariant']:finalVar})
-        let { foodItem, category, time, description, price, availability, discount,image, finalVariant, finalAvailable } = item;
-        if(allTime){finalAvailable = [{
-            "day": "everyday",
-            "startTime": "12:00 AM",
-            "endTime": "11:59 PM"
-        }]}
+        let { foodItem, category, time, description, price, availability, discount, image, finalVariant, finalAvailable } = item;
+        if (allTime) {
+            finalAvailable = [{
+                "day": "everyday",
+                "startTime": "12:00 AM",
+                "endTime": "11:59 PM"
+            }]
+        }
         console.log(item)
-        
+
         const res = await fetch("/app/addItem", {
             method: "POST",
             headers: {
@@ -194,7 +207,7 @@ const ItemForm = () => {
             })
 
         });
-        
+
         if (res.status === 201) {
             setMsg('Added Successfully');
             setPopup(!popup);
@@ -237,25 +250,25 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
-                                {set?<div className="text-white w-full">{list}</div>:null}
-                                {allTime?<button className="bg-primary px-10 py-2 w-full mb-2 text-white relative">Everyday / All Time<span className="absolute right-4">x</span></button>:null}
-                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={()=>{setShow(!show)}}>
-                                    
+                                {set ? <div className="text-white w-full">{list}</div> : null}
+                                {allTime ? <button className="bg-primary px-10 py-2 w-full mb-2 text-white relative">Everyday / All Time<span className="absolute right-4">x</span></button> : null}
+                                <ul className="bg-primary text-center text-white cursor-pointer" onClick={() => { setShow(!show) }}>
+
                                     <li className="py-2">Select</li>
-                                    {show ? <><li className="py-2" onClick={()=>{showAllTime(!allTime)}}>Everyday/All Time</li>
-                                        <li className="py-2" onClick={()=>{setIsOpen(!isOpen)}}>Select Day/Time</li></> : null}
+                                    {show ? <><li className="py-2" onClick={() => { showAllTime(!allTime) }}>Everyday/All Time</li>
+                                        <li className="py-2" onClick={() => { setIsOpen(!isOpen) }}>Select Day/Time</li></> : null}
                                 </ul>
                             </div>
                             <div className="flex flex-row bg-white space-x-4">
                                 <div className="flex flex-col w-2/3 space-y-2">
                                     <label className="mb-2">Image</label>
                                     <div className="border-gray-200 border-2 py-2"><input type="file" accept="image/*" name="image-upload" id="input" onChange={imageHandler} /></div>
-                                    
+
                                     <button className="bg-primary text-white py-2 font-bold cursor-pointer" name="image" value={img} onClick={handleInputs}>{imageStatus}</button>
                                 </div>
-                                <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img"/></div>
+                                <div className="bg-gray-200 w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" /></div>
                             </div>
-                           
+
                         </div>
                         <div className=" w-1/2 space-y-2 p-4">
                             <div className="flex flex-col bg-white">
@@ -264,7 +277,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="variant" className="mb-2">Variant</label>
-                                {add?<div className="text-white w-full">{addList}</div>:null}
+                                {add ? <div className="text-white w-full">{addList}</div> : null}
                                 <div className="bg-primary text-center py-2 text-white cursor-pointer" onClick={() => { setVariant(!variant) }}>+</div>
                             </div>
                             <div className="flex flex-col bg-white">
@@ -291,12 +304,12 @@ const ItemForm = () => {
             {isOpen && <Popup
                 content={<>
                     <div className="flex flex-col px-8 space-y-4 text-white">
-                        {showAvailable ? <div className="">{list}</div>:null}
+                        {showAvailable ? <div className="">{list}</div> : null}
                         <button className="bg-green px-10 py-2" onClick={showWeek}>+</button>
                         <button className="bg-green px-10 py-2" onClick={handleAvailable}>Done</button>
                     </div>
                 </>}
-                handleClose={()=>{setIsOpen(!isOpen)}}
+                handleClose={() => { setIsOpen(!isOpen) }}
             />}
             {showDays && <div className="popup-box">
                 <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-52">
@@ -307,28 +320,28 @@ const ItemForm = () => {
             {showTime && <div className="popup-box">
                 <div className="flex flex-col w-80 mx-auto font-roboto font-bold mt-72 bg-primary">
                     <div className="flex flex-row py-2">
-                    <label className="text-white w-1/2 ml-2">Start Time:</label>
-                    <TimePicker
-                        placeholder={availabilty.startTime}
-                        theme="Bourbon"
-                        className="timepicker bg-primary text-white"
-                        onSet={(val) => {
-                            showStart(val.format12);
-                          }}
-                       
-                    />
+                        <label className="text-white w-1/2 ml-2">Start Time:</label>
+                        <TimePicker
+                            placeholder={availabilty.startTime}
+                            theme="Bourbon"
+                            className="timepicker bg-primary text-white"
+                            onSet={(val) => {
+                                showStart(val.format12);
+                            }}
+
+                        />
                     </div>
                     <div className="flex flex-row py-2">
-                    <label className="text-white w-1/2 ml-2">End Time:</label>
-                      <TimePicker
-                       placeholder={availabilty.endTime}
-                        theme="Bourbon"
-                        className="timepicker bg-primary text-white"
-                        onSet={(val) => {
-                            showEnd(val.format12);
-                          }}
-                    />
-                    </div> 
+                        <label className="text-white w-1/2 ml-2">End Time:</label>
+                        <TimePicker
+                            placeholder={availabilty.endTime}
+                            theme="Bourbon"
+                            className="timepicker bg-primary text-white"
+                            onSet={(val) => {
+                                showEnd(val.format12);
+                            }}
+                        />
+                    </div>
 
                     <button className="bg-green p-2 text-white text-center font-bold px-6" onClick={dayTime}>Done</button>
                 </div>

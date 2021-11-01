@@ -34,14 +34,14 @@ const Pos = () => {
                     <div className="flex flex-row px-6 justify-items-center">
                         <div className=" justify-center md:justify-start text-white py-2"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
                         <div className="flex flex-row w-full mx-24 relative">
-                            <ul className=" text-white text-left" onClick={() => { showList(!list) }}>
-                                <li className="p-2">Order New<span><i class="fas fa-chevron-down ml-8"></i></span></li>
+                            <ul className=" text-white text-left">
+                                <li className="p-2">Order New<span><i onClick={() => { showList(!list) }} className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
                                 {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
                                     <li className="border-b-2 border-white py-2">Takeaway New</li>
                                     <li className="border-b-2 border-white py-2">Dine In New</li>
                                     <li className="py-2" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
                             </ul>
-                            <div className="ml-10 text-center p-2" onClick={() => { showCust(!cust) }}>{customer? customer:'Walk In'}<span><i class="fas fa-chevron-down ml-8"></i></span>
+                            <div className="ml-10 text-center p-2">{customer? customer:'Walk In'}<span><i onClick={() => { showCust(!cust) }} className="fas fa-chevron-down ml-8 cursor-pointer"></i></span>
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
