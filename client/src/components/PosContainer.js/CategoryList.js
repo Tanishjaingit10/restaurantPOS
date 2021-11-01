@@ -13,7 +13,7 @@ const CategoryList = () => {
   const [Variant, setVariant] = useState([]);
   const [finalVar, setFinalVariant] = useState([]);
   const [addList, setAddList] = useState();
-  const [final, setFinal] = useState();
+  const [final, setFinal] = useState([]);
   const [list, showList] = useState(false);
   const [show, setShow] = useState(false)
   const [open, setOpen]=useState(false)
@@ -34,11 +34,16 @@ const CategoryList = () => {
       })
 
   }
+
+  useEffect(() => {
+    if(Object.keys(Variant).length)
+      setFinalVariant(oldArray => {return [...oldArray, Variant]})
+  }, [Variant])
   const handleVariant = async (e) => {
     setVariant(e);
     showList(false)
-    item.subtotal = item.subtotal + e.price;
-    setFinalVariant(oldArray => [...oldArray, Variant])
+    // item.subtotal = item.subtotal + e.price;
+    // setFinalVariant(oldArray => [...oldArray, Variant])
   }
   const showVariant = async (e) => {
     showList(true);
@@ -50,19 +55,12 @@ const CategoryList = () => {
   }
 
   const addCart = async (e) => {
-    setCart([
-      {fooditem:item.foodItem,
-       Image: item.image,
-       orderedvariant: item.orderedVariant,
-       Price: item.price,
-       subTotal: item.subtotal
-    },]
-);
-  console.log("cart:",cart);
-    // showItem({...item, ['orderedVariant']:finalVar})
     console.log(item.foodItem)
+    console.log("cart:",cart);
+    // showItem({...item, ['orderedVariant']:finalVar})
     setOpen(false)
     setFinalVariant([])
+    setCart(prev =>[...prev,item])
     showOrder(oldArray => [...oldArray, item])
     // console.log(order)
    
@@ -81,7 +79,7 @@ const CategoryList = () => {
             "subtotal":json.price
           })
         }
-        )
+      )
     }
   }
 
@@ -105,7 +103,7 @@ const CategoryList = () => {
   };
   useEffect(() => {
       fetchCategories();
-  });
+  },[]);
   useEffect(() => {
     showItem({...item, ['orderedVariant']:finalVar})
     setFinal(finalVar.map((obj) => {
