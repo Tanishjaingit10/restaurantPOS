@@ -1,6 +1,15 @@
-import React from 'react'
+import React,{useContext} from 'react'
+import { PaymentContext } from '../../context/Payment';
+import { useHistory } from 'react-router-dom';
 
 const Payment = () => {
+    const history = useHistory();
+    const [payment, setPayment] = useContext(PaymentContext);
+    const onPay = (e)=> {
+        e.preventDefault();
+        history.push("/finalPay");
+        console.log(payment.total);
+    }
     return (
         <div className="h-screen justify-items-conter">
              <nav className="bg-gray-400 py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -14,13 +23,13 @@ const Payment = () => {
                       <a href="/cash">  <div className=" py-2 text-center">Cash</div>
                        <div className=" py-2 text-center">Logo</div></a>
                     </div>
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
-                        <a href="/finalPay"><div className=" py-2 text-center">Credit / Debit Card</div>
-                       <div className=" py-2 text-center"><i class="far fa-credit-card text-3xl"></i></div></a>
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white" onClick={onPay}>
+                        <div className=" py-2 text-center">Credit / Debit Card</div>
+                       <div className=" py-2 text-center"><i class="far fa-credit-card text-3xl"></i></div>
                     </div>
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
-                       <a href="finalPay"> <div className=" py-2 text-center">External Payment</div>
-                       <div className=" py-2 text-center">Logo</div></a>
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white"onClick={onPay}>
+                       <div className=" py-2 text-center">External Payment</div>
+                       <div className=" py-2 text-center">Logo</div>
                     </div>
                     <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
                         <div className=" py-2 text-center">Pay Later</div>

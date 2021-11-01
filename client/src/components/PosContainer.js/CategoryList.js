@@ -2,11 +2,13 @@ import React, { useEffect, useState, useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCategories } from "../../actions/CategoryActions";
 import { OrderContext } from "../../context/Cart";
+import { PaymentContext } from "../../context/Payment";
 
 
 const CategoryList = () => {
   const categories = useSelector((state) => state.allCategories.categories);
   const [cart, setCart] = useContext(OrderContext);
+  const [payment, setPayment] = useContext(PaymentContext);
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({ foodItem: "", image: "", orderedVariant: [], price: 0,subtotal:0 });
   const [order, showOrder] = useState([])
@@ -66,6 +68,10 @@ const CategoryList = () => {
     setOpen(false)
     setFinalVariant([])
     setCart(prev =>[...prev,item])
+    setPayment((prev) => ({
+      ...prev,
+      subTotal: payment.subTotal + item.subtotal,
+    }));
     showOrder(oldArray => [...oldArray, item])
     // console.log(order)
    
