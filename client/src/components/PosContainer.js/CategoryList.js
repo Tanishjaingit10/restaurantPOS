@@ -21,7 +21,7 @@ const CategoryList = () => {
 
     await fetch('/app/items').then((res) => res.json())
       .then((json) => {
-        console.log(json)
+       
         setDisplayItems(json.map((option) => {
           if (option.category === e.target.value) {
             return (<div className="bg-white m-2 relative rounded-xl shadow-2xl w-40 cursor-pointer" onClick={() => setOrder(option.foodItem)}><img src={option.image} className="w-40 object-fill" alt="" />
@@ -49,14 +49,13 @@ const CategoryList = () => {
     showList(true);
     setAddList(
       e.map((obj) => {
-        console.log(obj)
+       
         return (<li><button className="bg-primary px-10 py-2 w-full relative" onClick={() => handleVariant(obj)} name="category" value={obj}>{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button></li>)
       }))
   }
 
   const addCart = async (e) => {
-    console.log(item.foodItem)
-    console.log("cart:",cart);
+    
     // showItem({...item, ['orderedVariant']:finalVar})
     setOpen(false)
     setFinalVariant([])

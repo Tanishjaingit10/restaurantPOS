@@ -17,7 +17,7 @@ const Pos = () => {
 
         await fetch('/app/customers').then((res) => res.json())
             .then((json) => {
-                // console.log(json)
+               
                 setCust(json.map((option) => {
                     return (<li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer(option.name) }}><p>{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                 }))
@@ -54,12 +54,12 @@ const Pos = () => {
                 </nav>
                 <div className="flex flex-col">
                     <div className="bg-white h-80">
-                    <Order/> 
-                    {/* {cart.foodItem ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
+                    {/* <Order/>  */}
+                    {cart[0] ?<Order/> :  <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
                             <p className=" text-gray-600 text-center">Add Food items</p>
-                        </div>} */}
+                        </div>}
                        
                     </div>
                     <div className="bg-gray-300 flex flex-col">
