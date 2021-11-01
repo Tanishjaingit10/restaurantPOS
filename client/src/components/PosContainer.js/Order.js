@@ -3,7 +3,7 @@ import { OrderContext } from '../../context/Auth'
 
 const Order = () => {
     const [cart, setCart] = useContext(OrderContext)
-    console.log("hello");
+  
     return (
         <div className="flex flex-row p-4 border-2 font-roboto">
           <div className=" w-1/3 text-left flex flex-col pl-6">
