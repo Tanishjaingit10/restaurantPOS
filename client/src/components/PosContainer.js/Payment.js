@@ -13,15 +13,20 @@ const Payment = () => {
 
     const cashPay = (e)=> {
         e.preventDefault();
-        history.push("/cashPay");
-       
+        history.push("/cashPay");  
     }
+   
+    const onBack = (e)=> {
+        e.preventDefault();
+        history.push("/pos");  
+    }
+    
 
     return (
         <div className="h-screen justify-items-conter">
              <nav className="bg-gray-400 py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                 <div className="flex flex-wrap items-center">
-                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/pos"><i class="fas fa-arrow-left mr-4"></i>Back</a></div>
+                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><button onClick={onBack}><i class="fas fa-arrow-left mr-4"></i>Back</button></div>
                     <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 ml-8 font-semibold">All Payments</div>
                 </div>  
                 </nav> 

@@ -20,7 +20,7 @@ const Pos = () => {
             .then((json) => {
                
                 setCust(json.map((option) => {
-                    return (<li className="flex flex-row text-black  p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer(option.name) }}><p>{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+                    return (<li className="flex flex-row text-black p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer(option.name) }}><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                 }))
             })
     }
@@ -36,13 +36,13 @@ const Pos = () => {
                         <div className=" justify-center md:justify-start text-white py-2"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
                         <div className="flex flex-row w-full mx-24 relative">
                             <ul className=" text-white text-left">
-                                <li className="p-2">Order New<span><i onClick={() => { showList(!list) }} className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
-                                {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
-                                    <li className="border-b-2 border-white py-2">Takeaway New</li>
-                                    <li className="border-b-2 border-white py-2">Dine In New</li>
-                                    <li className="py-2" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
+                                <li className="p-2 cursor-pointer"  onClick={() => { showList(!list) }}>Order New<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
+                                {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer">Takeaway New</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer">Dine In New</li>
+                                    <li className="py-2 cursor-pointer" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
                             </ul>
-                            <div className="ml-10 text-center p-2">{customer? customer:'Walk In'}<span><i onClick={() => { showCust(!cust) }} className="fas fa-chevron-down ml-8 cursor-pointer"></i></span>
+                            <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer? customer:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span>
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
@@ -56,7 +56,7 @@ const Pos = () => {
                 <div className="flex flex-col">
                     
                     {/* <Order/>  */}
-                    {cart[0] ?<Order/> : <div className="bg-white h-80">
+                    {cart[0] ?<Order/> : <div className="bg-white h-96">
                          <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
@@ -104,6 +104,9 @@ const Pos = () => {
             </div>
 
             {pop && <div className="bg-primary absolute top-16 left-40 p-20">
+            <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={()=>{showPop(!pop)}} >
+                    <span className=" text-white text-center object-center text-xl">x</span>
+                    </div>
                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
                     <label>Enter Order Id</label>
                     <input type="text" className="py-2 border-black border-2"></input>
@@ -112,6 +115,9 @@ const Pos = () => {
             </div>}
 
             {open && <div className="bg-primary absolute top-16 left-40 p-20">
+            <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={()=>{setOpen(!open)}} >
+                    <span className=" text-white text-center object-center text-xl">x</span>
+                    </div>
                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
                     <label>Enter Table No.</label>
                     <ul className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
