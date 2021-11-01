@@ -16,7 +16,7 @@ const PaymentSummary = () => {
             ...prev,
             total: payment.subTotal - payment.discount + payment.tax,
           }));
-    },[])
+    },[payment.subTotal])
 
     const finalPay = (e)=> {
         e.preventDefault();
