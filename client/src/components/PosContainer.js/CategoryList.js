@@ -42,7 +42,7 @@ const CategoryList = () => {
   const handleVariant = async (e) => {
     setVariant(e);
     showList(false)
-    // item.subtotal = item.subtotal + e.price;
+    item.subtotal = item.subtotal + e.price;
     // setFinalVariant(oldArray => [...oldArray, Variant])
   }
   const showVariant = async (e) => {
@@ -53,6 +53,13 @@ const CategoryList = () => {
         return (<li><button className="bg-primary px-10 py-2 w-full relative" onClick={() => handleVariant(obj)} name="category" value={obj}>{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button></li>)
       }))
   }
+  const removeVar = (e) => {
+    setFinalVariant(finalVar.filter(i => i !== e))
+    console.log(e)
+    console.log(e.price)
+    item.subtotal = item.subtotal-10;
+    console.log(item.subtotal)
+}
 
   const addCart = async (e) => {
     
@@ -106,9 +113,11 @@ const CategoryList = () => {
   useEffect(() => {
     showItem({...item, ['orderedVariant']:finalVar})
     setFinal(finalVar.map((obj) => {
-      return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span className="absolute right-4">x</span></button>)
+      return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span onClick={() => { removeVar(obj) }} className="absolute right-4">x</span></button>)
     }))
   }, [finalVar]);
+ 
+  
 
   return (
 

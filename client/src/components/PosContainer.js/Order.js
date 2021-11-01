@@ -1,8 +1,11 @@
-import React, {useContext} from 'react'
+import React, {useContext,useEffect} from 'react'
 import { OrderContext } from '../../context/Auth'
 
 const Order = () => {
     const [cart, setCart] = useContext(OrderContext)
+    useEffect(() => {
+      console.log(cart)
+    }, [cart])
   
     return (
         <div className="flex flex-row p-4 border-2 font-roboto">
