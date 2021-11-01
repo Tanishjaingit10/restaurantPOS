@@ -1,9 +1,13 @@
 import React, {useContext} from 'react'
 import { PaymentContext } from '../../context/Payment';
+import { useHistory } from 'react-router-dom';
 
 const PaymentSummary = () => {
+    const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
-    
+    const setDis = (e)=>{
+        history.push('/discount');
+    }
     return (
         <div>
             <div className="bg-gray-300 flex flex-col">
@@ -19,7 +23,7 @@ const PaymentSummary = () => {
                         </div>
                         <div className="flex flex-row w-full text-xl font-roboto">
                             <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>
-                            <button className=" w-1/2 py-4 font-bold"><a href="/discount">Discount</a></button>
+                            <button onClick={() => { setDis() }} className=" w-1/2 py-4 font-bold">Discount</button>
                         </div>
                     </div>
         </div>

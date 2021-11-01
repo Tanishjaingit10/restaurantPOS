@@ -15,8 +15,8 @@ const Discount = () => {
     setCal(10*cal+e)
 
   }
-  const addDiscount = ()=> {
-    
+  const addDiscount = (e)=> {
+    e.preventDefault()
     setPayment(prev => ({
       ...prev, discount: cal*payment.subTotal/100,}))
 
@@ -57,7 +57,7 @@ const Discount = () => {
                 <div className="text-center border-2 py-2"><i onClick= {() => { calculate(12) }} className="fas fa-backspace cursor-pointer"></i></div>
             </div>
         </div>
-        <div className="w-96 bg-green mt-10 mx-auto py-4 text-white text-center text-2xl font-roboto font-bold" onClick={addDiscount}>Done</div>
+        <div className="w-96 bg-green mt-10 mx-auto py-4 text-white text-center text-2xl font-roboto font-bold cursor-pointer" onClick={addDiscount}>Done</div>
       </div>
     </div>
     )

@@ -40,11 +40,11 @@ const CategoryList = () => {
     if(Object.keys(Variant).length)
       setFinalVariant(oldArray => {return [...oldArray, Variant]})
   }, [Variant])
+
   const handleVariant = async (e) => {
     setVariant(e);
     showList(false)
     item.subtotal = item.subtotal + e.price;
-    // setFinalVariant(oldArray => [...oldArray, Variant])
   }
   const showVariant = async (e) => {
     showList(true);
@@ -56,9 +56,7 @@ const CategoryList = () => {
   }
   const removeVar = (e) => {
     setFinalVariant(finalVar.filter(i => i !== e))
-    console.log(e)
-    console.log(e.price)
-    item.subtotal = item.subtotal-10;
+    item.subtotal = item.subtotal-e.price;
     console.log(item.subtotal)
 }
 
