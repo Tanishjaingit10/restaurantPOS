@@ -7,6 +7,7 @@ import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
 import Login from "./components/Login";
 import Menu from "./components/Menu";
+import AddCustomer from "./components/PosContainer.js/AddCustomer";
 import Cash from "./components/PosContainer.js/Cash";
 import CategoryList from "./components/PosContainer.js/CategoryList";
 import Discount from "./components/PosContainer.js/Discount";
@@ -37,7 +38,7 @@ const Routes = () => {
           <Route exact path="/payments" component={Payment} />
           <Route exact path="/cash" component={Cash} />
           <Route exact path="/discount" component={Discount} />
-        
+          <Route exact path="/newCustomer" component={AddCustomer} />
         </Switch>
       </Router>
     

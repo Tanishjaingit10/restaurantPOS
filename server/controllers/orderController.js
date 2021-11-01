@@ -1,6 +1,7 @@
 const order_template_copy = require('../models/order')
 const add_order =async (request, response, next)=>{
     const{order}=request.body;
+    console.log(order)
     if(!order)
     {
         console.log(4);
