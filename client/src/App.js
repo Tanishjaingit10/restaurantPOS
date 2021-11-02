@@ -19,15 +19,18 @@ import Discount from './components/PosContainer.js/Discount';
 import { OrderProvider } from './context/Cart';
 import Routes from './Routes';
 import { PaymentProvider } from './context/Payment';
+import { CustomerProvider } from './context/Customer';
 
 function App() {
   return (
     <div>
+      <CustomerProvider>
       <OrderProvider>
         <PaymentProvider>
         <Routes />
         </PaymentProvider>
       </OrderProvider>
+      </CustomerProvider>
       {/* <Route exact path='/home'>
       <Home /></Route>
       <Route exact path='/'>

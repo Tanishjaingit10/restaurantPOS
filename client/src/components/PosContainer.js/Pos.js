@@ -3,8 +3,10 @@ import CategoryList from './CategoryList';
 import { OrderContext } from '../../context/Cart';
 import Order from './Order';
 import PaymentSummary from './PaymentSummary';
+import { CustomerContext } from '../../context/Customer';
 
 const Pos = () => {
+    const [customer, setCustomer] = useContext(CustomerContext);
     const [list, showList] = useState(false);
     const [cust, showCust] = useState(false);
     const [pop, showPop] = useState(false);
@@ -12,7 +14,7 @@ const Pos = () => {
     const [Table, showTable] = useState(false);
     const [cart, setCart] = useContext(OrderContext);
     const [Cust, setCust] = useState()
-    const [customer, setCustomer]=useState()
+    // const [customer, setCustomer]=useState()
 
     const custList = async (e) => {
 
@@ -20,7 +22,7 @@ const Pos = () => {
             .then((json) => {
                
                 setCust(json.map((option) => {
-                    return (<li className="flex flex-row text-black p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer(option.name) }}><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+                    return (<li className="flex flex-row text-black p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                 }))
             })
     }
@@ -42,7 +44,7 @@ const Pos = () => {
                                     <li className="border-b-2 border-white py-2 cursor-pointer">Dine In New</li>
                                     <li className="py-2 cursor-pointer" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
                             </ul>
-                            <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer? customer:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span>
+                            <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span>
                                 {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
@@ -54,8 +56,6 @@ const Pos = () => {
                     </div>
                 </nav>
                 <div className="flex flex-col">
-                    
-                    {/* <Order/>  */}
                     {cart[0] ?<Order/> : <div className="bg-white h-96">
                          <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
@@ -65,23 +65,6 @@ const Pos = () => {
                         </div>}
                        
                     <PaymentSummary />
-                    {/* <div className="bg-gray-300 flex flex-col">
-                        <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">
-                            <div className="relative py-4"><label className="">Subtotal</label><span className="absolute right-0">0.00</span></div>
-                            <div className="relative py-4"><label className="">Tax</label><span className="absolute right-0">0.00</span></div>
-                            <div className="relative py-4"><label className="">Discount</label><span className="absolute right-0">0.00</span></div>
-                            <div className="relative py-4 font-bold"><label className="">Total</label><span className="absolute right-0">$0.00</span></div>
-                        </div>
-                        <div className="flex flex-row w-full text-white text-xl font-roboto">
-                            <button className="bg-primary w-1/2 py-4 font-bold"><a href="/payments">All Payments</a></button>
-                            <button className="bg-green w-1/2 py-4 font-bold"><a href="/cash">Cash</a></button>
-                        </div>
-                        <div className="flex flex-row w-full text-xl font-roboto">
-                            <button className=" w-1/2 py-4 font-bold border-r-2">Drawer</button>
-                            <button className=" w-1/2 py-4 font-bold"><a href="/discount">Discount</a></button>
-                        </div>
-                    </div> */}
-
                 </div>
             </div>
             <div className="w-2/5 border-l-2 border-primary h-full shadow-2xl">
@@ -92,14 +75,12 @@ const Pos = () => {
 
                 <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
                     <div className="flex flex-wrap justify-evenly px-6 mt-4">
-                        {/* {displayCategory} */}<CategoryList />
+                      <CategoryList />
                     </div>
-                    {/* <div className="flex flex-wrap justify-evenly mt-4 h-full">
-                        {displayItems}
-                    </div> */}
+                   
                 </div>
 
-                {/* {order} */}
+              
 
             </div>
 
