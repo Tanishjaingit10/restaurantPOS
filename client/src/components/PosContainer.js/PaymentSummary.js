@@ -1,14 +1,12 @@
 import React, {useContext,useEffect,useState} from 'react'
 import { PaymentContext } from '../../context/Payment';
 import { useHistory } from 'react-router-dom';
-import { OrderContext } from '../../context/Cart';
 
 const PaymentSummary = () => {
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
-    const [cart, setCart] = useContext(OrderContext);
     const [pay, setPay]=useState(<div></div>)
-    console.log(payment.subTotal)
+
     const setDis = (e)=>{
         history.push('/discount');
     }
