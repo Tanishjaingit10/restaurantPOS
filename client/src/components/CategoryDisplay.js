@@ -7,7 +7,6 @@ const CategoryDisplay = () => {
     const [cat, setCat]=useState({category:"", description:"",color:""})
     const {id}= useParams();
     const [displayitem, setDisplayItem]=useState();
-    console.log(id);
     const [show, setShow] = useState(false);
     const [check, setCheck]=useState(false);
     const [Open,setOpen]=useState(false);
@@ -33,7 +32,6 @@ const CategoryDisplay = () => {
     const loadCategory = async ()=>{
         await fetch(`/app/category/${id}`).then((res) => res.json())
         .then((json) => {
-            console.log(json)
             setCat(json)
         })
     }

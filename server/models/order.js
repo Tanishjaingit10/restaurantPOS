@@ -1,7 +1,13 @@
 const mongoose = require('mongoose')
 
 const order_template = new mongoose.Schema({
-
+    customer:{
+        type: [{
+            name: String,
+            contact: String,
+            email: String
+        }]
+    },
     order:{
         type:[
             {
@@ -20,6 +26,14 @@ const order_template = new mongoose.Schema({
                 subtotal:Number
             }
         ]
+    },
+    payment:{
+        type: [{
+            subTotal: Number,
+            tax:Number,
+            discount: Number,
+            total: Number
+        }]
     }
 
 })

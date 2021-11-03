@@ -1,20 +1,37 @@
 import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { PaymentContext } from "../../context/Payment";
+import { OrderContext } from '../../context/Cart';
+import { CustomerContext } from '../../context/Customer';
 
 const Cash = () => {
   const [cal, setCal] = useState(0);
   const history = useHistory();
   const [payment, setPayment] = useContext(PaymentContext);
+  const [cart, setCart] = useContext(OrderContext);
+  const [customer,setCustomer]= useContext(CustomerContext);
   const calculate = async (e) => {
     if (e === 11) setCal(100 * cal);
     else if (e === 12) setCal(Math.floor(cal / 10));
     else setCal(10 * cal + e);
   };
 
-  const placeOrder = (e) => {
+  const placeOrder = async(e) => {
     e.preventDefault();
     history.push("/cashPay");
+    const res = await fetch("/app/addOrder", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+          customer:customer,
+          order: cart,
+          payment:payment
+
+      })
+
+  });
   };
 
   const onBack = (e) => {
