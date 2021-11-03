@@ -1,14 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setCategories } from "../../actions/CategoryActions";
 import { OrderContext } from "../../context/Cart";
 import { PaymentContext } from "../../context/Payment";
+import { CategoryContext } from "../../context/Category";
 
 
 const CategoryList = () => {
-  const categories = useSelector((state) => state.allCategories.categories);
   const [cart, setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
+  const [category, setCategory] = useContext(CategoryContext);
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({ foodItem: "", image: "", orderedVariant: [], price: 0,subtotal:0 });
   const [order, showOrder] = useState([])
@@ -95,15 +94,13 @@ const CategoryList = () => {
     }
   }
 
-  const renderList = categories.map((cat) => {
-    const { category, color } = cat;
+  const renderList = category.map((cat, index) => {
     return (
       <div>
-        <button value={category} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2 " onClick={showItems} style={{ backgroundColor: color }}>{category}</button>
+        <button value={cat.category} key={index} name="color" className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2" onClick={showItems} style={{ backgroundColor: cat.color }}>{cat.category}</button>
       </div>
     )
   })
-  const dispatch = useDispatch();
   const fetchCategories = async () => {
     const response = await fetch(
       "/app/category")
@@ -111,7 +108,7 @@ const CategoryList = () => {
       .catch((err) => {
         console.log("Error", err);
       });
-    dispatch(setCategories(response));
+      setCategory(response);
   };
   useEffect(() => {
       fetchCategories();
@@ -128,7 +125,6 @@ const CategoryList = () => {
   return (
 
     <div className="h-screen">
-
       <div className="flex flex-wrap justify-start">
         {renderList}
       </div>

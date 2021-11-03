@@ -7,7 +7,6 @@ import { CustomerContext } from '../../context/Customer';
 const PaymentSummary = () => {
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
-    const [cart, setCart] = useContext(OrderContext);
     const [pay, setPay]=useState(<div></div>)
     const setDis = (e)=>{
         history.push('/discount');
