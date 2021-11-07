@@ -1,4 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import CategoryList from './CategoryList';
 import { OrderContext } from '../../context/Cart';
 import Order from './Order';
@@ -7,28 +8,32 @@ import { CustomerContext } from '../../context/Customer';
 
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
+    const history = useHistory();
     const [list, showList] = useState(false);
     const [cust, showCust] = useState(false);
     const [pop, showPop] = useState(false);
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
     const [cart, setCart] = useContext(OrderContext);
-    const [Cust, setCust] = useState()
-    // const [customer, setCustomer]=useState()
+    const [Cust, setCust] = useState();
 
     const custList = async (e) => {
 
         await fetch('/app/customers').then((res) => res.json())
             .then((json) => {
-               
                 setCust(json.map((option) => {
-                    return (<li className="flex flex-row text-black p-2 relative"><div className="flex flex-col" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+                    return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                 }))
             })
     }
     useEffect(() => {
         custList();
     })
+
+    const orderSearch = (e)=> {
+        e.preventDefault();
+        history.push("/viewOrder");
+    }
 
     return (
         <div className="flex flex-row h-full">
@@ -44,13 +49,13 @@ const Pos = () => {
                                     <li className="border-b-2 border-white py-2 cursor-pointer">Dine In New</li>
                                     <li className="py-2 cursor-pointer" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
                             </ul>
-                            <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span>
-                                {cust ? <ul className="absolute bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
+                            <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
+                                {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
                                     <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
-                            </div>
+                            
                             <div className="absolute text-center py-2 right-0"><i class="fas fa-trash-alt ml-10"></i></div>
                         </div>
                     </div>
@@ -107,7 +112,7 @@ const Pos = () => {
                             <li className="py-2 border-b-2 border-black">Table 2</li>
                             <li className="py-2 border-b-2 border-black">Table 4</li></> : null}
                     </ul>
-                    <button className="bg-white text-primary py-2 font-bold">Search</button>
+                    <button className="bg-white text-primary py-2 font-bold" onClick={orderSearch}>Search</button>
                 </div>
             </div>}
         </div>
