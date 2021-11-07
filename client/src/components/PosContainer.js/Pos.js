@@ -72,7 +72,7 @@ const Pos = () => {
                                 {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
                                     <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
-                                    <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
+                                    <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
                             
                             <div className="absolute text-center py-2 right-0"><i onClick={()=>{setCustomer([])}} className="fas fa-trash-alt ml-10 cursor-pointer"></i></div>
@@ -92,17 +92,17 @@ const Pos = () => {
                 </div>
             </div>
             <div className="w-2/5 border-l-2 border-primary h-full shadow-2xl">
-                <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
+                {/* <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
                     <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input type="type"  className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
                     </div>
                 </nav>
 
                 <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
-                    <div className="flex flex-wrap justify-evenly px-6 mt-4">
+                    <div className="flex flex-wrap justify-evenly px-6 mt-4"> */}
                       <CategoryList />
-                    </div>
+                    {/* </div>
                    
-                </div>
+                </div> */}
 
               
 
