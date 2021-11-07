@@ -7,7 +7,7 @@ import PaymentSummary from './PaymentSummary';
 import { CustomerContext } from '../../context/Customer';
 import { CategoryContext } from '../../context/Category';
 
-
+let customers = [];
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
     const history = useHistory();
@@ -20,13 +20,16 @@ const Pos = () => {
     const [category,setCategory]= useContext(CategoryContext)
     const [Cust, setCust] = useState()
     const [search, setSearch]=useState("");
+    const customerList = async (e) => {
+        const res = await fetch('/app/customers').then((res) => res.json())
+            .then((json) => {
+                customers = json;
+            })
+    }
 
     const custList = async (e) => {
-
-        await fetch('/app/customers').then((res) => res.json())
-            .then((json) => {
                 setCust(
-                    json.filter((option)=>{
+                    customers.filter((option)=>{
                         if(search =="")
                             return option;
                         else if(option.contact.includes(search)){
@@ -36,21 +39,15 @@ const Pos = () => {
                     .map((option) => {
                         return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                     })
-                )})}
+                )}
                 
     useEffect(() => {
-        custList();
+        customerList();
     })
-    // useEffect(() => {
-    //     console.log(search)
-    //     category.filter((val)=>{
-    //       if (search=='')
-    //         return val;
-    //       else if(val.category.toLowerCase().includes(search.toLowerCase())){
-    //         return val;
-    //       }
-    //     })
-    //   }, [search])
+    useEffect(() => {
+        custList()
+        
+    },[search,customers])
 
     const orderSearch = (e)=> {
         e.preventDefault();
@@ -78,7 +75,7 @@ const Pos = () => {
                                     <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
                             
-                            <div className="absolute text-center py-2 right-0"><i class="fas fa-trash-alt ml-10"></i></div>
+                            <div className="absolute text-center py-2 right-0"><i onClick={()=>{setCustomer([])}} className="fas fa-trash-alt ml-10 cursor-pointer"></i></div>
                         </div>
                     </div>
                 </nav>
