@@ -1,9 +1,10 @@
 const order_template_copy = require('../models/order')
 const add_order =async (request, response, next)=>{
-    const order=request.body;
+    const {customer,order,payment}=request.body;
     console.log(order)
+    console.log(customer)
             
-        const new_order = new order_template_copy({order})
+        const new_order = new order_template_copy({customer,order,payment})
         new_order.save().then(()=>{
             response.status(201).json({message: "Order added successfully!"})
         })

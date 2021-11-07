@@ -19,11 +19,11 @@ const CategoryForm = () => {
 
     const handleInputs = (e) => {
         
-        e.preventDefault();
         name = e.target.name;
         value = e.target.value;
-        console.log(name)
-        console.log(value)
+        setCat({ ...cat, [name]: value });
+        // console.log(name)
+        // console.log(value)
         setCat({ ...cat, [name]: value });
     }
     const onMenu = (e) => {
@@ -31,11 +31,12 @@ const CategoryForm = () => {
     }
     const handleColor = (e) => {
         e.preventDefault();
-        name = e.target.name;
-        value = e.target.value;
+        // name = e.target.name;
+        // value = e.target.value;
+        setCat({ ...cat, [name]: value });
         setCol(value)
         setText(value)
-        setCat({ ...cat, [name]: value });
+        // setCat({ ...cat, [name]: value });
     }
 
     const loadCategory = async () => {
@@ -47,11 +48,11 @@ const CategoryForm = () => {
             })
     }
     useEffect(() => {
-        console.log(id)
+        // console.log(id)
         if (id) {
             loadCategory();
         }
-    })
+    },[id])
 
     const addCategory = async (e) => {
         e.preventDefault();
@@ -83,12 +84,9 @@ const CategoryForm = () => {
 
         }
 
-        await res.json();
-        console.log(cat);
-
-        console.log(res.status)
-        if (res.status === 201) {
-            setMsg('Added Successfully');
+        if (res.status === 201||res.status===200) {
+            let obj = signup.find((pop) => pop.id === res.status);
+            setMsg(obj.title);
             let code;
             colour.map((option) => {
                 if (option.name === cat.color) { code = option.code; }
