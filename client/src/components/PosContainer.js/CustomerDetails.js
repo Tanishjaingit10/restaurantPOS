@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { useParams } from "react-router";
 
 const CustomerDetails = () => {
   const { id } = useParams();
-  // console.log(id)
+  
+  console.log(id)
   const [cust, setCust] = useState({ name: "", contact: "", email: "" });
   const loadCustomer = async () => {
     // console.log(id)
@@ -19,14 +20,14 @@ const CustomerDetails = () => {
   }, [id]);
   return (
     <div className="h-screen justify-items-conter">
-      <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
-        <div className="flex flex-wrap items-center">
-          <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4">
+      <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
+        <div className="text-center w-full relative">
+          <div className=" text-white ml-4 absolute left-4">
             <a href="/pos">
               <i className="fas fa-arrow-left mr-4"></i>Back
             </a>
           </div>
-          <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">
+          <div className="  text-white px-2  font-semibold">
             Customer Details
           </div>
         </div>

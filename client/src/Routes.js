@@ -7,6 +7,7 @@ import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
 import Login from "./components/Login";
 import Menu from "./components/Menu";
+import Orders from "./components/Orders";
 import AddCustomer from "./components/PosContainer.js/AddCustomer";
 import Cash from "./components/PosContainer.js/Cash";
 import CashPay from "./components/PosContainer.js/CashPay";
@@ -16,6 +17,7 @@ import Discount from "./components/PosContainer.js/Discount";
 import FinalPay from "./components/PosContainer.js/FinalPay";
 import Payment from "./components/PosContainer.js/Payment";
 import Pos from "./components/PosContainer.js/Pos";
+import ViewOrder from "./components/PosContainer.js/ViewOrder";
 import SignUp from "./components/SignUp";
 import TableForm from "./components/TableForm";
 import Tables from "./components/Tables";
@@ -46,6 +48,8 @@ const Routes = () => {
           <Route exact path="/customerDetails/:id" component={CustomerDetails} />
           <Route exact path="/finalPay" component={FinalPay} />
           <Route exact path="/cashPay" component={CashPay} />
+          <Route exact path="/viewOrder" component={ViewOrder} />
+          <Route exact path="/orders" component={Orders} />
         </Switch>
       </Router>
     
