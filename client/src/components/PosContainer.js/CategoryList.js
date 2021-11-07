@@ -119,6 +119,7 @@ const CategoryList = () => {
       return (<button className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span onClick={() => { removeVar(obj) }} className="absolute right-4">x</span></button>)
     }))
   }, [finalVar]);
+
  
   
 

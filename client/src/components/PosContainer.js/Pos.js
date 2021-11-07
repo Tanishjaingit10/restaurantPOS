@@ -4,6 +4,8 @@ import { OrderContext } from '../../context/Cart';
 import Order from './Order';
 import PaymentSummary from './PaymentSummary';
 import { CustomerContext } from '../../context/Customer';
+import { CategoryContext } from '../../context/Category';
+
 
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
@@ -13,8 +15,9 @@ const Pos = () => {
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
     const [cart, setCart] = useContext(OrderContext);
+    const [category,setCategory]= useContext(CategoryContext)
     const [Cust, setCust] = useState()
-    // const [customer, setCustomer]=useState()
+    const [search, setSearch]=useState("");
 
     const custList = async (e) => {
 
@@ -29,6 +32,15 @@ const Pos = () => {
     useEffect(() => {
         custList();
     })
+    useEffect(() => {
+        category.filter((val)=>{
+          if (search=='')
+            return val;
+          else if(val.category.toLowerCase().includes(search.toLowerCase())){
+            return val;
+          }
+        })
+      }, [search])
 
     return (
         <div className="flex flex-row h-full">
@@ -69,7 +81,7 @@ const Pos = () => {
             </div>
             <div className="w-2/5 border-l-2 border-primary h-full shadow-2xl">
                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
-                    <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input type="type" className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
+                    <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input value = {search} type="type" onChange={(e)=>setSearch(e.target.value)} className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
                     </div>
                 </nav>
 
