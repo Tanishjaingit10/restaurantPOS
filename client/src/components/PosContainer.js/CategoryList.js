@@ -24,6 +24,7 @@ const CategoryList = () => {
   const [list, showList] = useState(false);
   const [show, setShow] = useState(false);
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const showItems = async (e) => {
     await fetch("/app/items")
       .then((res) => res.json())
@@ -87,12 +88,10 @@ const CategoryList = () => {
   const removeVar = (e) => {
     setFinalVariant(finalVar.filter((i) => i !== e));
     showItem({ ...item, ["subtotal"]: item.subtotal - e.price });
-    // setItem(item.subtotal = item.subtotal-e.price;
     console.log(item.subtotal);
   };
 
   const addCart = async (e) => {
-    // showItem({...item, ['orderedVariant']:finalVar})
     setOpen(false);
     setFinalVariant([]);
     setCart((prev) => [...prev, item]);
@@ -101,7 +100,6 @@ const CategoryList = () => {
       subTotal: payment.subTotal + item.subtotal,
     }));
     showOrder((oldArray) => [...oldArray, item]);
-    // console.log(order)
   };
   const setOrder = async (e) => {
     setOpen(true);
@@ -121,22 +119,30 @@ const CategoryList = () => {
     }
   };
 
-  const renderList = category.map((cat, index) => {
-    return (
-      <div>
-        <button
-          value={cat.category}
-          key={index}
-          name="color"
-          className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2"
-          onClick={showItems}
-          style={{ backgroundColor: cat.color }}
-        >
-          {cat.category}
-        </button>
-      </div>
-    );
-  });
+  const renderList = category.filter((cat) => {
+    if (search == "")
+      return cat;
+    else if (cat.category.includes(search)) {
+      return cat;
+    }
+
+  })
+    .map((cat, index) => {
+      return (
+        <div>
+          <button
+            value={cat.category}
+            key={index}
+            name="color"
+            className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2"
+            onClick={showItems}
+            style={{ backgroundColor: cat.color }}
+          >
+            {cat.category}
+          </button>
+        </div>
+      );
+    });
   const fetchCategories = async () => {
     const response = await fetch("/app/category")
       .then((res) => res.json())
@@ -173,8 +179,10 @@ const CategoryList = () => {
     <div className="h-screen">
       <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
         <div className="border-b-2 border-white px-4 mx-6">
-          <i class="fas fa-search"></i>{" "}
+          <i class="fas fa-search"></i>
           <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             type="type"
             className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10"
           />
