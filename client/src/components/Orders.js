@@ -12,13 +12,14 @@ const Orders = () => {
             </a>
           </div>
           <div className="justify-end  flex flex-row mr-12">
-            <div className="text-white px-2  mr-8">Orders</div>
+            <div className="text-white px-2 font-semibold mr-8">Orders</div>
             <div className="border-b-2 border-white px-4 mx-6 text-white flex flex-row w-80"><i class="fas fa-search mr-4"></i><input type="type" value={inputValue} className=" bg-primary focus:outline-none text-white text-sm w-full"/>
             </div>
           </div>
         </div>
       </nav>
-      <div className="flex flex-col">
+      <div className="flex flex-col h-screen">
+          <div className="h-3/4">
             <table className="w-full">
               <thead>
                 <tr className="">
@@ -44,7 +45,8 @@ const Orders = () => {
                   </tr>
               </tbody>
             </table>
-            <button className="bg-green w-96 mx-auto py-2 text-white">Show More</button>
+            </div>
+            <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white">Show More</button>
           </div>
         </div>
     )

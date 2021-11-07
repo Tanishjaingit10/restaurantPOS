@@ -134,15 +134,16 @@ const CategoryList = () => {
             value={cat.category}
             key={index}
             name="color"
-            className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2"
+            className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2 text-white text-lg font-semibold font-roboto"
             onClick={showItems}
             style={{ backgroundColor: cat.color }}
           >
-            {cat.category}
+            {cat.category[0].toUpperCase()+cat.category.substring(1)}
           </button>
         </div>
       );
     });
+  
   const fetchCategories = async () => {
     const response = await fetch("/app/category")
       .then((res) => res.json())
