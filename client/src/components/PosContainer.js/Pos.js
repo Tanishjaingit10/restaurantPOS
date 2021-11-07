@@ -25,23 +25,32 @@ const Pos = () => {
 
         await fetch('/app/customers').then((res) => res.json())
             .then((json) => {
-                setCust(json.map((option) => {
-                    return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
-                }))
-            })
-    }
+                setCust(
+                    json.filter((option)=>{
+                        if(search =="")
+                            return option;
+                        else if(option.contact.includes(search)){
+                            return option;
+                        }
+                    })
+                    .map((option) => {
+                        return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+                    })
+                )})}
+                
     useEffect(() => {
         custList();
     })
-    useEffect(() => {
-        category.filter((val)=>{
-          if (search=='')
-            return val;
-          else if(val.category.toLowerCase().includes(search.toLowerCase())){
-            return val;
-          }
-        })
-      }, [search])
+    // useEffect(() => {
+    //     console.log(search)
+    //     category.filter((val)=>{
+    //       if (search=='')
+    //         return val;
+    //       else if(val.category.toLowerCase().includes(search.toLowerCase())){
+    //         return val;
+    //       }
+    //     })
+    //   }, [search])
 
     const orderSearch = (e)=> {
         e.preventDefault();
@@ -64,7 +73,7 @@ const Pos = () => {
                             </ul>
                             <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
                                 {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
-                                    <li className="bg-primary flex flex-row"><input type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
+                                    <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
                                     <li className="bg-green py-2"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
@@ -87,7 +96,7 @@ const Pos = () => {
             </div>
             <div className="w-2/5 border-l-2 border-primary h-full shadow-2xl">
                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
-                    <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input value = {search} type="type" onChange={(e)=>setSearch(e.target.value)} className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
+                    <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input type="type"  className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
                     </div>
                 </nav>
 
