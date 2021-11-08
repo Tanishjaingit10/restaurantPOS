@@ -29,7 +29,7 @@ const ViewOrder = () => {
           </div>
           <div className="flex flex-col my-2 px-6">
             <label>Table No.</label>
-            <p className="text-primary text-lg font-semibold">3</p>
+            <p className="text-primary text-lg font-semibold">1</p>
           </div>
           <div className="flex flex-col my-2 px-6">
             <label>Order Date</label>

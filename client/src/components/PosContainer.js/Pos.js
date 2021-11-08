@@ -20,12 +20,14 @@ const Pos = () => {
     const [category,setCategory]= useContext(CategoryContext)
     const [Cust, setCust] = useState()
     const [search, setSearch]=useState("");
+
     const customerList = async (e) => {
         const res = await fetch('/app/customers').then((res) => res.json())
             .then((json) => {
                 customers = json;
             })
     }
+
 
     const custList = async (e) => {
                 setCust(
@@ -70,7 +72,7 @@ const Pos = () => {
                             </ul>
                             <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
                                 {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
-                                    <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
+                                    <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full focus:outline-none text-black pl-4" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
                                     <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
@@ -128,7 +130,7 @@ const Pos = () => {
                     <ul className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
                         <li onClick={() => { showTable(!Table) }} className="py-2 border-b-2 border-t-2 border-black">Table 1</li>
                         {Table ? <><li className="py-2 border-b-2 border-black">Table 2</li>
-                            <li className="py-2 border-b-2 border-black">Table 2</li>
+                            <li className="py-2 border-b-2 border-black">Table 3</li>
                             <li className="py-2 border-b-2 border-black">Table 4</li></> : null}
                     </ul>
                     <button className="bg-white text-primary py-2 font-bold" onClick={orderSearch}>Search</button>

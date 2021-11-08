@@ -11,6 +11,7 @@ const AddCustomer = () => {
     const [isError, setIsError] = useState(false);
     const { id } = useParams();
     let name, value;
+    console.log(1);
     const loadCustomer = async () => {
         console.log(id)
         await fetch(`/app/customer/${id}`).then((res) => res.json())
