@@ -72,7 +72,7 @@ const PaymentSummary = () => {
         //                 </div>
         //             </div>
         // </div>
-        <div>
+        <div className="relative z-20">
             {pay}
         </div>
         

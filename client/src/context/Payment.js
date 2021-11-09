@@ -8,7 +8,7 @@ export const PaymentProvider= (props)=>{
         subTotal: 0.00,
         tax: 0.00,
         discount: 0.00,
-        total: 0.00
+        total: 0.00,
     })
 
     return (
