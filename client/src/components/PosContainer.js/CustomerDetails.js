@@ -17,6 +17,7 @@ const CustomerDetails = () => {
   };
   useEffect(() => {
     loadCustomer();
+    //eslint-disable-next-line
   }, [id]);
   return (
     <div className="h-screen justify-items-conter">

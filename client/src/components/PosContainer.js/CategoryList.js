@@ -15,7 +15,6 @@ const CategoryList = () => {
     price: 0,
     subtotal: 0,
   });
-  const [order, showOrder] = useState([]);
   const [varList, setVarList] = useState();
   const [Variant, setVariant] = useState([]);
   const [finalVar, setFinalVariant] = useState([]);
@@ -99,7 +98,7 @@ const CategoryList = () => {
       ...prev,
       subTotal: payment.subTotal + item.subtotal,
     }));
-    showOrder((oldArray) => [...oldArray, item]);
+   
   };
   const setOrder = async (e) => {
     setOpen(true);
@@ -120,16 +119,16 @@ const CategoryList = () => {
   };
 
   const renderList = category.filter((cat) => {
-    if (search == "")
+    if (search === "")
       return cat;
     else if (cat.category.includes(search)) {
       return cat;
     }
-
+    return null;
   })
     .map((cat, index) => {
       return (
-        <div>
+        <div key={cat.category}>
           <button
             value={cat.category}
             key={index}
@@ -154,6 +153,7 @@ const CategoryList = () => {
   };
   useEffect(() => {
     fetchCategories();
+    //eslint-disable-next-line
   }, []);
   useEffect(() => {
     showItem({ ...item, ["orderedVariant"]: finalVar });
@@ -174,13 +174,14 @@ const CategoryList = () => {
         );
       })
     );
+    //eslint-disable-next-line
   }, [finalVar]);
 
   return (
     <div className="h-screen">
       <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
         <div className="border-b-2 border-white px-4 mx-6">
-          <i class="fas fa-search"></i>
+          <i className="fas fa-search"></i>
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}

@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import { useHistory, Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { PaymentContext } from '../../context/Payment';
 
 const Discount = () => {

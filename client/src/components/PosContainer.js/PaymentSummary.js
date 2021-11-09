@@ -1,8 +1,6 @@
 import React, {useContext,useEffect,useState} from 'react'
 import { PaymentContext } from '../../context/Payment';
 import { useHistory } from 'react-router-dom';
-import { OrderContext } from '../../context/Cart';
-import { CustomerContext } from '../../context/Customer';
 
 const PaymentSummary = () => {
     const history = useHistory();
@@ -17,6 +15,7 @@ const PaymentSummary = () => {
             ...prev,
             total: payment.subTotal - payment.discount + payment.tax,
           }));
+          //eslint-disable-next-line
     },[payment.subTotal])
 
     const finalPay = (e)=> {
@@ -55,7 +54,8 @@ const PaymentSummary = () => {
         )
     }
     useEffect(()=>{
-        loadPay()
+        loadPay();
+         //eslint-disable-next-line
     },[payment])
 
     return (

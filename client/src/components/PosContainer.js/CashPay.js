@@ -1,16 +1,16 @@
 import React,{ useContext, useEffect} from 'react'
 import { PaymentContext } from '../../context/Payment'
-import PaymentSummary from './PaymentSummary';
 import { OrderContext } from '../../context/Cart';
 import { CustomerContext } from '../../context/Customer';
 
 const CashPay = () => {
-    const [payment, setPayment] = useContext(PaymentContext);
-    const [cart, setCart] = useContext(OrderContext);
-    const [customer,setCustomer]= useContext(CustomerContext);
+    const [payment] = useContext(PaymentContext);
+    const [cart] = useContext(OrderContext);
+    const [customer]= useContext(CustomerContext);
 
-    useEffect(async () => {
-        const res = await fetch("/app/addOrder", {
+    useEffect(() => {
+        async function addOrder(){
+        await fetch("/app/addOrder", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -22,8 +22,9 @@ const CashPay = () => {
       
             })
       
-        });
-        
+        });}
+        addOrder();
+      //eslint-disable-next-line  
     }, [payment])
     
     return (
