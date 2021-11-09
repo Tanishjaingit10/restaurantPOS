@@ -32,7 +32,13 @@ const order_template = new mongoose.Schema({
             subTotal: Number,
             tax:Number,
             discount: Number,
-            total: Number
+            total: Number,
+            mode: String, 
+            status: String,
+            orderType: String,
+            orderStatus: String,
+            table: Number
+
         }]
     }
 

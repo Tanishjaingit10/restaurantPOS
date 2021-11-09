@@ -6,11 +6,13 @@ import Order from './Order';
 import PaymentSummary from './PaymentSummary';
 import { CustomerContext } from '../../context/Customer';
 import { CategoryContext } from '../../context/Category';
+import { PaymentContext } from '../../context/Payment';
 
 let customers = [];
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
     const history = useHistory();
+    const [payment, setPayment] = useContext(PaymentContext);
     const [list, showList] = useState(false);
     const [cust, showCust] = useState(false);
     const [pop, showPop] = useState(false);
@@ -20,6 +22,7 @@ const Pos = () => {
     const [category,setCategory]= useContext(CategoryContext)
     const [Cust, setCust] = useState()
     const [search, setSearch]=useState("");
+    const [displayTable, setdisplayTable] = useState()
     const customerList = async (e) => {
         const res = await fetch('/app/customers').then((res) => res.json())
             .then((json) => {
@@ -53,6 +56,26 @@ const Pos = () => {
         e.preventDefault();
         history.push("/viewOrder");
     }
+    const openTable = async (e) => {
+        e.preventDefault();
+        showTable(!Table);
+        await fetch(
+            "/app/table")
+            .then((res) => res.json())
+            .then((json) => {
+                console.log(json)
+                setdisplayTable(json.map((option) => {
+                    if(option.status=='Free')
+                    return (<li><button className="py-2 border-b-2 border-t-2 border-black" onClick={handleTable} name="category" value={option.number}>Table {option.number}</button></li>)
+                }))
+            })
+
+    }
+    const handleTable = async (e)=>{
+        e.preventDefault();
+        setPayment((prev) => ({...prev,table: e.target.value}))
+        showTable(false)
+    }
 
     return (
         <div className="flex flex-row h-full">
@@ -62,11 +85,11 @@ const Pos = () => {
                         <div className=" justify-center md:justify-start text-white py-2"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
                         <div className="flex flex-row w-full mx-24 relative">
                             <ul className=" text-white text-left">
-                                <li className="p-2 cursor-pointer"  onClick={() => { showList(!list) }}>Order New<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
+                                <li className="p-2 cursor-pointer"  onClick={() => { showList(!list) }}>{payment.orderType}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
                                 {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
-                                    <li className="border-b-2 border-white py-2 cursor-pointer">Takeaway New</li>
-                                    <li className="border-b-2 border-white py-2 cursor-pointer">Dine In New</li>
-                                    <li className="py-2 cursor-pointer" onClick={() => { setOpen(!open) }}>Dine In Ordered Online</li></ul> : null}
+                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Take Away'}))}}>Takeaway New</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Dine In'}))}}>Dine In New</li>
+                                    <li className="py-2 cursor-pointer" onClick = {()=>{setOpen(!open) }} >Dine In Ordered Online</li></ul> : null}
                             </ul>
                             <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
                                 {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
@@ -92,20 +115,7 @@ const Pos = () => {
                 </div>
             </div>
             <div className="w-2/5 border-l-2 border-primary h-full shadow-2xl">
-                {/* <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-bold justify-items-center">
-                    <div className="border-b-2 border-white px-4 mx-6"><i class="fas fa-search"></i> <input type="type"  className=" bg-primary focus:outline-none text-white text-lg py-2 mx-10" />
-                    </div>
-                </nav>
-
-                <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
-                    <div className="flex flex-wrap justify-evenly px-6 mt-4"> */}
                       <CategoryList />
-                    {/* </div>
-                   
-                </div> */}
-
-              
-
             </div>
 
             {pop && <div className="bg-primary absolute top-16 left-40 p-20">
@@ -126,10 +136,11 @@ const Pos = () => {
                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
                     <label>Enter Table No.</label>
                     <ul className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
-                        <li onClick={() => { showTable(!Table) }} className="py-2 border-b-2 border-t-2 border-black">Table 1</li>
-                        {Table ? <><li className="py-2 border-b-2 border-black">Table 2</li>
+                        <li className="py-2 border-b-2 border-t-2 border-black" onClick={openTable}>Table {payment.table ? payment.table : 'No.'}</li>
+                        {/* {Table ? <><li className="py-2 border-b-2 border-black">Table 2</li>
                             <li className="py-2 border-b-2 border-black">Table 2</li>
-                            <li className="py-2 border-b-2 border-black">Table 4</li></> : null}
+                            <li className="py-2 border-b-2 border-black">Table 4</li></> : null} */}
+                            {Table ? <>{displayTable}</> : null}
                     </ul>
                     <button className="bg-white text-primary py-2 font-bold" onClick={orderSearch}>Search</button>
                 </div>

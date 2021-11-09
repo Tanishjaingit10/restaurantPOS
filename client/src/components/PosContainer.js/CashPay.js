@@ -1,8 +1,30 @@
-import React,{ useContext} from 'react'
+import React,{ useContext, useEffect} from 'react'
 import { PaymentContext } from '../../context/Payment'
+import PaymentSummary from './PaymentSummary';
+import { OrderContext } from '../../context/Cart';
+import { CustomerContext } from '../../context/Customer';
 
 const CashPay = () => {
     const [payment, setPayment] = useContext(PaymentContext);
+    const [cart, setCart] = useContext(OrderContext);
+    const [customer,setCustomer]= useContext(CustomerContext);
+
+    useEffect(async () => {
+        const res = await fetch("/app/addOrder", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                customer:customer,
+                order: cart,
+                payment:payment
+      
+            })
+      
+        });
+        
+    }, [payment])
     
     return (
         <div>

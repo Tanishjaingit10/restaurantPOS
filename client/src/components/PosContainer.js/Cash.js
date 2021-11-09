@@ -18,20 +18,11 @@ const Cash = () => {
 
   const placeOrder = async(e) => {
     e.preventDefault();
+    setPayment((prev) => ({
+      ...prev,
+      status: 'completed', orderStatus: 'Ready to serve'
+    }));
     history.push("/cashPay");
-    const res = await fetch("/app/addOrder", {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-          customer:customer,
-          order: cart,
-          payment:payment
-
-      })
-
-  });
   };
 
   const onBack = (e) => {
