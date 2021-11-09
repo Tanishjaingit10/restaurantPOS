@@ -37,7 +37,7 @@ const order_template = new mongoose.Schema({
             status: String,
             orderType: String,
             orderStatus: String,
-            table: Number
+            table: String
 
         }]
     }

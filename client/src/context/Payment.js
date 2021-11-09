@@ -13,7 +13,7 @@ export const PaymentProvider= (props)=>{
         status: 'pending',
         orderType: 'Order new',
         orderStatus: null,
-        table: 0
+        table: 'N/A'
     })
 
     return (

@@ -88,8 +88,8 @@ const Pos = () => {
                             <ul className=" text-white text-left">
                                 <li className="p-2 cursor-pointer"  onClick={() => { showList(!list) }}>{payment.orderType}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
                                 {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
-                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Take Away'}))}}>Takeaway New</li>
-                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Dine In'}))}}>Dine In New</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Take Away New'}))}}>Takeaway New</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Dine In New'}))}}>Dine In New</li>
                                     <li className="py-2 cursor-pointer" onClick = {()=>{setOpen(!open) }} >Dine In Ordered Online</li></ul> : null}
                             </ul>
                             <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
