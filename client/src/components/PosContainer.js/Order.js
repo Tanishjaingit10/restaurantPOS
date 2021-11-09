@@ -56,6 +56,7 @@ const Order = () => {
         );
       })
     );
+     //eslint-disable-next-line
   }, [cart]);
   return <div className="h-96">{display}</div>;
 };

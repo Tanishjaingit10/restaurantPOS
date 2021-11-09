@@ -23,6 +23,7 @@ const AddCustomer = () => {
     useEffect(() => {
         if (id)
             loadCustomer();
+            //eslint-disable-next-line
     }, [id])
     const handleCustomer = (e) => {
         name = e.target.name;

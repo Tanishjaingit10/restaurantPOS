@@ -1,14 +1,10 @@
 import React,{useContext} from 'react'
 import { PaymentContext } from '../../context/Payment';
-import { OrderContext } from '../../context/Cart';
-import { CustomerContext } from '../../context/Customer';
 import { useHistory } from 'react-router-dom';
 
 const Payment = () => {
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
-    const [cart, setCart] = useContext(OrderContext);
-    const [customer,setCustomer]= useContext(CustomerContext);
     const onPay = async (e)=> {
         e.preventDefault();
         setPayment((prev) => ({

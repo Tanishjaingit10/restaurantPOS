@@ -52,6 +52,7 @@ const CategoryForm = () => {
         if (id) {
             loadCategory();
         }
+        //eslint-disable-next-line
     },[id])
 
     const addCategory = async (e) => {

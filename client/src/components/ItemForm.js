@@ -111,6 +111,7 @@ const ItemForm = () => {
             finalAvail.map((obj) => {
                 return (<div className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.day} | {obj.startTime} - {obj.endTime}<span onClick={() => { removeAvail(obj) }} className="absolute right-4 cursor-pointer">x</span></div>)
             }))
+            //eslint-disable-next-line
     }, [finalVar, finalAvail])
 
     const addVariant = async (e) => {

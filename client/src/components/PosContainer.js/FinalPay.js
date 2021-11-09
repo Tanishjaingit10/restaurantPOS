@@ -4,11 +4,12 @@ import { OrderContext } from '../../context/Cart';
 import { CustomerContext } from '../../context/Customer';
 
 const FinalPay = () => {
-    const [payment, setPayment] = useContext(PaymentContext)
-    const [cart, setCart] = useContext(OrderContext);
-    const [customer,setCustomer]= useContext(CustomerContext);
-    useEffect(async () => {
-        const res = await fetch("/app/addOrder", {
+    const [payment] = useContext(PaymentContext)
+    const [cart] = useContext(OrderContext);
+    const [customer]= useContext(CustomerContext);
+    useEffect(() => {
+        async function fetchData(){
+        await fetch("/app/addOrder", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -20,8 +21,9 @@ const FinalPay = () => {
       
             })
       
-        });
-        
+        });}
+        fetchData();
+         //eslint-disable-next-line
     }, [payment])
     return (
         <div>

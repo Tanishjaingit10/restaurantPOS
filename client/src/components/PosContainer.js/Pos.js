@@ -30,7 +30,6 @@ const Pos = () => {
             })
     }
 
-
     const custList = async (e) => {
                 setCust(
                     customers.filter((option)=>{
@@ -88,13 +87,13 @@ const Pos = () => {
                             <ul className=" text-white text-left">
                                 <li className="p-2 cursor-pointer"  onClick={() => { showList(!list) }}>{payment.orderType}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
                                 {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
-                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Take Away New'}))}}>Takeaway New</li>
-                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Dine In New'}))}}>Dine In New</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Take Away'}))}}>Takeaway New</li>
+                                    <li className="border-b-2 border-white py-2 cursor-pointer" onClick={()=>{setPayment((prev) => ({...prev,orderType: 'Dine In'}))}}>Dine In New</li>
                                     <li className="py-2 cursor-pointer" onClick = {()=>{setOpen(!open) }} >Dine In Ordered Online</li></ul> : null}
                             </ul>
                             <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
-                                {cust ? <ul className="absolute z-30 top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
-                                    <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full focus:outline-none text-black pl-4" /><i class="fas fa-search p-2"></i></li>
+                                {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
+                                    <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
                                     <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
                                 </ul> : null}
@@ -104,7 +103,7 @@ const Pos = () => {
                     </div>
                 </nav>
                 <div className="flex flex-col">
-                    {cart[0] ?<Order/> : <div className="bg-white h-80">
+                    {cart[0] ?<Order/> : <div className="bg-white h-96">
                          <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
