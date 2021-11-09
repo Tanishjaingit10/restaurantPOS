@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CategoryDisplay from "./components/CategoryDisplay";
 import CategoryForm from "./components/CategoryForm";
+import Counter from "./components/Counter";
 import Home from "./components/Home";
 import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
@@ -50,6 +51,7 @@ const Routes = () => {
           <Route exact path="/cashPay" component={CashPay} />
           <Route exact path="/viewOrder" component={ViewOrder} />
           <Route exact path="/orders" component={Orders} />
+          <Route exact path="/counter" component={Counter} />
         </Switch>
       </Router>
     
