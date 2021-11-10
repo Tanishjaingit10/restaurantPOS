@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
 const Counter = () => {
-  const [payment, setPayment] = useContext(PaymentContext);
-  const [cart, setCart] = useContext(OrderContext);
-  const [customer, setCustomer] = useContext(CustomerContext);
   const [display, setDisplay] = useState()
   const [Order, showOrder] = useState()
   const [detail, setDetail] = useState(false);
