@@ -40,6 +40,7 @@ router.post('/addCustomer', customerController.add_customer)
 router.get('/customers', customerController.all_customers)
 router.get('/customer/:id', customerController.get_customer)
 router.put('/updateCustomer/:id', customerController.update_customer)
+router.get('/orders', orderController.all_order)
 router.post('/addItem',(req,res)=>{
     console.log(1)
     console.log(req.body)

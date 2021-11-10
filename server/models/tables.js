@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const table_template = new mongoose.Schema({
 
     number:{
-        type:Number,
+        type:String,
     },
     capacity:{
         type:Number,
