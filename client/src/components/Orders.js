@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 const Orders = () => {
     const [inputValue, setInputvalue] = useState("Search for order or serial no.")
     return (
-        <div className="h-screen justify-items-conter">
+        <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
@@ -19,7 +19,7 @@ const Orders = () => {
         </div>
       </nav>
       <div className="flex flex-col h-screen">
-          <div className="h-3/4">
+          <div className="h-3/4 overflow-y-scroll">
             <table className="w-full">
               <thead>
                 <tr className="">

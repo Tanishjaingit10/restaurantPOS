@@ -35,7 +35,7 @@ const PaymentSummary = () => {
         setPay(
             <div>
             <div className="bg-gray-300 flex flex-col">
-                        <div className="flex flex-col mx-20 p-4 px-8 text-xl font-roboto text-gray-600">
+                        <div className="flex flex-col mx-20 p-2 px-8 text-xl font-roboto text-gray-600">
                             <div className="relative py-4"><label className="">Subtotal</label><span className="absolute right-0">{payment.subTotal}</span></div>
                             <div className="relative py-4"><label className="">Tax</label><span className="absolute right-0">{payment.tax}</span></div>
                             <div className="relative py-4"><label className="">Discount</label><span className="absolute right-0">{payment.discount}</span></div>

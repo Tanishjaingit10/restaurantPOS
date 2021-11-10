@@ -5,7 +5,6 @@ import { OrderContext } from '../../context/Cart';
 import Order from './Order';
 import PaymentSummary from './PaymentSummary';
 import { CustomerContext } from '../../context/Customer';
-import { CategoryContext } from '../../context/Category';
 import { PaymentContext } from '../../context/Payment';
 
 let customers = [];
@@ -18,13 +17,12 @@ const Pos = () => {
     const [pop, showPop] = useState(false);
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
-    const [cart, setCart] = useContext(OrderContext);
-    const [category,setCategory]= useContext(CategoryContext)
+    const [cart] = useContext(OrderContext);
     const [Cust, setCust] = useState()
     const [search, setSearch]=useState("");
     const [displayTable, setdisplayTable] = useState()
     const customerList = async (e) => {
-        const res = await fetch('/app/customers').then((res) => res.json())
+        await fetch('/app/customers').then((res) => res.json())
             .then((json) => {
                 customers = json;
             })
@@ -33,11 +31,12 @@ const Pos = () => {
     const custList = async (e) => {
                 setCust(
                     customers.filter((option)=>{
-                        if(search =="")
+                        if(search === "")
                             return option;
                         else if(option.contact.includes(search)){
                             return option;
                         }
+                        return null;
                     })
                     .map((option) => {
                         return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({name:option.name, contact: option.contact, email: option.email}) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i  class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
@@ -49,7 +48,7 @@ const Pos = () => {
     })
     useEffect(() => {
         custList()
-        
+       //eslint-disable-next-line 
     },[search,customers])
 
     const orderSearch = (e)=> {
@@ -65,8 +64,9 @@ const Pos = () => {
             .then((json) => {
                 console.log(json)
                 setdisplayTable(json.map((option) => {
-                    if(option.status=='Free')
-                    return (<li><button className="py-2 border-b-2 border-t-2 border-black" onClick={handleTable} name="category" value={option.number}>Table {option.number}</button></li>)
+                    if(option.status==='Free')
+                    return (<li><button className="py-2 border-b-2 border-t-2 border-black w-full text-left" onClick={handleTable} name="category" value={option.number}>Table {option.number}</button></li>)
+                    return null;
                 }))
             })
 
@@ -78,7 +78,7 @@ const Pos = () => {
     }
 
     return (
-        <div className="flex flex-row h-full">
+        <div className="flex flex-row h-screen overflow-y-hidden">
             <div className="w-3/5 border-r-2 border-primary h-full shadow-2xl">
                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold">
                     <div className="flex flex-row px-6 justify-items-center">
@@ -92,7 +92,7 @@ const Pos = () => {
                                     <li className="py-2 cursor-pointer" onClick = {()=>{setOpen(!open) }} >Dine In Ordered Online</li></ul> : null}
                             </ul>
                             <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name? customer.name:'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
-                                {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg">
+                                {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg z-30">
                                     <li className="bg-primary flex flex-row"><input value = {search} onChange={(e)=>setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                     {Cust}
                                     <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
@@ -103,7 +103,7 @@ const Pos = () => {
                     </div>
                 </nav>
                 <div className="flex flex-col">
-                    {cart[0] ?<Order/> : <div className="bg-white h-96">
+                    {cart[0] ?<Order/> : <div className="bg-white h-80">
                          <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
                         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
                             <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
@@ -129,7 +129,7 @@ const Pos = () => {
                 </div>
             </div>}
 
-            {open && <div className="bg-primary absolute top-16 left-40 p-20">
+            {open && <div className="bg-primary absolute top-16 left-40 p-20 z-30">
             <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={()=>{setOpen(!open)}} >
                     <span className=" text-white text-center object-center text-xl">x</span>
                     </div>
