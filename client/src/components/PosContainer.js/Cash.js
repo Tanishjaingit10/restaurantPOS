@@ -17,7 +17,7 @@ const Cash = () => {
     e.preventDefault();
     setPayment((prev) => ({
       ...prev,
-      status: 'completed', orderStatus: 'Ready to serve'
+      status: 'completed', orderStatus: 'Processing'
     }));
     history.push("/cashPay");
   };

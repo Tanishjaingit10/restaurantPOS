@@ -40,6 +40,10 @@ const order_template = new mongoose.Schema({
             table: String
 
         }]
+    },
+    time: {
+        type: Date,
+        default: Date.now()
     }
 
 })
