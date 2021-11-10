@@ -136,10 +136,7 @@ const Pos = () => {
                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
                     <label>Enter Table No.</label>
                     <ul className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
-                        <li className="py-2 border-b-2 border-t-2 border-black" onClick={openTable}>Table {payment.table ? payment.table : 'No.'}</li>
-                        {/* {Table ? <><li className="py-2 border-b-2 border-black">Table 2</li>
-                            <li className="py-2 border-b-2 border-black">Table 2</li>
-                            <li className="py-2 border-b-2 border-black">Table 4</li></> : null} */}
+                        <li className="py-2 border-b-2 border-t-2 border-black" onClick={openTable}>Table {payment.table!='N/A' ? payment.table : 'No.'}</li>
                             {Table ? <>{displayTable}</> : null}
                     </ul>
                     <button className="bg-white text-primary py-2 font-bold" onClick={orderSearch}>Search</button>

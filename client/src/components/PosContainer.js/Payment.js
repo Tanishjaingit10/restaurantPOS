@@ -9,7 +9,7 @@ const Payment = () => {
         e.preventDefault();
         setPayment((prev) => ({
             ...prev,
-            mode: 'other', status: 'completed', orderStatus: 'Ready to serve'
+            mode: 'other', status: 'completed', orderStatus: 'Processing'
           }));
         history.push("/finalPay");
     }

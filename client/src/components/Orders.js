@@ -1,7 +1,32 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 const Orders = () => {
     const [inputValue, setInputvalue] = useState("Search for order or serial no.")
+    const [orders, showOrders]=useState()
+    const loadOrders = async()=>{
+      let count = 1;
+      await fetch(
+        "/app/orders")
+        .then((res) => res.json())
+        .then((json) => {
+          showOrders(json.map((option) => {
+            return (
+              <tr className="font-medium">
+              <td className="bg-secondary py-2 text-center border-2">{count++}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option._id}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment[0].orderType}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment[0].orderStatus}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment[0].subTotal}</td>
+              <td className="bg-secondary py-2 text-center flex flex-col">
+                  <div>{option.time}</div>
+                  {/* <div>20:58:09</div> */}
+              </td>
+          </tr>
+            )}))})
+    }
+    useEffect(() => {
+      loadOrders()
+    })
     return (
         <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -32,7 +57,8 @@ const Orders = () => {
                 </tr>
               </thead>
               <tbody>
-                  <tr className="font-medium">
+                {orders}
+                  {/* <tr className="font-medium">
                       <td className="bg-secondary py-2 text-center border-2">01</td>
                       <td className="bg-secondary py-2 text-center border-2">020505</td>
                       <td className="bg-secondary py-2 text-center border-2">Take Away</td>
@@ -42,7 +68,7 @@ const Orders = () => {
                           <div>01/24/18</div>
                           <div>20:58:09</div>
                       </td>
-                  </tr>
+                  </tr> */}
               </tbody>
             </table>
             </div>
