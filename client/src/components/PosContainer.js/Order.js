@@ -58,7 +58,7 @@ const Order = () => {
     );
      //eslint-disable-next-line
   }, [cart]);
-  return <div className="h-96">{display}</div>;
+  return <div className="h-80 overflow-y-scroll">{display}</div>;
 };
 
 export default Order;

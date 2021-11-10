@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import CategoryDisplay from "./components/CategoryDisplay";
 import CategoryForm from "./components/CategoryForm";
 import Counter from "./components/Counter";
+import Customers from "./components/Customers";
 import Home from "./components/Home";
 import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
@@ -19,6 +20,7 @@ import Discount from "./components/PosContainer.js/Discount";
 import FinalPay from "./components/PosContainer.js/FinalPay";
 import Payment from "./components/PosContainer.js/Payment";
 import Pos from "./components/PosContainer.js/Pos";
+import Receipt from "./components/PosContainer.js/Receipt";
 import ViewOrder from "./components/PosContainer.js/ViewOrder";
 import SignUp from "./components/SignUp";
 import TableForm from "./components/TableForm";
@@ -54,6 +56,8 @@ const Routes = () => {
           <Route exact path="/orders" component={Orders} />
           <Route exact path="/counter" component={Counter} />
           <Route exact path="/kitchen" component={Kitchen} />
+          <Route exact path="/receipt" component={Receipt} />
+          <Route exact path="/customers" component={Customers} />
         </Switch>
       </Router>
     

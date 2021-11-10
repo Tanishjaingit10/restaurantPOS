@@ -38,8 +38,8 @@ const FinalPay = () => {
                     <div className="text-center font-semibold">Amount Due</div>
                     <div className="text-center mt-2 text-3xl">${payment.total}</div>
                     <div className="flex flex-col mt-8 space-y-4">
-                        <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto">Print Receipt</button>
-                        <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto">Email Receipt</button>
+                        <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto"><a href="receipt">Print Receipt</a></button>
+                        <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto"><a href="receipt">Email Receipt</a></button>
                         <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto">Text Receipt</button>
                     </div>
                 </div>

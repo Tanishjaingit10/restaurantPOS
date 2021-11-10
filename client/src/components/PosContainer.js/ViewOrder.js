@@ -4,7 +4,7 @@ const ViewOrder = () => {
   const [show, showStatus] = useState(false);
     return (
         <div>
-             <div className="h-screen justify-items-conter">
+             <div className="h-screen overflow-hidden justify-items-conter">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
@@ -60,8 +60,8 @@ const ViewOrder = () => {
           <button className="bg-gray-400 py-4 font-bold font-roboto text-xl">Print Bill</button>
         
         </div>
-        <div className="flex flex-col w-4/5 relative">
-          <div className="border-b-2 border-primary h-3/4">
+        <div className="flex flex-col w-4/5 relative ">
+          <div className="border-b-2 border-primary h-3/4 overflow-y-scroll">
             <table className="w-full">
               <thead>
                 <tr className="">
@@ -79,8 +79,7 @@ const ViewOrder = () => {
                       <td className="bg-secondary py-2 text-center">3</td>
                       <td className="bg-secondary py-2 text-center">$10.00</td>
                       <td className="bg-secondary py-2 text-center">$2.00</td>
-                      <td className="bg-secondary py-2 text-center">$12.00</td>
-                      
+                      <td className="bg-secondary py-2 text-center">$12.00</td> 
                   </tr>
               </tbody>
             </table>
