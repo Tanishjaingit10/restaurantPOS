@@ -34,20 +34,16 @@ const SignUp = () => {
                 fullName, email_id, contact, position, password
             })
         });
-      
-        console.log(res.status);
        
         if (res.status === 201) {
             let ans = "Registration Successful";
             setMsg(ans);
-            console.log(ans);
             setIsOpen(!isOpen);
            
         }
         else {
                 let obj = signup.find((pop) => pop.id === res.status);
                 setMsg(obj.title);
-                console.log(msg);
                 setIsError(!isError);
         }
     }

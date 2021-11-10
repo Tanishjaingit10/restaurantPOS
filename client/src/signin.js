@@ -10,6 +10,10 @@ let signin = [
     {
         id:404,
         title: "Login unsuccessful"
+    },
+    {
+        id: 500,
+        title: "Unable to Load Server"
     }
 ]
 

@@ -18,6 +18,10 @@ let signup = [
     {
         id:201,
         title: "Added Successfully!"
+    },
+    {
+        id: 500,
+        title: "Unable to load Server!"
     }
 
 

@@ -26,20 +26,15 @@ const Login = () => {
             })
         });
 
-        await res.json();
         setIsOpen(!isOpen);
-        console.log(res.status)
         if(res.status===201)
         {
-           
-            console.log("Successful");
             history.push("/home");
         }
         else
         {
             let obj = signin.find((pop) => pop.id === res.status);
             setMsg(obj.title);
-            console.log(msg);  
         }
     }
 

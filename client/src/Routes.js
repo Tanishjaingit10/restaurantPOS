@@ -6,6 +6,7 @@ import Counter from "./components/Counter";
 import Home from "./components/Home";
 import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
+import Kitchen from "./components/Kitchen";
 import Login from "./components/Login";
 import Menu from "./components/Menu";
 import Orders from "./components/Orders";
@@ -52,6 +53,7 @@ const Routes = () => {
           <Route exact path="/viewOrder" component={ViewOrder} />
           <Route exact path="/orders" component={Orders} />
           <Route exact path="/counter" component={Counter} />
+          <Route exact path="/kitchen" component={Kitchen} />
         </Switch>
       </Router>
     
