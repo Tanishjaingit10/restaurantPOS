@@ -55,7 +55,7 @@ const Counter = () => {
               </div>
               <div className="flex flex-row text-xl text-white font-roboto bg-green">
                 <div className=" w-full p-4 text-left">Token No. 302</div>
-                <div className=" w-full p-4 text-right">#2102</div>
+                <div className=" w-full p-4 text-right">#{option.order_id}</div>
               </div>
               <div
                 className="relative rounded-full bottom-6 p-2 bg-white w-12 h-12 mx-auto shadow-lg text-green text-center text-xl"
@@ -81,11 +81,6 @@ const Counter = () => {
   useEffect(() => {
     loadOrders()
   })
-
-
-
-
-
 
   return (
     <div className="h-screen justify-items-conter">

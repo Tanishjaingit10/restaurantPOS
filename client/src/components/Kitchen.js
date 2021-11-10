@@ -1,6 +1,38 @@
-import React from "react";
+import React, {useState,useEffect} from "react";
 
 const Kitchen = () => {
+  const [orders, showOrders]=useState()
+  const loadOrders = async()=>{
+    let count = 1;
+    await fetch(
+      "/app/orders")
+      .then((res) => res.json())
+      .then((json) => {
+        showOrders(json.map((option) => {
+          return (
+            <tr className="font-medium">
+                <td className="bg-secondary py-2 text-center border-2">{option.order_id}</td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.payment[0].orderType}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.payment[0].table}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  03:00:00
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  01:00:00
+                </td>
+                <td className="bg-secondary py-2 text-center">
+                {option.payment[0].orderStatus}
+                </td>
+              </tr>
+          )}))})
+  }
+  useEffect(() => {
+    loadOrders()
+  })
   return (
     <div className="h-screen justify-items-conter">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
@@ -29,7 +61,7 @@ const Kitchen = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="font-medium">
+              {/* <tr className="font-medium">
                 <td className="bg-secondary py-2 text-center border-2">#210522</td>
                 <td className="bg-secondary py-2 text-center border-2">
                   Take Away
@@ -46,7 +78,8 @@ const Kitchen = () => {
                 <td className="bg-secondary py-2 text-center">
                   Processing
                 </td>
-              </tr>
+              </tr> */}
+              {orders}
             </tbody>
           </table>
         </div>

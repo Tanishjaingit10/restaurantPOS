@@ -193,7 +193,6 @@ const CategoryList = () => {
 
       <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
         <div className="flex flex-wrap justify-evenly px-6 mt-4">
-          {/* <div className="flex flex-wrap justify-start"> */}
           {renderList}
         </div>
         <div className="mt-10 flex flex-wrap">{displayItems}</div>

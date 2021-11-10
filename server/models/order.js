@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
-
+const shortid = require('shortid');
+const autoIncrement = require('mongoose-sequence')(mongoose);
 const order_template = new mongoose.Schema({
+    order_id: {
+        type: Number
+    },
     customer:{
         type: [{
             name: String,
@@ -44,8 +48,13 @@ const order_template = new mongoose.Schema({
     time: {
         type: Date,
         default: Date.now()
-    }
-
+    },
+    // orderTime: {
+    //     type: String
+    // }
+    
 })
+
+order_template.plugin(autoIncrement, {inc_field: 'order_id', start_seq: 2021001})
 
 module.exports = mongoose.model('order', order_template)

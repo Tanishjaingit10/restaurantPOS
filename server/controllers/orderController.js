@@ -1,6 +1,7 @@
 const order_template_copy = require('../models/order')
 const add_order = async (request, response, next) => {
     const { customer, order, payment } = request.body;
+    console.log(request.body._id)
     console.log(order)
     console.log(customer)
     console.log(payment)
