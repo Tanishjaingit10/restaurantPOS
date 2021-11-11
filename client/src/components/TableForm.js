@@ -84,7 +84,7 @@ const TableForm = () => {
         
     return (
         <div>
-            <div className="bg-white w-full h-full top-0 fixed">
+            <div className="bg-white w-full h-screen top-0">
                 <nav className="bg-green lg:py-4 xl:py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                     <div className="flex flex-wrap items-center">
                         <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/tables"><i class="fas fa-arrow-left mr-4"></i>Back</a></div>
@@ -113,7 +113,7 @@ const TableForm = () => {
                         </div>
                         <div className=" w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" /></div>
                     </div>
-                    <button className="bg-green p-2 text-white text-center font-bold px-6 mt-4 xl:mt-10" onClick={addTable}>Done</button>
+                    <button className="bg-green p-2 text-white text-center font-bold px-6 mt-4 xl:mt-8 mb-10" onClick={addTable}>Done</button>
                 </form>
             </div>
             {isError && <Popup
