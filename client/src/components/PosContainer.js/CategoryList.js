@@ -192,7 +192,7 @@ const CategoryList = () => {
       finalVar.map((obj) => {
         return (
           <button className="bg-primary px-10 py-2 w-full mb-2 relative">
-            {obj.quantity} {obj.variant} / $ {obj.price*obj.quantity}
+            {obj.quantity} x {obj.variant} / $ {obj.price*obj.quantity}
             <span
               onClick={() => {
                 removeVar(obj);

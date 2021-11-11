@@ -26,7 +26,7 @@ const Order = () => {
               {order.orderedVariant.map((obj) => {
                 return (
                   <div className="text-gray-400 font-semibold text-md">
-                    {obj.quantity}-{obj.variant}
+                    {obj.quantity} x {obj.variant}
                   </div>
                 );
               })}
