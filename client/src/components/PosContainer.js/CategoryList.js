@@ -3,6 +3,7 @@ import { OrderContext } from "../../context/Cart";
 import { PaymentContext } from "../../context/Payment";
 import { CategoryContext } from "../../context/Category";
 
+let timeToCook = 0;
 const CategoryList = () => {
   const [cart, setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
@@ -14,6 +15,7 @@ const CategoryList = () => {
     orderedVariant: [],
     price: 0,
     subtotal: 0,
+    time:""
   });
   const [varList, setVarList] = useState();
   const [Variant, setVariant] = useState([]);
@@ -130,7 +132,13 @@ const CategoryList = () => {
       ...prev,
       subTotal: payment.subTotal + item.subtotal,
     }));
-   
+    let h= parseInt(item.time.toLocaleString().split(':')[0])
+    let m = parseInt(item.time.toLocaleString().split(':')[1])+h*60;
+    timeToCook= Math.max(timeToCook,m)
+    setPayment((prev) => ({
+      ...prev,
+      timeToCook: timeToCook,
+    }));
   };
   const setOrder = async (e) => {
     setOpen(true);
@@ -145,6 +153,7 @@ const CategoryList = () => {
             orderedVariant: [],
             price: json.price,
             subtotal: json.price,
+            time: json.time
           });
         });
     }

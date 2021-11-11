@@ -247,7 +247,7 @@ const ItemForm = () => {
                                 <input type="text" name="description" onChange={handleInputs} value={item.description} className=" border-2 border-black py-2" />
                             </div>
                             <div className="flex flex-col bg-white">
-                                <label htmlFor="time" className="mb-2">Time to Cook (in minutes)</label>
+                                <label htmlFor="time" className="mb-2">Time to Cook</label>
                                 <input type="time" name="time" onChange={handleInputs} value={item.time} className=" border-2 border-black py-2" />
                             </div>
                             <div className="flex flex-col bg-white">
