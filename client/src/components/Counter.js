@@ -1,17 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
-// import { PaymentContext } from "./../context/Payment";
-// import { OrderContext } from "./../context/Cart";
-// import { CustomerContext } from "./../context/Customer";
+import React, { useState, useEffect } from "react";
 let arr = new Array(1000000).fill(false);
 const Counter = () => {
-  // const [payment, setPayment] = useContext(PaymentContext);
-  // const [cart, setCart] = useContext(OrderContext);
-  // const [customer, setCustomer] = useContext(CustomerContext);
   const [display, setDisplay] = useState();
   const [Order, showOrder] = useState();
   const showDetails = (e, index) => {
     arr[index] = !arr[index];
+    console.log(index)
     if (arr[index]) {
+      arr = arr.map(x => false);
+      arr[index]=true;
       showOrder(
         e.order.map((obj) => {
           return (
@@ -74,6 +71,7 @@ const Counter = () => {
                     onClick={() => {
                       showDetails(option, index);
                     }}
+                    
                   >
                     {arr[index] ? (
                       <i className="fas fa-chevron-up mt-2"></i>
@@ -101,9 +99,11 @@ const Counter = () => {
         );
       });
   };
+
   useEffect(() => {
     loadOrders();
   });
+
 
   return (
     <div className="h-screen justify-items-conter">
@@ -120,54 +120,6 @@ const Counter = () => {
         </div>
       </nav>
       <div className=" m-4 p-6 justify-evenly flex flex-wrap">
-        {/* <div
-          className={
-            detail
-              ? "shadow-2xl w-1/4 font-roboto bg-white m-2"
-              : "w-1/4 font-roboto bg-white m-2"
-          }
-        >
-            <div className="flex flex-col font-bold">
-            <div className="flex flex-row text-xl text-white font-roboto bg-green">
-              <div className=" w-full p-4 text-left">Table No. </div>
-              <div className=" w-full p-4 text-right">Dine In Online</div>
-            </div>
-            <div className="flex flex-row text-xl text-white font-roboto bg-green">
-              <div className=" w-full p-4 text-left">Token No. 302</div>
-              <div className=" w-full p-4 text-right">#2102</div>
-            </div>
-            <div
-              className="relative rounded-full bottom-6 p-2 bg-white w-12 h-12 mx-auto shadow-lg text-green text-center text-xl"
-              onClick={showDetails}
-            >
-              {detail ? (
-                <i className="fas fa-chevron-up mt-2"></i>
-              ) : (
-                <i className="fas fa-chevron-down mt-2"></i>
-              )}
-            </div>
-          </div>
-          {detail ? (
-            <div className=" -mt-4 flex flex-row px-6">
-              <div className="flex flex-col w-full py-2">
-                <div className="text-xl font-semibold">French Fries</div>
-                <div className="text-md text-gray-400 font-medium">
-                  1 x Variant
-                </div>
-                <div className="text-md text-gray-400 font-medium">
-                  1 x Variant
-                </div>
-                <div className="text-md text-gray-400 font-medium">
-                  1 x Variant
-                </div>
-              </div>
-              <div className="flex flex-col w-full text-green text-xl text-right font-semibold">
-                <div className="py-2">Processing</div>
-                <div className="py-2">00:05:00</div>
-              </div>
-            </div>
-          ) : null}
-        </div> */}
         {display}
       </div>
     </div>
