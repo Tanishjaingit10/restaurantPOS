@@ -101,9 +101,9 @@ const Pos = () => {
     }
 
     return (
-        <div className="flex flex-row h-screen overflow-y-hidden">
-            <div className="w-3/5 border-r-2 border-primary h-full shadow-2xl">
-                <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold">
+        <div className="flex flex-row overflow-hidden h-full">
+            <div className="w-3/5 border-r-2 border-primary shadow-2xl overflow-hidden ">
+                <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold ">
                     <div className="flex flex-row px-6 justify-items-center">
                         <div className=" justify-center md:justify-start text-white py-2"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
                         <div className="flex flex-row w-full mx-24 relative">

@@ -85,24 +85,24 @@ const TableForm = () => {
     return (
         <div>
             <div className="bg-white w-full h-full top-0 fixed">
-                <nav className="bg-green py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
+                <nav className="bg-green lg:py-4 xl:py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                     <div className="flex flex-wrap items-center">
                         <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/tables"><i class="fas fa-arrow-left mr-4"></i>Back</a></div>
                         <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">Add Table</div>
                     </div>
                 </nav>
-                <form className="flex flex-col w-1/3 mx-auto mt-10 font-roboto font-bold text-xl">
+                <form className="flex flex-col w-1/3 mx-auto mt-6 xl:mt-10 font-roboto font-bold text-xl">
                     <div className="flex flex-col py-2">
                         <label htmlFor="number" className="mb-2">Enter New Number of Table</label>
-                        <input type="text" name="number" value={Table.number} onChange={handleTable} className=" border-2 border-black py-2" />
+                        <input type="text" name="number" value={Table.number} onChange={handleTable} className=" border-2 border-black xl:py-2" />
                     </div>
                     <div className="flex flex-col py-2">
                         <label htmlFor="capacity" className="mb-2">Maximum Capacity of People</label>
-                        <input type="text" name="capacity" value={Table.capacity} onChange={handleTable} className=" border-2 border-black py-2" />
+                        <input type="text" name="capacity" value={Table.capacity} onChange={handleTable} className=" border-2 border-black xl:py-2" />
                     </div>
                     <div className="flex flex-col py-2">
                         <label htmlFor="location" className="mb-2">Location</label>
-                        <input type="text" name="location" value={Table.location} onChange={handleTable} className=" border-2 border-black py-2" />
+                        <input type="text" name="location" value={Table.location} onChange={handleTable} className=" border-2 border-black xl:py-2" />
                     </div>
                     <div className="flex flex-row bg-white space-x-4">
                         <div className="flex flex-col w-2/3 space-y-2">
@@ -113,7 +113,7 @@ const TableForm = () => {
                         </div>
                         <div className=" w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" /></div>
                     </div>
-                    <button className="bg-green p-2 text-white text-center font-bold px-6 mt-10" onClick={addTable}>Done</button>
+                    <button className="bg-green p-2 text-white text-center font-bold px-6 mt-6 xl:mt-10" onClick={addTable}>Done</button>
                 </form>
             </div>
             {isError && <Popup
