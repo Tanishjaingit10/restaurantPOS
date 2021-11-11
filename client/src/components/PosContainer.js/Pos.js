@@ -17,7 +17,7 @@ const Pos = () => {
     const [pop, showPop] = useState(false);
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
-    const [cart] = useContext(OrderContext);
+    const [cart,setCart] = useContext(OrderContext);
     const [Cust, setCust] = useState()
     const [search, setSearch] = useState("");
     const [displayTable, setdisplayTable] = useState()
@@ -114,14 +114,16 @@ const Pos = () => {
                                     <li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { setPayment((prev) => ({ ...prev, orderType: 'Dine In' })) }}>Dine In New</li>
                                     <li className="py-2 cursor-pointer" onClick={() => { setOpen(!open) }} >Dine In Ordered Online</li></ul> : null}
                             </ul>
-                            <div className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name ? customer.name : 'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></div>
-                            {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg z-30" ref={custRef}>
+                            <ul className=" text-white text-left" ref={custRef}>
+                            <li className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name ? customer.name : 'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
+                            {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg z-30">
                                 <li className="bg-primary flex flex-row"><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                 {Cust}
                                 <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
                             </ul> : null} 
+                            </ul>
 
-                            <div className="absolute text-center py-2 right-0"><i onClick={() => { setCustomer([]) }} className="fas fa-trash-alt ml-10 cursor-pointer"></i></div>
+                            <div className="absolute text-center py-2 right-0"><i onClick={() => { window.location.reload(false)}} className="fas fa-trash-alt ml-10 cursor-pointer"></i></div>
                         </div>
                     </div>
                 </nav>
