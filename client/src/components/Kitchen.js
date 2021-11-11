@@ -1,16 +1,35 @@
-import React, {useState,useEffect} from "react";
+import React, { useState, useEffect, useContext } from "react";
+import Countdown from "react-countdown";
+import { PaymentContext } from "../context/Payment";
 
 const Kitchen = () => {
-  const [orders, showOrders]=useState()
-  const loadOrders = async()=>{
-    await fetch(
-      "/app/orders")
+  const [orders, showOrders] = useState();
+  const [payment, setPayment] = useContext(PaymentContext)
+  const [check, setCheck] = useState();
+
+  const renderer = ({ hours, minutes, seconds, completed }) => {
+    if (completed) {
+      // Render a completed state
+   
+      return <span>Time Over</span>;
+    } else {
+      // Render a countdown
+      return <span>{hours}:{minutes}:{seconds}</span>;
+    }
+  };
+
+
+  const loadOrders = async () => {
+    await fetch("/app/orders")
       .then((res) => res.json())
       .then((json) => {
-        showOrders(json.map((option) => {
-          return (
-            <tr className="font-medium">
-                <td className="bg-secondary py-2 text-center border-2">{option.order_id}</td>
+        showOrders(
+          json.map((option) => {
+            return (
+              <tr className="font-medium">
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.order_id}
+                </td>
                 <td className="bg-secondary py-2 text-center border-2">
                   {option.payment[0].orderType}
                 </td>
@@ -18,32 +37,33 @@ const Kitchen = () => {
                   {option.payment[0].table}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
-                {option.time.toLocaleString().split('T')[1].split('.')[0]}
+                  {option.time.toLocaleString().split("T")[1].split(".")[0]}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
-                  01:00:00
+                  <Countdown date={1636654825147 + 500000} renderer={renderer} />
                 </td>
                 <td className="bg-secondary py-2 text-center">
-                {option.payment[0].orderStatus}
+                  {option.payment[0].orderStatus}
                 </td>
               </tr>
-          )}))})
-  }
+            );
+          })
+        );
+      });
+  };
   useEffect(() => {
-    loadOrders()
-  })
+    loadOrders();
+  });
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-          <a href="/home">
+            <a href="/home">
               <i className="fas fa-home font-semibold mr-4"></i>
             </a>
           </div>
-          <div className="  text-white px-2  font-semibold">
-            Kitchen
-          </div>
+          <div className="  text-white px-2  font-semibold">Kitchen</div>
         </div>
       </nav>
       <div className="flex flex-col h-screen">
