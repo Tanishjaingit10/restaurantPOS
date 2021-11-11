@@ -6,6 +6,7 @@ import TimePicker from 'react-gradient-timepicker';
 import { useHistory } from 'react-router-dom';
 
 
+
 const ItemForm = () => {
     const history = useHistory();
     const [img, setImg] = useState("");
@@ -247,7 +248,7 @@ const ItemForm = () => {
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="time" className="mb-2">Time to Cook (in minutes)</label>
-                                <input type="text" name="time" onChange={handleInputs} value={item.time} className=" border-2 border-black py-2" />
+                                <input type="time" name="time" onChange={handleInputs} value={item.time} className=" border-2 border-black py-2" />
                             </div>
                             <div className="flex flex-col bg-white">
                                 <label htmlFor="description" className="mb-2">Available</label>
