@@ -18,7 +18,7 @@ const Kitchen = () => {
                   {option.payment[0].table}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
-                  03:00:00
+                {option.time.toLocaleString().split('T')[1].split('.')[0]}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
                   01:00:00
