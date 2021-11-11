@@ -54,13 +54,44 @@ const CategoryList = () => {
 
   useEffect(() => {
     if (Object.keys(Variant).length)
-      setFinalVariant((oldArray) => {
-        return [...oldArray, Variant];
-      });
+    {
+      console.log(Variant._id)
+      console.log(finalVar)
+      let check = finalVar.some(obj=>obj._id===Variant._id)
+      console.log(check)
+      if(!check)
+      {
+        setFinalVariant((oldArray) => {
+          return [...oldArray, Variant];
+        
+        });
+      }
+      else 
+      {
+        let objIndex = finalVar.findIndex((obj => obj._id == Variant._id));
+        // console.log(objIndex)
+        finalVar[objIndex].quantity = finalVar[objIndex].quantity+1;
+        
+        // setFinalVariant({ ...finalVar[objIndex], ["quantity"]: finalVar[objIndex].quantity+1});
+        console.log(finalVar)
+        setFinalVariant(finalVar)
+      }
+      
+      
+      setVariant([])
+    } 
   }, [Variant]);
 
   const handleVariant = async (e) => {
-    setVariant(e);
+    setVariant(
+      {
+        variant: e.variant,
+        description: e.description,
+        price: e.price,
+        _id: e._id,
+        quantity:1
+      }
+    );
     showList(false);
     item.subtotal = item.subtotal + e.price;
   };
@@ -153,15 +184,15 @@ const CategoryList = () => {
   };
   useEffect(() => {
     fetchCategories();
-    //eslint-disable-next-line
   }, []);
   useEffect(() => {
+    console.log(1)
     showItem({ ...item, ["orderedVariant"]: finalVar });
     setFinal(
       finalVar.map((obj) => {
         return (
           <button className="bg-primary px-10 py-2 w-full mb-2 relative">
-            {obj.variant} / $ {obj.price}
+            {obj.quantity} {obj.variant} / $ {obj.price*obj.quantity}
             <span
               onClick={() => {
                 removeVar(obj);
@@ -175,7 +206,7 @@ const CategoryList = () => {
       })
     );
     //eslint-disable-next-line
-  }, [finalVar]);
+  }, [finalVar, Variant]);
 
   return (
     <div className="h-screen">
