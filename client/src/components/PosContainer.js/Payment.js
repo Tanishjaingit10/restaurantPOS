@@ -1,17 +1,20 @@
-import React,{useContext} from 'react'
+import React,{useContext, useState} from 'react'
 import { PaymentContext } from '../../context/Payment';
 import { useHistory } from 'react-router-dom';
 
 const Payment = () => {
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
+    const [success, setSuccess] = useState(false);
     const onPay = async (e)=> {
         e.preventDefault();
         setPayment((prev) => ({
             ...prev,
             mode: 'other', status: 'completed', orderStatus: 'Processing'
           }));
-        history.push("/finalPay");
+        setSuccess(!success);
+          
+       
     }
 
     const cashPay = (e)=> {
@@ -55,6 +58,16 @@ const Payment = () => {
                        <div className=" py-2 text-center"><i class="far fa-clock text-3xl"></i></div>
                     </div>
                     </div> 
+                    {success && <div className="popup-box">
+                        <div className="box text-center py-16">
+                        <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={() => { setSuccess(!success) }} >
+                    <span className=" text-gray-400 text-center object-center text-xl">x</span>
+                </div>
+                            <p className="pb-4 font-roboto text-lg font-semibold text-green">
+              Order Placed Successfully</p>
+              <button className="bg-green px-10 py-2 font-roboto text-white text-lg" onClick={()=>{ history.push("/finalPay");}}>Continue</button>
+              </div>
+              </div>}
         </div>
     )
 }

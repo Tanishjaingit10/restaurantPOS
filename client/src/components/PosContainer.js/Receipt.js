@@ -45,9 +45,9 @@ const Receipt = () => {
                <td className="">2</td>
            </tr>
            <tr className="border-b-2 border-black text-center bg-gray-500">
-               <tr className=" border-r-2 border-black col-span-2 ">
-                   <td className="w-1/4 border-r-2 border-black">Sl No.</td>
-                   <td className="w-3/4 text-center">Item Name</td>
+               <tr className=" border-r-2 border-black col-span-2 w-full relative">
+                   <td className="w-1/2 border-r-2 border-black object-fill">Sl No.</td>
+                   <td className="w-full text-center border-r-2 border-black object-fill">Item Name</td>
                </tr>
                <td className="border-r-2 border-black">
                Hello
