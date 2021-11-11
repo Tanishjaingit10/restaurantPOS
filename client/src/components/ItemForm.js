@@ -102,7 +102,7 @@ const ItemForm = () => {
 
     useEffect(() => {
         console.log(finalVar)
-        setItem({ ...item, ["finalVariant"]: finalVar })
+        setItem({ ...item, "finalVariant": finalVar })
         setAddList(
             finalVar.map((obj) => {
                 return (<div className="bg-primary px-10 py-2 w-full mb-2 relative">{obj.variant} / $ {obj.price}<span onClick={() => { removeVar(obj) }} className="absolute right-4 cursor-pointer">x</span></div>)
@@ -143,7 +143,7 @@ const ItemForm = () => {
     const handleAvailable = (e) => {
         setIsOpen(!isOpen)
         setAvailable(true)
-        setItem({ ...item, ['finalAvailable']: finalAvail })
+        setItem({ ...item, 'finalAvailable': finalAvail })
 
     }
     const handleDay = (e) => {

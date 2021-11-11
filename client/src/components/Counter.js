@@ -1,12 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
-import { PaymentContext } from "./../context/Payment";
-import { OrderContext } from "./../context/Cart";
-import { CustomerContext } from "./../context/Customer";
+// import { PaymentContext } from "./../context/Payment";
+// import { OrderContext } from "./../context/Cart";
+// import { CustomerContext } from "./../context/Customer";
 let arr = new Array(1000000).fill(false);
 const Counter = () => {
-  const [payment, setPayment] = useContext(PaymentContext);
-  const [cart, setCart] = useContext(OrderContext);
-  const [customer, setCustomer] = useContext(CustomerContext);
+  // const [payment, setPayment] = useContext(PaymentContext);
+  // const [cart, setCart] = useContext(OrderContext);
+  // const [customer, setCustomer] = useContext(CustomerContext);
   const [display, setDisplay] = useState();
   const [Order, showOrder] = useState();
   const showDetails = (e, index) => {
@@ -41,7 +41,7 @@ const Counter = () => {
       .then((json) => {
         setDisplay(
           json.map((option, index) => {
-            if(index%2==0)
+            if(index%2===0)
               code="#1DBE19";
             else
                 code="#BE2D19"

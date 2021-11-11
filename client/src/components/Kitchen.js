@@ -3,7 +3,6 @@ import React, {useState,useEffect} from "react";
 const Kitchen = () => {
   const [orders, showOrders]=useState()
   const loadOrders = async()=>{
-    let count = 1;
     await fetch(
       "/app/orders")
       .then((res) => res.json())

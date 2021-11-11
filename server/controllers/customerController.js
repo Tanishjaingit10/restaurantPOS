@@ -35,8 +35,6 @@ const all_customers = async (request, response) => {
     });
 }
 const get_customer = async (request, response) => {
-    console.log(1)
-    console.log(request.params.id)
     customer_template_copy.findOne({ contact: request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)

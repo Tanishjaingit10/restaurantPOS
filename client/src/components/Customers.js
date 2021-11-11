@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 let customers = []
 const Customers = () => {
 
-  const [inputValue, setInputvalue] = useState("Search for customer:name / phone number / mail id")
+  // const [inputValue, setInputvalue] = useState("Search for customer:name / phone number / mail id")
   const [cust, setCust] = useState()
   const [search, setSearch] = useState("");
 
@@ -36,6 +36,7 @@ const Customers = () => {
 
   useEffect(() => {
     custList()
+    //eslint-disable-next-line 
   }, [search, customers])
 
   return (

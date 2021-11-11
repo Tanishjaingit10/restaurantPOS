@@ -68,7 +68,7 @@ const CategoryList = () => {
       }
       else 
       {
-        let objIndex = finalVar.findIndex((obj => obj._id == Variant._id));
+        let objIndex = finalVar.findIndex((obj => obj._id === Variant._id));
         // console.log(objIndex)
         finalVar[objIndex].quantity = finalVar[objIndex].quantity+1;
         
@@ -79,7 +79,8 @@ const CategoryList = () => {
       
       
       setVariant([])
-    } 
+    }
+    //eslint-disable-next-line 
   }, [Variant]);
 
   const handleVariant = async (e) => {
@@ -117,7 +118,7 @@ const CategoryList = () => {
   };
   const removeVar = (e) => {
     setFinalVariant(finalVar.filter((i) => i !== e));
-    showItem({ ...item, ["subtotal"]: item.subtotal - e.price });
+    showItem({ ...item, "subtotal": item.subtotal - e.price });
     console.log(item.subtotal);
   };
 
@@ -184,10 +185,11 @@ const CategoryList = () => {
   };
   useEffect(() => {
     fetchCategories();
+    //eslint-disable-next-line
   }, []);
   useEffect(() => {
     console.log(1)
-    showItem({ ...item, ["orderedVariant"]: finalVar });
+    showItem({ ...item, "orderedVariant": finalVar });
     setFinal(
       finalVar.map((obj) => {
         return (

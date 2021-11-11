@@ -67,6 +67,7 @@ const Pos = () => {
     })
     useEffect(() => {
         custList()
+        //eslint-disable-next-line
     }, [search, customers])
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
@@ -118,7 +119,7 @@ const Pos = () => {
                                 <li className="bg-primary flex flex-row"><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
                                 {Cust}
                                 <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
-                            </ul> : null}
+                            </ul> : null} 
 
                             <div className="absolute text-center py-2 right-0"><i onClick={() => { setCustomer([]) }} className="fas fa-trash-alt ml-10 cursor-pointer"></i></div>
                         </div>
@@ -158,7 +159,7 @@ const Pos = () => {
                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
                     <label>Enter Table No.</label>
                     <ul ref={tableRef} className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
-                        <li className="py-2 border-b-2 border-t-2 border-black" onClick={openTable}>Table {payment.table != 'N/A' ? payment.table : 'No.'}</li>
+                        <li className="py-2 border-b-2 border-t-2 border-black" onClick={openTable}>Table {payment.table !== 'N/A' ? payment.table : 'No.'}</li>
                         {Table ? <>{displayTable}</> : null}
                     </ul>
                     <button className="bg-white text-primary py-2 font-bold" onClick={orderSearch}>Search</button>

@@ -1,22 +1,46 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
 const CustomerDetails = () => {
   const { id } = useParams();
-  
-  console.log(id)
+
   const [cust, setCust] = useState({ name: "", contact: "", email: "" });
+  const [orders, showOrders] = useState()
   const loadCustomer = async () => {
-    // console.log(id)
     await fetch(`/app/customer/${id}`)
       .then((res) => res.json())
       .then((json) => {
-        // console.log(json)
         setCust(json);
       });
   };
+  const loadOrders = async () => {
+    let count = 1;
+    await fetch(
+      "/app/orders")
+      .then((res) => res.json())
+      .then((json) => {
+
+        showOrders(json.map((option) => {
+          if (option.customer[0].contact === id) {
+            return (
+            <tr>
+              <td className="bg-secondary py-2 text-center">{count++}</td>
+              <td className="bg-secondary py-2 text-center">{option.order_id}</td>
+              <td className="bg-secondary py-2 text-center">{option.payment[0].orderType}</td>
+              <td className="bg-secondary py-2 text-center">{option.payment[0].orderStatus}</td>
+              <td className="bg-secondary py-2 text-center">{option.payment[0].total}</td>
+              <td className="bg-secondary py-2 text-center flex flex-col">
+                <div>{option.time.toLocaleString().split('T')[0]}</div>
+                <div>{option.time.toLocaleString().split('T')[1].split('.')[0]}</div>
+              </td>
+            </tr>
+          )
+        }}))
+      })
+  }
   useEffect(() => {
     loadCustomer();
+    loadOrders();
     //eslint-disable-next-line
   }, [id]);
   return (
@@ -65,25 +89,15 @@ const CustomerDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                  <tr>
-                      <td className="bg-secondary py-2 text-center">01</td>
-                      <td className="bg-secondary py-2 text-center">020505</td>
-                      <td className="bg-secondary py-2 text-center">Take Away</td>
-                      <td className="bg-secondary py-2 text-center">Completed</td>
-                      <td className="bg-secondary py-2 text-center">$29.50</td>
-                      <td className="bg-secondary py-2 text-center flex flex-col">
-                          <div>01/24/18</div>
-                          <div>20:58:09</div>
-                      </td>
-                  </tr>
+                  {orders}
               </tbody>
             </table>
           </div>
-         
-            <button className="bg-green text-white py-4 text-xl w-1/3 font-semibold mt-8 mx-auto">
-             <a href="/pos"> Done</a>
-            </button>
-         
+
+          <button className="bg-green text-white py-4 text-xl w-1/3 font-semibold mt-8 mx-auto">
+            <a href="/pos"> Done</a>
+          </button>
+
         </div>
       </div>
     </div>

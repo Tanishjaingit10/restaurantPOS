@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 const Orders = () => {
-  const [inputValue, setInputvalue] = useState("Search for order or serial no.")
+  // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
   const [orders, showOrders] = useState()
   const [search, setSearch] = useState("");
   
