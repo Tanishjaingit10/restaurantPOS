@@ -12,7 +12,12 @@ const customer_template = new mongoose.Schema({
     },
     email:{
         type:String,
+    },
+    date:{
+        type: Date,
+        default: Date.now()
     }
+
 })
 
 module.exports = mongoose.model('customers', customer_template)

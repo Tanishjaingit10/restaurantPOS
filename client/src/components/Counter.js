@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { PaymentContext } from './../context/Payment';
+import { OrderContext } from './../context/Cart';
+import { CustomerContext } from './../context/Customer';
+let arr = new Array(1000000).fill(false);
 const Counter = () => {
+  const [payment, setPayment] = useContext(PaymentContext);
+  const [cart, setCart] = useContext(OrderContext);
+  const [customer, setCustomer] = useContext(CustomerContext);
   const [display, setDisplay] = useState()
   const [Order, showOrder] = useState()
-  const [detail, setDetail] = useState(false);
-  const showDetails = (e) => {
-    console.log(e)
-    setDetail(!detail);
-    showOrder(
-      e.order.map((obj) => {
-        console.log(obj)
-        return (
-          <div className=" -mt-4 flex flex-row px-6">
-            <div className="flex flex-col w-full py-2">
-              <div className="text-xl font-semibold">{obj.foodItem}</div>
-              {obj.orderedVariant.map((extra) => {
-                return (<>
-                  <div className="text-md text-gray-400 font-medium">
-                    1 x {extra.variant}
-                  </div>
-                </>)
-              })}
+  const showDetails = (e, index) => {
+    arr[index] = !arr[index];
+    if (arr[index]) {
+      showOrder(
+        e.order.map((obj) => {
+          return (
+            <div className=" -mt-4 flex flex-row px-6">
+              <div className="flex flex-col w-full py-2">
+                <div className="text-xl font-semibold">{obj.foodItem}</div>
+                {obj.orderedVariant.map((extra) => {
+                  return (<>
+                    <div className="text-md text-gray-400 font-medium">
+                      1 x {extra.variant}
+                    </div>
+                  </>)
+                })}
+              </div>
             </div>
-          </div>
 
-        )
+          )
 
-      }))
+        }))
+    }
+
   };
 
 
@@ -34,10 +41,11 @@ const Counter = () => {
       "/app/orders")
       .then((res) => res.json())
       .then((json) => {
-        setDisplay(json.map((option) => {
+        setDisplay(json.map((option, index) => {
+
           return (<div
             className={
-              detail
+              arr[index]
                 ? "shadow-2xl w-1/4 font-roboto bg-white m-2"
                 : "w-1/4 font-roboto bg-white m-2"
             }
@@ -53,16 +61,16 @@ const Counter = () => {
               </div>
               <div
                 className="relative rounded-full bottom-6 p-2 bg-white w-12 h-12 mx-auto shadow-lg text-green text-center text-xl"
-                onClick={() => { showDetails(option) }}
+                onClick={() => { showDetails(option, index) }}
               >
-                {detail ? (
+                {arr[index] ? (
                   <i className="fas fa-chevron-up mt-2"></i>
                 ) : (
                   <i className="fas fa-chevron-down mt-2"></i>
                 )}
               </div>
             </div>
-            {detail ? <><div className="flex flex-col w-full text-green text-xl text-right font-semibold">
+            {arr[index] ? <><div className="flex flex-col w-full text-green text-xl text-right font-semibold">
               <div className="py-2">{option.payment[0].orderStatus}</div>
               <div className="py-2">00:05:00</div>
             </div>{Order}</> : null}
