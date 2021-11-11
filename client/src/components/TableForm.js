@@ -113,7 +113,7 @@ const TableForm = () => {
                         </div>
                         <div className=" w-1/3 border-primary border-2 img-holder"><img src={img} className="image" alt="" id="img" /></div>
                     </div>
-                    <button className="bg-green p-2 text-white text-center font-bold px-6 mt-6 xl:mt-10" onClick={addTable}>Done</button>
+                    <button className="bg-green p-2 text-white text-center font-bold px-6 mt-4 xl:mt-10" onClick={addTable}>Done</button>
                 </form>
             </div>
             {isError && <Popup
