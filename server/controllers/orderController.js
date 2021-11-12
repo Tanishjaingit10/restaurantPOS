@@ -30,7 +30,32 @@ const all_order = async (request, response) => {
 
     });
 }
+const update_order = async (request, response, next) => {
+    let itemId = request.params.id;
+    console.log(1)
+    console.log(itemId)
+    const { customer,order,payment,time,order_id } = request.body;
+    console.log(request.body)
+    let updatedData = {
+        customer:customer,
+        order:order,
+        payment:payment,
+        time:time,
+        order_id:order_id
+    }
+    // if (!customer.contact || !order[0])
+    //     return response.status(422).json({ error: "Please fill out the required fields!" })
+    order_template_copy.findOneAndUpdate({ _id: itemId }, { $set: updatedData }).then((data) => {
+        if (data === null)
+            response.json({ message: 'Item not found!' })
+        else response.status(200).json({ message: 'Item updated successfully!' })
+    })
+        .catch(error => {
+            response.status(401).json({ message: 'Item could not be updated!' })
+        })
+
+}
 
 module.exports = {
-    add_order, all_order
+    add_order, all_order, update_order
 }
