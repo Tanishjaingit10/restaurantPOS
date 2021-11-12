@@ -40,7 +40,7 @@ const Sidebar = () => {
                                 </button>
                             </li>
                             <li className= {show?" flex-1 border-primary bg-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-white pl-2" : "hidden"}>
-                                <a href="/sale" className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline  ">
+                                <a href="/sales" className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline  ">
                                     <i className="fas fa-tag pr-0 md:pr-3"></i><span className="pb-1 md:pb-0 block md:inline-block">Sale</span>
                                 </a>
                             </li>

@@ -22,6 +22,7 @@ import Payment from "./components/PosContainer.js/Payment";
 import Pos from "./components/PosContainer.js/Pos";
 import Receipt from "./components/PosContainer.js/Receipt";
 import ViewOrder from "./components/PosContainer.js/ViewOrder";
+import Sales from "./components/Sales";
 import SignUp from "./components/SignUp";
 import TableForm from "./components/TableForm";
 import Tables from "./components/Tables";
@@ -58,6 +59,7 @@ const Routes = () => {
           <Route exact path="/kitchen" component={Kitchen} />
           <Route exact path="/receipt" component={Receipt} />
           <Route exact path="/customers" component={Customers} />
+          <Route exact path="/sales" component={Sales} />
         </Switch>
       </Router>
     
