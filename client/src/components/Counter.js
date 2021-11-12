@@ -5,29 +5,9 @@ const Counter = () => {
   const [Order, showOrder] = useState();
   const showDetails = (e, index) => {
     arr[index] = !arr[index];
-    console.log(index)
     if (arr[index]) {
       arr = arr.map(x => false);
       arr[index]=true;
-      showOrder(
-        e.order.map((obj) => {
-          return (
-          
-              <div className="flex flex-col w-full py-2">
-                <div className="text-xl font-semibold">{obj.foodItem}</div>
-                {obj.orderedVariant.map((extra) => {
-                  return (
-                    <>
-                      <div className="text-md text-gray-400 font-medium">
-                        1 x {extra.variant}
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
-          );
-        })
-      );
     }
   };
  
@@ -83,7 +63,25 @@ const Counter = () => {
                 {arr[index] ? (
                   <>
                     <div className="flex flex-row w-full px-6 -mt-6">
-                      <div className="w-full">{Order}</div>
+                      <div className="w-full">
+                        {
+                          option.order.map((obj) => {
+                            return (
+                            
+                                <div className="flex flex-col w-full py-2">
+                                  <div className="text-xl font-semibold">{obj.foodItem}</div>
+                                  {obj.orderedVariant.map((extra) => {
+                                    return (
+                                      <>
+                                        <div className="text-md text-gray-400 font-medium">
+                                          1 x {extra.variant}
+                                        </div>
+                                      </>
+                                    );
+                                  })}
+                                </div>)
+                        })}
+                      </div>
                       <div className="flex flex-col text-xl text-right font-semibold w-full" style={{color : code}}>
                         <div className="py-2">
                           {option.payment[0].orderStatus}
