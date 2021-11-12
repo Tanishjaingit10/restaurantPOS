@@ -1,4 +1,4 @@
-import React, { useState} from 'react'
+import React, { useState,useEffect} from 'react'
 
 const Sales = () => {
     const [search, setSearch] = useState("Search for sale: invoice# / food item / order id");
@@ -8,6 +8,28 @@ const Sales = () => {
     const handleDate = (e)=> {
         setDateInput(e.target.value)
     }
+    const [orders, showOrders] = useState()
+  
+  const loadOrders = async () => {
+    await fetch(
+      "/app/orders")
+      .then((res) => res.json())
+      .then((json) => {
+        showOrders(json.map((option) => {
+          return (
+            <tr className="bg-secondary">
+              <td className="text-center border-r-2 border-white py-1">{option.time.toLocaleString().split('T')[0]}</td>
+              <td className="text-center border-r-2 border-white py-1">5464657</td>
+              <td className="text-center border-r-2 border-white py-1">{option.order_id}</td>
+              <td className="text-center border-r-2 border-white py-1">{option.payment.orderType}</td>
+              <td className="text-center border-r-2 border-white py-1">{option.payment.discount}</td>
+              <td className="text-center py-1">${option.payment.total}</td>
+          </tr>
+            )}))})
+    }
+    useEffect(() => {
+      loadOrders()
+    })
 
     return (
         
@@ -43,14 +65,7 @@ const Sales = () => {
               <th className="text-center border-r-2 border-white py-1">Discount Given</th>
               <th className="text-center py-1">Amount</th>
           </tr>
-          <tr className="bg-secondary">
-              <td className="text-center border-r-2 border-white py-1">2021-08-12</td>
-              <td className="text-center border-r-2 border-white py-1">5464657</td>
-              <td className="text-center border-r-2 border-white py-1">203546</td>
-              <td className="text-center border-r-2 border-white py-1">DINE IN</td>
-              <td className="text-center border-r-2 border-white py-1">N/A</td>
-              <td className="text-center py-1">$465</td>
-          </tr>
+          {orders}
       </table>
       </div>
       <div className=" flex flex-row px-10 text-gray-500 font-roboto text-md font-semibold w-3/4 mx-auto">
