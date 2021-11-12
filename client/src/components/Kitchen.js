@@ -1,16 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect} from "react";
 import Countdown from "react-countdown";
-import { PaymentContext } from "../context/Payment";
 
 let arr = new Array(1000000).fill(false);
 let stat = new Array(1000000).fill(false);
 const Kitchen = () => {
   const [orders, showOrders] = useState();
-  const [payment, setPayment] = useContext(PaymentContext)
-  const [check, setCheck] = useState();
   const showStatus = async (option,index)=>{
     const {customer,order,payment,time,order_id}=option;
-    payment[0].orderStatus='Ready to Serve'
+    payment.orderStatus='Ready to Serve'
     stat[index]=true;
     await fetch(`/app/updateOrder/${option._id}`, {
       method: "PUT",
@@ -51,19 +48,19 @@ const Kitchen = () => {
                   {option.order_id}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
-                  {option.payment[0].orderType}
+                  {option.payment.orderType}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
-                  {option.payment[0].table}
+                  {option.payment.table}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
                   {option.time.toLocaleString().split("T")[1].split(".")[0]}
                 </td>
                 <td className="bg-secondary py-2 text-center border-2">
-                  <Countdown onComplete={() => showStatus(option,index)} date={arr[index] + 38000000} renderer={renderer} />
+                  <Countdown onComplete={() => showStatus(option,index)} date={arr[index] + option.payment.timeToCook*60000} renderer={renderer} />
                 </td>
                 <td className="bg-secondary py-2 text-center">
-                  {stat[index]?'Ready to serve': option.payment[0].orderStatus}
+                  {stat[index]?'Ready to serve': option.payment.orderStatus}
                 </td>
               </tr>
             );

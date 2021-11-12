@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 let arr = new Array(1000000).fill(false);
 const Counter = () => {
   const [display, setDisplay] = useState();
-  const showDetails = (e, index) => {
+  const showDetails = (index) => {
     arr[index] = !arr[index];
+    console.log(index)
     if (arr[index]) {
       arr = arr.map(x => false);
       arr[index] = true;
@@ -17,7 +18,7 @@ const Counter = () => {
       .then((json) => {
         setDisplay(
           json.map((option, index) => {
-            if (option.payment[0].orderStatus === 'Ready to Serve')
+            if (option.payment.orderStatus === 'Ready to Serve')
               code = "#1DBE19";
             else
               code = "#BE2D19"
@@ -32,10 +33,10 @@ const Counter = () => {
                 <div className="flex flex-col font-bold">
                   <div className="flex flex-row text-xl text-white font-roboto" style={{ backgroundColor: code }}>
                     <div className=" w-full p-4 text-left">
-                      Table No. {option.payment[0].table}
+                      Table No. {option.payment.table}
                     </div>
                     <div className=" w-full p-4 text-right">
-                      {option.payment[0].orderType}
+                      {option.payment.orderType}
                     </div>
                   </div>
                   <div className="flex flex-row text-xl text-white font-roboto " style={{ backgroundColor: code }}>
@@ -48,7 +49,7 @@ const Counter = () => {
                     className="relative rounded-full bottom-6 p-2 bg-white w-12 h-12 mx-auto shadow-lg text-center text-xl"
                     style={{ color: code }}
                     onClick={() => {
-                      showDetails(option, index);
+                      showDetails(index);
                     }}
 
                   >
@@ -83,9 +84,9 @@ const Counter = () => {
                       </div>
                       <div className="flex flex-col text-xl text-right font-semibold w-full" style={{ color: code }}>
                         <div className="py-2">
-                          {option.payment[0].orderStatus}
+                          {option.payment.orderStatus}
                         </div>
-                        <div className="py-2">{option.payment[0].timeToCook? option.payment[0].timeToCook:'0:00'}</div>
+                        <div className="py-2">{option.payment.timeToCook? option.payment.timeToCook:'0:00'}</div>
                       </div>
                     </div>
                   </>

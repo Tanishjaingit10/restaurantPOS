@@ -55,7 +55,22 @@ const update_order = async (request, response, next) => {
         })
 
 }
+const get_order = async (request, response, next)=>{
+    order_template_copy.findOne({ 'payment.table': request.params.id }, (err, data) => {
+        if (!err) {
+            if (data === null)
+                response.send({ message: 'Item not found!', data:null })
+            else response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
+
+    });
+}
+
 
 module.exports = {
-    add_order, all_order, update_order
+    add_order, all_order, update_order, get_order
 }

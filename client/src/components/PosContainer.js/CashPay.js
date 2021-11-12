@@ -2,12 +2,18 @@ import React,{ useContext, useEffect} from 'react'
 import { PaymentContext } from '../../context/Payment'
 import { OrderContext } from '../../context/Cart';
 import { CustomerContext } from '../../context/Customer';
-
+import { useHistory } from 'react-router-dom';
 const CashPay = () => {
+    const history = useHistory();
     const [payment] = useContext(PaymentContext);
     const [cart] = useContext(OrderContext);
     const [customer]= useContext(CustomerContext);
 
+    const onReceipt=(e)=>{
+        console.log(1)
+        e.preventDefault();
+        history.push('/receipt')
+    }
     useEffect(() => {
         async function addOrder(){
         await fetch("/app/addOrder", {
@@ -49,7 +55,7 @@ const CashPay = () => {
           
           </div>
           <div className="flex flex-col mt-8 space-y-4">
-          <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto">Print Receipt</button>
+          <div className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto" onClick = {onReceipt}>Print Receipt</div>
           <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto">Email Receipt</button>
           <button className="bg-green text-center text-white text-xl py-4 font-semibold font-roboto">Text Receipt</button>
           </div>
