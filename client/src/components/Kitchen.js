@@ -1,10 +1,11 @@
-import React, { useState, useEffect} from "react";
+import React, { useContext} from "react";
 import Countdown from "react-countdown";
+import { OrdersContext } from "../context/Orders";
 
 let arr = new Array(1000000).fill(false);
 let stat = new Array(1000000).fill(false);
 const Kitchen = () => {
-  const [orders, showOrders] = useState();
+  const [orders] = useContext(OrdersContext)
   const showStatus = async (option,index)=>{
     const {customer,order,payment,time,order_id}=option;
     payment.orderStatus='Ready to Serve'
@@ -33,44 +34,6 @@ const Kitchen = () => {
     }
   };
 
-
-  const loadOrders = async () => {
-    await fetch("/app/orders")
-      .then((res) => res.json())
-      .then((json) => {
-        showOrders(
-          json.map((option,index) => {
-            var date = new Date(option.time);
-            arr[index] = date.getTime();
-            return (
-              <tr className="font-medium">
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.order_id}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.payment.orderType}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.payment.table}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.time.toLocaleString().split("T")[1].split(".")[0]}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  <Countdown onComplete={() => showStatus(option,index)} date={arr[index] + option.payment.timeToCook*60000} renderer={renderer} />
-                </td>
-                <td className="bg-secondary py-2 text-center">
-                  {stat[index]?'Ready to serve': option.payment.orderStatus}
-                </td>
-              </tr>
-            );
-          })
-        );
-      });
-  };
-  useEffect(() => {
-    loadOrders();
-  });
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
@@ -97,7 +60,32 @@ const Kitchen = () => {
               </tr>
             </thead>
             <tbody>
-              {orders}
+              {orders.map((option,index) => {
+            var date = new Date(option.time);
+            arr[index] = date.getTime();
+            return (
+              <tr className="font-medium">
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.order_id}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.payment.orderType}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.payment.table}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.time.toLocaleString().split("T")[1].split(".")[0]}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  <Countdown onComplete={() => showStatus(option,index)} date={arr[index] + option.payment.timeToCook*60000} renderer={renderer} />
+                </td>
+                <td className="bg-secondary py-2 text-center">
+                  {stat[index]?'Ready to serve': option.payment.orderStatus}
+                </td>
+              </tr>
+            );
+          })}
             </tbody>
           </table>
         </div>

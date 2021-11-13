@@ -4,9 +4,11 @@ let arr = new Array(1000000).fill(false);
 const Counter = () => {
   const [orders, setOrders] = useContext(OrdersContext)
   const [display, setDisplay] = useState();
+  const [check,setCheck]= useState(false)
   const showDetails = (index) => {
     arr[index] = !arr[index];
     console.log(index)
+    setCheck(!check)
     if (arr[index]) {
       arr = arr.map(x => false);
       arr[index] = true;
@@ -14,10 +16,8 @@ const Counter = () => {
   };
 
   var code;
-  const loadOrders = (e) => {
-    // await fetch("/app/orders")
-    //   .then((res) => res.json())
-    //   .then((json) => {
+  const loadOrders = async (e) => {
+    
         setDisplay(
           orders.map((option, index) => {
             if (option.payment.orderStatus === 'Ready to Serve')
@@ -102,7 +102,7 @@ const Counter = () => {
 
   useEffect(() => {
     loadOrders();
-  },[orders]);
+  },[orders,check]);
 
 
   return (

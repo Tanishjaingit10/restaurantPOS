@@ -8,7 +8,6 @@ import { CustomerContext } from '../../context/Customer';
 import { PaymentContext } from '../../context/Payment';
 import { CustomersContext } from '../../context/Customers';
 
-// let customers = [];
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
     const [customers, setCustomers] = useContext(CustomersContext);
@@ -26,12 +25,7 @@ const Pos = () => {
     const typeRef = createRef();
     const custRef = createRef();
     const tableRef = createRef();
-    // const customerList = async (e) => {
-    //     await fetch('/app/customers').then((res) => res.json())
-    //         .then((json) => {
-    //             customers = json;
-    //         })
-    // }
+
     const handleClickOutside = e => {
         if (typeRef.current && !typeRef.current.contains(e.target)) {
             showList(false);
@@ -61,9 +55,6 @@ const Pos = () => {
         )
     }
 
-    // useEffect(() => {
-    //     customerList();
-    // })
     useEffect(() => {
         custList()
         //eslint-disable-next-line

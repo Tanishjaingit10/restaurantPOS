@@ -1,10 +1,11 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { useHistory } from 'react-router-dom';
+import { CategoryContext } from "./../context/Category";
 const Menu = () => {
     const history = useHistory();
     const [show, setShow] = useState(false);
     const [displayCategory, setDisplayCategory] = useState(false);
-
+    const [category] = useContext(CategoryContext);
     const openCategory = (id)=> (e)=>{
         console.log(id)
         history.push(`/categorydisplay/${id}`)
@@ -12,19 +13,10 @@ const Menu = () => {
     const openMenu = async (e) => {
          e.preventDefault();
          setShow(!show);
-         await fetch(
-            "/app/category")
-            .then((res) => res.json())
-            .then((json) => {
-                console.log(json)
-                setDisplayCategory(json.map((option) => {
+                setDisplayCategory(category.map((option) => {
                     return (<button value={option.category} name="color" onClick={openCategory(option.category)} className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
                 }))
-            })
-
-
     }
-
     return (
         <div className=" text-white font-roboto">
             <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">

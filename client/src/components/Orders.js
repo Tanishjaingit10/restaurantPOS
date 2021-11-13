@@ -1,42 +1,10 @@
-import React, { useState, useEffect } from 'react'
-
+import React, { useState, useContext } from 'react'
+import { OrdersContext } from "../context/Orders";
 const Orders = () => {
   // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
-  const [orders, showOrders] = useState()
+  const [orders, setOrders] = useContext(OrdersContext)
   const [search, setSearch] = useState("");
-  
-  const loadOrders = async () => {
-    let count = 1;
-    await fetch(
-      "/app/orders")
-      .then((res) => res.json())
-      .then((json) => {
-
-        showOrders(json.filter((option) => {
-          if (search === "")
-            return option;
-          else if (option.order_id.toString().includes(search)) {
-            return option;
-          }
-          return null;
-        }).map((option) => {
-          return (
-            <tr className="font-medium">
-              <td className="bg-secondary py-2 text-center border-2">{count++}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.order_id}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.payment.orderType}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.payment.orderStatus}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.payment.total}</td>
-              <td className="bg-secondary py-2 text-center flex flex-col">
-                <div>{option.time.toLocaleString().split('T')[0]}</div>
-                <div>{option.time.toLocaleString().split('T')[1].split('.')[0]}</div>
-              </td>
-          </tr>
-            )}))})
-    }
-    useEffect(() => {
-      loadOrders()
-    })
+  let count=1;
     return (
         <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -68,7 +36,27 @@ const Orders = () => {
               </tr>
             </thead>
             <tbody>
-              {orders}
+              {orders.filter((option) => {
+          if (search === "")
+            return option;
+          else if (option.order_id.toString().includes(search)) {
+            return option;
+          }
+          return null;
+        }).map((option) => {
+          return (
+            <tr className="font-medium">
+              <td className="bg-secondary py-2 text-center border-2">{count++}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.order_id}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment.orderType}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment.orderStatus}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment.total}</td>
+              <td className="bg-secondary py-2 text-center flex flex-col">
+                <div>{option.time.toLocaleString().split('T')[0]}</div>
+                <div>{option.time.toLocaleString().split('T')[1].split('.')[0]}</div>
+              </td>
+          </tr>
+            )})}
             </tbody>
           </table>
         </div>

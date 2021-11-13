@@ -1,44 +1,11 @@
-import React, { useState, useEffect } from 'react'
-let customers = []
+import React, { useState, useEffect, useContext } from 'react'
+import { CustomersContext } from './../context/Customers';
 const Customers = () => {
 
   // const [inputValue, setInputvalue] = useState("Search for customer:name / phone number / mail id")
-  const [cust, setCust] = useState()
   const [search, setSearch] = useState("");
-
-  const custList = async (e) => {
-    await fetch('/app/customers').then((res) => res.json())
-      .then((json) => {
-        customers = json;
-        let count = 1;
-        setCust(
-          customers.filter((option) => {
-            if (search === "")
-              return option;
-            else if (option.contact.includes(search)) {
-              return option;
-            }
-            return null;
-          })
-            .map((option) => {
-              return (<tr className="font-medium">
-                <td className="bg-secondary py-2 text-center border-2">{count++}</td>
-                <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
-                <td className="bg-secondary py-2 text-center border-2">{option.date.toLocaleString().split('T')[0]}</td>
-                <td className="bg-secondary py-2 text-center border-2">{option.contact}</td>
-                <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
-
-              </tr>)
-            })
-        )
-      })
-  }
-
-  useEffect(() => {
-    custList()
-    //eslint-disable-next-line 
-  }, [search, customers])
-
+  const [customers, setCustomers] = useContext(CustomersContext);
+  let count = 1;
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -68,7 +35,23 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {cust}
+              {customers.filter((option) => {
+                if (search === "")
+                  return option;
+                else if (option.contact.includes(search) || option.name.includes(search) || option.email.includes(search)) {
+                  return option;
+                }
+                return null;
+              })
+                .map((option) => {
+                  return (<tr className="font-medium">
+                    <td className="bg-secondary py-2 text-center border-2">{count++}</td>
+                    <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
+                    <td className="bg-secondary py-2 text-center border-2">{option.date.toLocaleString().split('T')[0]}</td>
+                    <td className="bg-secondary py-2 text-center border-2">{option.contact}</td>
+                    <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
+                  </tr>)
+                })}
             </tbody>
           </table>
         </div>
