@@ -6,10 +6,12 @@ import Order from './Order';
 import PaymentSummary from './PaymentSummary';
 import { CustomerContext } from '../../context/Customer';
 import { PaymentContext } from '../../context/Payment';
+import { CustomersContext } from '../../context/Customers';
 
-let customers = [];
+// let customers = [];
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
+    const [customers, setCustomers] = useContext(CustomersContext);
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
     const [list, showList] = useState(false);
@@ -24,12 +26,12 @@ const Pos = () => {
     const typeRef = createRef();
     const custRef = createRef();
     const tableRef = createRef();
-    const customerList = async (e) => {
-        await fetch('/app/customers').then((res) => res.json())
-            .then((json) => {
-                customers = json;
-            })
-    }
+    // const customerList = async (e) => {
+    //     await fetch('/app/customers').then((res) => res.json())
+    //         .then((json) => {
+    //             customers = json;
+    //         })
+    // }
     const handleClickOutside = e => {
         console.log(e)
         console.log(typeRef.current)
@@ -62,9 +64,9 @@ const Pos = () => {
         )
     }
 
-    useEffect(() => {
-        customerList();
-    })
+    // useEffect(() => {
+    //     customerList();
+    // })
     useEffect(() => {
         custList()
         //eslint-disable-next-line

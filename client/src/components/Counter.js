@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { OrdersContext } from "../context/Orders";
 let arr = new Array(1000000).fill(false);
 const Counter = () => {
+  const [orders, setOrders] = useContext(OrdersContext)
   const [display, setDisplay] = useState();
   const showDetails = (e, index) => {
     arr[index] = !arr[index];
@@ -11,12 +13,12 @@ const Counter = () => {
   };
 
   var code;
-  const loadOrders = async (e) => {
-    await fetch("/app/orders")
-      .then((res) => res.json())
-      .then((json) => {
+  const loadOrders = (e) => {
+    // await fetch("/app/orders")
+    //   .then((res) => res.json())
+    //   .then((json) => {
         setDisplay(
-          json.map((option, index) => {
+          orders.map((option, index) => {
             if (option.payment[0].orderStatus === 'Ready to Serve')
               code = "#1DBE19";
             else
@@ -94,12 +96,12 @@ const Counter = () => {
             );
           })
         );
-      });
+    
   };
 
   useEffect(() => {
     loadOrders();
-  });
+  },[orders]);
 
 
   return (

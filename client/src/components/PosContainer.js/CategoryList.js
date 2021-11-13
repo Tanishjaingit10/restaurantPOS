@@ -53,6 +53,7 @@ const CategoryList = () => {
         );
       });
   };
+  
 
   useEffect(() => {
     if (Object.keys(Variant).length)
@@ -184,20 +185,8 @@ const CategoryList = () => {
       );
     });
   
-  const fetchCategories = async () => {
-    const response = await fetch("/app/category")
-      .then((res) => res.json())
-      .catch((err) => {
-        console.log("Error", err);
-      });
-    setCategory(response);
-  };
   useEffect(() => {
-    fetchCategories();
-    //eslint-disable-next-line
-  }, []);
-  useEffect(() => {
-    console.log(1)
+  
     showItem({ ...item, "orderedVariant": finalVar });
     setFinal(
       finalVar.map((obj) => {
