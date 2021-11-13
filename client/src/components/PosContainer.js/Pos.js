@@ -31,12 +31,9 @@ const Pos = () => {
             })
     }
     const handleClickOutside = e => {
-        console.log(e)
-        console.log(typeRef.current)
         if (typeRef.current && !typeRef.current.contains(e.target)) {
             showList(false);
         };
-        console.log(custRef.current)
         if (custRef.current && !custRef.current.contains(e.target)) {
             showCust(false);
 
