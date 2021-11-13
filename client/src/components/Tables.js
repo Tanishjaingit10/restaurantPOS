@@ -1,16 +1,30 @@
 import React, { useState, useEffect } from "react";
 import Popup from "./Popup";
-
+let arr = new Array(1000000).fill(false);
+let order = []
 const Tables = () => {
   const [displayTable, setDisplayTable] = useState();
   const [check, setCheck] = useState(false);
   const [Open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [detail, setDetail] = useState(false);
+  const showDetails = async(index,obj) => {
+    console.log(index)
+    arr[index] = !arr[index];
+    console.log(arr[index])
+    if (arr[index]) {
+      arr = arr.map(x => false);
+      arr[index] = true;
+       await fetch(`/app/order/${obj.number}`)
+      .then((res) => res.json())
+      .then((json) => order=json
+      )
+      console.log(order.message)
+    }
+    else order=[]
+    console.log(order)
+  };
 
-  const showDetails = ()=> {
-    setDetail(!detail);
-  }
 
   let code;
   const deleteTable = async () => {
@@ -35,14 +49,14 @@ const Tables = () => {
     await fetch("/app/table")
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         setDisplayTable(
           json.map((obj, index) => {
             if (index % 3 === 0) code = "#BE2D19";
             else if (index % 3 === 1) code = "#1DBE19";
             else code = "#e58f55";
             return (
-              <div className={detail?"shadow-lg flex flex-col w-96 mx-4 mb-4":"flex flex-col w-96 mx-4"}>
+              
+              <div className={arr[index]?"shadow-lg flex flex-col w-96 mx-4 mb-4":"flex flex-col w-96 mx-4"}>
                 <div className="flex flex-row">
                   <div className="w-1/2 bg-gray-400 ">
                     <img src={obj.image} alt="" className="w-full h-32" />
@@ -75,43 +89,67 @@ const Tables = () => {
                 </div>
                 <div
                   className="relative rounded-full -top-6 bg-white w-12 h-12 mx-auto shadow-lg text-red text-center text-xl p-2"
-                  style={{ color: code }} onClick={showDetails}
+                  style={{ color: code }} onClick={() => {
+                    showDetails(index,obj);
+                  }}
                 >
-                {detail?<i className="fas fa-chevron-up mt-2"></i>:<i className="fas fa-chevron-down mt-2"></i>}
+                {arr[index]?<i className="fas fa-chevron-up mt-2"></i>:<i className="fas fa-chevron-down mt-2"></i>}
                 </div>
-                {detail ? <div className=" flex flex-col -mt-4 font-roboto"> 
-                    <div className="flex flex-row px-6">
-                      <div className="flex flex-col w-full">
-                        <div className="text-lg">French Fries</div>
-                        <div className="text-gray-400 text-md">1 x Variant</div>
+                {arr[index]? 
+                // <div className=" flex flex-col -mt-4 font-roboto"> 
+                //     <div className="flex flex-row px-6">
+                //       <div className="flex flex-col w-full">
+                    order.message===undefined?
+                      <div className=" flex flex-col -mt-4 font-roboto"> 
+                      <div className="flex flex-row px-6">
+                        <div className="flex flex-col w-full">
+                         { order.order.map((obj) => {
+                            return (
+
+                              <div className="flex flex-col w-full py-2">
+                                <div className="text-xl font-semibold">{obj.foodItem}</div>
+                                {obj.orderedVariant.map((extra) => {
+                                  return (
+                                    <>
+                                      <div className="text-md text-gray-400 font-medium">
+                                        1 x {extra.variant}
+                                      </div>
+                                    </>
+                                  );
+                                })}
+                              </div>)
+                          })}
+                        {/* <div className="text-lg">French Fries</div>
+                        <div className="text-gray-400 text-md">1 x Variant</div> */}
                       </div>
                       <div className="flex flex-col w-full text-right" style={{ color: code }}>
-                        <div className="py-2 font-bold text-xl">Processing</div>
+                        <div className="py-2 font-bold text-xl"></div>
                         <div className="py-2 font-bold text-xl">ETA:00:05:00</div>
                       </div>
                     </div>
                     <div className="flex flex-col px-6 font-bold">
                       <label className="">Order Id</label>
-                      <div className="text-primary">#20123</div>
+                      <div className="text-primary">{order.order_id}</div>
                     </div>
                     <div className="flex flex-col px-6 font-bold">
                       <label>Customer Name</label>
-                      <div className="text-primary">Sakshi Vijay</div>
+                      <div className="text-primary">{order.customer.name}</div>
                     </div>
                     <div className="flex flex-col px-6 font-bold">
                       <label>Phone</label>
-                      <div className="text-primary">+91-9875647584</div>
+                      <div className="text-primary">{order.customer.contact}</div>
                     </div>
                     <div className="flex flex-col px-6 font-bold">
                       <label>Email</label>
-                      <div className="text-primary">name@gmail.com</div>
+                      <div className="text-primary">{order.customer.email}</div>
                     </div>
                     <div className="flex flex-col px-6 font-bold">
                       <label>Payment Status</label>
-                      <div className="text-primary">Completed</div>
+                      <div className="text-primary">{order.payment.status}</div>
                     </div>
                     <button className="bg-green py-2 text-white font-roboto font-semibold text-lg">Mark as Completed</button>
-                </div>:null}
+                </div>:<div>Reserve</div>
+                :null} 
               </div>
             );
           })

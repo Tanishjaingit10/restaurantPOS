@@ -6,11 +6,11 @@ const order_template = new mongoose.Schema({
         type: Number
     },
     customer:{
-        type: [{
+        type: {
             name: String,
             contact: String,
             email: String
-        }]
+        }
     },
     order:{
         type:[
@@ -32,7 +32,7 @@ const order_template = new mongoose.Schema({
         ]
     },
     payment:{
-        type: [{
+        type: {
             subTotal: Number,
             tax:Number,
             discount: Number,
@@ -41,9 +41,10 @@ const order_template = new mongoose.Schema({
             status: String,
             orderType: String,
             orderStatus: String,
-            table: String
+            table: String,
+            timeToCook: Number
 
-        }]
+        }
     },
     time: {
         type: Date,

@@ -19,7 +19,7 @@ const Pos = () => {
     const [pop, showPop] = useState(false);
     const [open, setOpen] = useState(false);
     const [Table, showTable] = useState(false);
-    const [cart,setCart] = useContext(OrderContext);
+    const [cart] = useContext(OrderContext);
     const [Cust, setCust] = useState()
     const [search, setSearch] = useState("");
     const [displayTable, setdisplayTable] = useState()

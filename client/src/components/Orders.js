@@ -24,9 +24,9 @@ const Orders = () => {
             <tr className="font-medium">
               <td className="bg-secondary py-2 text-center border-2">{count++}</td>
               <td className="bg-secondary py-2 text-center border-2">{option.order_id}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.payment[0].orderType}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.payment[0].orderStatus}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.payment[0].total}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment.orderType}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment.orderStatus}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.payment.total}</td>
               <td className="bg-secondary py-2 text-center flex flex-col">
                 <div>{option.time.toLocaleString().split('T')[0]}</div>
                 <div>{option.time.toLocaleString().split('T')[1].split('.')[0]}</div>
