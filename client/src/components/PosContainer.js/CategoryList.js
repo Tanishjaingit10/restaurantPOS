@@ -7,7 +7,7 @@ let timeToCook = 0;
 const CategoryList = () => {
   const [cart, setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
-  const [category, setCategory] = useContext(CategoryContext);
+  const [category, setCategory, foodItems, setFoodItems] = useContext(CategoryContext);
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({
     foodItem: "",
@@ -27,11 +27,8 @@ const CategoryList = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showItems = async (e) => {
-    await fetch("/app/items")
-      .then((res) => res.json())
-      .then((json) => {
         setDisplayItems(
-          json.map((option) => {
+          foodItems.map((option) => {
             if (option.category === e.target.value) {
               return (
                 <div
@@ -51,7 +48,6 @@ const CategoryList = () => {
             return null;
           })
         );
-      });
   };
   
 

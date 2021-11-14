@@ -148,7 +148,7 @@ const Tables = () => {
                       <div className="text-primary">{order.payment.status}</div>
                     </div>
                     <button className="bg-green py-2 text-white font-roboto font-semibold text-lg">Mark as Completed</button>
-                </div>:<div>Reserve</div>
+                </div>:<div className="bg-green py-2 text-white font-roboto font-semibold text-lg text-center">Reserve</div>
                 :null} 
               </div>
             );
