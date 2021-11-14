@@ -1,30 +1,65 @@
-import React, { useContext} from "react";
+import React, { useState,useEffect } from "react";
 import Countdown from "react-countdown";
-import { OrdersContext } from "../context/Orders";
 
 let arr = new Array(1000000).fill(false);
 let stat = new Array(1000000).fill(false);
 const Kitchen = () => {
-  const [orders] = useContext(OrdersContext)
-  const showStatus = async (option,index)=>{
-    const {customer,order,payment,time,order_id}=option;
-    payment.orderStatus='Ready to Serve'
-    stat[index]=true;
+  const [orders, setOrders] = useState()
+  const getOrders = async () => {
+
+    await fetch("/app/orders")
+      .then((res) => res.json())
+      .then((json) =>
+        setOrders(json.map((option, index) => {
+          var date = new Date(option.time);
+          arr[index] = date.getTime();
+          return (
+            <tr className="font-medium">
+              <td className="bg-secondary py-2 text-center border-2">
+                {option.order_id}
+              </td>
+              <td className="bg-secondary py-2 text-center border-2">
+                {option.payment.orderType}
+              </td>
+              <td className="bg-secondary py-2 text-center border-2">
+                {option.payment.table}
+              </td>
+              <td className="bg-secondary py-2 text-center border-2">
+                {option.time.toLocaleString().split("T")[1].split(".")[0]}
+              </td>
+              <td className="bg-secondary py-2 text-center border-2">
+                <Countdown onComplete={() => showStatus(option, index)} date={arr[index] + option.payment.timeToCook * 60000} renderer={renderer} />
+              </td>
+              <td className="bg-secondary py-2 text-center">
+                {stat[index] ? 'Ready to serve' : option.payment.orderStatus}
+              </td>
+            </tr>
+          );
+        })))
+  }
+  useEffect(() => {
+    getOrders()
+  })
+
+  const showStatus = async (option, index) => {
+    const { customer, order, payment, time, order_id } = option;
+    payment.orderStatus = 'Ready to Serve'
+    stat[index] = true;
     await fetch(`/app/updateOrder/${option._id}`, {
       method: "PUT",
       headers: {
-          "Content-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({
-          customer, order, payment, time, order_id
+        customer, order, payment, time, order_id
       })
 
-  });
+    });
 
 
- 
+
   }
-  const renderer = ({hours, minutes, seconds, completed }) => {
+  const renderer = ({ hours, minutes, seconds, completed }) => {
     if (completed) {
       // Render a completed state
       return <span>Time Over</span>;
@@ -60,32 +95,7 @@ const Kitchen = () => {
               </tr>
             </thead>
             <tbody>
-              {orders.map((option,index) => {
-            var date = new Date(option.time);
-            arr[index] = date.getTime();
-            return (
-              <tr className="font-medium">
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.order_id}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.payment.orderType}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.payment.table}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  {option.time.toLocaleString().split("T")[1].split(".")[0]}
-                </td>
-                <td className="bg-secondary py-2 text-center border-2">
-                  <Countdown onComplete={() => showStatus(option,index)} date={arr[index] + option.payment.timeToCook*60000} renderer={renderer} />
-                </td>
-                <td className="bg-secondary py-2 text-center">
-                  {stat[index]?'Ready to serve': option.payment.orderStatus}
-                </td>
-              </tr>
-            );
-          })}
+              {orders}
             </tbody>
           </table>
         </div>

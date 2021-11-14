@@ -1,25 +1,23 @@
 import React, { useState, useEffect, useContext } from "react";
-import { OrdersContext } from "../context/Orders";
 let arr = new Array(1000000).fill(false);
 const Counter = () => {
-  const [orders, setOrders] = useContext(OrdersContext)
   const [display, setDisplay] = useState();
-  const [check,setCheck]= useState(false)
   const showDetails = (index) => {
     arr[index] = !arr[index];
     console.log(index)
-    setCheck(!check)
     if (arr[index]) {
       arr = arr.map(x => false);
       arr[index] = true;
     }
   };
-
   var code;
   const loadOrders = async (e) => {
-    
-        setDisplay(
-          orders.map((option, index) => {
+
+    setDisplay(
+      await fetch("/app/orders")
+        .then((res) => res.json())
+        .then((json) =>
+          json.map((option, index) => {
             if (option.payment.orderStatus === 'Ready to Serve')
               code = "#1DBE19";
             else
@@ -88,7 +86,7 @@ const Counter = () => {
                         <div className="py-2">
                           {option.payment.orderStatus}
                         </div>
-                        <div className="py-2">{option.payment.timeToCook? option.payment.timeToCook:'0:00'}</div>
+                        <div className="py-2">{option.payment.timeToCook ? option.payment.timeToCook : '0:00'}</div>
                       </div>
                     </div>
                   </>
@@ -96,13 +94,13 @@ const Counter = () => {
               </div>
             );
           })
-        );
-    
+        ));
+
   };
 
   useEffect(() => {
     loadOrders();
-  },[orders,check]);
+  });
 
 
   return (

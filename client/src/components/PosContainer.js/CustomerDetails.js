@@ -3,7 +3,6 @@ import { useParams } from "react-router";
 
 const CustomerDetails = () => {
   const { id } = useParams();
-
   const [cust, setCust] = useState({ name: "", contact: "", email: "" });
   const [orders, showOrders] = useState()
   const loadCustomer = async () => {
@@ -21,14 +20,14 @@ const CustomerDetails = () => {
       .then((json) => {
 
         showOrders(json.map((option) => {
-          if (option.customer[0].contact === id) {
+          if (option.customer.contact === id) {
             return (
             <tr>
               <td className="bg-secondary py-2 text-center">{count++}</td>
               <td className="bg-secondary py-2 text-center">{option.order_id}</td>
-              <td className="bg-secondary py-2 text-center">{option.payment[0].orderType}</td>
-              <td className="bg-secondary py-2 text-center">{option.payment[0].orderStatus}</td>
-              <td className="bg-secondary py-2 text-center">{option.payment[0].total}</td>
+              <td className="bg-secondary py-2 text-center">{option.payment.orderType}</td>
+              <td className="bg-secondary py-2 text-center">{option.payment.orderStatus}</td>
+              <td className="bg-secondary py-2 text-center">{option.payment.total}</td>
               <td className="bg-secondary py-2 text-center flex flex-col">
                 <div>{option.time.toLocaleString().split('T')[0]}</div>
                 <div>{option.time.toLocaleString().split('T')[1].split('.')[0]}</div>

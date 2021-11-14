@@ -4,8 +4,34 @@ const Customers = () => {
 
   // const [inputValue, setInputvalue] = useState("Search for customer:name / phone number / mail id")
   const [search, setSearch] = useState("");
-  const [customers, setCustomers] = useContext(CustomersContext);
+  const [customers, setCustomers] = useState();
   let count = 1;
+  const getCustomers = async () => {
+    await fetch("/app/customers")
+      .then((res) => res.json())
+      .then((json) =>
+        setCustomers(json.filter((option) => {
+          if (search === "")
+            return option;
+          else if (option.contact.includes(search) || option.name.includes(search) || option.email.includes(search)) {
+            return option;
+          }
+          return null;
+        })
+          .map((option) => {
+            return (<tr className="font-medium">
+              <td className="bg-secondary py-2 text-center border-2">{count++}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.date.toLocaleString().split('T')[0]}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.contact}</td>
+              <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
+            </tr>)
+          })))
+  }
+  useEffect(() => {
+    getCustomers()
+  })
+
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -35,23 +61,7 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {customers.filter((option) => {
-                if (search === "")
-                  return option;
-                else if (option.contact.includes(search) || option.name.includes(search) || option.email.includes(search)) {
-                  return option;
-                }
-                return null;
-              })
-                .map((option) => {
-                  return (<tr className="font-medium">
-                    <td className="bg-secondary py-2 text-center border-2">{count++}</td>
-                    <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
-                    <td className="bg-secondary py-2 text-center border-2">{option.date.toLocaleString().split('T')[0]}</td>
-                    <td className="bg-secondary py-2 text-center border-2">{option.contact}</td>
-                    <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
-                  </tr>)
-                })}
+              {customers}
             </tbody>
           </table>
         </div>

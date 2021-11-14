@@ -6,11 +6,8 @@ import Order from './Order';
 import PaymentSummary from './PaymentSummary';
 import { CustomerContext } from '../../context/Customer';
 import { PaymentContext } from '../../context/Payment';
-import { CustomersContext } from '../../context/Customers';
-
 const Pos = () => {
     const [customer, setCustomer] = useContext(CustomerContext);
-    const [customers, setCustomers] = useContext(CustomersContext);
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
     const [list, showList] = useState(false);
@@ -38,13 +35,15 @@ const Pos = () => {
             showTable(false);
         }
     }
-
-    const custList = async (e) => {
+    const getCustomers = async (e)=>{
+        await fetch("/app/customers")
+        .then((res) => res.json())
+        .then((json) =>
         setCust(
-            customers.filter((option) => {
+            json.filter((option) => {
                 if (search === "")
                     return option;
-                else if (option.contact.includes(search)) {
+                else if (option.contact.includes(search)||option.name.includes(search)) {
                     return option;
                 }
                 return null;
@@ -52,13 +51,15 @@ const Pos = () => {
                 .map((option) => {
                     return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({ name: option.name, contact: option.contact, email: option.email }) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
                 })
+        ) 
         )
     }
 
+
     useEffect(() => {
-        custList()
+        getCustomers()
         //eslint-disable-next-line
-    }, [search, customers])
+    }, [search])
     useEffect(() => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
