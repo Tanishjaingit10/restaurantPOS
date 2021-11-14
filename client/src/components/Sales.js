@@ -38,13 +38,13 @@ const Sales = () => {
         <div className="text-center w-full relative">
           <div className=" text-white left-1 absolute sm:left-4">
             <a href="/home">
-              <i className="fas fa-home font-semibold mr-2 sm:mr-4 text-sm sm:text-md md:text-lg"></i>
+              <i className="fas fa-home font-semibold mr-2 sm:mr-4 text-sm sm:text-md md:text-lg lg:text-2xl"></i>
             </a>
           </div>
           <div className="justify-end flex flex-row mr-1 sm:mr-4 md:mr-8">
-            <div className="text-white px-1 font-semibold sm:mr-2 text-sm sm:text-md md:text-xl">Sales</div>
-            <div className="border-b-2 border-white px-2 mx-0 sm:mx-4 text-white flex flex-row sm:w-96 "><i className="fas fa-search mr-2 my-1 text-xs sm:text-sm md:text-lg"></i><input type="type" value={search}
-              onChange={(e) => setSearch(e.target.value)} className=" bg-primary focus:outline-none text-white-50 text-xs sm:text-sm md:text-lg w-full" />
+            <div className="text-white px-1 font-semibold sm:mr-2 text-sm sm:text-lg md:text-xl lg:text-2xl">Sales</div>
+            <div className="border-b-2 border-white px-2 mx-0 sm:mx-4 text-white flex flex-row sm:w-96 "><i className="fas fa-search mr-2 my-1 text-xs sm:text-sm lg:text-lg"></i><input type="type" value={search}
+              onChange={(e) => setSearch(e.target.value)} className=" bg-primary focus:outline-none text-white-50 text-xs sm:text-sm lg:text-lg w-full" />
             </div>
           </div>
         </div>
@@ -55,7 +55,7 @@ const Sales = () => {
         :<div className="bg-lightprimary w-full text-center border-r-2 border-white py-1" onClick={()=>{setShow(!show)}}>Select Date</div>}
           <div className="w-full bg-lightprimary text-center  border-l-2 border-white py-1">Select Food Item</div>
       </div>
-      <div className="h-3/5 sm:h-2/3 lg:h-3/5 xl:h-2/3 overflow-y-scroll bg-blue"> 
+      <div className="h-3/5 sm:h-2/3 lg:h-3/5 overflow-y-scroll bg-blue"> 
       <table className="w-full font-roboto text-xs sm:text-sm">
           <tr className="bg-lightprimary">
               <th className="text-center border-r-2 border-white ">Date</th>
@@ -68,7 +68,7 @@ const Sales = () => {
           {orders}
       </table>
       </div>
-      <div className=" flex flex-row px-2 sm:px-4 md:py-2 text-gray-500 font-roboto text-xs sm:text-md lg:text-lg font-semibold w-full sm:w-4/5 mx-auto bg-secondary md:my-2">
+      <div className=" flex flex-row md:py-2 text-gray-500 font-roboto text-xs sm:text-md lg:text-lg font-semibold w-full sm:w-4/5 mx-auto bg-secondary md:my-2">
           <div className="w-full flex flex-col px-2">
               <div className="flex flex-row">
                   <lable className="w-full mr-2">Total Card Payments</lable>
@@ -92,7 +92,7 @@ const Sales = () => {
 
           </div>
       </div>
-      <button className="text-white bg-green w-2/3 sm:w-96 mx-auto py-1 sm:py-2 lg:text-md font-semibold font-roboto 2xl:py-2">Show More</button>
+      <button className="text-white bg-green w-2/3 sm:w-96 mx-auto py-1 sm:py-2 text-sm lg:text-md font-semibold font-roboto 2xl:py-2">Show More</button>
       </div>
         </div>
     )
