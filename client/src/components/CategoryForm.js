@@ -22,8 +22,8 @@ const CategoryForm = () => {
         name = e.target.name;
         value = e.target.value;
         setCat({ ...cat, [name]: value });
-        // console.log(name)
-        // console.log(value)
+        console.log(name)
+        console.log(value)
         setCat({ ...cat, [name]: value });
     }
     const onMenu = (e) => {
@@ -31,8 +31,9 @@ const CategoryForm = () => {
     }
     const handleColor = (e) => {
         e.preventDefault();
-        // name = e.target.name;
-        // value = e.target.value;
+        name = e.target.name;
+        value = e.target.value;
+        console.log(value)
         setCat({ ...cat, [name]: value });
         setCol(value)
         setText(value)
@@ -46,6 +47,8 @@ const CategoryForm = () => {
                 setText(json.color)
                 setCat(json)
             })
+        console.log(col)
+        console.log(text)
     }
     useEffect(() => {
         // console.log(id)

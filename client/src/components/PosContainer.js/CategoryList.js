@@ -80,14 +80,13 @@ const CategoryList = () => {
         setFinalVariant((oldArray) => {
           return [...oldArray, Variant];
         });
-      } else {
-        let objIndex = finalVar.findIndex((obj) => obj._id === Variant._id);
-        // console.log(objIndex)
-        finalVar[objIndex].quantity = finalVar[objIndex].quantity + 1;
-
-        // setFinalVariant({ ...finalVar[objIndex], ["quantity"]: finalVar[objIndex].quantity+1});
-        console.log(finalVar);
-        setFinalVariant(finalVar);
+      }
+      else 
+      {
+        let objIndex = finalVar.findIndex((obj => obj._id === Variant._id));
+        finalVar[objIndex].quantity = finalVar[objIndex].quantity+1;
+        console.log(finalVar)
+        setFinalVariant(finalVar)
       }
 
       setVariant([]);

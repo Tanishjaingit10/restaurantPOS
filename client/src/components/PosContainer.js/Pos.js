@@ -43,7 +43,7 @@ const Pos = () => {
             json.filter((option) => {
                 if (search === "")
                     return option;
-                else if (option.contact.includes(search)||option.name.includes(search)) {
+                else if (option.contact.includes(search)||option.name.toLowerCase().includes(search.toLowerCase())) {
                     return option;
                 }
                 return null;
