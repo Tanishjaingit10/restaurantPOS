@@ -7,7 +7,7 @@ let timeToCook = 0;
 const CategoryList = () => {
   const [cart, setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
-  const [category, setCategory, foodItems, setFoodItems] = useContext(CategoryContext);
+  const [category, setCategory] = useContext(CategoryContext);
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({
     foodItem: "",
@@ -27,8 +27,11 @@ const CategoryList = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showItems = async (e) => {
+    await fetch("/app/items")
+      .then((res) => res.json())
+      .then((json) => {
         setDisplayItems(
-          foodItems.map((option) => {
+          json.map((option) => {
             if (option.category === e.target.value) {
               return (
                 <div
@@ -48,6 +51,7 @@ const CategoryList = () => {
             return null;
           })
         );
+      });
   };
   
 
@@ -68,10 +72,7 @@ const CategoryList = () => {
       else 
       {
         let objIndex = finalVar.findIndex((obj => obj._id === Variant._id));
-        // console.log(objIndex)
         finalVar[objIndex].quantity = finalVar[objIndex].quantity+1;
-        
-        // setFinalVariant({ ...finalVar[objIndex], ["quantity"]: finalVar[objIndex].quantity+1});
         console.log(finalVar)
         setFinalVariant(finalVar)
       }
@@ -159,7 +160,7 @@ const CategoryList = () => {
   const renderList = category.filter((cat) => {
     if (search === "")
       return cat;
-    else if (cat.category.includes(search)) {
+    else if (cat.category.toLowerCase().includes(search.toLowerCase())) {
       return cat;
     }
     return null;

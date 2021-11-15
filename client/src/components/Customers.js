@@ -13,7 +13,7 @@ const Customers = () => {
         setCustomers(json.filter((option) => {
           if (search === "")
             return option;
-          else if (option.contact.includes(search) || option.name.includes(search) || option.email.includes(search)) {
+          else if (option.contact.toLowerCase().includes(search.toLowerCase()) || option.name.toLowerCase().includes(search.toLowerCase()) || option.email.toLowerCase().includes(search.toLowerCase())) {
             return option;
           }
           return null;
