@@ -49,6 +49,8 @@ const Tables = () => {
     await fetch("/app/table")
       .then((res) => res.json())
       .then((json) => {
+        if(json !== "undefined")
+        {
         setDisplayTable(
           json.map((obj, index) => {
             if (index % 3 === 0) code = "#BE2D19";
@@ -153,7 +155,7 @@ const Tables = () => {
               </div>
             );
           })
-        );
+        );}
       });
   };
 
