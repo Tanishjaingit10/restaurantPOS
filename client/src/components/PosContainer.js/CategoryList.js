@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
 import { OrderContext } from "../../context/Cart";
 import { PaymentContext } from "../../context/Payment";
-import { CategoryContext } from "../../context/Category";
+import Loader from "../Loader";
+import Popup from "../Popup";
 
 let timeToCook = 0;
 const CategoryList = () => {
+  const [loading, setLoading] = useState(true);
+  const [catLoading, setCatLoading] = useState(true);
   const [cart, setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
-  const [category, setCategory, foodItems, setFoodItems] = useContext(CategoryContext);
+  const [showError, setError] = useState(false);
+  const [renderList, setRenderList] = useState();
   const [displayItems, setDisplayItems] = useState();
   const [item, showItem] = useState({
     foodItem: "",
@@ -15,7 +19,7 @@ const CategoryList = () => {
     orderedVariant: [],
     price: 0,
     subtotal: 0,
-    time:""
+    time: "",
   });
   const [varList, setVarList] = useState();
   const [Variant, setVariant] = useState([]);
@@ -27,97 +31,105 @@ const CategoryList = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showItems = async (e) => {
-        setDisplayItems(
-          foodItems.map((option) => {
-            if (option.category === e.target.value) {
-              return (
-                <div
-                  className="bg-white m-2 relative rounded-xl shadow-2xl w-40 cursor-pointer"
-                  onClick={() => setOrder(option.foodItem)}
-                >
-                  <img src={option.image} className="w-40 object-fill" alt="" />
-                  <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">
-                    {option.price}
-                  </span>
-                  <div className="text-center bg-white py-2">
-                    {option.foodItem}
+    await fetch("/app/items")
+      .then((res) => res.json())
+      .then((json) => {
+        setLoading(false);
+        if (typeof json !== "undefined") {
+          setDisplayItems(
+            json.map((option) => {
+              if (option.category === e.target.value) {
+                return (
+                  <div
+                    className="bg-white m-2 relative rounded-xl shadow-2xl w-40 cursor-pointer"
+                    onClick={() => setOrder(option.foodItem)}
+                  >
+                    <img
+                      src={option.image}
+                      className="w-40 object-fill"
+                      alt=""
+                    />
+                    <span className="absolute right-0 top-0 text-center w-20 py-2 bg-white">
+                      {option.price}
+                    </span>
+                    <div className="text-center bg-white py-2">
+                      {option.foodItem}
+                    </div>
                   </div>
-                </div>
-              );
-            }
-            return null;
-          })
-        );
+                );
+              }
+              return null;
+            })
+          );
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        setError(!showError);
+      });
   };
-  
 
   useEffect(() => {
-    if (Object.keys(Variant).length)
-    {
-      console.log(Variant._id)
-      console.log(finalVar)
-      let check = finalVar.some(obj=>obj._id===Variant._id)
-      console.log(check)
-      if(!check)
-      {
+    if (Object.keys(Variant).length) {
+      console.log(Variant._id);
+      console.log(finalVar);
+      let check = finalVar.some((obj) => obj._id === Variant._id);
+      console.log(check);
+      if (!check) {
         setFinalVariant((oldArray) => {
           return [...oldArray, Variant];
-        
         });
-      }
-      else 
-      {
-        let objIndex = finalVar.findIndex((obj => obj._id === Variant._id));
+      } else {
+        let objIndex = finalVar.findIndex((obj) => obj._id === Variant._id);
         // console.log(objIndex)
-        finalVar[objIndex].quantity = finalVar[objIndex].quantity+1;
-        
+        finalVar[objIndex].quantity = finalVar[objIndex].quantity + 1;
+
         // setFinalVariant({ ...finalVar[objIndex], ["quantity"]: finalVar[objIndex].quantity+1});
-        console.log(finalVar)
-        setFinalVariant(finalVar)
+        console.log(finalVar);
+        setFinalVariant(finalVar);
       }
-      
-      
-      setVariant([])
+
+      setVariant([]);
     }
-    //eslint-disable-next-line 
+    //eslint-disable-next-line
   }, [Variant]);
 
   const handleVariant = async (e) => {
-    setVariant(
-      {
-        variant: e.variant,
-        description: e.description,
-        price: e.price,
-        _id: e._id,
-        quantity:1
-      }
-    );
+    setVariant({
+      variant: e.variant,
+      description: e.description,
+      price: e.price,
+      _id: e._id,
+      quantity: 1,
+    });
     showList(false);
     item.subtotal = item.subtotal + e.price;
   };
   const showVariant = async (e) => {
     showList(true);
-    setAddList(
-      e.map((obj) => {
-        return (
-          <li>
-            <button
-              className="bg-primary px-10 py-2 w-full relative"
-              onClick={() => handleVariant(obj)}
-              name="category"
-              value={obj}
-            >
-              {obj.variant} / $ {obj.price}
-              <span className="absolute right-4">x</span>
-            </button>
-          </li>
-        );
-      })
-    );
+    if (typeof e !== "undefined") {
+      setAddList(
+        e.map((obj) => {
+          return (
+            <li>
+              <button
+                className="bg-primary px-10 py-2 w-full relative"
+                onClick={() => handleVariant(obj)}
+                name="category"
+                value={obj}
+              >
+                {obj.variant} / $ {obj.price}
+                <span className="absolute right-4">x</span>
+              </button>
+            </li>
+          );
+        })
+      );
+    }
   };
   const removeVar = (e) => {
     setFinalVariant(finalVar.filter((i) => i !== e));
-    showItem({ ...item, "subtotal": item.subtotal - e.price });
+    showItem({ ...item, subtotal: item.subtotal - e.price });
     console.log(item.subtotal);
   };
 
@@ -129,20 +141,20 @@ const CategoryList = () => {
       ...prev,
       subTotal: payment.subTotal + item.subtotal,
     }));
-    let h= parseInt(item.time.toLocaleString().split(':')[0])
-    let m = parseInt(item.time.toLocaleString().split(':')[1])+h*60;
-    timeToCook= Math.max(timeToCook,m)
+    let h = parseInt(item.time.toLocaleString().split(":")[0]);
+    let m = parseInt(item.time.toLocaleString().split(":")[1]) + h * 60;
+    timeToCook = Math.max(timeToCook, m);
     setPayment((prev) => ({
       ...prev,
       timeToCook: timeToCook,
     }));
   };
   const setOrder = async (e) => {
-    setOpen(true);
     if (e) {
       await fetch(`/app/item/${e}`)
         .then((res) => res.json())
         .then((json) => {
+          setOpen(true);
           setVarList(json.finalVariant);
           showItem({
             foodItem: json.foodItem,
@@ -150,55 +162,77 @@ const CategoryList = () => {
             orderedVariant: [],
             price: json.price,
             subtotal: json.price,
-            time: json.time
+            time: json.time,
           });
+        })
+        .catch((err) => {
+          setError(!showError);
         });
     }
   };
 
-  const renderList = category.filter((cat) => {
-    if (search === "")
-      return cat;
-    else if (cat.category.includes(search)) {
-      return cat;
-    }
-    return null;
-  })
-    .map((cat, index) => {
-      return (
-        <div key={cat.category}>
-          <button
-            value={cat.category}
-            key={index}
-            name="color"
-            className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2 text-white text-lg font-semibold font-roboto"
-            onClick={showItems}
-            style={{ backgroundColor: cat.color }}
-          >
-            {cat.category[0].toUpperCase()+cat.category.substring(1)}
-          </button>
-        </div>
-      );
-    });
-  
   useEffect(() => {
-  
-    showItem({ ...item, "orderedVariant": finalVar });
+    fetch("/app/category")
+      .then((res) => res.json())
+      .then((json) => {
+        if (typeof json !== "undefined") {
+          setCatLoading(false);
+          setRenderList(
+            json
+              .filter((cat) => {
+                if (search === "") return cat;
+                else if (cat.json.includes(search)) {
+                  return cat;
+                }
+                return null;
+              })
+              .map((cat, index) => {
+                if (cat !== "undefined") {
+                  return (
+                    <div key={cat.category}>
+                      <button
+                        value={cat.category}
+                        key={index}
+                        name="color"
+                        className="hover:bg-gray-300 block align-middle py-4 px-6 w-60 no-underline m-2 text-white text-lg font-semibold font-roboto"
+                        onClick={showItems}
+                        style={{ backgroundColor: cat.color }}
+                      >
+                        {cat.category[0].toUpperCase() +
+                          cat.category.substring(1)}
+                      </button>
+                    </div>
+                  );
+                }
+              })
+          );
+        }
+      })
+      .catch((err) => {
+        setCatLoading(false);
+        setError(!showError);
+      });
+  }, [renderList]);
+
+  useEffect(() => {
+    showItem({ ...item, orderedVariant: finalVar });
     setFinal(
       finalVar.map((obj) => {
-        return (
-          <button className="bg-primary px-10 py-2 w-full mb-2 relative">
-            {obj.quantity} x {obj.variant} / $ {obj.price*obj.quantity}
-            <span
-              onClick={() => {
-                removeVar(obj);
-              }}
-              className="absolute right-4"
-            >
-              x
-            </span>
-          </button>
-        );
+        if (obj !== "undefined") {
+          return (
+            <button className="bg-primary px-10 py-2 w-full mb-2 relative">
+              {obj.quantity} x {obj.variant} / $ {obj.price * obj.quantity}
+              <span
+                onClick={() => {
+                  removeVar(obj);
+                }}
+                className="absolute right-4"
+              >
+                x
+              </span>
+            </button>
+          );
+        }
       })
     );
     //eslint-disable-next-line
@@ -220,9 +254,11 @@ const CategoryList = () => {
 
       <div className="w-full p-2 mx-auto font-roboto font-bold bg-white pb-4 h-full">
         <div className="flex flex-wrap justify-evenly px-6 mt-4">
-          {renderList}
+          {catLoading ? <Loader /> : renderList}
         </div>
-        <div className="mt-10 flex flex-wrap">{displayItems}</div>
+        <div className="mt-10 flex flex-wrap">
+          {loading ? <Loader /> : displayItems}
+        </div>
       </div>
 
       {open ? (
@@ -269,6 +305,26 @@ const CategoryList = () => {
           </div>
         </div>
       ) : null}
+      {showError && (
+        <Popup
+          content={
+            <>
+              <p className="pb-4 font-bold text-green">Unable to Load Server</p>
+              <button
+                className="bg-primary px-10 py-2"
+                onClick={() => {
+                  setError(false);
+                }}
+              >
+                Try Again
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setError(false);
+          }}
+        />
+      )}
     </div>
   );
 };

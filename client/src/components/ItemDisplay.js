@@ -5,6 +5,8 @@ import { CategoryContext } from "../context/Category";
 const ItemDisplay = () => {
   const cat = useParams();
   const [foodItems] = useContext(CategoryContext);
+  if(foodItems !== "undefined")
+  {
   foodItems.map((option) => {
     if (option.category === cat) {
       return (
@@ -15,6 +17,7 @@ const ItemDisplay = () => {
     }
     return null;
   });
+}
 };
 
 export default ItemDisplay;
