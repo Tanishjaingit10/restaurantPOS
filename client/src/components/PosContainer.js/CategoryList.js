@@ -34,8 +34,9 @@ const CategoryList = () => {
     await fetch("/app/items")
       .then((res) => res.json())
       .then((json) => {
-        setLoading(false);
+        
         if (typeof json !== "undefined") {
+          setLoading(false);
           setDisplayItems(
             json.map((option) => {
               if (option.category === e.target.value) {
@@ -180,7 +181,7 @@ const CategoryList = () => {
             json
               .filter((cat) => {
                 if (search === "") return cat;
-                else if (cat.json.includes(search)) {
+                else if (cat.category.includes(search)) {
                   return cat;
                 }
                 return null;
