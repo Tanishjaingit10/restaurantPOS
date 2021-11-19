@@ -1,5 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Attendance from "./components/Attendance.js/Attendance";
+import ClockInOut from "./components/Attendance.js/ClockInOut";
+import TakeAttendance from "./components/Attendance.js/TakeAttendance";
+import ViewAttendance from "./components/Attendance.js/ViewAttendance";
 import CategoryDisplay from "./components/CategoryDisplay";
 import CategoryForm from "./components/CategoryForm";
 import Counter from "./components/Counter";
@@ -60,6 +64,10 @@ const Routes = () => {
           <Route exact path="/receipt" component={Receipt} />
           <Route exact path="/customers" component={Customers} />
           <Route exact path="/sales" component={Sales} />
+          <Route exact path="/attendance" component={Attendance} />
+          <Route exact path="/takeAttendance" component={TakeAttendance} />
+          <Route exact path="/viewAttendance" component={ViewAttendance} />
+          <Route exact path="/clockInOut" component={ClockInOut} />
         </Switch>
       </Router>
     
