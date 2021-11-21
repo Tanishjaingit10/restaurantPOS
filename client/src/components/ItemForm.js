@@ -21,7 +21,7 @@ const ItemForm = () => {
     const [avail, setAvail] = useState(true)
     const [isError, setIsError] = useState(false);
     const [msg, setMsg] = useState("");
-    const [item, setItem] = useState({ foodItem: "", category: "", time: "", description: "", price: 0, availability: "", discount: 0, image: "", finalVariant: [], finalAvailable: [] })
+    const [item, setItem] = useState({ foodItem: "", category: "", time: "", description: "", price: 0, availability: "Yes", discount: 0, image: "", finalVariant: [], finalAvailable: [] })
     const [Var, setVar] = useState({ variant: "", description: "", price: "" })
     const [variant, setVariant] = useState(false);
     const [showAvailable, setShowAvailable] = useState(false);

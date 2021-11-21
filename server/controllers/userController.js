@@ -13,19 +13,24 @@ const show_users = async (request, response, next)=>{
     });
 }
 
-const get_user = async(request,response) =>{
-    signup_template_copy.findById(request.params.id,(err,data) =>{
-        if(!err)
-            response.send(data);
-        else 
-            console.log(err);
+const get_user = async (request, response) => {
+    signup_template_copy.findOne({ email_id: request.params.id }, (err, data) => {
+        if (!err) {
+            if (data === null)
+                response.json({ message: 'Item not found!' })
+            else response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
 
     });
 }
 
 
 const add_user =async (request, response, next)=>{
-    const{fullName,email_id,contact,position,password}=request.body;
+    const{fullName,email_id,contact,position,password,attendence}=request.body;
     if(!fullName||!email_id||!contact||!position||!password)
             return response.status(422).json({error:"Please fill out all the fields!"})
     const saltPassword = await bcrypt.genSalt(10)
@@ -34,7 +39,7 @@ const add_user =async (request, response, next)=>{
         if(userExist){
             return response.status(402).json({error:"User Already Exists!"})
         }
-        const user = new signup_template_copy({fullName, email_id,contact,position,password:securePassword})
+        const user = new signup_template_copy({fullName, email_id,contact,position,password:securePassword, attendence})
         user.save().then(()=>{
             response.status(201).json({message: "User registered successfully!"})
         })
@@ -81,7 +86,61 @@ const login = async (request, response, next)=>{
     }
     
 }
+const attendence = async (request, response)=>{
+    try{
+        const{email_id,password}=request.body;
+        if(!email_id||!password)
+            return response.status(402).json({error:"Please fill out all the fields!"})
+
+        const userLogin = await signup_template_copy.findOne({email_id : email_id})
+        
+        if(userLogin){
+            const isMatch = await bcrypt.compare(password, userLogin.password);
+          
+           
+            if(!isMatch){
+                response.status(401).json({error:"Invalid Credentials"});
+            }
+            else{
+                response.status(201).json({message:"User Sign in successfully"});
+            }
+
+        }
+        else{
+            response.status(401).json({error:"Invalid Credentials"});
+        }
+        
+    }
+    catch(error){
+        response.status(404).json(error)
+    }
+}
+const update_user = async (request, response, next) => {
+    let itemId = request.params.id;
+    // console.log(itemId)
+    const{fullName,email_id,contact,position,password,attendence}=request.body.finalUser;
+    let updatedData = {
+        fullName:fullName,
+        email_id:email_id,
+        contact:contact,
+        position:position,
+        password:password,
+        attendence:attendence
+    }
+    if (!email_id || !fullName)
+        return response.status(422).json({ error: "Please fill out the required fields!" })
+    signup_template_copy.findOneAndUpdate({ email_id: email_id }, { $set: updatedData }).then((data) => {
+        if (data === null)
+            response.json({ message: 'Item not found!' })
+        else response.status(200).json({ message: 'Item updated successfully!' })
+    })
+        .catch(error => {
+            response.status(401).json({ message: 'Item could not be updated!' })
+        })
+
+}
+
 module.exports = {
-    show_users, add_user, login, get_user
+    show_users, add_user, login, get_user, update_user, attendence
 }
 

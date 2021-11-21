@@ -49,6 +49,7 @@ const CategoryDisplay = () => {
             if (option.name === cat.color) { code = option.code; }
             return null;
         })
+        console.log(code)
 
         await fetch(
             `/app/updateColour/${cat.color}`, {
@@ -57,7 +58,7 @@ const CategoryDisplay = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name:cat.color, code: code, check: false
+                name:cat.color, code: code, check: true
             })
         })
             .then((res) => res.json())

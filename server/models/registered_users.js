@@ -32,7 +32,18 @@ const signup_template = new mongoose.Schema({
                 required:true
             }
         }
-    ]
+    ],
+    attendence:{
+        type:
+            {
+                status:String,
+                checkinTime: String,
+                checkoutTime: String,
+                date: String
+            }
+        
+       
+    }
 
 })
 

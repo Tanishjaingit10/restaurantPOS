@@ -87,7 +87,8 @@ const CategoryForm = () => {
             });
 
         }
-
+        console.log(res)
+        console.log(res.status)
         if (res.status === 201||res.status===200) {
             let obj = signup.find((pop) => pop.id === res.status);
             setMsg(obj.title);

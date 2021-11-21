@@ -5,30 +5,42 @@ import { useHistory } from 'react-router-dom';
 const Payment = () => {
     const history = useHistory();
     const [payment, setPayment] = useContext(PaymentContext);
-    const [success, setSuccess] = useState(false);
-    const onPay = async (e)=> {
+    const onlinePay = async (e)=> {
         e.preventDefault();
         setPayment((prev) => ({
             ...prev,
-            mode: 'other', status: 'completed', orderStatus: 'Processing'
+            mode: 'online', status: 'completed', orderStatus: 'Processing'
           }));
-        setSuccess(!success);
+        // setSuccess(!success);
+        history.push("/finalPay")
           
        
     }
+    const cardPay = async (e)=> {
+        e.preventDefault();
 
+        setPayment((prev) => ({
+            ...prev,
+            mode: 'card', status: 'completed', orderStatus: 'Processing'
+          }));
+        // setSuccess(!success);
+        history.push("/finalPay")
+        
+       
+    }
     const cashPay = (e)=> {
         e.preventDefault();
         setPayment((prev) => ({
             ...prev,
             mode: 'cash',
           }));
-        history.push("/cashPay");  
+        history.push("/cash");  
     }
    
     const onBack = (e)=> {
         e.preventDefault();
         history.push("/pos");  
+
     }
     
 
@@ -41,33 +53,23 @@ const Payment = () => {
                 </div>  
                 </nav> 
                 <div className=" m-20 justify-evenly flex flex-wrap p-6 px-20">
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white" onClick={cashPay}>
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white cursor-pointer" onClick={cashPay}>
                        <div className=" py-2 text-center">Cash</div>
                        <div className=" py-2 text-center">Logo</div>
                     </div>
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white" onClick={onPay}>
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white cursor-pointer" onClick={cardPay}>
                         <div className=" py-2 text-center">Credit / Debit Card</div>
                        <div className=" py-2 text-center"><i class="far fa-credit-card text-3xl"></i></div>
                     </div>
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white"onClick={onPay}>
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white cursor-pointer"onClick={onlinePay}>
                        <div className=" py-2 text-center">External Payment</div>
                        <div className=" py-2 text-center">Logo</div>
                     </div>
-                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white">
+                    <div className="w-72 bg-primary flex flex-col p-4 text-xl font-roboto font-semibold m-4 text-white cursor-pointer">
                         <div className=" py-2 text-center">Pay Later</div>
                        <div className=" py-2 text-center"><i class="far fa-clock text-3xl"></i></div>
                     </div>
                     </div> 
-                    {success && <div className="popup-box">
-                        <div className="box text-center py-16">
-                        <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={() => { setSuccess(!success) }} >
-                    <span className=" text-gray-400 text-center object-center text-xl">x</span>
-                </div>
-                            <p className="pb-4 font-roboto text-lg font-semibold text-green">
-              Order Placed Successfully</p>
-              <button className="bg-green px-10 py-2 font-roboto text-white text-lg" onClick={()=>{ history.push("/finalPay");}}>Continue</button>
-              </div>
-              </div>}
         </div>
     )
 }

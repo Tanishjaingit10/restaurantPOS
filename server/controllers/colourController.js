@@ -35,7 +35,6 @@ const get_colour = async(request,response) =>{
 }
 const update_colour = async (request, response, next)=>{
     let itemId = request.params.id;
-
     const{name,code,check}=request.body;
     let updatedData = {
         name: name,

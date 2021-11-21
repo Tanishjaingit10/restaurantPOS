@@ -9,11 +9,12 @@ const SignUp = () => {
     const history = useHistory();
     const [user, setUser] = useState({ fullName: "", email_id: "", contact: "", position: "", password: "" });
     const [isOpen, setIsOpen] = useState(false);
+    const [attendence, setAttendence] = useState({status: "Session Not Started", checkinTime: "N/A",checkoutTime: "N/A", date: "N/A" })
     const [msg, setMsg] = useState("");
     const [isError, setIsError] = useState(false);
     let name, value;
+    console.log(attendence)
     const handleInputs = (e) => {
-        console.log(e);
         name = e.target.name;
         value = e.target.value;
         setUser({ ...user, [name]: value });
@@ -31,7 +32,7 @@ const SignUp = () => {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                fullName, email_id, contact, position, password
+                fullName, email_id, contact, position, password, attendence
             })
         });
        

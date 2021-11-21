@@ -3,6 +3,8 @@ import Loader from "./Loader";
 import Popup from "./Popup";
 let [total, totalCard, totalCash, totalOnline,item] = [0,0,0,0,''];
 let dateInput;
+var todayDate = new Date()
+  todayDate = todayDate.toISOString().split('T')[0]
 const Sales = () => {
   const [loading, setLoading] = useState(false);
   const [orderLoading, setorderLoading] = useState(true);
@@ -88,9 +90,9 @@ const Sales = () => {
                 return itemCheck=1;
               }
           })
-          if (dateInput && option.time.toLocaleString().split("T")[0] !== dateInput)
+          if (option.time.toLocaleString().split("T")[0] !== todayDate )
             return null;
-          if (item&&!itemCheck)
+          if (item && !itemCheck)
             return null;
           if (search === "" || option.order_id.toString().includes(search))
             return option;
@@ -154,8 +156,7 @@ const Sales = () => {
       </nav>
       <div className="flex flex-col h-screen pb-2">
         <div className="flex flex-row my-1 text-sm sm:text-md  4xl:text-3xl font-roboto font-medium">
-          {show ? <input type="date" value={dateInput} onChange={handleDate} className="bg-lightprimary w-full text-center border-r-2 border-white py-1 focus:outline-none" />
-            : <div className="bg-lightprimary w-full text-center border-r-2 border-white py-1" onClick={() => { setShow(!show) }}>Select Date</div>}
+          <div className="bg-lightprimary w-full text-center border-r-2 border-white py-1">{todayDate}</div>
           <div onClick={openMenu} className="w-full bg-lightprimary text-center  border-l-2 border-white py-1">{item? item:'Select Food Item'}</div>
           {disp && <div className="popup-box">
             <div className=" w-96 mx-auto font-roboto font-bold mt-52 bg-white relative">

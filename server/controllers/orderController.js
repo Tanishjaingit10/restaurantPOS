@@ -1,22 +1,16 @@
 const order_template_copy = require('../models/order')
 const add_order = async (request, response, next) => {
     const { customer, order, payment } = request.body;
-    console.log(request.body._id)
-    console.log(order)
-    console.log(customer)
-    console.log(payment)
+    console.log(request.body)
     if (!order[0] || !customer.contact) {
-        console.log(4);
         return response.status(422).json({ error: "Please fill out the required fields!" })
     }
 
     const new_order = new order_template_copy({ customer, order, payment })
     new_order.save().then(() => {
-        console.log(1)
         response.status(201).json({ message: "Order added successfully!" })
     })
         .catch(error => {
-            console.log(2)
             response.status(401).json({ error: "Order could not be added!" })
         })
 
@@ -32,10 +26,7 @@ const all_order = async (request, response) => {
 }
 const update_order = async (request, response, next) => {
     let itemId = request.params.id;
-    console.log(1)
-    console.log(itemId)
     const { customer,order,payment,time,order_id } = request.body;
-    console.log(request.body)
     let updatedData = {
         customer:customer,
         order:order,

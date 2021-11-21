@@ -26,11 +26,14 @@ import Payment from "./components/PosContainer.js/Payment";
 import Pos from "./components/PosContainer.js/Pos";
 import Receipt from "./components/PosContainer.js/Receipt";
 import ViewOrder from "./components/PosContainer.js/ViewOrder";
+import Reservations from "./components/Reservations";
 import Sales from "./components/Sales";
 import SignUp from "./components/SignUp";
 import TableForm from "./components/TableForm";
 import Tables from "./components/Tables";
-
+import Takeaways from "./components/Takeaways";
+import TodayOrders from "./components/TodayOrders";
+import TodaySale from "./components/TodaySale";
 const Routes = () => {
   return (
     
@@ -68,6 +71,11 @@ const Routes = () => {
           <Route exact path="/takeAttendance" component={TakeAttendance} />
           <Route exact path="/viewAttendance" component={ViewAttendance} />
           <Route exact path="/clockInOut" component={ClockInOut} />
+          <Route exact path="/todayOrders" component={TodayOrders} />
+          <Route exact path="/takeaways" component={Takeaways} />
+          <Route exact path="/reservations" component={Reservations} />
+          <Route exact path="/todaySale" component={TodaySale} />
+
         </Switch>
       </Router>
     

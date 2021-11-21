@@ -3,7 +3,6 @@ const add_customer =async (request, response, next)=>{
     const{name,contact,email}=request.body;
     if(!name||!contact)
     {
-        console.log(4);
         return response.status(422).json({error:"Please fill out the required fields!"})
     }
             
@@ -14,12 +13,9 @@ const add_customer =async (request, response, next)=>{
         }
         const cat = new customer_template_copy({name,contact,email})
         cat.save().then(()=>{
-            console.log(2)
             response.status(201).json({message: "Customer added successfully!"})
         })
         .catch(error =>{
-            
-            console.log(3)
             response.status(401).json({error: "Customer could not be added!"})
         })
 

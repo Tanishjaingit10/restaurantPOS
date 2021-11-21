@@ -1,37 +1,59 @@
-import React,{ useContext, useEffect} from 'react'
+import React,{ useContext, useEffect, useState} from 'react'
 import { PaymentContext } from '../../context/Payment'
 import { OrderContext } from '../../context/Cart';
 import { CustomerContext } from '../../context/Customer';
 import { useHistory } from 'react-router-dom';
+import Popup from '../Popup';
 const CashPay = () => {
     const history = useHistory();
     const [payment] = useContext(PaymentContext);
     const [cart] = useContext(OrderContext);
     const [customer]= useContext(CustomerContext);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [msg, setMsg] = useState("");
+    const fetchData = async () => {
+        fetch("/app/addOrder", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                customer: customer,
+                order: cart,
+                payment: payment
+
+            })
+
+
+        }).then(function (res) {
+            if (res.status === 201 || res.status === 200) {
+                // let obj = signup.find((pop) => pop.id === res.status);
+                setMsg('Successful');
+                setIsOpen(!isOpen);
+            }
+            else {
+                // let obj = signup.find((pop) => pop.id === res.status);
+                setMsg('Failed');
+                console.log(msg);
+                setIsError(!isError);
+
+            }
+
+        });
+
+
+    }
+    useEffect(() => {
+        fetchData();
+        //eslint-disable-next-line
+    }, [payment])
 
     const onReceipt=(e)=>{
         console.log(1)
         e.preventDefault();
         history.push('/receipt')
     }
-    useEffect(() => {
-        async function addOrder(){
-        await fetch("/app/addOrder", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                customer:customer,
-                order: cart,
-                payment:payment
-      
-            })
-      
-        });}
-        addOrder();
-      //eslint-disable-next-line  
-    }, [payment])
     
     return (
         <div>
@@ -61,6 +83,24 @@ const CashPay = () => {
           </div>
         </div>
         </div>
+        {isOpen && <Popup
+                content={<>
+
+                    <p className='pb-4 font-bold text-green'>{msg}</p>
+                    <button className="bg-primary px-10 py-2" onClick={fetchData}>Ok</button>
+                </>}
+                handleClose={fetchData}
+            />}
+            {isError && <div className="popup-box">
+                <div className="box text-center py-16">
+                    <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={() => { history.push("/pos") }} >
+                        <span className=" text-gray-400 text-center object-center text-xl">x</span>
+                    </div>
+                    <p className="pb-4 font-roboto text-lg font-semibold text-green">
+                        Order Failed!</p>
+                    <button className="bg-green px-10 py-2 font-roboto text-white text-lg" onClick={() => { history.push("/pos"); }}>Ok</button>
+                </div>
+            </div>}
         </div>
     )
 }

@@ -1,6 +1,7 @@
 import React from "react";
 
 const Attendance = () => {
+  
   return (
     <div className=" text-white font-roboto">
       {/* <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">

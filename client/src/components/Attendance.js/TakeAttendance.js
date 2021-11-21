@@ -1,6 +1,43 @@
-import React from 'react'
-
+import React, {useState,useEffect} from 'react'
+import Loader from "../Loader";
 const TakeAttendance = () => {
+  const [search, setSearch] = useState("");
+  const [users, setUsers] = useState();
+  const [loading, setLoading] = useState(true);
+  const getUsers = async () => {
+    let count =1;
+    await fetch("/app/users")
+      .then((res) => res.json())
+      .then((json) => {
+        setLoading(false);
+        if (json !== "undefined") {
+          setUsers(
+            json.filter((option) => {
+                if (search === "") return option;
+                else if (option.email_id.toString().includes(search)) {
+                  return option;
+                }
+                return null;
+              })
+              .map((option) => {
+                return (
+                  <tr className="">
+                <th className="p-2 border-2 bg-lightprimary">{count++}</th>
+                <th className="p-2 border-2 bg-lightprimary">{option.fullName}</th>
+                <th className="p-2 border-2 bg-lightprimary">{option.email_id}</th>
+                <th className="p-2 border-2 bg-lightprimary">{option.attendence.date}</th>
+                <th className="p-2 border-2 bg-lightprimary">{option.attendence.status}</th>
+              </tr>
+                )}))}}).catch((err) => {
+                  setLoading(false);
+                  console.log("1", err);
+                  // setOpen(!open);
+                });
+  }
+  useEffect(() => {
+    // setLoading(!loading);
+    getUsers();
+  }, [users]);
     return (
       
             <div className="h-screen justify-items-conter overflow-hidden">
@@ -17,8 +54,8 @@ const TakeAttendance = () => {
               <i className="fas fa-search mr-4"></i>
               <input
                 type="type"
-                // value={search}
-                // onChange={(e) => setSearch(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className=" bg-primary focus:outline-none text-white text-sm w-full"
               />
             </div>
@@ -37,7 +74,7 @@ const TakeAttendance = () => {
                 <th className="p-2 border-2 bg-lightprimary">Status</th>
               </tr>
             </thead>
-            {/* <tbody className="w-full">{loading?<Loader/>:orders}</tbody> */}
+            <tbody className="w-full">{loading?<Loader/>:users}</tbody>
           </table>
         </div>
         <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white">

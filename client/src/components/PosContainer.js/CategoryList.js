@@ -6,7 +6,8 @@ import Popup from "../Popup";
 
 let timeToCook = 0;
 const CategoryList = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(true);
   const [catLoading, setCatLoading] = useState(true);
   const [cart, setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
@@ -31,10 +32,11 @@ const CategoryList = () => {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const showItems = async (e) => {
+    setLoading(true)
     await fetch("/app/items")
       .then((res) => res.json())
       .then((json) => {
-        
+        console.log(loading);
         if (typeof json !== "undefined") {
           setLoading(false);
           setDisplayItems(
@@ -154,7 +156,13 @@ const CategoryList = () => {
       await fetch(`/app/item/${e}`)
         .then((res) => res.json())
         .then((json) => {
+          console.log(orderLoading)
+          if(typeof json!== "undefined")
+          {
+            setOrderLoading(false);
+            console.log(orderLoading)
           setOpen(true);
+          
           setVarList(json.finalVariant);
           showItem({
             foodItem: json.foodItem,
@@ -164,9 +172,11 @@ const CategoryList = () => {
             subtotal: json.price,
             time: json.time,
           });
+        }
         })
         .catch((err) => {
           setError(!showError);
+          setOrderLoading(false);
         });
     }
   };
@@ -256,12 +266,12 @@ const CategoryList = () => {
         <div className="flex flex-wrap justify-evenly px-6 mt-4">
           {catLoading ? <Loader /> : renderList}
         </div>
-        <div className="mt-10 flex flex-wrap">
+        <div className="flex flex-wrap justify-evenly">
           {loading ? <Loader /> : displayItems}
         </div>
       </div>
-
-      {open ? (
+    <div className="justify-evenly">
+    {open ?(orderLoading?<div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full"><Loader/></div>:(
         <div className="absolute top-16 right-0 bg-white border-l-2 border-primary w-2/5 h-full">
           <div className="w-72 mt-6 bg-gray-500 mx-auto h-36">
             <img alt="" className="h-36 w-72" src={item.image} />
@@ -304,7 +314,9 @@ const CategoryList = () => {
             </button>
           </div>
         </div>
-      ) : null}
+      )): null}
+    </div>
+      
       {showError && (
         <Popup
           content={

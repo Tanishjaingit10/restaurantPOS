@@ -1,36 +1,47 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { CustomersContext } from './../context/Customers';
+import Loader from "./Loader";
+import Popup from "./Popup";
 const Customers = () => {
 
   // const [inputValue, setInputvalue] = useState("Search for customer:name / phone number / mail id")
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState();
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
   let count = 1;
   const getCustomers = async () => {
     await fetch("/app/customers")
       .then((res) => res.json())
       .then((json) =>
-        setCustomers(json.filter((option) => {
-          if (search === "")
-            return option;
-          else if (option.contact.toLowerCase().includes(search.toLowerCase()) || option.name.toLowerCase().includes(search.toLowerCase()) || option.email.toLowerCase().includes(search.toLowerCase())) {
-            return option;
-          }
-          return null;
-        })
-          .map((option) => {
-            return (<tr className="font-medium">
-              <td className="bg-secondary py-2 text-center border-2">{count++}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.date.toLocaleString().split('T')[0]}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.contact}</td>
-              <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
-            </tr>)
-          })))
+        {
+          setLoading(false);
+          setCustomers(json.filter((option) => {
+            if (search === "")
+              return option;
+            else if (option.contact.toLowerCase().includes(search.toLowerCase()) || option.name.toLowerCase().includes(search.toLowerCase()) || option.email.toLowerCase().includes(search.toLowerCase())) {
+              return option;
+            }
+            return null;
+          })
+            .map((option) => {
+              return (<tr className="font-medium">
+                <td className="bg-secondary py-2 text-center border-2">{count++}</td>
+                <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
+                <td className="bg-secondary py-2 text-center border-2">{option.date.toLocaleString().split('T')[0]}</td>
+                <td className="bg-secondary py-2 text-center border-2">{option.contact}</td>
+                <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
+              </tr>)
+            }))
+        }
+        ).catch((err) => {
+          setLoading(false);
+          console.log("1", err);
+          setOpen(!open);
+        });
   }
   useEffect(() => {
     getCustomers()
-  })
+  }, [customers])
 
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
@@ -61,12 +72,32 @@ const Customers = () => {
               </tr>
             </thead>
             <tbody>
-              {customers}
+              {loading?<Loader/>:customers}
             </tbody>
           </table>
         </div>
         <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white">Show More</button>
       </div>
+      {open && (
+        <Popup
+          content={
+            <>
+              <p className="pb-4 font-bold text-green">Unable to Load Server</p>
+              <button
+                className="bg-primary px-10 py-2"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                Try Again
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setOpen(false);
+          }}
+        />
+      )}
     </div>
   )
 }
