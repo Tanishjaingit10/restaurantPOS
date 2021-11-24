@@ -3,6 +3,7 @@ import Loader from "./Loader";
 import Popup from "./Popup";
 let [total, totalCard, totalCash, totalOnline,item] = [0,0,0,0,''];
 let dateInput;
+let len = 0;
 const Sales = () => {
   const [loading, setLoading] = useState(false);
   const [orderLoading, setorderLoading] = useState(true);
@@ -15,6 +16,7 @@ const Sales = () => {
   const [displayItems, setDisplayItems] = useState();
   const [showError, setError] = useState(false);
   const [orders, showOrders] = useState()
+  const [rows, setRows]= useState(false)
   const handleDate = (e) => {
     dateInput= (e.target.value)
   }
@@ -74,8 +76,8 @@ const Sales = () => {
       "/app/orders")
       .then((res) => res.json())
       .then((json) => {
-        setorderLoading(false);
         if (json !== "undefined") {
+          len = json.length;
         showOrders(json.filter((option) => {
           total = 0;
           totalCard = 0;
@@ -95,7 +97,8 @@ const Sales = () => {
           if (search === "" || option.order_id.toString().includes(search))
             return option;
           return null;
-        }).map((option) => {
+        }).slice(0,rows? len:2).map((option) => {
+          setorderLoading(false);
           total = total + option.payment.total;
           if (option.payment.mode === 'cash')
             totalCash = totalCash + option.payment.total;
@@ -128,9 +131,15 @@ const Sales = () => {
       return (<button value={option.category} name="color" onClick={showItems} className="hover:bg-gray-300 block align-middle py-4 px-6 w-44 no-underline m-2 " style={{ backgroundColor: option.color }}>{option.category}</button>)
     }))
   }
-
+  const showMore = (e)=>{ 
+    setorderLoading(true)
+    setRows(!rows)
+  }
   useEffect(() => {
     loadOrders();
+  },[rows]);
+
+  useEffect(() => {
     loadCategory()
   })
 
@@ -207,7 +216,9 @@ const Sales = () => {
 
           </div>
         </div>
-        <button className="text-white bg-green w-2/3 sm:w-96 mx-auto py-1 sm:py-2 text-sm lg:text-md font-semibold font-roboto 2xl:py-2">Show More</button>
+        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white" onClick={showMore}>
+          {rows? 'Show Less':'Show More'}
+        </button>
       </div>
       {showError && (
         <Popup

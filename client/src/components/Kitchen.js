@@ -1,45 +1,68 @@
 import React, { useState,useEffect } from "react";
 import Countdown from "react-countdown";
+import Loader from "./Loader";
+import Popup from "./Popup";
+import {useDebounce, useDebouncedCallback} from 'use-debounce';
 
 let arr = new Array(1000000).fill(false);
 let stat = new Array(1000000).fill(false);
+let len = 0;
 const Kitchen = () => {
   const [orders, setOrders] = useState()
+  const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [rows, setRows]= useState(false)
+ 
   const getOrders = async () => {
 
     await fetch("/app/orders")
       .then((res) => res.json())
-      .then((json) =>
-        setOrders(json.map((option, index) => {
-          var date = new Date(option.time);
-          arr[index] = date.getTime();
-          return (
-            <tr className="font-medium">
-              <td className="bg-secondary py-2 text-center border-2">
-                {option.order_id}
-              </td>
-              <td className="bg-secondary py-2 text-center border-2">
-                {option.payment.orderType}
-              </td>
-              <td className="bg-secondary py-2 text-center border-2">
-                {option.payment.table}
-              </td>
-              <td className="bg-secondary py-2 text-center border-2">
-                {option.time.toLocaleString().split("T")[1].split(".")[0]}
-              </td>
-              <td className="bg-secondary py-2 text-center border-2">
-                <Countdown onComplete={() => showStatus(option, index)} date={arr[index] + option.payment.timeToCook * 60000} renderer={renderer} />
-              </td>
-              <td className="bg-secondary py-2 text-center">
-                {stat[index] ? 'Ready to serve' : option.payment.orderStatus}
-              </td>
-            </tr>
-          );
-        })))
+      .then((json) =>{
+        if (json !== "undefined") {
+          len = json.length;
+          setOrders(json.slice(0,rows? len:4).map((option,index) => {
+            setLoading(false);
+            var date = new Date(option.time);
+            arr[index] = date.getTime();
+            return (
+              <tr className="font-medium">
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.order_id}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.payment.orderType}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.payment.table}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  {option.time.toLocaleString().split("T")[1].split(".")[0]}
+                </td>
+                <td className="bg-secondary py-2 text-center border-2">
+                  <Countdown onComplete={() => showStatus(option, index)} date={arr[index] + option.payment.timeToCook * 60000} renderer={renderer} />
+                </td>
+                <td className="bg-secondary py-2 text-center">
+                  {stat[index] ? 'Ready to serve' : option.payment.orderStatus}
+                </td>
+              </tr>
+            );
+          }))
+        }
+      }
+        ).catch((err) => {
+          setLoading(false);
+          console.log("1", err);
+          setOpen(!open);
+        });
+  }
+  const showMore = (e)=>{ 
+    setLoading(true)
+
+    setRows(!rows)
   }
   useEffect(() => {
     getOrders()
-  })
+  },[rows])
 
   const showStatus = async (option, index) => {
     const { customer, order, payment, time, order_id } = option;
@@ -95,14 +118,34 @@ const Kitchen = () => {
               </tr>
             </thead>
             <tbody>
-              {orders}
-            </tbody>
+            
+      {loading?<Loader/>:orders}</tbody>
           </table>
         </div>
-        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white">
-          Show More
+        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white" onClick={showMore}>
+          {rows? 'Show Less':'Show More'}
         </button>
       </div>
+      {open && (
+        <Popup
+          content={
+            <>
+              <p className="pb-4 font-bold text-green">Unable to Load Server</p>
+              <button
+                className="bg-primary px-10 py-2"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                Try Again
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

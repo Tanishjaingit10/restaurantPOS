@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
+import Loader from "./Loader";
 let arr = new Array(1000000).fill(false);
+
 const Counter = () => {
   const [display, setDisplay] = useState();
+  const [loading, setLoading] = useState(true);
+  console.log(loading)
   const showDetails = (index) => {
     arr[index] = !arr[index];
     console.log(index)
@@ -12,12 +16,12 @@ const Counter = () => {
   };
   var code;
   const loadOrders = async (e) => {
-
     setDisplay(
       await fetch("/app/orders")
         .then((res) => res.json())
         .then((json) =>
           json.map((option, index) => {
+            setLoading(false);
             if (option.payment.orderStatus === 'Ready to Serve')
               code = "#1DBE19";
             else
@@ -66,6 +70,7 @@ const Counter = () => {
                       <div className="w-full">
                         {
                           option.order.map((obj) => {
+                            
                             return (
 
                               <div className="flex flex-col w-full py-2">
@@ -118,7 +123,7 @@ const Counter = () => {
         </div>
       </nav>
       <div className=" m-4 p-6 justify-evenly flex flex-wrap">
-        {display}
+        {loading?<Loader/>:display}
       </div>
     </div>
   );

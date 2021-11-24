@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
+import {useDebounce, useDebouncedCallback} from 'use-debounce';
+
+let len = 0;
 const Orders = () => {
   // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
   const [search, setSearch] = useState("");
   const [orders, setOrders] = useState();
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [rows, setRows]= useState(false)
+  const debounced = useDebouncedCallback(
+    (value) => {
+      setSearch(value);
+    },
+    0,
+    // The maximum time func is allowed to be delayed before it's invoked:
+    { maxWait: 2000 }
+  );
   let count = 1;
   const getOrders = async () => {
     await fetch("/app/orders")
       .then((res) => res.json())
       .then((json) => {
-        setLoading(false);
         if (json !== "undefined") {
+          len = json.length;
           setOrders(
             json.filter((option) => {
                 if (search === "") return option;
@@ -22,7 +34,8 @@ const Orders = () => {
                 }
                 return null;
               })
-              .map((option) => {
+              .slice(0,rows? len:4).map((option) => {
+                setLoading(false);
                 return (
                   <tr className="font-medium">
                     <td className="bg-secondary py-2 text-center border-2">
@@ -63,10 +76,14 @@ const Orders = () => {
         setOpen(!open);
       });
   };
+  const showMore = (e)=>{ 
+    setLoading(true)
+
+    setRows(!rows)
+  }
   useEffect(() => {
-    // setLoading(!loading);
     getOrders();
-  }, [orders]);
+  }, [rows]);
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -83,7 +100,7 @@ const Orders = () => {
               <input
                 type="type"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => debounced(e.target.value)}
                 className=" bg-primary focus:outline-none text-white text-sm w-full"
               />
             </div>
@@ -106,8 +123,8 @@ const Orders = () => {
             <tbody className="w-full">{loading?<Loader/>:orders}</tbody>
           </table>
         </div>
-        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white">
-          Show More
+        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white" onClick={showMore}>
+          {rows? 'Show Less':'Show More'}
         </button>
       </div>
       

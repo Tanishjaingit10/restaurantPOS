@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import Loader from "./Loader";
 import Popup from "./Popup";
+import {useDebounce, useDebouncedCallback} from 'use-debounce';
+let len = 0;
 const Customers = () => {
 
   // const [inputValue, setInputvalue] = useState("Search for customer:name / phone number / mail id")
@@ -8,13 +10,23 @@ const Customers = () => {
   const [customers, setCustomers] = useState();
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
+  const [rows, setRows]= useState(false)
+  const debounced = useDebouncedCallback(
+    (value) => {
+      setSearch(value);
+    },
+    0,
+    // The maximum time func is allowed to be delayed before it's invoked:
+    { maxWait: 2000 }
+  );
   let count = 1;
   const getCustomers = async () => {
     await fetch("/app/customers")
       .then((res) => res.json())
       .then((json) =>
-        {
-          setLoading(false);
+      {
+        if (json !== "undefined") {
+          len = json.length;
           setCustomers(json.filter((option) => {
             if (search === "")
               return option;
@@ -23,7 +35,8 @@ const Customers = () => {
             }
             return null;
           })
-            .map((option) => {
+            .slice(0,rows? len:2).map((option) => {
+              setLoading(false);
               return (<tr className="font-medium">
                 <td className="bg-secondary py-2 text-center border-2">{count++}</td>
                 <td className="bg-secondary py-2 text-center border-2">{option.name}</td>
@@ -32,17 +45,21 @@ const Customers = () => {
                 <td className="bg-secondary py-2 text-center border-2">{option.email}</td>
               </tr>)
             }))
-        }
+        }}
         ).catch((err) => {
           setLoading(false);
           console.log("1", err);
           setOpen(!open);
         });
   }
-  useEffect(() => {
-    getCustomers()
-  }, [customers])
+  const showMore = (e)=>{ 
+    setLoading(true)
 
+    setRows(!rows)
+  }
+  useEffect(() => {
+    getCustomers();
+  }, [rows]);
   return (
     <div className="h-screen justify-items-conter overflow-hidden">
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -71,12 +88,12 @@ const Customers = () => {
                 <th className="p-2 border-2 bg-lightprimary">Email Address</th>
               </tr>
             </thead>
-            <tbody>
-              {loading?<Loader/>:customers}
-            </tbody>
+            <tbody className="w-full">{loading?<Loader/>:customers}</tbody>
           </table>
         </div>
-        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white">Show More</button>
+        <button className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white" onClick={showMore}>
+          {rows? 'Show Less':'Show More'}
+        </button>
       </div>
       {open && (
         <Popup

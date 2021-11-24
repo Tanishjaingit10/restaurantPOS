@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Popup from "./Popup";
+import Loader from "./Loader";
 let arr = new Array(1000000).fill(false);
 let order = []
 const Tables = () => {
@@ -7,6 +8,7 @@ const Tables = () => {
   const [check, setCheck] = useState(false);
   const [Open, setOpen] = useState(false);
   const [id, setId] = useState();
+  const [loading, setLoading] = useState(true);
   const showDetails = async (index, obj) => {
     console.log(index)
     arr[index] = !arr[index];
@@ -55,6 +57,7 @@ const Tables = () => {
         if (json !== "undefined") {
           setDisplayTable(
             json.map((obj, index) => {
+              setLoading(false);
               if (index % 3 === 0) code = "#BE2D19";
               else if (index % 3 === 1) code = "#1DBE19";
               else code = "#e58f55";
@@ -179,7 +182,7 @@ const Tables = () => {
       </nav>
       <div className="flex flex-col">
         <div className="flex flex-wrap p-8 w-full justify-evenly">
-          {displayTable}
+          {loading?<Loader/>:displayTable}
         </div>
         <button className="bg-green w-80 mx-auto py-2 text-white font-roboto font-bold text-lg">
           <a href="/addTable">Add Table</a>
