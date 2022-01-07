@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import options from "../levels";
 import Logo from "../images/logo.jpeg";
 import signin from "../signin";
 import Popup from "./Popup";
 import chefLogin from "../images/chefLogin.png";
+import { ThemeContext } from "../context/Theme";
 
 const Login = () => {
   const history = useHistory();
@@ -13,6 +14,7 @@ const Login = () => {
   const [position, setPosition] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [msg, setMsg] = useState("");
+  const theme = useContext(ThemeContext);
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -49,14 +51,20 @@ const Login = () => {
           <div>
             <div className="bg-white px-6 py-4 ">
               <div className="w-full justify-center">
-                <h1 className="text-red text-center text-2xl">Login</h1>
+                <h1
+                  style={{ color: theme.backgroundColor }}
+                  className="text-center text-2xl"
+                >
+                  Login
+                </h1>
               </div>
               <label className="text-left text-black mr-4 font-normal">
                 Enter as
               </label>
               <select
                 name="position"
-                className="p-2  border-2 w-full text-md bg-red rounded-lg text-white font-thin"
+                className="p-2  border-2 w-full text-md rounded-lg text-white font-thin"
+                style={{ backgroundColor: theme.backgroundColor }}
                 onChange={(e) => setPosition(e.target.value)}
                 value={position}
               >
@@ -107,18 +115,25 @@ const Login = () => {
                   name="remember"
                   value="Remember Me"
                 />
-                <span className="text-red text-base font-thin">
+                <span
+                  style={{ color: theme.backgroundColor }}
+                  className="text-base font-thin"
+                >
                   {"  "}Remember Me
                 </span>
               </div>
-              <a className="text-red text-base font-thin">
+              <a
+                style={{ color: theme.backgroundColor }}
+                className="text-base font-thin"
+              >
                 Forgot ID / Password?
               </a>
             </div>
           </div>
           <div className="w-1/2 my-6 m-auto">
             <button
-              className="bg-red text-center w-full m-auto py-3 rounded-xl text-white font-medium text-xl focus:outline-none"
+              style={{ backgroundColor: theme.backgroundColor }}
+              className="text-center w-full m-auto py-3 rounded-xl text-white font-medium text-xl focus:outline-none"
               value="Login"
               onClick={loginUser}
               type="submit"

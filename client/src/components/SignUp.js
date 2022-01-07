@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import signup from "../popup";
 import options from "../levels";
 import Logo from "../images/logo.jpeg";
 import Popup from "./Popup";
 import chefLogin from "../images/chefLogin.png";
+import { ThemeContext } from "../context/Theme";
 
 const SignUp = () => {
   const history = useHistory();
@@ -15,6 +16,7 @@ const SignUp = () => {
     position: "",
     password: "",
   });
+  const theme = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const [attendence, setAttendence] = useState({
     status: "Session Not Started",
@@ -77,15 +79,21 @@ const SignUp = () => {
             <div>
               <div className="bg-white px-6 py-4">
                 <div className="w-full justify-center">
-                  <h1 className="text-red text-center text-2xl">Login</h1>
+                  <h1
+                    style={{ color: theme.backgroundColor }}
+                    className="text-center text-2xl"
+                  >
+                    Login
+                  </h1>
                 </div>
                 <label className="text-left text-black mr-4 font-normal">
                   Position
                 </label>
                 <select
                   name="position"
-                  className="p-2 border-2 w-full text-md bg-red rounded-lg  text-white  font-thin"
+                  className="p-2 border-2 w-full text-md rounded-lg  text-white  font-thin"
                   onChange={handleInputs}
+                  style={{ backgroundColor: theme.backgroundColor }}
                   value={user.position}
                 >
                   <option value="none" selected="selected" hidden>
@@ -160,7 +168,8 @@ const SignUp = () => {
             </div>
             <div className="w-1/2 my-3 m-auto">
               <button
-                className="bg-red text-center w-full m-auto py-3 rounded-xl  text-white  font-medium text-xl focus:outline-none"
+                style={{ backgroundColor: theme.backgroundColor }}
+                className="text-center w-full m-auto py-3 rounded-xl  text-white  font-medium text-xl focus:outline-none"
                 value="Register"
                 onClick={registerUser}
                 type="submit"
