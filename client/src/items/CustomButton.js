@@ -5,6 +5,7 @@ const CustomButton = (props) => {
   const theme = useContext(ThemeContext);
   return (
     <button
+        {...props}
       style={{ backgroundColor: theme.backgroundColor }}
       className="text-white py-2 px-10 rounded-md mx-2"
     >

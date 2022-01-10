@@ -4,6 +4,13 @@ import Loader from "./Loader";
 import Logo from "../images/logo.jpeg";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "../items/CustomButton";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import MomentUtils from '@date-io/moment';
+import { useHistory } from 'react-router-dom';
+
+// import TimePicker from 'react-times';
 
 let arr = new Array(1000000).fill(false);
 let order = [];
@@ -13,7 +20,34 @@ const Tables = () => {
   const [Open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+	const [newReservation, setNewReservation] = useState({});
+	const [startDate, setStartDate] = useState(new Date());
+	const [startTime, setStartTime] = useState(new Date());
+	const [endTime, setEndTime] = useState(new Date());
+  const history = useHistory();
+
+
   const theme = useContext(ThemeContext);
+
+	const submitNewReservation = () => {
+		console.log('Saving new reservation', newReservation)
+		fetch(`/app/addReservation`, {
+			method: "POST",
+			headers: {
+					"Content-Type": "application/json"
+			},
+			body: JSON.stringify(newReservation)
+		})
+		.then((res) => {
+			console.log(res);
+			if (res.status === 200) {
+				alert('Reservation created successfully');
+			}
+		})
+	}
+
+
   const showDetails = async (index, obj) => {
     console.log(index);
     arr[index] = !arr[index];
@@ -92,7 +126,7 @@ const Tables = () => {
                               return (
                                 <div className="flex flex-col w-full py-2">
                                   <div className="text-xl font-semibold">
-                                    {obj.foodItem}
+                                    {obj.fullName}
                                   </div>
                                   {obj.orderedVariant.map((extra) => {
                                     return (
@@ -167,6 +201,7 @@ const Tables = () => {
     loadTables();
   });
 
+
   return (
     <div className="">
       <nav
@@ -192,15 +227,80 @@ const Tables = () => {
       <div className="flex flex-row justify-between items-center h-20 px-10 border-b-2 border-gray-300">
         <h2 className="font-semibold">Table View</h2>
         <div className="flex flex-row items-center">
-          <CustomButton title="Actions" />
+          <CustomButton title="Actions" onClick={() => history.push('/reservations')} />
           <CustomButton title="Take Away" />
           <CustomButton title="- Delete Table" />
           <CustomButton title="+ Add Table" />
         </div>
       </div>
       <div className="mt-5 ml-10">
-        <CustomButton title="+ Table Reservation" />
+        <CustomButton title="+ Table Reservation" onClick={() => setShowModal(true)}/>
       </div>
+			{
+				showModal ? 
+				<div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+					<div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+						<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+						<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+						<div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+							<div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+									<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
+										<div class="mb-4">
+											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
+												Enter Customer Name
+											</label>
+											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, fullName : value.target.value}))} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Customer Name"/>
+										</div>
+										<div class="mb-4">
+											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
+												Enter Email Id
+											</label>
+											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, email_id : value.target.value}))} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Email Id"/>
+										</div>
+										<div class="mb-4">
+											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
+												Enter Phone Number
+											</label>
+											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, contact : value.target.value}))} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Phone Number"/>
+										</div>
+										<div class="mb-2">
+											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
+												Date
+											</label>
+										</div>
+										<DatePicker selected={startDate} onChange={(date) => {setStartDate(date); setNewReservation((newReservation) => ({...newReservation, date: date.toISOString()}))}} />
+										<div class="my-4">
+											<MuiPickersUtilsProvider utils={MomentUtils}>
+												<TimePicker
+													clearable
+													ampm={false}
+													label="Start Time"
+													value={startTime}
+													onChange={(value) => {setStartTime(value); setNewReservation((newReservation) => ({...newReservation, startTime: value.format('HH:mm:ss')}))}}
+												/>
+												</MuiPickersUtilsProvider>
+										</div>
+										<div class="my-4">
+											<MuiPickersUtilsProvider utils={MomentUtils}>
+												<TimePicker
+													onChange={(value) => {setEndTime(value); setNewReservation((newReservation) => ({...newReservation, endTime: value.format('HH:mm:ss')}))}}
+													value={endTime}
+													clearable
+													ampm={false}
+													label="End Time"
+												/>
+												</MuiPickersUtilsProvider>
+										</div>
+										<div class="bg-gray-50 justify-center content-center">
+											<CustomButton title="Done" onClick={() => {submitNewReservation(); setShowModal(false)}}/>
+										</div>
+									</form>
+							</div>
+						</div>
+					</div>
+				</div>
+					: null
+			}
 
       <div className="flex flex-col">
         <h2 className="my-5 ml-11 font-semibold text-gray-600 text-lg">

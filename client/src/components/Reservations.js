@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
+import Table from 'react-tailwind-table';
+import CustomButton from "../items/CustomButton";
+// import 'react-tailwind-table/dist/index.css';
+
+
 const Reservations = () => {
   // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
   const [search, setSearch] = useState("");
@@ -141,4 +146,164 @@ const Reservations = () => {
   );
 };
 
-export default Reservations;
+// export default Reservations;
+
+
+
+const AllReservations = () => {
+	const [allReservations, setAllReservations] = useState([])
+  const [loading, setLoading] = useState(true);
+	const [pageNumber, setPageNumber] = useState(0);
+	const [pageLimit, setPageLimit] = useState(10);
+  
+	useEffect(() => {
+		fetch("/app/allReservations")
+    .then((res) => res.json())
+    .then((json) => {
+			console.log(json)
+			setAllReservations(json)
+			setLoading(false);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+		
+	}, [])
+
+	const deleteReservations = (reservationId) => {
+		console.log(reservationId)
+		// fetch("/app/removeReservation", {
+    //   method: "POST",})
+		fetch(`app/removeReservation/${reservationId}`, {method: "DELETE"})
+    .then((res) => res.json())
+    .then((json) => {
+			console.log(json)
+			alert(json.message)
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+	}
+
+	const editReservations = (reservationId) => {
+		console.log(reservationId)
+
+	}
+
+	const columns = [
+		{
+			field: "date",
+			use: "Date",
+		},
+		{
+			field: "start_time",
+			use: "Start Time",
+		},
+		{
+			field: "end_time",
+			use: "End Time",
+		},
+		{
+			field: "table",
+			use: "Table No./ Name",
+		},
+		{
+			field: "fullName",
+			use: "Customer Name",
+		},
+		{
+			field: "contact",
+			use: "Phone",
+		},
+		{
+			field: "email_id",
+			use: "Email ID",
+		},
+		{
+			field: "actions",
+			use: "Actions",
+		},
+
+	];
+
+	return (
+		<div class="flex flex-col ">
+			<div class="my-2 overflow-x-auto">
+				<div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+					<div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+							<table class="min-w-full divide-y divide-x divide-gray-200">
+							<thead class="bg-gray-50">
+								<tr>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking-wider border">
+											Date
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+											Start Time
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+											End Time
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+										Table No./ Name
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+										Customer Name
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+										Phone
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+										Email ID
+									</th>
+									<th scope="col" class="px-6 py-6 text-center text-xl font-extrabold text-white tracking border">
+										Action
+									</th>
+								</tr>
+							</thead>
+							<tbody class="bg-white divide-y divide-gray-200">
+								{ 
+									allReservations.map(reservation => {
+										return (
+										<tr>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.date.split('T')[0]}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.start_time}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.end_time}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.table}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.fullName}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.contact}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">{reservation.email_id}</div>
+											</td>
+											<td class="px-6 py-3 whitespace-nowrap border">
+												<div class="text-sm text-gray-900">
+													<CustomButton title="Cancel" onClick={() => deleteReservations(reservation._id)}/>
+													<CustomButton title="Edit" onClick={() => editReservations(reservation._id)}/>
+												</div>
+											</td>
+										</tr>
+									)
+								})}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	)
+  
+}
+
+export default AllReservations;
+
