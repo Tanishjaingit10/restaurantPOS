@@ -1,7 +1,7 @@
 import React from "react";
+import CustomNavBar from "../../items/CustomNavBar";
 
 const Attendance = () => {
-  
   return (
     <div className=" text-white font-roboto">
       {/* <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
@@ -16,18 +16,7 @@ const Attendance = () => {
           </div>
         </div>
       </nav> */}
-            <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
-        <div className="text-center w-full relative">
-          <div className=" text-white ml-4 absolute left-4">
-            <a href="/home">
-              <i className="fas fa-arrow-left mr-4"></i>
-            </a>
-          </div>
-          <div className="  text-white px-2  font-semibold">
-           Attendance
-          </div>
-        </div>
-      </nav>
+      <CustomNavBar />
       <div className="flex flex-col w-96 justify-center mx-auto h-auto top-36 mt-44 text-xl">
         <button className=" bg-primary text-white font-bold py-4 my-4">
           <a href="/takeAttendance">Take Attendance</a>

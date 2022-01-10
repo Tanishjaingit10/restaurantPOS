@@ -5,8 +5,9 @@ const CustomButton = (props) => {
   const theme = useContext(ThemeContext);
   return (
     <button
-      style={{ backgroundColor: theme.backgroundColor }}
+      style={props.customStyle}
       className="text-white py-2 px-10 rounded-md mx-2"
+      onClick={props.onPress}
     >
       {props.title}
     </button>

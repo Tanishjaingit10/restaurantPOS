@@ -83,7 +83,7 @@ const SignUp = () => {
                     style={{ color: theme.backgroundColor }}
                     className="text-center text-2xl"
                   >
-                    Login
+                    Sign up
                   </h1>
                 </div>
                 <label className="text-left text-black mr-4 font-normal">

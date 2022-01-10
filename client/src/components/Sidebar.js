@@ -1,77 +1,102 @@
-import React, {useState} from 'react'
+import React, { useState, useContext } from "react";
+import { ThemeContext } from "../context/Theme";
 
 const Sidebar = () => {
-    const [show, setShow] = useState(false);
+  const [show, setShow] = useState(false);
+  const theme = useContext(ThemeContext);
 
-    const openDrop = ()=> {
-        setShow(!show);
-    }
-    return (
-        
-            <div className="flex md:flex-row border-primary border-r-4">
+  const openDrop = () => {
+    setShow(!show);
+  };
+  return (
+    <div className="flex md:flex-row overflow-y-auto border-r-4">
+      <div className="bg-white overflow-y-auto shadow-xl h-16 fixed bottom-0 mt-12 md:relative md:h-screen z-10 w-full md:w-80">
+        <div
+          className=" md:fixed md:left-0 md:top-0 content-center md:content-start  w-full h-full  justify-between"
+          style={{ backgroundColor: theme.backgroundColor }}
+        >
+          <ul className="list-reset flex flex-row md:flex-col text-center md:text-left text-xl">
+            <li
+              className=" text-white text-xl font-roboto font-semibold pl-4"
+              style={{ backgroundColor: theme.tableBackground }}
+            >
+              <button className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white hover:text-white font-roboto font-semibold">
+                <i className="fas fa-home pr-0 md:pr-3"></i>
+                <span className="pb-1 md:pb-0  block md:inline-block ">
+                  Dashboard
+                </span>
+              </button>
+            </li>
+            <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
+              <a
+                href="/orders"
+                className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white  "
+              >
+                <i className="fas fa-utensils pr-0 md:pr-3"></i>
+                <span className="pb-1 md:pb-0   block md:inline-block">
+                  Orders
+                </span>
+              </a>
+            </li>
+            <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
+              <a
+                href="/tables"
+                className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white  "
+              >
+                <i className="fas fa-table pr-0 md:pr-3 "></i>
+                <span className="pb-1 md:pb-0 block md:inline-block">
+                  Tables
+                </span>
+              </a>
+            </li>
+            <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
+              <a
+                href="/kitchen"
+                className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white  "
+              >
+                <i className="fas fa-concierge-bell pr-0 md:pr-3 "></i>
+                <span className="pb-1 md:pb-0 block md:inline-block">
+                  Kitchen
+                </span>
+              </a>
+            </li>
 
-                <div className="bg-white shadow-xl h-16 fixed bottom-0 mt-12 md:relative md:h-screen z-10 w-full md:w-80">
+            <li className=" flex-1   text-xl font-roboto font-semibold text-whitepl-2 pl-4">
+              <a
+                href="/menu"
+                className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline text-white "
+              >
+                <i className="fa fa-wallet pr-0 md:pr-3"></i>
+                <span className="pb-1 md:pb-0 block md:inline-block">Menu</span>
+              </a>
+            </li>
+            <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
+              <a
+                href="/attendance"
+                className="block py-1 md:py-3 pl-1 align-middle no-underline text-white  "
+              >
+                <i className="fas fa-address-card pr-0 md:pr-3 "></i>
+                <span className="pb-1 md:pb-0 block md:inline-block">
+                  Attendance
+                </span>
+              </a>
+            </li>
+            <li className=" flex-1 text-xl font-roboto font-semibold text-white pl-4">
+              <a
+                href="/login"
+                className="block py-1 md:py-3 pl-1 align-middle no-underline text-white  "
+              >
+                <i className="fas fa-sign-out-alt pr-0 md:pr-3 "></i>
+                <span className="pb-1 md:pb-0 block md:inline-block">
+                  Logout
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-                    <div className="md:mt-20 md:w-80 md:fixed md:left-0 md:top-0 content-center md:content-start justify-between">
-                        <ul className="list-reset flex flex-row md:flex-col text-center md:text-left text-2xl">
-                            <li className=" border-primary border-t-2 border-l-4 bg-primary text-white text-2xl font-roboto font-semibold pl-2">
-                                <button className="block py-1 md:py-3 pl-1 align-middle  no-underline hover:text-white font-roboto font-semibold">
-                                <i className="fas fa-home pr-0 md:pr-3"></i><span className="pb-1 md:pb-0  block md:inline-block ">Dashboard</span>
-                                </button>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-2 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="/orders" className="block py-1 md:py-3 pl-1 align-middle  no-underline  ">
-                                    <i className="fas fa-utensils pr-0 md:pr-3"></i><span className="pb-1 md:pb-0   block md:inline-block">Orders</span>
-                                </a>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="/tables" className="block py-1 md:py-3 pl-1 align-middle  no-underline  ">
-                                    <i className="fas fa-table pr-0 md:pr-3 "></i><span className="pb-1 md:pb-0 block md:inline-block">Tables</span>
-                                </a>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="/kitchen" className="block py-1 md:py-3 pl-1 align-middle  no-underline  ">
-                                    <i className="fas fa-concierge-bell pr-0 md:pr-3 "></i><span className="pb-1 md:pb-0 block md:inline-block">Kitchen</span>
-                                </a>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-primary">
-                                <button className="block py-1 md:py-3 pl-1 align-middle  no-underline ml-2 font-roboto font-semibold"  onClick={openDrop}>
-                                    <i className="fas fa-bookmark pr-0 md:pr-3 "></i><span className="pb-1 md:pb-0 block md:inline-block">Records</span><i className="fas fa-chevron-down ml-32"></i>
-                                </button>
-                            </li>
-                            <li className= {show?" flex-1 border-primary bg-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-white pl-2" : "hidden"}>
-                                <a href="/sales" className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline  ">
-                                    <i className="fas fa-tag pr-0 md:pr-3"></i><span className="pb-1 md:pb-0 block md:inline-block">Sale</span>
-                                </a>
-                            </li>
-                            <li className= {show?" flex-1 border-primary bg-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-white pl-2" : "hidden"}>
-                                <a href="/customers" className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline  ">
-                                    <i className="fas fa-user-friends pr-0 md:pr-3"></i><span className="pb-1 md:pb-0 block md:inline-block">Customer</span>
-                                </a>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="/menu" className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline ">
-                                    <i className="fa fa-wallet pr-0 md:pr-3"></i><span className="pb-1 md:pb-0 block md:inline-block">Menu</span>
-                                </a>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-4 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="/attendance" className="block py-1 md:py-3 pl-1 align-middle no-underline  ">
-                                    <i className="fas fa-address-card pr-0 md:pr-3 "></i><span className="pb-1 md:pb-0 block md:inline-block">Attendance</span>
-                                </a>
-                            </li>
-                            <li className=" flex-1 border-primary border-l-4 border-t-4 border-b-4 text-2xl font-roboto font-semibold text-primary pl-2">
-                                <a href="/login" className="block py-1 md:py-3 pl-1 align-middle no-underline  ">
-                                    <i className="fas fa-sign-out-alt pr-0 md:pr-3 "></i><span className="pb-1 md:pb-0 block md:inline-block">Logout</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-
-                </div>
-            </div>
-        
-    )
-}
-
-export default Sidebar
+export default Sidebar;

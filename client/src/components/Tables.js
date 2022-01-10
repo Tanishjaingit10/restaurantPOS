@@ -4,6 +4,8 @@ import Loader from "./Loader";
 import Logo from "../images/logo.jpeg";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "../items/CustomButton";
+import Modal from "react-modal";
+import CustomNavBar from "../items/CustomNavBar";
 
 let arr = new Array(1000000).fill(false);
 let order = [];
@@ -13,7 +15,30 @@ const Tables = () => {
   const [Open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [loading, setLoading] = useState(true);
+  const [position, setPosition] = useState("");
+  const [tableName, setTableName] = useState("");
+  const [maxCapacity, setMaxCapacity] = useState("");
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   const theme = useContext(ThemeContext);
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
   const showDetails = async (index, obj) => {
     console.log(index);
     arr[index] = !arr[index];
@@ -69,10 +94,7 @@ const Tables = () => {
                       : "flex flex-col w-14 rounded-lg "
                   }
                 >
-                  <i
-                    style={{ color: theme.backgroundColor }}
-                    className="far fa-trash relative top-0 -left-5 text-black"
-                  />
+                  <i className="far fa-trash relative top-0 -left-5 text-black" />
                   <div
                     className="flex flex-col text-white p-4 text-lg font-roboto"
                     style={{ backgroundColor: code }}
@@ -169,33 +191,100 @@ const Tables = () => {
 
   return (
     <div className="">
-      <nav
-        style={{ backgroundColor: theme.backgroundColor }}
-        className="bg-red px-1 mt-0 h-auto w-full top-0 text-2xl"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex flex-shrink md:w-1/3 items-center justify-center md:justify-start text-white ml-4">
-            <a href="/home">
-              <i className="fas fa-bars font-semibold"></i>
-            </a>
-            <img src={Logo} className="w-16 h-16 ml-10" />
-          </div>
-          <button
-            color={theme.backgroundColor}
-            className="bg-white text-lg py-2 px-8 rounded-md mr-4"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
+      <CustomNavBar />
 
       <div className="flex flex-row justify-between items-center h-20 px-10 border-b-2 border-gray-300">
         <h2 className="font-semibold">Table View</h2>
         <div className="flex flex-row items-center">
-          <CustomButton title="Actions" />
-          <CustomButton title="Take Away" />
-          <CustomButton title="- Delete Table" />
-          <CustomButton title="+ Add Table" />
+          <div
+            style={{ backgroundColor: theme.backgroundColor }}
+            className="text-white py-2 px-2 rounded-md mx-2"
+          >
+            <i className="fas fa-retweet"></i>
+          </div>
+          <CustomButton
+            title="Actions"
+            customStyle={{ backgroundColor: theme.backgroundColor }}
+          />
+          <CustomButton
+            title="Take Away"
+            customStyle={{ backgroundColor: "yellow" }}
+          />
+          <CustomButton
+            title="- Delete Table"
+            customStyle={{ backgroundColor: theme.backgroundColor }}
+          />
+          <CustomButton
+            title="+ Add Table"
+            customStyle={{ backgroundColor: "green" }}
+            onPress={() => openModal()}
+          />
+
+          {/* Modal for Add Table  */}
+
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <h2
+              style={{ color: theme.backgroundColor }}
+              className="text-lg font-bold text-center mb-4"
+            >
+              Add New Table
+            </h2>
+
+            <form>
+              <select
+                name="position"
+                className="p-2  border-2 w-full text-md rounded-lg text-white font-thin mb-4"
+                style={{ backgroundColor: theme.backgroundColor }}
+                onChange={(e) => setPosition(e.target.value)}
+                value={position}
+              >
+                <option className="bg-gray-300 border-black border-2 p-2">
+                  Mark Table By Name
+                </option>
+                <option className="bg-gray-300 border-black border-2 p-2">
+                  Mark Table By Number
+                </option>
+              </select>
+              <input
+                name="tableName"
+                placeholder="Enter Table Name"
+                type="text"
+                value={tableName}
+                onChange={(e) => setTableName(e.target.value)}
+                className={
+                  "w-full p-2 rounded-lg border-gray-200 border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
+                }
+              />
+              <input
+                name="maxCapacity"
+                placeholder="Enter Max Capacity"
+                type="text"
+                value={maxCapacity}
+                onChange={(e) => setMaxCapacity(e.target.value)}
+                className={
+                  "w-full p-2 rounded-lg border-gray-200 border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
+                }
+              />
+              <div className="w-1/2  m-auto">
+                <button
+                  style={{ backgroundColor: theme.backgroundColor }}
+                  className="text-center w-full m-auto py-3 rounded-xl text-white font-medium text-xl focus:outline-none"
+                  value="Add Table"
+                  type="submit"
+                  onClick={closeModal}
+                >
+                  Done
+                </button>
+              </div>
+            </form>
+          </Modal>
+
+          {/* ****************** */}
         </div>
       </div>
       <div className="mt-5 ml-10">
