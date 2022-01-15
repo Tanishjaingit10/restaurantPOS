@@ -24,6 +24,9 @@ module.exports = {
         magenta: "#E71880",
         lightorange: "#F47621",
         secondary: "#f7e3d5"
+      },
+      fontSize: {
+        xxs: ['8px' , '11px']
       }
     },
   },
