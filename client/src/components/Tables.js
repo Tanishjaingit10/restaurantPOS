@@ -4,33 +4,50 @@ import Loader from "./Loader";
 import Logo from "../images/logo.jpeg";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "../items/CustomButton";
-import DatePicker from "react-datepicker";
+import DateFnsUtils from "@date-io/date-fns";
 import "react-datepicker/dist/react-datepicker.css";
-import { TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { DatePicker, TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import {ThemeProvider} from "@material-ui/styles";
 import MomentUtils from '@date-io/moment';
 import { useHistory } from 'react-router-dom';
+import { FiRefreshCcw } from 'react-icons/fi';
+import {createTheme} from "@material-ui/core";
+import { GrClose } from 'react-icons/gr';
 
 // import TimePicker from 'react-times';
+import Modal from "react-modal";
+import CustomNavBar from "../items/CustomNavBar";
 
 let arr = new Array(1000000).fill(false);
 let order = [];
+
+var today = new Date();
+var currTime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+var currDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
 const Tables = () => {
+	const [componentLoading, setComponentLoading] = useState(false)
   const [displayTable, setDisplayTable] = useState();
   const [check, setCheck] = useState(false);
   const [Open, setOpen] = useState(false);
   const [id, setId] = useState();
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-	const [newReservation, setNewReservation] = useState({});
+	const [availableTables, setAvailableTables] = useState([])
+	const [reservationByTime, setReservationByTime] = useState([])
+	const [allTables, setAllTables] = useState([])
 	const [startDate, setStartDate] = useState(new Date());
 	const [startTime, setStartTime] = useState(new Date());
 	const [endTime, setEndTime] = useState(new Date());
-  const history = useHistory();
-
-
-  const theme = useContext(ThemeContext);
+	const [newReservationSuccess, setNewReservationSuccess] = useState(false);
+	const [newReservation, setNewReservation] = useState({startTime: new Date().toISOString().split('T')[1].split('.')[0], endTime: new Date().toISOString().split('T')[1].split('.')[0], date: new Date().toISOString().split('T')[0]});
+  const [position, setPosition] = useState("");
+  const [tableName, setTableName] = useState("");
+  const [maxCapacity, setMaxCapacity] = useState("");
+  const [modalIsOpen, setIsOpen] = React.useState(false);const history = useHistory();
 
 	const submitNewReservation = () => {
+		setComponentLoading(true)
 		console.log('Saving new reservation', newReservation)
 		fetch(`/app/addReservation`, {
 			method: "POST",
@@ -42,11 +59,163 @@ const Tables = () => {
 		.then((res) => {
 			console.log(res);
 			if (res.status === 200) {
-				alert('Reservation created successfully');
+				setNewReservationSuccess(true)
+			}
+			setComponentLoading(false)
+		})
+		.catch((err) => {
+			console.log(err);
+			setComponentLoading(false)
+		})
+	}
+
+	const addTable = () => {
+		setComponentLoading(true)
+		fetch(`/app/addTable`, {
+			method: "POST",
+			headers: {
+					"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				number: tableName,
+				capacity: maxCapacity,
+			})
+		})
+		.then((res) => {
+			console.log(res);
+			if (res.status === 200) {
+				alert('table added')
+			}
+			setComponentLoading(false)
+		})
+		.catch((err) => {
+			console.log(err);
+			setComponentLoading(false)
+		})
+	}
+
+    
+	const getTablesAvailables = () => {
+		fetch(`/app/getAvailableTable`)
+		.then((res) => res.json())
+        .then((json) => {
+			console.log(json);
+			if (json.status === 200) {
+				setAvailableTables(json)
 			}
 		})
 	}
 
+	const getReservationByTime = () => {
+		setComponentLoading(true)
+		fetch(`/app/getReservationByTime/${newReservation.date}/${newReservation.startTime}/${newReservation.endTime}`)
+    .then((res) => res.json())
+    .then((json) => {
+			console.log(json)
+			var tableList = []
+			var reservedTable = []
+			for (var i = 0; i < json.length; i++) {
+				reservedTable.push(json[i].table)
+			}
+			console.log(reservedTable, "reservedTable")
+			var availableTables = allTables.filter(function(obj) { return reservedTable.indexOf(obj) === -1; });
+			console.log(availableTables, 'available table')
+			setReservationByTime(tableList)
+		setComponentLoading(false)
+	})
+    .catch((err) => {
+        console.log(err);
+		setComponentLoading(false)
+	})
+	}
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  const theme = useContext(ThemeContext);
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+    },
+  };
+
+	const materialTheme = createTheme({
+		overrides: {
+			
+			MuiFormControl: {
+        root: {
+            width: '100%',
+        }
+    	},
+				MuiPickersToolbar: {
+					toolbar: {
+							backgroundColor: theme.backgroundColor,
+					},
+				},
+				MuiPickersCalendarHeader: {
+						switchHeader: {
+								backgroundColor: "white",
+								color: theme.backgroundColor,
+						},
+				},
+				MuiPickersDay: {
+					root: {
+						color: theme.backgroundColor,
+						"&$disabled": {
+							color: theme.backgroundColor,
+						},
+						"&$selected": {
+							backgroundColor: theme.backgroundColor,
+						},
+					},
+					today: {
+						color: theme.backgroundColor,
+					},
+				},
+				MuiPickersModalDialog: {
+					dialogAction: {
+						color: theme.backgroundColor,
+					},
+				},
+				MuiOutlinedInput: {
+					root: {
+						"& $notchedOutline": {
+							borderColor: theme.backgroundColor,
+							borderWidth: "1px",
+						},
+						"&:hover $notchedOutline": {
+							borderColor: theme.backgroundColor,
+							borderWidth: "1px",
+						},
+						"&$focused $notchedOutline": {
+							borderColor: theme.backgroundColor,
+							borderWidth: "1px",
+						},
+				},
+				input: {
+					borderColor: theme.backgroundColor,
+				},
+			},
+			MuiInputBase: {
+				root: {
+					backgroundColor: theme.backgroundColor,
+					color: 'white',
+					padding: '10px',
+					borderRadius: '5px'
+				}
+			}
+		},
+	});
 
   const showDetails = async (index, obj) => {
     console.log(index);
@@ -89,6 +258,7 @@ const Tables = () => {
       .then((res) => res.json())
       .then((json) => {
         if (json !== "undefined") {
+					setAllTables(json)
           setDisplayTable(
             json.map((obj, index) => {
               setLoading(false);
@@ -103,10 +273,7 @@ const Tables = () => {
                       : "flex flex-col w-14 rounded-lg "
                   }
                 >
-                  <i
-                    style={{ color: theme.backgroundColor }}
-                    className="far fa-trash relative top-0 -left-5 text-black"
-                  />
+                  <i className="far fa-trash relative top-0 -left-5 text-black" />
                   <div
                     className="flex flex-col text-white p-4 text-lg font-roboto"
                     style={{ backgroundColor: code }}
@@ -204,95 +371,187 @@ const Tables = () => {
 
   return (
     <div className="">
-      <nav
-        style={{ backgroundColor: theme.backgroundColor }}
-        className="bg-red px-1 mt-0 h-auto w-full top-0 text-2xl"
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex flex-shrink md:w-1/3 items-center justify-center md:justify-start text-white ml-4">
-            <a href="/home">
-              <i className="fas fa-bars font-semibold"></i>
-            </a>
-            <img src={Logo} className="w-16 h-16 ml-10" />
-          </div>
-          <button
-            color={theme.backgroundColor}
-            className="bg-white text-lg py-2 px-8 rounded-md mr-4"
-          >
-            Logout
-          </button>
-        </div>
-      </nav>
-
+      <CustomNavBar />
+			{ componentLoading ?
+			<Loader /> : null }
       <div className="flex flex-row justify-between items-center h-20 px-10 border-b-2 border-gray-300">
         <h2 className="font-semibold">Table View</h2>
         <div className="flex flex-row items-center">
-          <CustomButton title="Actions" onClick={() => history.push('/reservations')} />
-          <CustomButton title="Take Away" />
-          <CustomButton title="- Delete Table" />
-          <CustomButton title="+ Add Table" />
+          <div
+            style={{ backgroundColor: theme.backgroundColor }}
+            className="text-white py-2 px-2 rounded-md mx-2"
+          >
+            <i><FiRefreshCcw size={22}/></i>
+          </div>
+          <CustomButton
+            title="Actions"
+            customStyle={{ backgroundColor: theme.backgroundColor }}
+            onPress={() => {history.push('reservations')}}
+          />
+          <CustomButton
+            title="Take Away"
+            customStyle={{ backgroundColor: "yellow" }}
+          />
+          <CustomButton
+            title="- Delete Table"
+            customStyle={{ backgroundColor: theme.backgroundColor }}
+          />
+          <CustomButton
+            title="+ Add Table"
+            customStyle={{ backgroundColor: "green" }}
+            onPress={() => openModal()}
+          />
+
+          {/* Modal for Add Table  */}
+
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={closeModal}
+            style={customStyles}
+            contentLabel="Example Modal"
+          >
+            <h2
+              style={{ color: theme.backgroundColor }}
+              className="text-lg font-bold text-center mb-4"
+            >
+              Add New Table
+            </h2>
+            <form>
+              <select
+                name="position"
+                className="p-2  border-2 w-full text-md rounded-lg text-white font-thin mb-4"
+                style={{ backgroundColor: theme.backgroundColor }}
+                onChange={(e) => setPosition(e.target.value)}
+                value={position}
+              >
+                <option className="bg-gray-300 border-black border-2 p-2">
+                  Mark Table By Name
+                </option>
+                <option className="bg-gray-300 border-black border-2 p-2">
+                  Mark Table By Number
+                </option>
+              </select>
+              <input
+                name="tableName"
+                placeholder="Enter Table Name"
+                type="text"
+                value={tableName}
+                onChange={(e) => setTableName(e.target.value)}
+                className={
+                  "w-full p-2 rounded-lg border-gray-200 border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
+                }
+              />
+              <input
+                name="maxCapacity"
+                placeholder="Enter Max Capacity"
+                type="text"
+                value={maxCapacity}
+                onChange={(e) => setMaxCapacity(e.target.value)}
+                className={
+                  "w-full p-2 rounded-lg border-gray-200 border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
+                }
+              />
+              <div className="w-1/2  m-auto">
+                <button
+                  style={{ backgroundColor: theme.backgroundColor }}
+                  className="text-center w-full m-auto py-3 rounded-xl text-white font-medium text-xl focus:outline-none"
+                  value="Add Table"
+                  type="submit"
+                  onClick={() => {closeModal(false); addTable()}}
+                >
+                  Done
+                </button>
+              </div>
+            </form>
+          </Modal>
         </div>
       </div>
       <div className="mt-5 ml-10">
-        <CustomButton title="+ Table Reservation" onClick={() => setShowModal(true)}/>
+        <CustomButton title="+ Table Reservation" customStyle={{ backgroundColor: theme.backgroundColor }} onPress={() => setShowModal(true)}/>
       </div>
 			{
 				showModal ? 
 				<div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 					<div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-						<div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+						<div class="fixed inset-0 bg-opacity-25 transition-opacity" aria-hidden="true"></div>
 						<span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 						<div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
 							<div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-									<form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full">
+							<div className="">
+									<div className="w-full flex justify-end">
+										<GrClose onClick={() => setShowModal(false)}/>
+									</div>
+									<div className="w-full flex items-center justify-center">
+										<h3 className="text-3xl font-bold" style={{color: theme.backgroundColor}}>Reserve Table</h3>
+									</div>
+								</div>
+									<form class="bg-white rounded px-8 pt-6 pb-8 mb-4 w-full">
 										<div class="mb-4">
 											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
 												Enter Customer Name
 											</label>
-											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, fullName : value.target.value}))} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Customer Name"/>
+											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, fullName : value.target.value}))} class="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Customer Name"/>
 										</div>
 										<div class="mb-4">
 											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
 												Enter Email Id
 											</label>
-											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, email_id : value.target.value}))} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Email Id"/>
+											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, email_id : value.target.value}))} class="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Email Id"/>
 										</div>
 										<div class="mb-4">
 											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
 												Enter Phone Number
 											</label>
-											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, contact : value.target.value}))} class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Phone Number"/>
+											<input onChange={(value) => setNewReservation((newReservation) => ({...newReservation, contact : value.target.value}))} class="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Phone Number"/>
 										</div>
-										<div class="mb-2">
-											<label class="block text-gray-700 text-sm font-bold mb-2" for="fullName">
-												Date
-											</label>
-										</div>
-										<DatePicker selected={startDate} onChange={(date) => {setStartDate(date); setNewReservation((newReservation) => ({...newReservation, date: date.toISOString()}))}} />
-										<div class="my-4">
-											<MuiPickersUtilsProvider utils={MomentUtils}>
-												<TimePicker
-													clearable
-													ampm={false}
-													label="Start Time"
-													value={startTime}
-													onChange={(value) => {setStartTime(value); setNewReservation((newReservation) => ({...newReservation, startTime: value.format('HH:mm:ss')}))}}
+										<div className="my-5 w-full">
+										<MuiPickersUtilsProvider utils={DateFnsUtils}>
+											<ThemeProvider theme={materialTheme}>
+												<DatePicker
+													InputProps={{
+														disableUnderline: true
+													}}
+													label="Date"
+													value={startDate}
+													onChange={(date) => {setStartDate(date); setNewReservation((newReservation) => ({...newReservation, date: date.toISOString().split('T')[0]}))}} 
 												/>
-												</MuiPickersUtilsProvider>
-										</div>
-										<div class="my-4">
-											<MuiPickersUtilsProvider utils={MomentUtils}>
-												<TimePicker
-													onChange={(value) => {setEndTime(value); setNewReservation((newReservation) => ({...newReservation, endTime: value.format('HH:mm:ss')}))}}
+											</ThemeProvider>
+										</MuiPickersUtilsProvider>
+									</div>
+									<div className="my-5 w-full">
+										<MuiPickersUtilsProvider utils={MomentUtils}>
+										<ThemeProvider theme={materialTheme}>
+										<TimePicker
+											InputProps={{
+													disableUnderline: true
+												}}
+											clearable
+											ampm={false}
+											label="Start Time"
+											value={startTime}
+											onChange={(value) => {setStartTime(value); setNewReservation((newReservation) => ({...newReservation, startTime: value.format('HH:mm:ss')}))}}
+										/>
+										</ThemeProvider>
+											</MuiPickersUtilsProvider>
+									</div>
+									<div className="my-5 w-full">
+										<MuiPickersUtilsProvider utils={MomentUtils}>
+										<ThemeProvider theme={materialTheme}>
+										<TimePicker
+												InputProps={{
+														disableUnderline: true
+													}}
+													onChange={(value) => {getReservationByTime(); setEndTime(value); setNewReservation((newReservation) => ({...newReservation, endTime: value.format('HH:mm:ss')}))}}
 													value={endTime}
-													clearable
-													ampm={false}
-													label="End Time"
-												/>
-												</MuiPickersUtilsProvider>
-										</div>
-										<div class="bg-gray-50 justify-center content-center">
-											<CustomButton title="Done" onClick={() => {submitNewReservation(); setShowModal(false)}}/>
+												clearable
+												ampm={false}
+												label="End Time"
+											/>
+										</ThemeProvider>
+											</MuiPickersUtilsProvider>
+									</div>
+										<div class="flex justify-center mt-8">
+											<CustomButton title="Done"  customStyle={{ backgroundColor: theme.backgroundColor }} onPress={() => {submitNewReservation(); setShowModal(false)}}/>
 										</div>
 									</form>
 							</div>
@@ -342,12 +601,32 @@ const Tables = () => {
                   setOpen(!Open);
                 }}
               >
-                Ok
+                Okay
               </button>
             </>
           }
           handleClose={() => {
             setOpen(!Open);
+          }}
+        />
+      )}
+			{newReservationSuccess && (
+        <Popup
+          content={
+            <>
+              <p className="font-bold text-green text-xl">
+                Table reservation created!
+              </p>
+              <button
+                className="mt-10 bg-primary px-10 py-2 shadow-lg"
+                onClick={() => setNewReservationSuccess(!newReservationSuccess)}
+              >
+                Okay
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setNewReservationSuccess(!newReservationSuccess);
           }}
         />
       )}

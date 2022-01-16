@@ -1,10 +1,11 @@
 import React from 'react'
+import { GrClose } from 'react-icons/gr';
 
 const Popup = (props) => {
 	return (
 		<div className="popup-box">
 		  <div className="box text-center py-20">
-			<span className="close-icon" onClick={props.handleClose}>x</span>
+            <GrClose onClick={props.handleClose} style={{marginTop: -60, marginLeft: '90%', marginBottom: 20}}/>
 			{props.content}
 		  </div>
 		</div>

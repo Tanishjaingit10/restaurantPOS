@@ -1,0 +1,21 @@
+.pagination_btn {
+    border-radius: 5px;
+    border-color: rgba(229, 73, 65, 1);
+    border-width: 1px;
+    color: rgba(229, 73, 65, 1);
+    background-color: white;
+}
+.pagination_btn:hover {
+    background-color: rgba(229, 73, 65, 1);
+    color: white;
+}
+
+.pagination_btn:active {
+    background-color: rgba(229, 73, 65, 1);
+    color: white;
+}
+
+.pagination_btn:focus {
+    background-color: rgba(229, 73, 65, 1);
+    color: white;
+}
