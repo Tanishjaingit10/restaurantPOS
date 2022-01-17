@@ -131,7 +131,7 @@ const Kitchen = () => {
         <>
             <div className="">
               <CustomNavBar />
-              <div className="flex h-24 items-center justify-between border-b-2">
+              <div className="flex h-24 items-center justify-between border-b-2 border-gray-300">
                 <p className="text-2xl text-gray-500 ml-6 font-bold ">Kitchen Dashboard</p>
                 <button className="fas fa-sync-alt bg-red mr-6 p-4 text-white rounded-md" style={{backgroundColor:theme.backgroundColor}}></button>
               </div>
