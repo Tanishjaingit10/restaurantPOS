@@ -18,6 +18,7 @@ import {createTheme} from "@material-ui/core";
 import Select, { StylesConfig } from 'react-select';
 import { FiRefreshCcw } from 'react-icons/fi';
 import '../styles//paginagtion.css';
+import {materialTheme} from '../styles/clockMaterialTheme';
 
 
 const AllReservations = () => {
@@ -28,6 +29,7 @@ const AllReservations = () => {
 	const [warnDeleteReserve, setWarnDeleteReserve] = useState(false)
 	const [deleteReservSuccess, setDeleteReservSuccess] = useState(false)
 	const [availableTables, setAvailableTables] = useState([])
+	const [allTables, setAllTables] = useState([])
 	const [showDate, setShowDate] = useState(false)
 	const [startDate, setStartDate] = useState(new Date());
 	const [startTime, setStartTime] = useState(new Date());
@@ -37,115 +39,69 @@ const AllReservations = () => {
 	const [pageLimit, setPageLimit] = useState(10);
 	const [reload, setReload] = useState(false)
   const theme = useContext(ThemeContext);
+	const [componentLoading, setComponentLoading] = useState(false)
 
 	var currDate = new Date()
   
 	useEffect(() => {
+		setLoading(true)
 		fetch("/app/allReservations")
     .then((res) => res.json())
     .then((json) => {
-			console.log(json)
 			setAllReservations(json)
 			setLoading(false);
+			setPageNumber(1)
+			setPageLimit(10)
     })
     .catch((err) => {
-        console.log(err);
+			console.log(err);
+			setLoading(false);
+			setPageNumber(1)
+			setPageLimit(10)
     })
-		
+		fetch(`/app/table`)
+		.then((res) => res.json())
+		.then((json) => {
+			var tables = []
+			for (var i = 0; i < json.length; i++) {
+				tables.push(json[i].number)
+			}
+			setAllTables(tables)
+			setLoading(false)
+		})
+		.catch((err) => {
+			console.log(err);
+			setLoading(false)
+		})
 	}, [reload])
 
-	const materialTheme = createTheme({
-		overrides: {
-			
-			MuiFormControl: {
-        root: {
-            width: '100%',
-        }
-    	},
-				MuiPickersToolbar: {
-					root: {
-						width: '100%',
-					},
-						toolbar: {
-								backgroundColor: theme.backgroundColor,
-						},
-				},
-				MuiPickersCalendarHeader: {
-						switchHeader: {
-								backgroundColor: "white",
-								color: theme.backgroundColor,
-						},
-				},
-				MuiPickersDay: {
-					root: {
-						color: theme.backgroundColor,
-						"&$disabled": {
-							color: theme.backgroundColor,
-						},
-						"&$selected": {
-							backgroundColor: theme.backgroundColor,
-						},
-					},
-					today: {
-						color: theme.backgroundColor,
-					},
-				},
-				MuiPickersModalDialog: {
-					dialogAction: {
-						color: theme.backgroundColor,
-					},
-				},
-				MuiOutlinedInput: {
-					root: {
-						"& $notchedOutline": {
-							borderColor: theme.backgroundColor,
-							borderWidth: "1px",
-						},
-						"&:hover $notchedOutline": {
-							borderColor: theme.backgroundColor,
-							borderWidth: "1px",
-						},
-						"&$focused $notchedOutline": {
-							borderColor: theme.backgroundColor,
-							borderWidth: "1px",
-						},
-				},
-				input: {
-					borderColor: theme.backgroundColor,
-				},
-			},
-			MuiInputBase: {
-				root: {
-					backgroundColor: theme.backgroundColor,
-					color: 'white',
-					padding: '10px',
-					borderRadius: '5px'
-				}
-			}
-		},
-	});
-
-	const getTablesAvailables = () => {
-		fetch(`/app/getAvailableTable`)
-		.then((res) => res.json())
-        .then((json) => {
-			console.log(json);
-			if (json.status === 200) {
-				setAvailableTables(json)
-			}
-		})
-	}
-
-	const getReservationByTime = () => {
-		fetch(`/app/getReservationByTable/${startDate}/${startTime}/${endTime}`)
+	const getReservationByTime = (date, startTime, endTime) => {
+		setComponentLoading(true)
+		console.log('getReservationByTime', date, startTime, endTime)
+		fetch(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
     .then((res) => res.json())
     .then((json) => {
-			console.log(json)
-			setAllReservations(json)
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+			console.log(json, 'result')
+			var tableList = []
+			var reservedTable = []
+			for (var i = 0; i < json.length; i++) {
+				if (json[i].table !== undefined) 				
+					reservedTable.push(json[i].table)
+			}
+			console.log(reservedTable, "reservedTable")
+			var availableTables = allTables.filter(function(obj) { return reservedTable.indexOf(obj) === -1; });
+			console.log(availableTables, 'available table')
+			for (var i = 0; i < availableTables.length; i++){
+				tableList.push({label: availableTables[i], value: availableTables[i]})
+			}
+			console.log(tableList, 'table list')
+			setAvailableTables(tableList)
+			setComponentLoading(false)
+		})
+			.catch((err) => {
+					console.log(err);
+			setComponentLoading(false)
+		})
 	}
 
 	const getReservationByTable = (table) => {
@@ -217,11 +173,13 @@ const AllReservations = () => {
 	]
 
 	const selectCustomeStyle = {
+		backgroundColor: theme.backgroundColor
 	}
 
 	return (
 		<div>
-		<CustomNavBar />
+		{ componentLoading ?
+			<Loader /> : null }
 		<div className="flex flex-col w-full">
 			<div className="my-2 overflow-x-auto">
 				<div className="py-2 align-middle inline-block min-w-full px-5">
@@ -293,7 +251,6 @@ const AllReservations = () => {
 								<Select
 									defaultValue={options[0]}
 									options={options}
-									styles={selectCustomeStyle}
 									onChange={(value) => setPageLimit(value.value)}
 								/>
 							</div>
@@ -315,7 +272,7 @@ const AllReservations = () => {
 									title="Download"
 									customStyle={{ backgroundColor: theme.backgroundColor }}
 								/>
-							</div>
+							</div> 
 						</div>
 						<table className="min-w-full divide-y divide-x divide-gray-200">
 							<thead style={{ backgroundColor: theme.backgroundColor }}>
@@ -375,8 +332,8 @@ const AllReservations = () => {
 											</td>
 											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
 												<div className="text-base text-gray-500 font-semibold">
-													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14 }} title="Cancel" onPress={() => {setWarnDeleteReserve(true); setEditReservation(reservation)}}/>
-													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14 }} title="Edit" onPress={() => {setEditReservationModal(true); setEditReservation(reservation); setStartDate(new Date(reservation.date)); setStartTime(new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate(), reservation.start_time.split(':')[0], reservation.start_time.split(':')[1], reservation.start_time.split(':')[2] )); setEndTime(new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate(), reservation.start_time.split(':')[0], allReservations[0].start_time.split(':')[1], reservation.start_time.split(':')[2] )) }}/>
+													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14 }} title="Cancel" onPress={() => {setWarnDeleteReserve(true); setEditReservation(reservation); console.log(reservation)}}/>
+													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14 }} title="Edit" onPress={() => {getReservationByTime(reservation.date, reservation.start_time, reservation.end_time); setEditReservationModal(true); setEditReservation(reservation); setStartDate(new Date(reservation.date)); setStartTime(new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate(), reservation.start_time.split(':')[0], reservation.start_time.split(':')[1], reservation.start_time.split(':')[2] )); setEndTime(new Date(currDate.getFullYear(), currDate.getMonth(), currDate.getDate(), reservation.start_time.split(':')[0], allReservations[0].start_time.split(':')[1], reservation.start_time.split(':')[2] )) }}/>
 												</div>
 											</td>
 										</tr>
@@ -437,19 +394,19 @@ const AllReservations = () => {
 										<label className="block text-gray-700 text-sm font-bold mb-2" for="fullName">
 											Enter Customer Name
 										</label>
-										<input defaultValue={editReservation.fullName} onChange={(value) => {setEditReservation((newReservation) => ({...newReservation, fullName : value.target.value}));}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Customer Name"/>
+										<input defaultValue={editReservation.fullName} onChange={(value) => {setEditReservation((editReservation) => ({...editReservation, fullName : value.target.value}));}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Customer Name"/>
 									</div>
 									<div className="mb-5">
 										<label className="block text-gray-700 text-sm font-bold mb-2" for="fullName">
 											Enter Email Id
 										</label>
-										<input defaultValue={editReservation.email_id} onChange={(value) => setEditReservation((newReservation) => ({...newReservation, email_id : value.target.value}))} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Email Id"/>
+										<input defaultValue={editReservation.email_id} onChange={(value) => setEditReservation((editReservation) => ({...editReservation, email_id : value.target.value}))} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Email Id"/>
 									</div>
 									<div className="mb-5">
 										<label className="block text-gray-700 text-sm font-bold mb-2" for="fullName">
 											Enter Phone Number
 										</label>
-										<input defaultValue={editReservation.contact} onChange={(value) => setEditReservation((newReservation) => ({...newReservation, contact : value.target.value}))} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Phone Number"/>
+										<input defaultValue={editReservation.contact} onChange={(value) => setEditReservation((editReservation) => ({...editReservation, contact : value.target.value}))} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="fullName" type="text" placeholder="Enter Phone Number"/>
 									</div>
 									<div className="my-5 w-full">
 										<MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -460,7 +417,7 @@ const AllReservations = () => {
 													}}
 													label="Date"
 													value={startDate}
-													onChange={(date) => {setStartDate(date); setEditReservation((newReservation) => ({...newReservation, date: date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )}));}}
+													onChange={(date) => {setStartDate(date); getReservationByTime(date.toISOString().split('T')[0], editReservation.startTime, editReservation.endTime); setEditReservation((editReservation) => ({...editReservation, date: date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )}));}}
 												/>
 											</ThemeProvider>
 										</MuiPickersUtilsProvider>
@@ -476,7 +433,7 @@ const AllReservations = () => {
 												ampm={false}
 												label="Start Time"
 												value={startTime}
-												onChange={(value) => {setStartTime(value); setEditReservation((newReservation) => ({...newReservation, startTime: value.format('HH:mm:ss')}))}}
+												onChange={(value) => {setStartTime(value); getReservationByTime(editReservation.date, value.format('HH:mm:ss'), editReservation.endTime); setEditReservation((editReservation) => ({...editReservation, startTime: value.format('HH:mm:ss')}))}}
 											/>
 										</ThemeProvider>
 											</MuiPickersUtilsProvider>
@@ -488,7 +445,7 @@ const AllReservations = () => {
 												InputProps={{
 														disableUnderline: true
 													}}
-												onChange={(value) => {setEndTime(value); setEditReservation((newReservation) => ({...newReservation, endTime: value.format('HH:mm:ss')}))}}
+												onChange={(value) => {setEndTime(value); getReservationByTime(editReservation.date, editReservation.startTime, value.format('HH:mm:ss')); setEditReservation((editReservation) => ({...editReservation, endTime: value.format('HH:mm:ss')}))}}
 												value={endTime}
 												clearable
 												ampm={false}
@@ -497,8 +454,17 @@ const AllReservations = () => {
 										</ThemeProvider>
 											</MuiPickersUtilsProvider>
 									</div>
+									<div style={{width: '100%'}} className="inline-block rounded">
+										<Select
+											styles={selectCustomeStyle}
+											defaultValue={availableTables[0]}
+											options={availableTables}
+											maxMenuHeight={130}
+											onChange={(value) => setEditReservation((editReservation) => ({...editReservation, table: value.value}))}
+										/>
+									</div>
 										<div className="flex items-center justify-center mt-8">
-											<CustomButton title="Done"  customStyle={{ backgroundColor: theme.backgroundColor }} onPress={() => {editReservations(); setEditReservationModal(false)}}/>
+											<CustomButton title="Done"  customStyle={{ backgroundColor: theme.backgroundColor }} onPress={() => {editReservations(); setEditReservationModal(false); }}/>
 										</div>
 								</form>
 							</div>
@@ -573,5 +539,3 @@ const AllReservations = () => {
 }
 
 export default AllReservations;
-
-// editReservations(reservation._id, reservation)
