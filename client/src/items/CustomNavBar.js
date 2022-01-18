@@ -19,11 +19,11 @@ const CustomNavBar = () => {
       className="bg-red px-1 mt-0 h-auto w-full top-0 text-2xl"
     >
       <div className="flex items-center justify-between">
-        <div className="flex flex-shrink md:w-1/3 items-center justify-center md:justify-start text-white ml-4">
-          <a onClick={() => setMenuIsOpen(true)} className="cursor-pointer">
+        <div className="flex flex-shrink md:w-1/3 justify-start md:justify-start text-white ml-0">
+          {/* <a onClick={() => setMenuIsOpen(true)} className="cursor-pointer">
             <i className="fas fa-bars font-semibold"></i>
-          </a>
-          <img src={Logo} className="w-16 h-16 ml-10" />
+          </a> */}
+          <img src={Logo} className="w-16 h-14 ml-0" />
         </div>
         <button
           style={{color: theme.backgroundColor}}
@@ -32,9 +32,9 @@ const CustomNavBar = () => {
           Log Out
         </button>
       </div>
-      <CheeseburgerMenu isOpen={menuIsOpen} closeCallback={closeMenu}>
+      {/* <CheeseburgerMenu isOpen={menuIsOpen} closeCallback={closeMenu}>
         <Sidebar />
-      </CheeseburgerMenu>
+      </CheeseburgerMenu> */}
     </nav>
   );
 };

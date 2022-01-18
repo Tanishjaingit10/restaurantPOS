@@ -7,7 +7,7 @@ let finalUser;
 const ClockInOut = () => {
   const history = useHistory();
   const [user, setUser] = useState({ fullName: "", email_id: "" });
-  const [attendence, setAttendence] = useState({ status: "1", checkinTime: "", checkoutTime: "", date: "" })
+  const [attendance, setAttendance] = useState({ status: "1", checkinTime: "", checkoutTime: "", date: "" })
   const [button, setButton] = useState('Clock In')
   const [isOpen, setIsOpen] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -32,7 +32,7 @@ const ClockInOut = () => {
           console.log(json)
           console.log(json.fullName)
           finalUser = json;
-          if (json.attendence.status === 'Clocked In') {
+          if (json.attendance.status === 'Clocked In') {
             buttonValue = 'Clock Out'
           }
         });
@@ -47,7 +47,7 @@ const ClockInOut = () => {
   const enterUser = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("/app/attendence", {
+    const res = await fetch("/app/attendance", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -59,13 +59,13 @@ const ClockInOut = () => {
 
     if (res.status === 201) {
       console.log(finalUser)
-      finalUser.attendence = {
+      finalUser.attendance = {
         status: buttonValue==='Clock In'? 'Clocked In': 'Clocked Out',
-        checkinTime: buttonValue==='Clock In'?new Date().toLocaleTimeString():finalUser.attendence.checkinTime,
+        checkinTime: buttonValue==='Clock In'?new Date().toLocaleTimeString():finalUser.attendance.checkinTime,
         checkoutTime: buttonValue==='Clock In'? 'N/A': new Date().toLocaleTimeString(),
         date: new Date().toISOString().split('T')[0]
       };
-      console.log(finalUser.attendence)
+      console.log(finalUser.attendance)
       setMsg('Successful!');
       setIsOpen(!isOpen);
       await fetch(`/app/updateUser/${user.email_id}`, {

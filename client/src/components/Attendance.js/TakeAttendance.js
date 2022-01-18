@@ -25,8 +25,8 @@ const TakeAttendance = () => {
                 <th className="p-2 border-2 bg-lightprimary">{count++}</th>
                 <th className="p-2 border-2 bg-lightprimary">{option.fullName}</th>
                 <th className="p-2 border-2 bg-lightprimary">{option.email_id}</th>
-                <th className="p-2 border-2 bg-lightprimary">{option.attendence.date}</th>
-                <th className="p-2 border-2 bg-lightprimary">{option.attendence.status}</th>
+                <th className="p-2 border-2 bg-lightprimary">{option.attendance.date}</th>
+                <th className="p-2 border-2 bg-lightprimary">{option.attendance.status}</th>
               </tr>
                 )}))}}).catch((err) => {
                   setLoading(false);

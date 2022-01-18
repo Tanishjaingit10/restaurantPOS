@@ -78,15 +78,15 @@ const Routes = () => {
           <Route exact path="/finalPay" component={FinalPay} />
           <Route exact path="/cashPay" component={CashPay} />
           <Route exact path="/viewOrder" component={ViewOrder} />
-          <Route exact path="/orders" component={Orders} />
+          <RouteWrapper layout={DefaultLayout} exact path="/orders" component={Orders} />
           <Route exact path="/counter" component={Counter} />
           <Route exact path="/kitchen" component={Kitchen} />
           <Route exact path="/receipt" component={Receipt} />
           <Route exact path="/customers" component={Customers} />
           <Route exact path="/sales" component={Sales} />
-          <Route exact path="/attendance" component={Attendance} />
-          <Route exact path="/takeAttendance" component={TakeAttendance} />
-          <Route exact path="/viewAttendance" component={ViewAttendance} />
+          <RouteWrapper layout={DefaultLayout} exact path="/attendance" component={Attendance} />
+          <RouteWrapper layout={DefaultLayout} exact path="/takeAttendance" component={TakeAttendance} />
+          <RouteWrapper layout={DefaultLayout} exact path="/viewAttendance" component={ViewAttendance} />
           <Route exact path="/clockInOut" component={ClockInOut} />
           <Route exact path="/todayOrders" component={TodayOrders} />
           <Route exact path="/takeaways" component={Takeaways} />

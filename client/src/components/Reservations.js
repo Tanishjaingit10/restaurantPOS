@@ -15,7 +15,7 @@ import MomentUtils from '@date-io/moment';
 import { GrClose } from 'react-icons/gr';
 import { GoSearch } from 'react-icons/go';
 import {createTheme} from "@material-ui/core";
-import Select, { StylesConfig } from 'react-select';
+import Select from 'react-select';
 import { FiRefreshCcw } from 'react-icons/fi';
 import '../styles//paginagtion.css';
 import {materialTheme} from '../styles/clockMaterialTheme';
@@ -38,8 +38,8 @@ const AllReservations = () => {
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageLimit, setPageLimit] = useState(10);
 	const [reload, setReload] = useState(false)
-  const theme = useContext(ThemeContext);
 	const [componentLoading, setComponentLoading] = useState(false)
+  const theme = useContext(ThemeContext);
 
 	var currDate = new Date()
   
@@ -346,7 +346,7 @@ const AllReservations = () => {
 					<div className="flex items-end justify-end my-8">
 						<div className="mt-8">
 							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
+								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
 									Previous
 								</button>
 								<button href="#" onClick={() => setPageNumber(1)} className="z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">

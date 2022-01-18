@@ -18,7 +18,6 @@ import { GrClose } from 'react-icons/gr';
 let len = 0;
 const Orders = () => {
   // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
-  const theme = useContext(ThemeContext);
   const [search, setSearch] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +33,7 @@ const Orders = () => {
 	const [completedOrders, setCompletedOrders] = useState(0)
 	const [pendingOrders, setPendingOrders] = useState(0)
 	const [cancelledOrders, setCancelledOrders] = useState(0)
+  const theme = useContext(ThemeContext);
 
   const debounced = useDebouncedCallback(
     (value) => {
@@ -342,7 +342,7 @@ const Orders = () => {
 						</div>
 						<div className="mt-8">
 							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
+								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
 									Previous
 								</button>
 								<button href="#" onClick={() => setPageNumber(1)} className="z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">

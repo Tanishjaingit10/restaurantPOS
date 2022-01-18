@@ -226,7 +226,7 @@ const Tables = () => {
           />
           <CustomButton
             title="Take Away"
-            customStyle={{ backgroundColor: "yellow" }}
+            customStyle={{ backgroundColor: "#f0fd59" }}
           />
           <CustomButton
             title="- Delete Table"
@@ -235,7 +235,7 @@ const Tables = () => {
           />
           <CustomButton
             title="+ Add Table"
-            customStyle={{ backgroundColor: "green" }}
+            customStyle={{ backgroundColor: "#74fb4d" }}
             onPress={() => openModal()}
           />
 
