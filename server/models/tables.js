@@ -15,7 +15,7 @@ const table_template = new mongoose.Schema({
         type:String,
     },
     status:{
-        type:String
+        type:String   //{'Free', 'Unavailable'}
     }
 })
 

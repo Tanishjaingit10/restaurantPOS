@@ -1,4 +1,5 @@
 const table_template_copy = require('../models/tables')
+
 const add_table =async (request, response, next)=>{
     const{number,capacity,location,image,status}=request.body;
     if(!number||!capacity)
@@ -48,7 +49,7 @@ const all_table = async (request, response) => {
 }
 const remove_table = async (request, response, next) => {
     let itemId = request.params.id;
-    table_template_copy.findOneAndDelete({number:itemId}).then(() => {
+    table_template_copy.findOneAndDelete({_id: itemId}).then(() => {
         response.json({ message: 'Table removed successfully!' })
     })
         .catch(error => {
@@ -72,7 +73,7 @@ const available_table = async (request, response) =>{
 }
 
 module.exports = {
-    add_table,get_table,all_table, remove_table, available_table
+    add_table, get_table, all_table, remove_table, available_table
 }
 
 
