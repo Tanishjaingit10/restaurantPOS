@@ -18,7 +18,7 @@ const SignUp = () => {
   });
   const theme = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [attendence, setAttendence] = useState({
+  const [attendance, setAttendance] = useState({
     status: "Session Not Started",
     checkinTime: "N/A",
     checkoutTime: "N/A",
@@ -27,7 +27,7 @@ const SignUp = () => {
   const [msg, setMsg] = useState("");
   const [isError, setIsError] = useState(false);
   let name, value;
-  console.log(attendence);
+  console.log(attendance);
   const handleInputs = (e) => {
     name = e.target.name;
     value = e.target.value;
@@ -51,7 +51,7 @@ const SignUp = () => {
         contact,
         position,
         password,
-        attendence,
+        attendance,
       }),
     });
 

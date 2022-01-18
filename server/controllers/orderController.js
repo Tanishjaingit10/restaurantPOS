@@ -61,7 +61,42 @@ const get_order = async (request, response, next)=>{
     });
 }
 
+const getOrderByDate = async (request, response) => {
+    order_template_copy.find({ 'time': { $gte: request.params.startDate, $lte: request.params.stopDate} }, (err, data) => {
+        if (!err) {
+            response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
+    });
+}
+
+const getOrderByStatus = async (request, response) => {
+    order_template_copy.find({ 'payment.orderStatus': request.params.status }, (err, data) => {
+        if (!err) {
+            response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
+    });
+}
+
+const getOrderById = async (request, response) => {
+    order_template_copy.find({ 'order_id': request.params.id }, (err, data) => {
+        if (!err) {
+            response.send(data);
+        }
+        else
+        {
+            response.json({ message: 'Item could not be shown!' })
+        }
+    });
+}
 
 module.exports = {
-    add_order, all_order, update_order, get_order
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById
 }

@@ -3,6 +3,7 @@ import colour from '../color';
 import Popup from './Popup';
 import signup from '../popup';
 import { useHistory, useParams } from 'react-router-dom';
+
 const CategoryForm = () => {
     const history = useHistory();
     const [show, setShow] = useState(false);

@@ -1,4 +1,5 @@
 const table_template_copy = require('../models/tables')
+
 const add_table =async (request, response, next)=>{
     const{number,capacity,location,image,status}=request.body;
     if(!number||!capacity)
@@ -6,15 +7,13 @@ const add_table =async (request, response, next)=>{
 
         return response.status(422).json({error:"Please fill out the required fields!"})
     }
-            
-
     await table_template_copy.findOne({number:number}).then((tableExist)=>{
         if(tableExist){
             return response.status(402).json({error:"Item Already Exists!"})
         }
         const table = new table_template_copy({number,capacity,location,image,status})
         table.save().then(()=>{
-            response.status(201).json({message: "Item added successfully!"})
+            response.status(200).json({message: "Item added successfully!"})
         })
         .catch(error =>{
             
@@ -50,7 +49,7 @@ const all_table = async (request, response) => {
 }
 const remove_table = async (request, response, next) => {
     let itemId = request.params.id;
-    table_template_copy.findOneAndDelete({number:itemId}).then(() => {
+    table_template_copy.findOneAndDelete({_id: itemId}).then(() => {
         response.json({ message: 'Table removed successfully!' })
     })
         .catch(error => {
@@ -59,9 +58,22 @@ const remove_table = async (request, response, next) => {
 
 }
 
+const available_table = async (request, response) =>{
+    console.log(request)
+
+    table_template_copy.find({status: 'Free'}, (err, data) => {
+        if (!err){
+            console.log(data.length, 'available_table')
+            response.status(200).send(data);
+        }
+        else
+            console.log(err);
+
+    });
+}
 
 module.exports = {
-    add_table,get_table,all_table, remove_table
+    add_table, get_table, all_table, remove_table, available_table
 }
 
 

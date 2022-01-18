@@ -34,12 +34,29 @@ import Tables from "./components/Tables";
 import Takeaways from "./components/Takeaways";
 import TodayOrders from "./components/TodayOrders";
 import TodaySale from "./components/TodaySale";
+
+import { DefaultLayout } from './layouts/DefaultLayout';
+
+function RouteWrapper({
+    component: Component, 
+    layout: Layout, 
+    ...rest
+}) {
+    return (
+      <Route {...rest} render={(props) =>
+        <Layout {...props}>
+          <Component {...props} />
+        </Layout>
+      } />
+    );
+}
+
 const Routes = () => {
   return (
     
       <Router>
         <Switch>
-          <Route exact path="/home" component={Home} />
+          <RouteWrapper exact path="/home" component={Home} layout={DefaultLayout} />
           <Route exact path="/" component={SignUp} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/menu" component={Menu} />
@@ -48,7 +65,7 @@ const Routes = () => {
           <Route exact path="/editcategory/:id" component={CategoryForm} />
           <Route exact path="/additem" component={ItemForm} />
           <Route exact path="/itemdisplay/:id" component={ItemDisplay} />
-          <Route exact path="/tables" component={Tables} />
+          <RouteWrapper exact path="/tables" component={Tables} layout={DefaultLayout} />
           <Route exact path="/pos" component={Pos} />
           <Route exact path="/addTable" component={TableForm} />
           <Route exact path="/categoryList" component={CategoryList} />
@@ -61,19 +78,19 @@ const Routes = () => {
           <Route exact path="/finalPay" component={FinalPay} />
           <Route exact path="/cashPay" component={CashPay} />
           <Route exact path="/viewOrder" component={ViewOrder} />
-          <Route exact path="/orders" component={Orders} />
+          <RouteWrapper layout={DefaultLayout} exact path="/orders" component={Orders} />
           <Route exact path="/counter" component={Counter} />
           <Route exact path="/kitchen" component={Kitchen} />
           <Route exact path="/receipt" component={Receipt} />
           <Route exact path="/customers" component={Customers} />
           <Route exact path="/sales" component={Sales} />
-          <Route exact path="/attendance" component={Attendance} />
-          <Route exact path="/takeAttendance" component={TakeAttendance} />
-          <Route exact path="/viewAttendance" component={ViewAttendance} />
+          <RouteWrapper layout={DefaultLayout} exact path="/attendance" component={Attendance} />
+          <RouteWrapper layout={DefaultLayout} exact path="/takeAttendance" component={TakeAttendance} />
+          <RouteWrapper layout={DefaultLayout} exact path="/viewAttendance" component={ViewAttendance} />
           <Route exact path="/clockInOut" component={ClockInOut} />
           <Route exact path="/todayOrders" component={TodayOrders} />
           <Route exact path="/takeaways" component={Takeaways} />
-          <Route exact path="/reservations" component={Reservations} />
+          <RouteWrapper exact path="/reservations" component={Reservations} layout={DefaultLayout} />
           <Route exact path="/todaySale" component={TodaySale} />
 
         </Switch>

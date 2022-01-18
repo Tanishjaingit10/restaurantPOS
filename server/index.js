@@ -8,7 +8,9 @@ const cors = require('cors')
 const DB = process.env.DATABASE
 const multer = require('multer');
 const path = require('path');
-mongoose.connect(DB, ()=>console.log("Database connected"))
+mongoose.connect(DB)
+.then(() => console.log('Coneected to DB'))
+.catch(err => console.log('DB connection error: ', err))
 
 app.use(express.json())
 app.use(cors())

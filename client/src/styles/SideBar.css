@@ -1,0 +1,104 @@
+#sidebar {
+    overflow-y: none;
+    height: 100vh;
+    float: left;
+    width: 60px;
+}
+
+.pro-sidebar .pro-menu {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.pro-sidebar-inner ::-webkit-scrollbar {
+    width: 0px;
+}
+  
+.pro-sidebar-inner ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+
+.pro-sidebar-inner {
+    background: rgb(255, 102, 94) !important; 
+}
+
+.pro-sidebar-inner ::-webkit-scrollbar-thumb {
+    background: rgb(255, 102, 94) !important; 
+}
+  
+.pro-sidebar-inner ::-webkit-scrollbar-thumb:hover {
+    background: rgba(229, 73, 65, 1); 
+}
+
+#sidebar .pro-sidebar {
+    height: 100%;
+    transition: width, left, right, 0.3s;
+}
+
+#sidebar .pro-sidebar .collapsed{
+    transition: width, right, left, 0.3s;
+}
+
+#sidebar .pro-sidebar-inner .pro-sidebar-layout .pro-sidebar-content{
+    padding: 0px;
+}
+
+#sidebar .closemenu {
+    color: #ffffff !important;
+    position: absolute;
+    float: right;
+    line-height: 20px;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 18px;
+    top: 0px;
+    cursor: pointer;
+}
+
+#sidebar .pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-icon-wrapper {
+    font-size: 20px;
+    background-color: transparent;
+}
+
+#sidebar .pro-sidebar-inner .pro-sidebar-layout ul .pro-inner-item .pro-item-content {
+    font-size: 16px;
+    font-weight:500;
+}
+
+.pro-sidebar .pro-menu .pro-menu-item.pro-sub-menu .pro-inner-list-item .pro-inner-item .pro-arrow-wrapper{
+    display: inline;
+}
+
+.pro-sidebar .pro-menu .pro-menu-item.pro-sub-menu.open > .pro-inner-item > .pro-arrow-wrapper .pro-arrow{
+    transform: rotate(45deg)
+}
+
+.pro-sidebar .pro-menu .pro-menu-item.active {
+    color: #fff !important;
+    background-color: rgba(229, 73, 65, 1);
+}
+
+.pro-sidebar .pro-menu .pro-menu-item {
+    color: #fff !important;
+    padding: 5px 10px;
+    background-color: rgb(255, 102, 94);
+}
+
+.pro-sidebar .pro-menu a {
+    color: #fff !important
+}
+
+.pro-sidebar.collapsed {
+    min-width: 60px;
+    width: 60px;
+}
+
+.pro-sidebar {
+    min-width: 230px;
+    width: 230px;
+}
+
+
+.pro-sidebar .pro-menu .pro-menu-item > .pro-inner-item{
+    padding: 10px 0
+}

@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 dotenv.config({path:'../config.env'})
-const signup_template = new mongoose.Schema({
 
+const signup_template = new mongoose.Schema({
     fullName:{
         type:String,
         required:true
@@ -41,8 +41,6 @@ const signup_template = new mongoose.Schema({
                 checkoutTime: String,
                 date: String
             }
-        
-       
     }
 
 })

@@ -12,26 +12,26 @@ const order_template = new mongoose.Schema({
             email: String
         }
     },
-    order:{
-        type:[
+    order: {
+        type: [
             {
-                foodItem:String,
-                image:String,
-                orderedVariant:{
-                    type:[
+                foodItem: String,
+                image: String,
+                orderedVariant: {
+                    type: [
                         {
-                            variant:String,
-                            description:String,
-                            price:Number
+                            variant: String,
+                            description: String,
+                            price: Number
                         }
                     ]
                 },
-                price:Number,
-                subtotal:Number
+                price: Number,
+                subtotal: Number
             }
         ]
     },
-    payment:{
+    payment: {
         type: {
             subTotal: Number,
             tax:Number,

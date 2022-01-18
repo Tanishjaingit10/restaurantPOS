@@ -1,7 +1,7 @@
 const signup_template_copy = require('../models/registered_users')
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
-
+const attendance_template_copy = require('../models/attendance')
 
 const show_users = async (request, response, next)=>{
     signup_template_copy.find({},(err,data) =>{
@@ -24,10 +24,8 @@ const get_user = async (request, response) => {
         {
             response.json({ message: 'Item could not be shown!' })
         }
-
     });
 }
-
 
 const add_user =async (request, response, next)=>{
     const{fullName,email_id,contact,position,password,attendence}=request.body;
@@ -40,8 +38,13 @@ const add_user =async (request, response, next)=>{
             return response.status(402).json({error:"User Already Exists!"})
         }
         const user = new signup_template_copy({fullName, email_id,contact,position,password:securePassword, attendence})
-        user.save().then(()=>{
+        user.save().then((res)=>{
             response.status(201).json({message: "User registered successfully!"})
+            const newAttendees = new attendance_template_copy({user_id: res['_id'], status: 'Shift Not Started', checkInTime: 'N/A', checkOutTime: 'N/A', date: new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) })
+            newAttendees.save().then((res)=>{
+                console.log("Attendees saved successfully")
+            })
+            .catch((err)=>{console.log(err)});
         })
         .catch(error =>{
             response.status(401).json({error: "Registeration Failed!"})
@@ -52,6 +55,7 @@ const add_user =async (request, response, next)=>{
 }
 const login = async (request, response, next)=>{
     try{
+        console.log(request)
         let token;
         const{email_id,password}=request.body;
         if(!email_id||!password)
