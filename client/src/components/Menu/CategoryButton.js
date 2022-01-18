@@ -18,7 +18,12 @@ function CategoryButton({ deleteCategory, category }) {
 
     return (
         <div className="flex">
-            <button onClick={handleDeleteCategory} className={`far fa-trash-alt mt-2 h-6 text-red ${deleteCategory || "hidden"}`}/>
+            <button
+                onClick={handleDeleteCategory}
+                className={`far fa-trash-alt mt-2 h-6 text-red ${
+                    deleteCategory || "hidden"
+                }`}
+            />
             <button
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="px-8 py-3 font-bold text-gray-500 text-xl m-2 border shadow-md border-black rounded-md"

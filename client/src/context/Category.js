@@ -20,6 +20,8 @@ export const CategoryProvider = (props) => {
             .catch((err) => console.log("Error", err.response));
     };
 
+    console.log("foodItems",foodItems)
+
     useEffect(() => {
         fetchCategories();
         //eslint-disable-next-line

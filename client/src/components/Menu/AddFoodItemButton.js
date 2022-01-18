@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useState } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import ReactModal from "react-modal";
 import AvailableButton from "./AvailableButton";
 import VariantButton from "./VariantButton";
-import axios from "axios";
 import { CategoryContext } from "../../context/Category";
+import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 
 function AddFoodItemButton() {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,16 +20,9 @@ function AddFoodItemButton() {
     const [finalVariant, setFinalVariant] = useState([]);
     const [finalAvailable, setFinalAvailable] = useState([]);
     const [image] = useState(null);
-    const [listOfCategory, setListOfCategory] = useState([]);
-
-    const { fetchItems } = useContext(CategoryContext);
-
-    useEffect(() => {
-        axios.get("/app/category").then((res) => setListOfCategory(res.data));
-    }, []);
+    const { fetchItems, categories } = useContext(CategoryContext);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
         const postData = {
             foodItem,
             category,
@@ -157,11 +151,11 @@ function AddFoodItemButton() {
                                 onChange={(e) => setCategory(e.target.value)}
                                 value={category}
                             >
-                                <option value="none" selected={category}>
+                                <option value="" selected={category}>
                                     Uncategorized
                                 </option>
 
-                                {listOfCategory.map((option) => (
+                                {categories.map((option) => (
                                     <option
                                         value={option.value}
                                         className="bg-lightred"
@@ -176,38 +170,50 @@ function AddFoodItemButton() {
                                     Food Type:
                                 </div>
                                 <div className="flex items-center">
-                                    <div className="flex-1 p-2">
+                                    <div className="flex-1 flex items-center mr-3 p-2">
                                         <input
                                             type="radio"
                                             onChange={(e) =>
                                                 setFoodType(e.target.value)
                                             }
-                                            checked={foodType==="non-veg"}
-                                            name="veg"
+                                            checked={foodType === "non-veg"}
+                                            id="non-veg"
+                                            name="foodType"
                                             value="non-veg"
                                         />
                                         <label
-                                            className="ml-3 text-red font-bold"
+                                            className="ml-3 w-full flex justify-between text-red font-bold"
                                             htmlFor="non-veg"
                                         >
-                                            Non-Veg
+                                            <div>Non-Veg</div>
+                                            <img
+                                                className="w-4 object-scale-down mr-2"
+                                                src={nonVegIconImageBase64}
+                                                alt=""
+                                            />
                                         </label>
                                     </div>
-                                    <div className="flex-1 p-2">
+                                    <div className="flex-1 flex items-center ml-3 p-2">
                                         <input
                                             type="radio"
                                             onChange={(e) =>
                                                 setFoodType(e.target.value)
                                             }
-                                            checked={foodType==="veg"}
-                                            name="veg"
+                                            checked={foodType === "veg"}
+                                            id="veg"
+                                            name="foodType"
                                             value="veg"
                                         />
                                         <label
-                                            className="ml-3 text-green font-bold"
+                                            className="ml-3 w-full flex justify-between text-green font-bold"
                                             htmlFor="veg"
                                         >
-                                            Veg
+                                            <div>Veg</div>
+                                            <img
+                                                className="w-4 object-scale-down mr-2"
+                                                src={vegIconImageBase64}
+                                                alt=""
+                                            />
                                         </label>
                                     </div>
                                 </div>

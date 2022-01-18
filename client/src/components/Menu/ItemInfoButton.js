@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import ReactModal from "react-modal";
+import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import EditFoodItemButton from "./EditFoodItemButton";
 
@@ -28,8 +29,17 @@ function ItemInfoButton({ item, deleteFoodItem }) {
             />
             <button
                 onClick={() => setIsOpen(true)}
-                className="text-center flex-1 rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
+                className="text-center relative flex-1 rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
             >
+                <img
+                    className="absolute w-4 top-3 right-3"
+                    src={
+                        item.foodType === "veg"
+                            ? vegIconImageBase64
+                            : nonVegIconImageBase64
+                    }
+                    alt=""
+                />
                 {item.foodItem}
             </button>
 
@@ -140,17 +150,28 @@ function ItemInfoButton({ item, deleteFoodItem }) {
                                         Category
                                     </div>
                                     <div className="text-lg">
-                                        {item.category}
+                                        {item.category || "Uncategorized"}
                                     </div>
                                 </div>
                                 <div className="mb-4">
                                     <div className="text-gray-500 text-sm">
                                         Food Type
                                     </div>
-                                    <div className="text-lg">
-                                        {item.foodType === "veg"
-                                            ? "Veg"
-                                            : "Non - Veg"}
+                                    <div className="text-lg flex items-center">
+                                        <div>
+                                            {item.foodType === "veg"
+                                                ? "Veg"
+                                                : "Non - Veg"}
+                                        </div>
+                                        <img
+                                            className="w-4 object-scale-down ml-6"
+                                            src={
+                                                item.foodType === "veg"
+                                                    ? vegIconImageBase64
+                                                    : nonVegIconImageBase64
+                                            }
+                                            alt=""
+                                        />
                                     </div>
                                 </div>
                             </div>
