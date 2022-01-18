@@ -1,13 +1,22 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import ReactModal from "react-modal";
+import { CategoryContext } from "../../context/Category";
 
-function EditCategoryButton() {
-    
+function EditCategoryButton(prop) {
     const [isOpen, setIsOpen] = useState(false);
     const [image, setImage] = useState(null);
     const [imageName, setImageName] = useState("");
-    const [categoryName, setCategoryName] = useState("");
-    const [discription, setDiscription] = useState("");
+    const [category, setCategory] = useState("");
+    const [description, setDescription] = useState("");
+    const { fetchCategories } = useContext(CategoryContext);
+
+    useEffect(() => {
+        setImage(prop.category.image);
+        setCategory(prop.category.category);
+        setDescription(prop.category.description);
+        // eslint-disable-next-line
+    }, []);
 
     const handleImageUpload = (e) => {
         const img = e.target.files[0];
@@ -17,14 +26,24 @@ function EditCategoryButton() {
         reader.onload = () => {
             if (reader.readyState === 2) {
                 setImage(reader.result);
-                console.log(reader.result);
             }
         };
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("okk");
+    const handleSubmit = () => {
+        const postData = {
+            category,
+            description,
+            image,
+        };
+        console.log(postData);
+        axios
+            .put(`/app/updateCategory/${prop.category._id}`, postData)
+            .then((res) => {
+                fetchCategories();
+                setIsOpen(false);
+            })
+            .catch((err) => console.log(err.response?.data));
     };
 
     return (
@@ -55,22 +74,22 @@ function EditCategoryButton() {
                     <div className="text-center text-3xl mb-6 text-red font-semibold">
                         Edit Category
                     </div>
-                    <form className="w-2/3" onSubmit={(e) => handleSubmit(e)}>
+                    <div className="w-2/3">
                         <input
                             name="Category"
                             type="text"
                             required
-                            value={categoryName}
-                            onChange={(e) => setCategoryName(e.target.value)}
+                            value={category}
+                            onChange={(e) => setCategory(e.target.value)}
                             placeholder="Enter Category Name"
                             className="w-full p-4 font-medium rounded-md border-gray-400 border outline-none transition duration-150 ease-in-out mb-4 mt-2"
                         />
                         <input
-                            name="Discription"
+                            name="Description"
                             type="text"
-                            value={discription}
-                            onChange={(e) => setDiscription(e.target.value)}
-                            placeholder="Enter Category Discription"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            placeholder="Enter Category Description"
                             className="w-full p-4 font-medium rounded-md border-gray-400 border outline-none transition duration-150 ease-in-out mb-4 mt-2"
                         />
                         <div className="flex justify-between mt-4">
@@ -86,7 +105,7 @@ function EditCategoryButton() {
                                         className="rounded-lg px-6 p-3 font-medium bg-red text-white"
                                         htmlFor="image"
                                     >
-                                        Choose File
+                                        Choose&nbsp;File
                                     </label>
                                     <input
                                         className="hidden"
@@ -107,13 +126,13 @@ function EditCategoryButton() {
                         </div>
                         <div className="flex justify-center mt-6">
                             <button
-                                type="submit"
+                                onClick={handleSubmit}
                                 className="rounded-lg p-3 w-40 font-medium m-4 bg-red text-white"
                             >
                                 Done
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </ReactModal>
         </>

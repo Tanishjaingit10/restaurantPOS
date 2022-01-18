@@ -4,6 +4,9 @@ const food_item_template = new mongoose.Schema({
     availability: {
         type: String,
     },
+    availabilityType: {
+        type: String,
+    },
     category: {
         type: String,
     },
@@ -34,7 +37,7 @@ const food_item_template = new mongoose.Schema({
     foodItem: {
         type: String,
     },
-    foodType:{
+    foodType: {
         type: String,
     },
     image: {

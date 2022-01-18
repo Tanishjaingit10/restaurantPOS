@@ -28,17 +28,9 @@ const all_items = async (request, response) => {
 const update_item = async (request, response, next) => {
     let itemId = request.params.id;
     const { foodItem, category, image, description, price, availability } = request.body;
-    let updatedData = {
-        foodItem: foodItem,
-        category: category,
-        image: image,
-        description: description,
-        price: price,
-        availability: availability
-    }
-    if (!foodItem || !category || !price || !availability)
+    if (!foodItem || !price || !availability)
         return response.status(422).json({ error: "Please fill out the required fields!" })
-    items_template_copy.findOneAndUpdate({ foodItem: itemId }, { $set: updatedData }).then((data) => {
+    items_template_copy.findOneAndUpdate({ _id: itemId }, { $set: req.body }).then((data) => {
         if (data === null)
             response.json({ message: 'Item not found!' })
         else response.json({ message: 'Item updated successfully!' })
@@ -51,7 +43,7 @@ const update_item = async (request, response, next) => {
 
 const remove_item = async (request, response, next) => {
     let itemId = request.params.id;
-    items_template_copy.findOneAndDelete({foodItem:itemId}).then(() => {
+    items_template_copy.findOneAndDelete({_id:itemId}).then(() => {
         response.json({ message: 'Item removed successfully!' })
     })
         .catch(error => {
@@ -60,8 +52,23 @@ const remove_item = async (request, response, next) => {
 
 }
 
-
+const add_item = async (req, res) => {
+    const item = new items_template_copy(req.body);
+    if (!item.foodItem || !item.price || !item.availability || !item.foodType) {
+        res.status(422).json({
+            message: "Please fill out the required fields!",
+        });
+    } else {
+        item.save()
+            .then(() => {
+                res.status(201).json({ message: "Item added successfully!" });
+            })
+            .catch((error) => {
+                res.status(401).json({ message: "Item could not be added!" });
+            });
+    }
+}
 
 module.exports = {
-     get_item, all_items, update_item, remove_item
+     get_item, all_items, update_item, add_item, remove_item
 }

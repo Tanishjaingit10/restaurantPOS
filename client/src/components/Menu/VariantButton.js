@@ -1,18 +1,36 @@
 import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
-import EditCategoryButton from "./EditCategoryButton";
 
-const variantTemplate = { variant: "", description: "", price: "", key: "" };
-
-function VariantButton() {
+function VariantButton({ state: parentState }) {
+    const variantTemplate = {
+        variant: "",
+        description: "",
+        price: "",
+        key: "",
+    };
     const [isOpen, setIsOpen] = useState(false);
     const [finalVariant, setFinalVariant] = useState([]);
+
+    useEffect(() => {
+        setFinalVariant((prev) => {
+            let tempVar = parentState.finalVariant;
+            for (let i = 0; i < tempVar.length; i++)
+                tempVar[i]["key"] = Math.random();
+            return tempVar;
+        });
+        // eslint-disable-next-line
+    }, []);
 
     const handleAddVariant = () => {
         setFinalVariant((prev) => {
             prev = [...prev, { ...variantTemplate, key: Math.random() }];
             return prev;
         });
+    };
+
+    const handleSubmit = () => {
+        parentState.setFinalVariant(finalVariant);
+        setIsOpen(false);
     };
 
     return (
@@ -23,7 +41,8 @@ function VariantButton() {
                 id="itemVariant"
                 className="p-3 flex items-center justify-between bg-lightred text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
             >
-                Variant <span className="fas fa-chevron-down" />
+                <span>Variant ({finalVariant.length})</span>{" "}
+                <span className="fas fa-chevron-down" />
             </button>
 
             <ReactModal
@@ -65,7 +84,7 @@ function VariantButton() {
                                 + Add Variant
                             </button>
                             <button
-                                type="submit"
+                                onClick={handleSubmit}
                                 className="m-3 rounded-lg p-3 px-10 font-medium bg-red text-white"
                             >
                                 Done
@@ -93,17 +112,19 @@ function SingleVariant({ setFinalVariant, item }) {
 
     useEffect(() => {
         setVariant(item);
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
         setFinalVariant((prev) => {
-            for (let i = 0; i < prev.length; i++){
+            for (let i = 0; i < prev.length; i++) {
                 if (prev[i].key === variant?.key) {
                     prev[i] = variant;
                 }
             }
             return prev;
         });
+        // eslint-disable-next-line
     }, [variant]);
 
     return (

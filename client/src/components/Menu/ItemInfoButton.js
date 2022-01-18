@@ -1,16 +1,36 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useContext, useState } from "react";
 import ReactModal from "react-modal";
+import { CategoryContext } from "../../context/Category";
+import EditFoodItemButton from "./EditFoodItemButton";
 
-function ItemInfoButton() {
+function ItemInfoButton({ item, deleteFoodItem }) {
     const [isOpen, setIsOpen] = useState(false);
+    const { fetchItems } = useContext(CategoryContext);
+
+    const handleDelete = () => {
+        axios
+            .delete(`/app/removeItem/${item._id}`)
+            .then((res) => {
+                fetchItems();
+                setIsOpen(false);
+            })
+            .catch((err) => console.log(err.response));
+    };
 
     return (
-        <>
+        <div className="flex pr-4 h-full">
             <button
-                onClick={() => setIsOpen((prev) => !prev)}
-                className="text-center rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
+                onClick={handleDelete}
+                className={`far fa-trash-alt mt-2 h-6 text-red ${
+                    deleteFoodItem || "hidden"
+                }`}
+            />
+            <button
+                onClick={() => setIsOpen(true)}
+                className="text-center flex-1 rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
             >
-                French Fries
+                {item.foodItem}
             </button>
 
             <ReactModal
@@ -26,24 +46,134 @@ function ItemInfoButton() {
                     "flex justify-center absolute z-50 items-center w-screen h-screen"
                 }
             >
-                <div className="w-5/12 h-5/6 p-10 flex flex-col items-center relative bg-white rounded-xl">
+                <div className="w-1/2 h-5/6 p-10 flex flex-col items-center relative bg-white rounded-xl">
                     <button
                         onClick={() => setIsOpen(false)}
                         className="fas fa-times absolute text-2xl right-6 top-4"
                     />
-                    <div className="text-center font-semibold text-3xl mb-6 text-red font-semibold">
-                        Food Item - French Fries
+                    <div className="text-center text-3xl mb-6 text-red font-semibold">
+                        Food Item - {item.foodItem}
                     </div>
-                    <div className="w-2/3">
-                        <div className="flex justify-center mt-6">
-                            <button className="rounded-lg p-3 w-40 font-medium m-4 bg-red text-white">
-                                Done
+                    <div className="w-full h-full flex flex-col justify-between">
+                        <div className="grid grid-cols-3 w-full">
+                            <div className="col-span-2">
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Item Name
+                                    </div>
+                                    <div className="text-lg">
+                                        {item.foodItem}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Item Description
+                                    </div>
+                                    <div className="text-lg">
+                                        {item.description}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Time To Cook (ETA)
+                                    </div>
+                                    <div className="text-lg">{item.time}</div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Available
+                                    </div>
+                                    <div className="">
+                                        {item.availabilityType === "allTime"
+                                            ? "All Time"
+                                            : item.finalAvailable
+                                                  .filter(
+                                                      (day) =>
+                                                          day.startTime &&
+                                                          day.endTime
+                                                  )
+                                                  .map((day) => (
+                                                      <div
+                                                          key={day.day}
+                                                          className="flex"
+                                                      >
+                                                          <div className="w-28">
+                                                              {day.day}
+                                                          </div>{" "}
+                                                          | {day.startTime} -{" "}
+                                                          {day.endTime}
+                                                      </div>
+                                                  ))}
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Discount
+                                    </div>
+                                    <div className="text-lg">
+                                        {item.discount}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Variant
+                                    </div>
+                                    {item.finalVariant.map((variant) => (
+                                        <div
+                                            className="text-lg"
+                                            key={variant._id}
+                                        >
+                                            {variant.variant} / ${variant.price}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Item Unit Price
+                                    </div>
+                                    <div className="text-lg">${item.price}</div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Category
+                                    </div>
+                                    <div className="text-lg">
+                                        {item.category}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <div className="text-gray-500 text-sm">
+                                        Food Type
+                                    </div>
+                                    <div className="text-lg">
+                                        {item.foodType === "veg"
+                                            ? "Veg"
+                                            : "Non - Veg"}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex justify-end mt-6">
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="rounded-lg p-2 w-40 font-medium mx-2 bg-red text-white"
+                            >
+                                Menu
                             </button>
+                            <button
+                                onClick={handleDelete}
+                                className="rounded-lg p-2 w-40 font-medium mx-2 bg-red text-white"
+                            >
+                                - Delete Food Item
+                            </button>
+                            <EditFoodItemButton item={item} />
                         </div>
                     </div>
                 </div>
             </ReactModal>
-        </>
+        </div>
     );
 }
 
