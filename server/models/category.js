@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const category_template = new mongoose.Schema({
     category: {
-        type: String
+        type: String,
+        required: true,
     },
     description: {
         type: String,
-        required: true,
     },
     image: {
         type: String,

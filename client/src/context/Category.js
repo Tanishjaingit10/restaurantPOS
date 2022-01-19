@@ -7,20 +7,17 @@ export const CategoryProvider = (props) => {
     const [categories, setCategories] = useState([]);
     const [foodItems, setFoodItems] = useState([]);
 
-    const fetchCategories = () => {
-        axios
+    const fetchCategories = async () => {
+        const res = await axios
             .get("/app/category")
-            .then((res) => setCategories(res.data))
-            .catch((err) => console.log("Error", err.response));
-    };
-    const fetchItems = () => {
-        axios
-            .get("/app/items")
-            .then((res) => setFoodItems(res.data))
-            .catch((err) => console.log("Error", err.response));
+        setCategories(res.data)
     };
 
-    console.log("foodItems",foodItems)
+    const fetchItems = async () => {
+        const res = await axios
+            .get("/app/items")
+        setFoodItems(res.data)
+    };
 
     useEffect(() => {
         fetchCategories();

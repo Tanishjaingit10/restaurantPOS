@@ -3,8 +3,8 @@ const add_category = async (request, response, next) => {
     const { category, description, image } = request.body;
     if (!category) {
         return response
-            .status(422)
-            .json({ error: "Please fill out the required fields!" });
+            .status(400)
+            .json({ message: "Please fill out the required fields!" });
     }
 
     await category_template_copy
@@ -12,8 +12,8 @@ const add_category = async (request, response, next) => {
         .then((categoryExist) => {
             if (categoryExist) {
                 return response
-                    .status(402)
-                    .json({ error: "Item Already Exists!" });
+                    .status(409)
+                    .json({ message: "Item Already Exists!" });
             }
             const cat = new category_template_copy({
                 category,
@@ -28,8 +28,8 @@ const add_category = async (request, response, next) => {
                 })
                 .catch((error) => {
                     response
-                        .status(401)
-                        .json({ error: "Item could not be added!" });
+                        .status(500)
+                        .json({ message: "Item could not be added!" });
                 });
         });
 };
@@ -43,7 +43,7 @@ const update_category = async (request, response, next) => {
     };
     if (!category)
         return response
-            .status(422)
+            .status(400)
             .json({ error: "Please fill out the required fields!" });
     category_template_copy
         .findOneAndUpdate({ _id: itemId }, { $set: updatedData })
@@ -56,7 +56,7 @@ const update_category = async (request, response, next) => {
         })
         .catch((error) => {
             response
-                .status(401)
+                .status(500)
                 .json({ message: "Item could not be updated!" });
         });
 };

@@ -27,7 +27,7 @@ const update_item = async (request, response, next) => {
     if (!foodItem || !price || !availability)
         return response
             .status(422)
-            .json({ error: "Please fill out the required fields!" });
+            .json({ message: "Please fill out the required fields!" });
     items_template_copy
         .findOneAndUpdate({ _id: itemId }, { $set: request.body })
         .then((data) => {

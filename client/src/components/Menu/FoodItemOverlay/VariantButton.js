@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import ReactModal from "react-modal";
+import { Modal } from "../../Utils";
 
 function VariantButton({ state: parentState }) {
     const variantTemplate = {
@@ -45,54 +45,44 @@ function VariantButton({ state: parentState }) {
                 <span className="fas fa-chevron-down" />
             </button>
 
-            <ReactModal
+            <Modal
                 isOpen={isOpen}
-                style={{
-                    overlay: {
-                        backgroundColor: "rgba(0,0,0,0.2)",
-                        backdropFilter: "blur(2px)",
-                    },
-                }}
-                contentLabel={"Add Category Modal"}
-                className={
-                    "flex justify-center absolute z-50 items-center w-screen h-screen"
-                }
+                controller={setIsOpen}
+                className="w-7/12 p-10 flex flex-col items-center relative bg-white rounded-xl"
             >
-                <div className="w-7/12 p-10 flex flex-col items-center relative bg-white rounded-xl">
-                    <button
-                        onClick={() => setIsOpen(false)}
-                        className="fas fa-times absolute text-2xl right-6 top-4"
-                    />
-                    <div className="text-center text-3xl mb-6 text-red font-semibold">
-                        Variant
-                    </div>
-                    <div className="w-full">
-                        {finalVariant.map((item) => (
-                            <span key={item.key}>
-                                <SingleVariant
-                                    item={item}
-                                    setFinalVariant={setFinalVariant}
-                                />
-                            </span>
-                        ))}
-                        <div className="flex justify-center">
-                            <button
-                                onClick={handleAddVariant}
-                                type="submit"
-                                className="m-3 rounded-lg p-3 px-10 font-medium bg-green text-white"
-                            >
-                                + Add Variant
-                            </button>
-                            <button
-                                onClick={handleSubmit}
-                                className="m-3 rounded-lg p-3 px-10 font-medium bg-red text-white"
-                            >
-                                Done
-                            </button>
-                        </div>
+                <button
+                    onClick={() => setIsOpen(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                />
+                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                    Variant
+                </div>
+                <div className="w-full">
+                    {finalVariant.map((item) => (
+                        <span key={item.key}>
+                            <SingleVariant
+                                item={item}
+                                setFinalVariant={setFinalVariant}
+                            />
+                        </span>
+                    ))}
+                    <div className="flex justify-center">
+                        <button
+                            onClick={handleAddVariant}
+                            type="submit"
+                            className="m-3 rounded-lg p-3 px-10 font-medium bg-green text-white"
+                        >
+                            + Add Variant
+                        </button>
+                        <button
+                            onClick={handleSubmit}
+                            className="m-3 rounded-lg p-3 px-10 font-medium bg-red text-white"
+                        >
+                            Done
+                        </button>
                     </div>
                 </div>
-            </ReactModal>
+            </Modal>
         </>
     );
 }
