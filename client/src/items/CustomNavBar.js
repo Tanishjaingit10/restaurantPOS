@@ -23,7 +23,7 @@ const CustomNavBar = () => {
           {/* <a onClick={() => setMenuIsOpen(true)} className="cursor-pointer">
             <i className="fas fa-bars font-semibold"></i>
           </a> */}
-          <img src={Logo} className="w-16 h-14 ml-0" />
+          <img src={Logo} alt="Logo" className="w-16 h-14 ml-0" />
         </div>
         <button
           style={{color: theme.backgroundColor}}

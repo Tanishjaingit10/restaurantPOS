@@ -66,7 +66,7 @@ const Routes = () => {
           <Route exact path="/additem" component={ItemForm} />
           <Route exact path="/itemdisplay/:id" component={ItemDisplay} />
           <RouteWrapper exact path="/tables" component={Tables} layout={DefaultLayout} />
-          <Route exact path="/pos" component={Pos} />
+          <RouteWrapper exact path="/pos" component={Pos} layout={DefaultLayout} />
           <Route exact path="/addTable" component={TableForm} />
           <Route exact path="/categoryList" component={CategoryList} />
           <Route exact path="/payments" component={Payment} />

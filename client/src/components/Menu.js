@@ -10,7 +10,11 @@ import FoodItemOverlayButton from "./Menu/FoodItemOverlayButton";
 import SpinLoader from "./SpinLoader";
 import CategoryOverlayButton from "./Menu/CategoryOverlayButton";
 import axios from "axios";
-import { nonVegIconImageBase64, vegIconImageBase64 } from "../constants";
+import {
+    nonVegIconImageBase64,
+    UncategorizedBgImageBase64,
+    vegIconImageBase64,
+} from "../constants";
 
 const Menu = () => {
     const theme = useContext(ThemeContext);
@@ -133,7 +137,7 @@ const Menu = () => {
                                         style={{
                                             backgroundImage: `url(${item?.image})`,
                                         }}
-                                        className="rounded-md bg-center flex-1"
+                                        className="rounded-md bg-center flex-1 mr-4"
                                     >
                                         <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
                                             {item.category}
@@ -144,6 +148,64 @@ const Menu = () => {
                             <div className="grid grid-cols-6 py-2">
                                 {foodItems
                                     .filter((e) => e.category === item.category)
+                                    .map((item) => (
+                                        <div
+                                            key={item._id}
+                                            className="flex pr-4"
+                                        >
+                                            <button
+                                                onClick={() =>
+                                                    handleDeleteFoodItem(item)
+                                                }
+                                                className={`far fa-trash-alt mt-2 p-1 pl-0 h-6 text-red ${
+                                                    deleteFoodItem || "hidden"
+                                                }`}
+                                            />
+                                            <ItemInfoButton
+                                                item={item}
+                                                className=" text-center relative flex-1 rounded-md bg-yellow-100 p-8 my-2 text-xl shadow-md"
+                                            >
+                                                <img
+                                                    className="absolute w-4 top-3 right-3"
+                                                    src={
+                                                        item.foodType === "veg"
+                                                            ? vegIconImageBase64
+                                                            : nonVegIconImageBase64
+                                                    }
+                                                    alt=""
+                                                />
+                                                {item.foodItem}
+                                            </ItemInfoButton>
+                                        </div>
+                                    ))}
+                            </div>
+                        </div>
+                    ))}
+                    {foodItems.some(
+                        (e) =>
+                            !categories.some((x) => e.category === x.category)
+                    ) ? (
+                        <div>
+                            <div className="grid my-1 grid-cols-6">
+                                <div
+                                    style={{
+                                        backgroundImage: `url(${UncategorizedBgImageBase64})`,
+                                    }}
+                                    className="rounded-md bg-cover bg-center flex-1 mr-4"
+                                >
+                                    <div className="bg-white text-center bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
+                                        Uncategorized
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-6 py-2">
+                                {foodItems
+                                    .filter(
+                                        (e) =>
+                                            !categories.some(
+                                                (x) => e.category === x.category
+                                            )
+                                    )
                                     .map((item) => (
                                         <div
                                             key={item._id}
@@ -172,35 +234,6 @@ const Menu = () => {
                                                 />
                                                 {item.foodItem}
                                             </ItemInfoButton>
-                                        </div>
-                                    ))}
-                            </div>
-                        </div>
-                    ))}
-                    {foodItems.some(
-                        (e) =>
-                            !categories.some((x) => e.category === x.category)
-                    ) ? (
-                        <div>
-                            <div className="grid my-1 grid-cols-6">
-                                <div className="px-8 text-center py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
-                                    Uncategorized
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-6 py-2">
-                                {foodItems
-                                    .filter(
-                                        (e) =>
-                                            !categories.some(
-                                                (x) => e.category === x.category
-                                            )
-                                    )
-                                    .map((item) => (
-                                        <div key={item._id}>
-                                            <ItemInfoButton
-                                                deleteFoodItem={deleteFoodItem}
-                                                item={item}
-                                            />
                                         </div>
                                     ))}
                             </div>

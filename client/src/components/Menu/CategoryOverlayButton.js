@@ -5,7 +5,7 @@ import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Utils";
 
-function CategoryOverlayButton({ item, children, className }) {
+function CategoryOverlayButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -71,7 +71,7 @@ function CategoryOverlayButton({ item, children, className }) {
         <>
             <button
                 onClick={() => setIsOpen((prev) => !prev)}
-                className={className}
+                {...rest}
             >
                 {children}
             </button>
@@ -79,7 +79,7 @@ function CategoryOverlayButton({ item, children, className }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="w-5/12 h-5/6 p-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="w-5/12 p-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && <SpinLoader />}
                 <button
