@@ -8,27 +8,30 @@ import { CategoryProvider } from "./context/Category";
 import { CustomersProvider } from "./context/Customers";
 import { OrdersProvider } from "./context/Orders";
 import { ThemeProvider } from "./context/Theme";
+import { NotificationProvider } from "./context/Notification";
 
 function App() {
-  return (
-    <div>
-      <CategoryProvider>
-        <CustomersProvider>
-          <OrdersProvider>
-            <CustomerProvider>
-              <OrderProvider>
-                <PaymentProvider>
-                  <ThemeProvider>
-                    <Routes />
-                  </ThemeProvider>
-                </PaymentProvider>
-              </OrderProvider>
-            </CustomerProvider>
-          </OrdersProvider>
-        </CustomersProvider>
-      </CategoryProvider>
-    </div>
-  );
+    return (
+        <div>
+            <CategoryProvider>
+                <CustomersProvider>
+                    <OrdersProvider>
+                        <CustomerProvider>
+                            <OrderProvider>
+                                <PaymentProvider>
+                                    <ThemeProvider>
+                                        <NotificationProvider>
+                                            <Routes />
+                                        </NotificationProvider>
+                                    </ThemeProvider>
+                                </PaymentProvider>
+                            </OrderProvider>
+                        </CustomerProvider>
+                    </OrdersProvider>
+                </CustomersProvider>
+            </CategoryProvider>
+        </div>
+    );
 }
 
 export default App;

@@ -1,8 +1,6 @@
 import React from "react";
 import CustomNavBar from "../items/CustomNavBar";
 import Content from "./Content";
-import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
 
 const Home = () => {
   return (

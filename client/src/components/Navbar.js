@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 
 const Navbar = () => {
@@ -9,10 +10,10 @@ const Navbar = () => {
 				<div className="">
 					<ul className="flex flex-1 md:flex-none w-1/3 justify-content-center ml-11">
 						<li className="flex-1 md:flex-none md:mr-3 border-primary border-4 px-4 py-2 w-full text-center">
-						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="/counter"><i className="far fa-clock mr-2"></i><span>Counter Dashboard</span></a>
+						<Link className="block py-2 px-4 text-primary font-semibold text-2xl" to="/counter"><i className="far fa-clock mr-2"></i><span>Counter Dashboard</span></Link>
 						</li>
 						<li className="flex-1 md:flex-none md:mr-3 border-primary border-4 px-4 py-2 w-full text-center">
-						<a className="block py-2 px-4 text-primary font-semibold text-2xl" href="/pos"><i className="far fa-clone mr-2"></i><span>POS</span></a>
+						<Link className="block py-2 px-4 text-primary font-semibold text-2xl" to="/pos"><i className="far fa-clone mr-2"></i><span>POS</span></Link>
 						</li>
 						
 					</ul>

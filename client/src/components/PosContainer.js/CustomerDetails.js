@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 
 const CustomerDetails = () => {
   const { id } = useParams();
@@ -47,9 +48,9 @@ const CustomerDetails = () => {
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-            <a href="/pos">
+            <Link to="/pos">
               <i className="fas fa-arrow-left mr-4"></i>Back
-            </a>
+            </Link>
           </div>
           <div className="  text-white px-2  font-semibold">
             Customer Details
@@ -71,7 +72,7 @@ const CustomerDetails = () => {
             <p className="text-primary text-l font-semibold">{cust.email}</p>
           </div>
           <div className="bg-primary text-white py-4 my-2 text-xl text-center font-semibold">
-            <a href={"/editcustomer/" + id}>Edit</a>
+            <Link to={"/editcustomer/" + id}>Edit</Link>
           </div>
         </div>
         <div className="flex flex-col w-4/5 relative">
@@ -94,7 +95,7 @@ const CustomerDetails = () => {
           </div>
 
           <button className="bg-green text-white py-4 text-xl w-1/3 font-semibold mt-8 mx-auto">
-            <a href="/pos"> Done</a>
+            <Link to="/pos"> Done</Link>
           </button>
 
         </div>

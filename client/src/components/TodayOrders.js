@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Loader from "./Loader";
 import Popup from "./Popup";
 const Orders = () => {
@@ -78,9 +79,9 @@ const Orders = () => {
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-            <a href="/home">
+            <Link to="/home">
               <i className="fas fa-home font-semibold mr-4"></i>
-            </a>
+            </Link>
           </div>
           <div className="justify-end  flex flex-row mr-12">
             <div className="text-white px-2 font-semibold mr-8">Today's Orders</div>

@@ -1,4 +1,5 @@
 import React, {useState,useEffect} from 'react'
+import { Link } from 'react-router-dom';
 import Loader from "../Loader";
 const TakeAttendance = () => {
   const [search, setSearch] = useState("");
@@ -44,9 +45,9 @@ const TakeAttendance = () => {
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-            <a href="/attendance">
+            <Link to="/attendance">
               <i className="fas fa-arrow-left font-semibold mr-4"/>Back
-            </a>
+            </Link>
           </div>
           <div className="justify-end  flex flex-row mr-12">
             <div className="text-white px-2 font-semibold mr-8">Take Attendance</div>

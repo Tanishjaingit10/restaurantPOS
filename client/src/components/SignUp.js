@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import signup from "../popup";
 import options from "../levels";
 import Logo from "../images/logo.jpeg";
@@ -179,9 +179,9 @@ const SignUp = () => {
             </div>
             <p className="text-center">
               Already registered ?{" "}
-              <a href="/login" className="underline">
+              <Link to="/login" className="underline">
                 Login
-              </a>
+              </Link>
             </p>
           </form>
         </div>

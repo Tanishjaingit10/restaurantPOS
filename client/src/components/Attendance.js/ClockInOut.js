@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Popup from '../Popup';
 // import signin from '.../popup.js';
 let buttonValue = 'Clock In';
@@ -93,9 +93,9 @@ const ClockInOut = () => {
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-            <a href="/attendance">
+            <Link to="/attendance">
               <i className="fas fa-arrow-left mr-4" />Back
-            </a>
+            </Link>
           </div>
           <div className="text-white px-2  font-semibold">
             Clock In / Out
@@ -134,7 +134,7 @@ const ClockInOut = () => {
             <button className="bg-green w-full py-4 text-white font-semibold text-2xl focus:outline-none"
               onClick={enterUser} type="submit">{buttonValue}</button>
           </div>
-          {/* <p className="text-center">New User ? <a href="/" className="underline">Sign Up</a></p> */}
+          {/* <p className="text-center">New User ? <Link to="/" className="underline">Sign Up</Link></p> */}
         </form>
       </div>
       {isOpen && <Popup

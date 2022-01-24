@@ -20,10 +20,10 @@ const CustomNavBar = () => {
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-shrink md:w-1/3 justify-start md:justify-start text-white ml-0">
-          {/* <a onClick={() => setMenuIsOpen(true)} className="cursor-pointer">
+          {/* <button onClick={() => setMenuIsOpen(true)} className="cursor-pointer">
             <i className="fas fa-bars font-semibold"></i>
-          </a> */}
-          <img src={Logo} className="w-16 h-14 ml-0" />
+          </button> */}
+          <img src={Logo} alt="Logo" className="w-16 h-14 ml-0" />
         </div>
         <button
           style={{color: theme.backgroundColor}}

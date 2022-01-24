@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import colour from '../color';
 import Popup from './Popup';
 import signup from '../popup';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 
 const CategoryForm = () => {
     const history = useHistory();
@@ -144,7 +144,7 @@ const CategoryForm = () => {
         <div>
             <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                 <div className="flex flex-wrap items-center">
-                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white"><a href="/menu"><i className="fas fa-arrow-left mr-4"></i>Back</a></div>
+                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white"><Link to="/menu"><i className="fas fa-arrow-left mr-4"></i>Back</Link></div>
                     <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 font-semibold">{id ? 'Edit Category' : 'Add Category'}</div>
                 </div>
             </nav>
