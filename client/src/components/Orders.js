@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
 import { useDebounce, useDebouncedCallback } from "use-debounce";
-import CustomNavBar from "../items/CustomNavBar";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "../items/CustomButton";
 import Select, { StylesConfig } from 'react-select';
@@ -18,14 +17,14 @@ import { GrClose } from 'react-icons/gr';
 let len = 0;
 const Orders = () => {
   // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
-  const [search, setSearch] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [rows, setRows] = useState(false);
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageLimit, setPageLimit] = useState(10);
 	const [reload, setReload] = useState(false)
+	const [pageList, setPageList] = useState([])
+	const [paginagtionBtn, setPaginagtionBtn] = useState({}) 
 	const [componentLoading, setComponentLoading] = useState(false)
 	const [filterOrderStartDate, setFilterOrderStartDate] = useState(new Date())
 	const [filterOrderStopDate, setFilterOrderStopDate] = useState(new Date())
@@ -35,68 +34,60 @@ const Orders = () => {
 	const [cancelledOrders, setCancelledOrders] = useState(0)
   const theme = useContext(ThemeContext);
 
-  const debounced = useDebouncedCallback(
-    (value) => {
-      setSearch(value);
-    },
-    0,
-    // The maximum time func is allowed to be delayed before it's invoked:
-    { maxWait: 2000 }
-  );
-
 	useEffect(() => {
+    setPageList([])
 		fetch("/app/orders")
 		.then((res) => res.json())
 		.then((json) => {
 			if (json !== "undefined") {
+				setOrders(json);
+				console.log(json)
+				setComponentLoading(false)
+				setLoading(false)
+        var completedOrders = 0;
+        var pendingOrders = 0;
+        var cancelledOrders = 0;
+        
 				for (let i = 0; i < json.length; i++) {
 					if (json[i].payment.orderStatus == 'Completed') {
-						setCompletedOrders(completedOrders => completedOrders + 1)
+            completedOrders += 1;
 					}
 					else if (json[i].payment.orderStatus == 'Processing') {
-						setPendingOrders(pendingOrders => pendingOrders + 1)
+            pendingOrders += 1;
 					}
 					else if (json[i].payment.orderStatus == 'Cancelled') {
-						setCancelledOrders(cancelledOrders => cancelledOrders + 1)
+            cancelledOrders += 1;
 					}
 				}
-			}
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-	}, [])
-
-	useEffect(() => {
-		setLoading(true)
-    fetch("/app/orders")
-		.then((res) => res.json())
-		.then((json) => {
-			if (json !== "undefined") {
-				len = json.length;
-				setOrders(json);
-				setLoading(false)
+        setCompletedOrders(completedOrders)
+        setPendingOrders(pendingOrders)
+        setCancelledOrders(cancelledOrders)
+				var dict = {}
+				var len = json.length
+				for (var i = 0; i < len/pageLimit; i++) {
+					setPageList((pageList) => [...pageList, i+1])
+				}
+				dict[1] = 'Active'
+				setPaginagtionBtn(dict)
 				setPageNumber(1)
 				setPageLimit(10)
 			}
 		})
 		.catch((err) => {
 			setLoading(false);
-			console.log("1", err);
+			console.log("error: ", err);
 			setPageNumber(1)
 			setPageLimit(10)
 		});
 }, [reload])
 
 	const getOrdersByInvoices = (invoices) => {
-		console.log("getOrdersByInvoices", invoices)
 		setLoading(true)
 		fetch(`/app/orderById/${invoices}`)
 		.then((res) => res.json())
 		.then((json) => {
 			if (json !== "undefined") {
 				len = json.length;
-				console.log(len)
 				setOrders(json);
 				setLoading(false)
 				setPageNumber(1)
@@ -105,7 +96,7 @@ const Orders = () => {
 		})
 		.catch((err) => {
 			setLoading(false);
-			console.log("1", err);
+			console.log("error: ", err);
 			setPageNumber(1)
 			setPageLimit(10)
 		});
@@ -119,7 +110,6 @@ const Orders = () => {
 			.then((json) => {
 				if (json !== "undefined") {
 					len = json.length;
-					console.log(len)
 					setOrders(json);
 					setLoading(false)
 					setPageNumber(1)
@@ -128,7 +118,7 @@ const Orders = () => {
 			})
 			.catch((err) => {
 				setLoading(false);
-				console.log("1", err);
+				console.log("error: ", err);
 				setPageNumber(1)
 				setPageLimit(10)
 			});
@@ -145,7 +135,6 @@ const Orders = () => {
 		.then((json) => {
 			if (json !== "undefined") {
 				len = json.length;
-				console.log(len)
 				setOrders(json);
 				setLoading(false)
 				setPageNumber(1)
@@ -154,7 +143,7 @@ const Orders = () => {
 		})
 		.catch((err) => {
 			setLoading(false);
-			console.log("1", err);
+			console.log("eror: ", err);
 			setPageNumber(1)
 			setPageLimit(10)
 		});
@@ -167,9 +156,28 @@ const Orders = () => {
 		{ value: 200, label: '200' }
 	]
 
+	const updatePageList = (pageLimit) => {
+		setPageLimit(pageLimit)
+		var pageList = []
+		for (var i = 0; i < orders.length/pageLimit; i++) {
+			pageList.push(i+1)
+		}
+		setPageList(pageList)
+	}
+
+	const updatePageBtnDict = (state) => {
+		var pageDict = paginagtionBtn; 
+		var updatePageDict = pageDict; 
+		updatePageDict[pageNumber] = ''; 
+		if (state == 'prev')
+			updatePageDict[pageNumber - 1] = 'Active'; 
+		else
+			updatePageDict[pageNumber + 1] = 'Active'; 
+		setPaginagtionBtn(updatePageDict)
+	}
   return (
     <div>
-      <CustomNavBar />
+		{console.log(componentLoading)}
 			{ componentLoading ?
 			<Loader /> : null }
       <div className="flex flex-col w-full">
@@ -178,7 +186,7 @@ const Orders = () => {
 					<div className="flex items-center justify-between my-5">
 						<h2 className="font-bold text-2xl text-gray-600">Orders Report</h2>
 						<div className="inline-block mx-5 rounded w-1/4">
-							<input onChange={(value) => {if (value.target.value.length == 7) getOrdersByInvoices(value.target.value); if (value.target.value.length == 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: invoice/ order id"/>
+							<input onChange={(value) => {if (value.target.value.length == 7) getOrdersByInvoices(value.target.value); if (value.target.value.length == 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: order id"/>
 							<GoSearch size={25} className="absolute inline-block mt-4 -ml-8" color="#a5a5a5d1"/>
 						</div>
 						<div className="flex flex-row items-center">
@@ -211,14 +219,14 @@ const Orders = () => {
 									<Select
 										defaultValue={options[0]}
 										options={options}
-										onChange={(value) => setPageLimit(value.value)}
+										onChange={(value) => updatePageList(value.value)}
 									/>
 								</div>
 								<h1 className="text-lg inline-block">Records</h1>
 							</div>
 							<div className="my-4">
 								<div className="flex flex-row items-center justify-end">
-									<div onChange={event => {console.log(event.target.value); getOrderByStatus(event.target.value)}}>
+									<div onChange={event => {getOrderByStatus(event.target.value)}}>
 									<input
 										type="radio"
 										value="Processing"
@@ -254,7 +262,7 @@ const Orders = () => {
 											style={{ backgroundColor: theme.backgroundColor }}
 											className="text-white py-2 px-2 rounded-md mx-2 shadow-md"
 										>
-											<i onClick={() => setReload(!reload)}><FiRefreshCcw size={22}/></i>
+											<i onClick={() => {setReload(!reload); setComponentLoading(true)}}><FiRefreshCcw size={22}/></i>
 										</div>
 										<CustomButton
 											title="Print"
@@ -303,7 +311,8 @@ const Orders = () => {
 									</th>
 								</tr>
 							</thead>
-							<tbody className="w-full">{loading ? <Loader /> : 
+							<tbody className="w-full">
+							{loading ? <Loader /> : 
 								orders.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).map(order => {
 									return (
 										<tr className="font-medium ">
@@ -342,25 +351,53 @@ const Orders = () => {
 						</div>
 						<div className="mt-8">
 							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
+								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev')}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
 									Previous
 								</button>
-								<button href="#" onClick={() => setPageNumber(1)} className="z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									1
-								</button>
-								<button href="#" onClick={() => setPageNumber(2)} className="bg-white relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									2
-								</button>
-								<button href="#" onClick={() => setPageNumber(3)} className="bg-white hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									3
-								</button>
-								<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
-									...
-								</span>
-								<button href="#" onClick={() => setPageNumber(10)} className="bg-white relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									10
-								</button>
-								<button href="#" onClick={() => setPageNumber((pageNumber) => pageNumber + 1)} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
+								{(() => {
+									if (pageList.length <= 4 ){
+										return(
+										pageList.slice(0, 4).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+										)
+									}
+									else {
+										return(
+										pageList.slice(0, 2).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+										)
+									}
+								}
+								)()}
+									{
+										pageList.length > 4 ?
+										<>
+										<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
+										...
+										</span>
+										{
+										pageList.slice(pageList.length - 1, pageList.length).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+									}
+									</> : null
+										
+									}
+								<button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next')}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
 									Next
 								</button>
 							</nav>

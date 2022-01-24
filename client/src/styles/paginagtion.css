@@ -5,7 +5,15 @@
     color: rgba(229, 73, 65, 1);
     background-color: white;
 }
-.pagination_btn:hover {
+
+.pagination_btnActive {
+    border-radius: 5px;
+    border-color: rgba(229, 73, 65, 1);
+    border-width: 1px;
+    background-color: rgba(229, 73, 65, 1);
+    color: white;
+}
+.pagination_btn:hover:enabled {
     background-color: rgba(229, 73, 65, 1);
     color: white;
 }
@@ -18,4 +26,10 @@
 .pagination_btn:focus {
     background-color: rgba(229, 73, 65, 1);
     color: white;
+}
+
+.pagination_btn:disabled {
+    background-color: none;
+    border-color: rgb(255, 188, 185);
+    color: rgb(255, 188, 185);
 }

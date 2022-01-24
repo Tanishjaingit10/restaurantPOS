@@ -1,12 +1,8 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
-import Table from 'react-tailwind-table';
 import CustomButton from "../items/CustomButton";
 import { ThemeContext } from "../context/Theme";
-// import 'react-tailwind-table/dist/index.css';
-import CustomNavBar from "../items/CustomNavBar";
-// import DatePicker from "react-datepicker";
 import DateFnsUtils from "@date-io/date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -39,19 +35,29 @@ const AllReservations = () => {
 	const [pageLimit, setPageLimit] = useState(10);
 	const [reload, setReload] = useState(false)
 	const [componentLoading, setComponentLoading] = useState(false)
+	const [pageList, setPageList] = useState([])
+	const [paginagtionBtn, setPaginagtionBtn] = useState({}) 
   const theme = useContext(ThemeContext);
 
 	var currDate = new Date()
   
 	useEffect(() => {
+		setPageList([])
 		setLoading(true)
+		setPageNumber(1)
+		setPageLimit(10)
 		fetch("/app/allReservations")
     .then((res) => res.json())
     .then((json) => {
 			setAllReservations(json)
 			setLoading(false);
-			setPageNumber(1)
-			setPageLimit(10)
+			var dict = {}
+			var len = json.length
+			for (var i = 0; i < len/pageLimit; i++) {
+				setPageList((pageList) => [...pageList, i+1])
+			}
+			dict[1] = 'Active'
+			setPaginagtionBtn(dict)
     })
     .catch((err) => {
 			console.log(err);
@@ -166,6 +172,7 @@ const AllReservations = () => {
 	}
 
 	const options = [
+		{ value: 1, label: '1' },
 		{ value: 10, label: '10' },
 		{ value: 50, label: '50' },
 		{ value: 100, label: '100' },
@@ -175,6 +182,27 @@ const AllReservations = () => {
 	const selectCustomeStyle = {
 		backgroundColor: theme.backgroundColor
 	}
+
+	const updatePageList = (pageLimit) => {
+		setPageLimit(pageLimit)
+		var pageList = []
+		for (var i = 0; i < allReservations.length/pageLimit; i++) {
+			pageList.push(i+1)
+		}
+		setPageList(pageList)
+	}
+
+	const updatePageBtnDict = (state) => {
+		var pageDict = paginagtionBtn; 
+		var updatePageDict = pageDict; 
+		updatePageDict[pageNumber] = ''; 
+		if (state == 'prev')
+			updatePageDict[pageNumber - 1] = 'Active'; 
+		else
+			updatePageDict[pageNumber + 1] = 'Active'; 
+		setPaginagtionBtn(updatePageDict)
+	}
+
 
 	return (
 		<div>
@@ -249,9 +277,9 @@ const AllReservations = () => {
 							<h1 className="text-lg inline-block ml-8">Display</h1>
 							<div style={{width: '150px'}} className="inline-block mx-5 rounded">
 								<Select
-									defaultValue={options[0]}
+									defaultValue={pageLimit}
 									options={options}
-									onChange={(value) => setPageLimit(value.value)}
+									onChange={(value) => {updatePageList(value.value)}}
 								/>
 							</div>
 							<h1 className="text-lg inline-block">Records</h1>
@@ -346,25 +374,54 @@ const AllReservations = () => {
 					<div className="flex items-end justify-end my-8">
 						<div className="mt-8">
 							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
+								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev')}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
 									Previous
 								</button>
-								<button href="#" onClick={() => setPageNumber(1)} className="z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									1
-								</button>
-								<button href="#" onClick={() => setPageNumber(2)} className="bg-white relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									2
-								</button>
-								<button href="#" onClick={() => setPageNumber(3)} className="bg-white hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									3
-								</button>
-								<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
-									...
-								</span>
-								<button href="#" onClick={() => setPageNumber(10)} className="bg-white relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									10
-								</button>
-								<button href="#" onClick={() => setPageNumber((pageNumber) => pageNumber + 1)} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
+								{console.log(pageList, pageList[-1])}
+								{(() => {
+									if (pageList.length <= 4 ){
+										return(
+										pageList.slice(0, 4).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+										)
+									}
+									else {
+										return(
+										pageList.slice(0, 2).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+										)
+									}
+								}
+								)()}
+									{
+										pageList.length > 4 ?
+										<>
+										<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
+										...
+										</span>
+										{
+										pageList.slice(pageList.length - 1, pageList.length).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+									}
+									</> : null
+										
+									}
+								<button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next')}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
 									Next
 								</button>
 							</nav>

@@ -16,7 +16,6 @@ import { GrClose } from 'react-icons/gr';
 import {MdOutlineDelete} from 'react-icons/md'
 import Select, { StylesConfig } from 'react-select';
 import Modal from "react-modal";
-import CustomNavBar from "../items/CustomNavBar";
 import {materialTheme} from '../styles/clockMaterialTheme';
 
 let arr = new Array(1000000).fill(false);
@@ -207,7 +206,6 @@ const Tables = () => {
 
   return (
     <div className="">
-        <CustomNavBar />
 			{ componentLoading ?
 			<Loader /> : null }
       <div className="flex flex-row justify-between items-center h-20 px-10 border-b-2 border-gray-300">

@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useContext} from 'react'
 import Loader from "../Loader";
-import CustomNavBar from "../../items/CustomNavBar";
 import { ThemeContext } from "../../context/Theme";
 import Select from 'react-select';
 import CustomButton from "../../items/CustomButton";
@@ -20,6 +19,8 @@ const ViewAttendance = () => {
 	const [componentLoading, setComponentLoading] = useState(false)
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageLimit, setPageLimit] = useState(10);
+	const [pageList, setPageList] = useState([])
+	const [paginagtionBtn, setPaginagtionBtn] = useState({}) 
 	const [filterAttendanceStartDate, setFilterAttendanceStartDate] = useState(new Date())
 	const [filterAttendanceStopDate, setFilterAttendanceStopDate] = useState(new Date())
 	const [selectAttendanceFilter, setSelectAttendanceFilter] = useState(false)
@@ -27,16 +28,15 @@ const ViewAttendance = () => {
   const theme = useContext(ThemeContext);
 
 	useEffect(() => {
+		setPageList([])
 		fetch("/app/users")
       .then((res) => res.json())
       .then((json) => {
         if (json !== "undefined") {
-					setUsers(json);
 					var dict = {}
 					for (var i = 0; i < json.length; i++) {
 						dict[json[i]['_id']] = json[i]
 					}
-					console.log(dict)
 					setUsers(dict);
 					fetch("/app/attendance")
 					.then((res) => res.json())
@@ -44,11 +44,20 @@ const ViewAttendance = () => {
 						if (json !== "undefined") {
 							setAttendance(json);
 							setLoading(false);
-						}
-					})
+              setComponentLoading(false)
+              var dict = {}
+              var len = json.length
+              for (var i = 0; i < len/pageLimit; i++) {
+                  setPageList((pageList) => [...pageList, i+1])
+              }
+              dict[1] = 'Active'
+              setPaginagtionBtn(dict)
+            }
+          })
 					.catch((err) => {
 						console.error(err);
 					})
+                    
 				}
 			})
 			.catch((err) => {
@@ -57,6 +66,7 @@ const ViewAttendance = () => {
 	}, [reload])
 
 	const options = [
+		{ value: 1, label: '1' },
 		{ value: 10, label: '10' },
 		{ value: 50, label: '50' },
 		{ value: 100, label: '100' },
@@ -83,9 +93,28 @@ const ViewAttendance = () => {
 		});
 	}
 
+    const updatePageList = (pageLimit) => {
+		setPageLimit(pageLimit)
+		var pageList = []
+		for (var i = 0; i < attendance.length/pageLimit; i++) {
+			pageList.push(i+1)
+		}
+		setPageList(pageList)
+	}
+
+	const updatePageBtnDict = (state) => {
+		var pageDict = paginagtionBtn; 
+		var updatePageDict = pageDict; 
+		updatePageDict[pageNumber] = ' '; 
+		if (state == 'prev')
+			updatePageDict[pageNumber - 1] = 'Active'; 
+		else
+			updatePageDict[pageNumber + 1] = 'Active'; 
+		setPaginagtionBtn(updatePageDict)
+	}
+
   return (
 		<div>
-      <CustomNavBar />
 			{ componentLoading ?
 			<Loader /> : null }
       <div className="flex flex-col w-full">
@@ -119,7 +148,7 @@ const ViewAttendance = () => {
 									<Select
 										defaultValue={options[0]}
 										options={options}
-										onChange={(value) => setPageLimit(value.value)}
+										onChange={(value) => updatePageList(value.value)}
 									/>
 								</div>
 								<h1 className="text-lg inline-block">Records</h1>
@@ -131,7 +160,7 @@ const ViewAttendance = () => {
 											style={{ backgroundColor: theme.backgroundColor }}
 											className="text-white py-2 px-2 rounded-md mx-2 shadow-md"
 										>
-											<i onClick={() => setReload(!reload)}><FiRefreshCcw size={22}/></i>
+											<i onClick={() => {setReload(!reload); setComponentLoading(true)}}><FiRefreshCcw size={22}/></i>
 										</div>
 										<CustomButton
 											title="Print"
@@ -187,10 +216,10 @@ const ViewAttendance = () => {
 												<div className="text-base text-gray-500 font-semibold">{attendance.date}</div>
 											</th>
 											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
-												<div className="text-base text-gray-500 font-semibold">{attendance.checkinTime}</div>
+												<div className="text-base text-gray-500 font-semibold">{attendance.checkInTime}</div>
 											</th>
 											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
-												<div className="text-base text-gray-500 font-semibold">{attendance.checkoutTime}</div>
+												<div className="text-base text-gray-500 font-semibold">{attendance.checkOutTime}</div>
 											</th>
 										</tr>
 									)}
@@ -198,28 +227,56 @@ const ViewAttendance = () => {
 							</tbody>
 						</table>
 					</div>
-					<div className="flex flex-row items-end justify-end my-8">
+					<div className="flex items-end justify-end my-8">
 						<div className="mt-8">
 							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => setPageNumber((pageNumber) => pageNumber - 1)} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
+								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev')}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
 									Previous
 								</button>
-								<button href="#" onClick={() => setPageNumber(1)} className="z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									1
-								</button>
-								<button href="#" onClick={() => setPageNumber(2)} className="bg-white relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									2
-								</button>
-								<button href="#" onClick={() => setPageNumber(3)} className="bg-white hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									3
-								</button>
-								<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
-									...
-								</span>
-								<button href="#" onClick={() => setPageNumber(10)} className="bg-white relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn">
-									10
-								</button>
-								<button href="#" onClick={() => setPageNumber((pageNumber) => pageNumber + 1)} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
+								{(() => {
+									if (pageList.length <= 4 ){
+										return(
+										pageList.slice(0, 4).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+										)
+									}
+									else {
+										return(
+										pageList.slice(0, 2).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+										)
+									}
+								}
+								)()}
+									{
+										pageList.length > 4 ?
+										<>
+										<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
+										...
+										</span>
+										{
+										pageList.slice(pageList.length - 1, pageList.length).map((i, idx) => {
+											return (
+												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+													{i}
+												</button>
+											)
+										})
+									}
+									</> : null
+										
+									}
+								<button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next')}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
 									Next
 								</button>
 							</nav>

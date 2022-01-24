@@ -1,7 +1,6 @@
 const order_template_copy = require('../models/order')
 const add_order = async (request, response, next) => {
     const { customer, order, payment } = request.body;
-    console.log(request.body)
     if (!order[0] || !customer.contact) {
         return response.status(422).json({ error: "Please fill out the required fields!" })
     }

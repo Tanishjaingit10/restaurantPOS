@@ -25,7 +25,6 @@ const get_attendance = async (request, response) =>{
 
 const update_attendance = async (request, response, next) =>{
     let itemId = request.params.id;
-    console.log(request.params, request.body)
     const { userId, status, checkInTime, checkOutTime, date } = request.body;
     let updatedData = {
         status: status, 
@@ -55,10 +54,8 @@ const update_attendance = async (request, response, next) =>{
 }
 
 const get_attendance_by_date = async (request, response) =>{
-    console.log(request.params)
     // if (request.params.startDate != request.params.endDate)
         attendance_template_copy.find({'date': {$gte: request.params.startDate, $lte: request.params.endDate}}, (err, data) =>{
-            console.log(data);
             if (!err)
                 response.send(data);
             else
