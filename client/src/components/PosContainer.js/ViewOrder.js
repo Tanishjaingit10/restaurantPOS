@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import { Link } from 'react-router-dom';
 
 const ViewOrder = () => {
   const [show, showStatus] = useState(false);
@@ -8,9 +9,9 @@ const ViewOrder = () => {
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl ">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-            <a href="/pos">
+            <Link to="/pos">
               <i className="fas fa-arrow-left mr-4"></i>
-            </a>
+            </Link>
           </div>
           <div className="  text-white px-2  font-semibold">
             Order Id: 0231353 | Dine In | Pending | Payment-Completed
@@ -86,7 +87,7 @@ const ViewOrder = () => {
           </div>
          
             <button className="bg-green text-white py-4 text-xl w-1/3 font-semibold mt-8 mx-auto">
-             <a href="/orders"> Done</a>
+             <Link to="/orders"> Done</Link>
             </button>
          
         </div>

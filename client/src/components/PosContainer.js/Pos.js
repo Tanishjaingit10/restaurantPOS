@@ -50,7 +50,7 @@
 //                 return null;
 //             })
 //                 .map((option) => {
-//                     return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({ name: option.name, contact: option.contact, email: option.email }) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i className="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+//                     return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({ name: option.name, contact: option.contact, email: option.email }) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><Link to={`/customerDetails/${option.contact}`}><i className="fas fa-arrow-right absolute right-0 p-2"></i></Link></li>)
 //                 })
 //         )
 //         )
@@ -96,7 +96,7 @@
 //             <div className="w-3/5 border-r-2 border-primary shadow-2xl overflow-hidden ">
 //                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold ">
 //                     <div className="flex flex-row px-6 justify-items-center">
-//                         <div className=" justify-center md:justify-start text-white py-2"><a href="/home"><i className="fas fa-home font-semibold"></i></a></div>
+//                         <div className=" justify-center md:justify-start text-white py-2"><Link to="/home"><i className="fas fa-home font-semibold"></i></Link></div>
 //                         <div className="flex flex-row w-full mx-24 relative">
 //                             <ul className=" text-white text-left" ref={typeRef}>
 //                                 <li className="p-2 cursor-pointer" onClick={() => { showList(!list) }}>{payment.orderType}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
@@ -110,7 +110,7 @@
 //                             {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg z-30">
 //                                 <li className="bg-primary flex flex-row"><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i className="fas fa-search p-2"></i></li>
 //                                 {Cust}
-//                                 <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
+//                                 <li className="bg-green py-2 text-center"><Link to="/newCustomer">+ New Customer</Link></li>
 //                             </ul> : null}
 //                             </ul>
 

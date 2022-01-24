@@ -9,7 +9,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import {ThemeProvider} from "@material-ui/styles";
 import MomentUtils from '@date-io/moment';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { FiRefreshCcw } from 'react-icons/fi';
 import {createTheme} from "@material-ui/core";
 import { GrClose } from 'react-icons/gr';
@@ -414,7 +414,7 @@ const Tables = () => {
 											showDeleteTable ? <div className="-mb-8"><MdOutlineDelete onClick={() => {if (table.status === 'Free'){setConfirmDeleteTable(true); setDeleteTableId(table._id)}}} color={table.status !== 'Free' ?  '#faaf9a': theme.backgroundColor} size={25}/> </div> : null
 										}
 										<div style={ table.status !== 'Free' ? {backgroundColor: theme.backgroundColor, color: 'white' }: {borderColor: theme.backgroundColor, borderWidth: '1px', color: 'grey'}} className="py-5 m-5 rounded">
-											<a className="font-bold text-2xl" style={{padding: '30px 30px'}} href="#">{table.number}</a>
+											<Link className="font-bold text-2xl" style={{padding: '30px 30px'}} href="#">{table.number}</Link>
 										</div>
 									</div>
 								)

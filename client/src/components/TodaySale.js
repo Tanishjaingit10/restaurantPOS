@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import Loader from "./Loader";
 import Popup from "./Popup";
 let [total, totalCard, totalCash, totalOnline,item] = [0,0,0,0,''];
@@ -142,9 +143,9 @@ const Sales = () => {
       <nav className="bg-primary py-2 md:py-4 px-1 mt-0 h-auto w-full top-0">
         <div className="text-center w-full relative">
           <div className=" text-white left-1 absolute sm:left-4">
-            <a href="/home">
+            <Link to="/home">
               <i className="fas fa-home font-semibold mr-2 sm:mr-4 text-sm sm:text-md md:text-lg lg:text-2xl"></i>
-            </a>
+            </Link>
           </div>
           <div className="justify-end flex flex-row mr-1 sm:mr-4 md:mr-8">
             <div className="text-white px-1 font-semibold sm:mr-2 text-sm sm:text-lg md:text-xl lg:text-2xl">Sales</div>
