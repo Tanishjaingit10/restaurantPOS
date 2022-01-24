@@ -253,13 +253,10 @@ export default function Pos() {
     };
 
     return (
-        <div className="h-screen flex flex-col pt-14">
-            <div className="absolute left-0 right-0 top-0">
-                <CustomNavBar />
-            </div>
+        <div className="flex flex-col" style={{height:'calc(100vh - 56px)'}}>
             <div className="grid grid-cols-5 h-full">
                 <div className="py-6 overflow-auto">
-                    <div className="col-span-1 h-full flex flex-col items-center px-4 overflow-auto">
+                    <div className="col-span-1 h-full flex flex-col items-center pr-4 pl-2 overflow-auto">
                         <button
                             onClick={() => setCategoryFilter("")}
                             style={{
@@ -412,7 +409,7 @@ export default function Pos() {
                         </CommentsOverlayButton>
                     </div>
                     {selectedItems.length ? (
-                        <div className="flex-auto h-0 border-t m-4 overflow-y-auto">
+                        <div className="flex-auto h-0 border-t mx-4 overflow-y-auto">
                             {selectedItems.map((item) => (
                                 <div key={item.key}>
                                     <SingleSelectedItem

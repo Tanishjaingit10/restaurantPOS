@@ -71,8 +71,7 @@ const Menu = () => {
         <>
             <div className="font-roboto">
                 {loading && <SpinLoader className="fixed top-1/2 left-1/2" />}
-                <div className="fixed top-0 right-0 left-14 z-10">
-                    <CustomNavBar />
+                <div className="">
                     <div className="flex h-24 bg-white items-center justify-between border-b-2 border-gray-300">
                         <p className="text-2xl text-gray-500 ml-6 font-bold ">
                             Menu
@@ -119,7 +118,7 @@ const Menu = () => {
                         </div>
                     </div>
                 </div>
-                <div className="p-6 mt-36">
+                <div className="p-6">
                     {categories.map((item) => (
                         <div key={item._id} className="mb-4">
                             <div className="grid my-1 grid-cols-6">

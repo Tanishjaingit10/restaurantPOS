@@ -152,8 +152,7 @@ const Kitchen = () => {
 
     return (
         <>
-            <div className="h-screen flex flex-col">
-                <CustomNavBar />
+            <div className="flex flex-col">
                 {loading && <SpinLoader className="fixed top-1/2 right-1/2" />}
                 <div className="flex h-24 items-center justify-between border-b-2 border-gray-300">
                     <p className="text-2xl text-gray-500 ml-6 font-bold ">
@@ -171,7 +170,7 @@ const Kitchen = () => {
                         />
                     </button>
                 </div>
-                <div className="flex-1 overflow-auto grid grid-cols-5 items-center justify-center">
+                <div className="grid grid-cols-5 items-center justify-center">
                     {orders.map((item) => (
                         <OrderCard item={item} />
                     ))}
