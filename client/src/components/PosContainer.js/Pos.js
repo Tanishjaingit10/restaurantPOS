@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // import React, { useState, useContext, useEffect, createRef } from 'react';
 // import { useHistory } from 'react-router-dom';
 // import CategoryList from './CategoryList';
@@ -49,7 +50,7 @@
 //                 return null;
 //             })
 //                 .map((option) => {
-//                     return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({ name: option.name, contact: option.contact, email: option.email }) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i class="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
+//                     return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({ name: option.name, contact: option.contact, email: option.email }) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><a href={`/customerDetails/${option.contact}`}><i className="fas fa-arrow-right absolute right-0 p-2"></i></a></li>)
 //                 })
 //         )
 //         )
@@ -107,7 +108,7 @@
 //                             <ul className=" text-white text-left" ref={custRef}>
 //                             <li className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name ? customer.name : 'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
 //                             {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg z-30">
-//                                 <li className="bg-primary flex flex-row"><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i class="fas fa-search p-2"></i></li>
+//                                 <li className="bg-primary flex flex-row"><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i className="fas fa-search p-2"></i></li>
 //                                 {Cust}
 //                                 <li className="bg-green py-2 text-center"><a href="/newCustomer">+ New Customer</a></li>
 //                             </ul> : null}
@@ -163,7 +164,7 @@
 
 // export default Pos
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -173,21 +174,78 @@ import {
 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import CustomNavBar from "../../items/CustomNavBar";
+import { deepClone } from "../../Utils";
+import AuthenticateOverlayButton from "./AuthenticateOverlayButton";
 import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
 import CommentsOverlayButton from "./CommentsOverlayButton";
 import CustomerInfoOverlayButton from "./CustomerInfoOverlayButton";
+import DiscountOverlayButton from "./DiscountOverlayButton";
+import SingleSelectedItem from "./SingleSelectedItem";
 
 export default function Pos() {
     const { categories, foodItems, fetchCategories, fetchItems } =
         useContext(CategoryContext);
-    const [search, setSearch] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
     const [orderType, setOrderType] = useState("Dine In");
-    const [serviceTax, setServiceTax] = useState(false);
-    const [total, setTotal] = useState();
-    const [subTotal, setSubTotal] = useState();
     const [paymentMode, setPaymentMode] = useState();
     const [seeBillDetails, setSeeBillDetails] = useState(false);
+    const [addServiceTax, setAddServiceTax] = useState(false);
     const [chargeNoPayment, setChargeNoPayment] = useState(false);
+    const [filteredFoodItem, setFilteredFoodItem] = useState([]);
+    const [categoryFilteredItem, setCategoryFilteredItem] = useState([]);
+    const [categoryFilter, setCategoryFilter] = useState("");
+    const [selectedItems, setSelectedItems] = useState([]);
+    const subTotal = selectedItems.reduce(
+        (sum, item) =>
+            sum +
+            (item.price +
+                item.finalVariant.reduce(
+                    (sum, variant) =>
+                        sum +
+                        (variant.isSelected
+                            ? variant.price * variant.quantity
+                            : 0),
+                    0
+                )) *
+                item.quantity,
+        0
+    );
+    const discount = selectedItems.reduce(
+        (sum, item) => sum + item.discount * item.quantity,
+        0
+    );
+    const serviceTax = 0;
+    const tip = 0;
+    const total = subTotal + serviceTax - discount + tip;
+
+    const applyCategoryFilter = () => {
+        setCategoryFilteredItem(() => {
+            if (!categoryFilter) return foodItems;
+            if (categoryFilter === "uncategorised")
+                return foodItems.filter(
+                    (e) => !categories.some((x) => e.category === x.category)
+                );
+            return foodItems.filter((item) => item.category === categoryFilter);
+        });
+    };
+
+    const searchFoodItem = () => {
+        if (!searchQuery) return setFilteredFoodItem(categoryFilteredItem);
+        let result = [];
+        categoryFilteredItem.forEach((item) => {
+            if (item.foodItem.toLowerCase().includes(searchQuery.toLowerCase()))
+                result.push(item);
+        });
+        setFilteredFoodItem(result);
+    };
+
+    useEffect(() => {
+        applyCategoryFilter();
+    }, [categoryFilter, foodItems]);
+
+    useEffect(() => {
+        searchFoodItem();
+    }, [searchQuery, categoryFilteredItem]);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -203,24 +261,38 @@ export default function Pos() {
                 <div className="py-6 overflow-auto">
                     <div className="col-span-1 h-full flex flex-col items-center px-4 overflow-auto">
                         <button
+                            onClick={() => setCategoryFilter("")}
                             style={{
                                 backgroundImage: `url(${UncategorizedBgImageBase64})`,
                             }}
-                            className="rounded-md bg-cover bg-center mb-3 w-full"
+                            className="rounded-md text-gray-600 bg-cover bg-center mb-3 w-full"
                         >
-                            <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
+                            <div
+                                className={`${
+                                    categoryFilter === ""
+                                        ? "text-red border-red bg-opacity-90"
+                                        : "text-gray-600 border-black bg-opacity-80"
+                                } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                            >
                                 All Items
                             </div>
                         </button>
                         {categories.map((item) => (
                             <button
+                                onClick={() => setCategoryFilter(item.category)}
                                 key={item._id}
                                 style={{
                                     backgroundImage: `url(${item?.image})`,
                                 }}
                                 className="rounded-md bg-center mb-3 w-full"
                             >
-                                <div className="bg-white bg-opacity-90 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
+                                <div
+                                    className={`${
+                                        categoryFilter === item.category
+                                            ? "text-red border-red bg-opacity-90"
+                                            : "text-gray-600 border-black bg-opacity-80"
+                                    } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                                >
                                     {item.category}
                                 </div>
                             </button>
@@ -232,12 +304,21 @@ export default function Pos() {
                                 )
                         ) && (
                             <button
+                                onClick={() =>
+                                    setCategoryFilter("uncategorised")
+                                }
                                 style={{
                                     backgroundImage: `url(${UncategorizedBgImageBase64})`,
                                 }}
                                 className="rounded-md bg-cover bg-center mb-2 w-full"
                             >
-                                <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
+                                <div
+                                    className={`${
+                                        categoryFilter === "uncategorised"
+                                            ? "text-red border-red bg-opacity-90"
+                                            : "text-gray-600 border-black bg-opacity-80"
+                                    } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                                >
                                     Uncategorized
                                 </div>
                             </button>
@@ -250,8 +331,8 @@ export default function Pos() {
                         className="relative mx-5 mb-3 border border-gray-300 rounded-md"
                     >
                         <input
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             type="text"
                             className="rounded-md p-3 w-full"
                             placeholder="Search for food item...."
@@ -261,25 +342,34 @@ export default function Pos() {
                             className="fas fa-search text-gray-300 absolute right-4 text-xl top-1/2 transform -translate-y-1/2"
                         />
                     </form>
-                    <div className="grid grid-cols-2 overflow-auto p-4">
-                        {foodItems.map((item) => (
-                            <ChooseVariantOverlayButton
-                                item={item}
-                                className="text-center font-semibold relative flex-1 rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
-                            >
-                                <img
-                                    className="absolute w-4 top-3 right-3"
-                                    src={
-                                        item.foodType === "veg"
-                                            ? vegIconImageBase64
-                                            : nonVegIconImageBase64
-                                    }
-                                    alt=""
-                                />
-                                {item.foodItem}
-                            </ChooseVariantOverlayButton>
-                        ))}
-                    </div>
+                    {filteredFoodItem.length ? (
+                        <div className="grid grid-cols-2 flex-auto auto-rows-min h-0 overflow-auto p-4">
+                            {filteredFoodItem.map((item) => (
+                                <div key={item._id} className="flex">
+                                    <ChooseVariantOverlayButton
+                                        item={item}
+                                        className="text-center font-semibold flex-1 relative rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
+                                        setSelectedItems={setSelectedItems}
+                                    >
+                                        <img
+                                            className="absolute w-4 top-3 right-3"
+                                            src={
+                                                item.foodType === "veg"
+                                                    ? vegIconImageBase64
+                                                    : nonVegIconImageBase64
+                                            }
+                                            alt=""
+                                        />
+                                        {item.foodItem}
+                                    </ChooseVariantOverlayButton>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="h-40 flex items-center justify-center font-semibold text-gray-400">
+                            No Items Found
+                        </div>
+                    )}
                 </div>
                 <div className="col-span-2 flex flex-col h-full">
                     <div className="p-4 flex px-10">
@@ -309,7 +399,7 @@ export default function Pos() {
                             to="/tables"
                             className="bg-red flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
                         >
-                            <div className="border h-4 w-4" />
+                            <div className="h-4 w-4 fas fa-th-large" />
                             <div className="text-xs">5</div>
                         </Link>
                         <CustomerInfoOverlayButton className="bg-red flex flex-col items-center justify-center text-white h-14 my-2 border-2 flex-1">
@@ -321,43 +411,30 @@ export default function Pos() {
                             <div className="text-xs">Comments</div>
                         </CommentsOverlayButton>
                     </div>
-                    {/* <div className="flex-auto h-0 m-4 overflow-y-auto">
-                        <div className="h-14 border border-gray-300 border-l-0 flex">
-                            <div className="flex-1 flex items-center">
-                                <button class="fas fa-times-circle text-xl text-red p-2"></button>
-                                <div className="flex flex-col justify-center">
-                                    <div>French Fries</div>
-                                    <ChooseVariantOverlayButton className="text-xxs text-blue font-bold">
-                                        1x With Variant Option 1 ($0.5)
-                                    </ChooseVariantOverlayButton>
-                                </div>
-                            </div>
-                            <div className="flex-1 flex">
-                                <div className="border-r border-l border-gray-300 p-1 flex items-center justify-center">
-                                    <button className="fas fa-minus rounded border h-8 w-8 flex items-center justify-center text-gray-500 border-gray-300 shadow-sm text-xxs" />
-                                    <input
-                                        type="text"
-                                        className="rounded shadow-inner p-2 w-14 h-8"
+                    {selectedItems.length ? (
+                        <div className="flex-auto h-0 border-t m-4 overflow-y-auto">
+                            {selectedItems.map((item) => (
+                                <div key={item.key}>
+                                    <SingleSelectedItem
+                                        setSelectedItems={setSelectedItems}
+                                        item={item}
                                     />
-                                    <button className="fas fa-plus rounded border h-8 w-8 flex items-center justify-center text-gray-500 border-gray-300 shadow-sm text-xxs" />
                                 </div>
-                                <div className="flex items-center justify-center flex-1">
-                                    $6.75
-                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="bg-white h-full flex items-center justify-center">
+                            <div className="flex flex-col w-1/3 mx-auto justify-items-center space-y-2">
+                                <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
+                                <p className=" font-bold text-gray-600 text-center">
+                                    Order is Empty
+                                </p>
+                                <p className=" text-gray-600 text-center">
+                                    Add Food items
+                                </p>
                             </div>
                         </div>
-                    </div> */}
-                    <div className="bg-white h-full flex items-center justify-center">
-                        <div className="flex flex-col w-1/3 mx-auto justify-items-center space-y-2">
-                            <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
-                            <p className=" font-bold text-gray-600 text-center">
-                                Order is Empty
-                            </p>
-                            <p className=" text-gray-600 text-center">
-                                Add Food items
-                            </p>
-                        </div>
-                    </div>
+                    )}
                     <div className="mt-auto relative flex-shrink-0">
                         <div className="absolute transform -translate-y-full w-full top-0">
                             <button
@@ -369,15 +446,26 @@ export default function Pos() {
                             />
                             <div hidden={!seeBillDetails} className="border-">
                                 <div
+                                    className="h-14 flex items-center px-4 justify-between"
+                                    style={{ backgroundColor: "#c4c4c4" }}
+                                >
+                                    <div className="text-white font-semibold">
+                                        Sub Total
+                                    </div>
+                                    <div className="text-2xl text-right font-bold">
+                                        {`$${subTotal.toFixed(2)}`}
+                                    </div>
+                                </div>
+                                <div
                                     className="h-14 flex items-center justify-between px-4"
                                     style={{ backgroundColor: "#c4c4c4" }}
                                 >
                                     <div className="text-white font-semibold">
                                         Discount
                                     </div>
-                                    <button className="p-2 text-center w-32 font-semibold rounded-md bg-white">
-                                        $10.00
-                                    </button>
+                                    <DiscountOverlayButton className="p-2 text-center w-32 font-semibold rounded-md bg-white">
+                                        {`$${discount.toFixed(2)}`}
+                                    </DiscountOverlayButton>
                                 </div>
                                 <div
                                     className="h-14 flex items-center justify-between px-4"
@@ -387,7 +475,7 @@ export default function Pos() {
                                         Service Tax
                                     </div>
                                     <button className="p-2 text-center w-32 font-semibold rounded-md bg-white">
-                                        $10.00
+                                        {`$${serviceTax.toFixed(2)}`}
                                     </button>
                                 </div>
                                 <div
@@ -398,7 +486,7 @@ export default function Pos() {
                                         Tip
                                     </div>
                                     <button className="p-2 text-center w-32 font-semibold rounded-md bg-white">
-                                        $10.00
+                                        {`$${tip.toFixed(2)}`}
                                     </button>
                                 </div>
                             </div>
@@ -411,22 +499,24 @@ export default function Pos() {
                                 <button className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red">
                                     Split
                                 </button>
-                                <button
-                                    htmlFor="charge"
-                                    className="px-2 flex items-center"
+                                <AuthenticateOverlayButton
+                                    title={"Add Service Tax"}
+                                    className="px-2 text-white flex items-center"
                                 >
-                                    <input
-                                        type="checkbox"
-                                        checked={serviceTax}
-                                        className="h-4 w-4"
+                                    <span
+                                        className={`${
+                                            addServiceTax
+                                                ? "fas fa-check-square"
+                                                : "far fa-square"
+                                        }`}
                                     />
-                                    <span className="text-white ml-2 font-semibold">
+                                    <span className="ml-2 font-semibold">
                                         Add Service Tax
                                     </span>
-                                </button>
+                                </AuthenticateOverlayButton>
                             </div>
                             <div className="text-2xl text-right font-bold">
-                                {`Total: $${"90.75"}`}
+                                {`Total: $${total.toFixed(2)}`}
                             </div>
                         </div>
                         <div className="h-14 flex items-center justify-between text-white bg-red">
@@ -434,11 +524,10 @@ export default function Pos() {
                                 onClick={() => setPaymentMode("cash")}
                                 className="mx-4 flex items-center"
                             >
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    checked={paymentMode === "cash"}
-                                    className="h-4 w-4"
+                                <span
+                                    className={`far fa-${
+                                        paymentMode === "cash" ? "dot-" : ""
+                                    }circle`}
                                 />
                                 <span className="font-semibold mx-4">Cash</span>
                             </button>
@@ -446,11 +535,10 @@ export default function Pos() {
                                 onClick={() => setPaymentMode("card")}
                                 className="mx-4 flex items-center"
                             >
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    checked={paymentMode === "card"}
-                                    className="h-4 w-4"
+                                <span
+                                    className={`far fa-${
+                                        paymentMode === "card" ? "dot-" : ""
+                                    }circle`}
                                 />
                                 <span className="font-semibold mx-4">Card</span>
                             </button>
@@ -458,11 +546,10 @@ export default function Pos() {
                                 onClick={() => setPaymentMode("payLater")}
                                 className="mx-4 flex items-center"
                             >
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    checked={paymentMode === "payLater"}
-                                    className="h-4 w-4"
+                                <span
+                                    className={`far fa-${
+                                        paymentMode === "payLater" ? "dot-" : ""
+                                    }circle`}
                                 />
                                 <span className="font-semibold mx-4">
                                     Paylater
@@ -472,11 +559,10 @@ export default function Pos() {
                                 onClick={() => setPaymentMode("online")}
                                 className="mx-4 flex items-center"
                             >
-                                <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    checked={paymentMode === "online"}
-                                    className="h-4 w-4"
+                                <span
+                                    className={`far fa-${
+                                        paymentMode === "online" ? "dot-" : ""
+                                    }circle`}
                                 />
                                 <span className="font-semibold mx-4">
                                     Online
@@ -484,22 +570,24 @@ export default function Pos() {
                             </button>
                         </div>
                         <div
-                            className="h-14 flex items-center justify-center"
+                            className="h-14 text-white flex items-center justify-center"
                             style={{ backgroundColor: "#c4c4c4" }}
                         >
-                            <button
-                                htmlFor="charge"
+                            <AuthenticateOverlayButton
+                                title={"Charge No Payment"}
                                 className="p-2 flex items-center"
                             >
-                                <input
-                                    type="checkbox"
-                                    checked={chargeNoPayment}
-                                    className="h-4 w-4"
+                                <span
+                                    className={`${
+                                        chargeNoPayment
+                                            ? "fas fa-check-square"
+                                            : "far fa-square"
+                                    }`}
                                 />
-                                <span className="text-white mr-5 ml-3 font-semibold">
+                                <span className="mr-5 ml-3 font-semibold">
                                     Charge No Payment
                                 </span>
-                            </button>
+                            </AuthenticateOverlayButton>
                             <button className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-green">
                                 Complete Payment
                             </button>
@@ -520,4 +608,34 @@ export default function Pos() {
             </div>
         </div>
     );
+
+    // const [state, setState] = useState([0]);
+    // useEffect(() => console.log("Parent rerendered"), state);
+    // console.log("state in parent",state)
+    // return (
+    //     <div className="h-screen flex flex-col justify-center items-center">
+    //         <Child1 state={state} setState={setState} />
+    //         <button
+    //             className="h-14 w-32 bg-red rounded-lg"
+    //             onClick={() =>{
+    //                 console.log("------------")
+    //                 setState((prev) => {
+    //                     prev[0]=prev[0]+1;
+    //                     return deepClone(prev);
+    //                 })
+    //             }}
+    //         />
+    //     </div>
+    // );
 }
+
+// function Child1({ state }) {
+//     console.log("state in child 1",state)
+//     useEffect(() => console.log("Child 1 rerendered"), state);
+//     return <Child2 state={state[0]} />;
+// }
+// function Child2({ state }) {
+//     console.log("state in child 2",state)
+//     useEffect(() => console.log("Child 2 rerendered", state), state);
+//     return <div>{state}</div>;
+// }

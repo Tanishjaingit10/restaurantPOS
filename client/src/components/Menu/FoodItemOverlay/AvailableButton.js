@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import TimePicker from "react-gradient-timepicker";
 import days from "../../.././days";
-import { Modal } from "../../Utils";
+import { Modal } from "../../Common/Modal";
 
 function AvailableButton({ state: parentState }) {
+    const allTime = "allTime";
+    const custom = "custom";
+
     const [isOpen, setIsOpen] = useState(false);
-    const [availabilityType, setAvailabilityType] = useState("allTime");
+    const [availabilityType, setAvailabilityType] = useState(allTime);
     const [finalAvailable, setFinalAvailable] = useState([]);
 
     useEffect(() => {
@@ -46,16 +49,14 @@ function AvailableButton({ state: parentState }) {
                 </div>
                 <div className="flex flex-col">
                     <div className="flex mb-4">
-                        <input
-                            type="radio"
-                            className="mt-4"
-                            onChange={(e) => {
-                                setAvailabilityType(e.target.value);
-                            }}
-                            checked={availabilityType === "custom"}
-                            name="Availablity"
-                            value="custom"
-                        />
+                        <div className="mt-2 text-red">
+                            <button
+                                onClick={() => setAvailabilityType(custom)}
+                                className={` far fa-${
+                                    availabilityType === custom ? "dot-" : ""
+                                }circle`}
+                            />
+                        </div>
                         <div className="ml-10">
                             {days.map((day) => (
                                 <div key={day.day}>
@@ -68,24 +69,19 @@ function AvailableButton({ state: parentState }) {
                             ))}
                         </div>
                     </div>
-                    <div>
-                        <input
-                            type="radio"
-                            onChange={(e) => {
-                                setAvailabilityType(e.target.value);
-                            }}
-                            checked={availabilityType === "allTime"}
-                            id="allTime"
-                            name="Availablity"
-                            value="allTime"
+                    <button
+                        onClick={() => setAvailabilityType(custom)}
+                        className="text-red flex items-center w-40"
+                    >
+                        <div
+                            className={` far fa-${
+                                availabilityType === custom ? "dot-" : ""
+                            }circle`}
                         />
-                        <label
-                            className="ml-10 font-bold text-gray-500"
-                            for="allTime"
-                        >
+                        <div className="ml-10 font-bold text-gray-500">
                             All Time
-                        </label>
-                    </div>
+                        </div>
+                    </button>
                     <div className="flex justify-center">
                         <button
                             onClick={handleSubmit}

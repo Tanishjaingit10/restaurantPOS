@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { CategoryContext } from "../../context/Category";
 import CategoryOverlayButton from "./CategoryOverlayButton";
-import { Modal } from "../Utils";
+import { Modal } from "../Common/Modal";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 

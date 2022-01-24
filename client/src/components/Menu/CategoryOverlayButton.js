@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
-import { Modal } from "../Utils";
+import { Modal } from "../Common/Modal";
 
 function CategoryOverlayButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);

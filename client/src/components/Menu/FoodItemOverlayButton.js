@@ -5,10 +5,14 @@ import VariantButton from "./FoodItemOverlay/VariantButton";
 import { CategoryContext } from "../../context/Category";
 import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 import { NotificationContext } from "../../context/Notification";
-import { Modal } from "../Utils";
+import { Modal } from "../Common/Modal";
 import SpinLoader from "../SpinLoader";
 
 function FoodItemOverlayButton({ item, children, className }) {
+    const veg = "veg"
+    const nonVeg = "non-veg"
+    const allTime = "allTime"
+    
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -16,11 +20,11 @@ function FoodItemOverlayButton({ item, children, className }) {
     const [description, setDescription] = useState("");
     const [time, setTime] = useState("00:00:00");
     const [availability, setAvailability] = useState("Yes");
-    const [availabilityType, setAvailabilityType] = useState("allTime");
+    const [availabilityType, setAvailabilityType] = useState(allTime);
     const [discount, setDiscount] = useState(0);
     const [price, setPrice] = useState(0);
     const [category, setCategory] = useState("");
-    const [foodType, setFoodType] = useState("non-veg");
+    const [foodType, setFoodType] = useState(nonVeg);
     const [finalVariant, setFinalVariant] = useState([]);
     const [finalAvailable, setFinalAvailable] = useState([]);
 
@@ -69,11 +73,11 @@ function FoodItemOverlayButton({ item, children, className }) {
                 setDescription("");
                 setTime("00:00:00");
                 setAvailability("Yes");
-                setAvailabilityType("allTime");
+                setAvailabilityType(allTime);
                 setDiscount(0);
                 setPrice(0);
                 setCategory("");
-                setFoodType("non-veg");
+                setFoodType(nonVeg);
                 setFinalVariant([]);
                 setFinalAvailable([]);
                 setIsOpen(false);
@@ -196,52 +200,42 @@ function FoodItemOverlayButton({ item, children, className }) {
                                 Food Type:
                             </div>
                             <div className="flex items-center">
-                                <div className="flex-1 flex items-center mr-3 p-2">
-                                    <input
-                                        type="radio"
-                                        onChange={(e) =>
-                                            setFoodType(e.target.value)
-                                        }
-                                        checked={foodType === "non-veg"}
-                                        id="non-veg"
-                                        name="foodType"
-                                        value="non-veg"
+                                <button
+                                    onClick={() => {setFoodType(nonVeg)}}
+                                    className="py-2 flex-1 flex text-red items-center mr-3"
+                                >
+                                    <span
+                                        className={`far fa-${
+                                            foodType === nonVeg ? "dot-" : ""
+                                        }circle`}
                                     />
-                                    <label
-                                        className="ml-3 w-full flex justify-between text-red font-bold"
-                                        htmlFor="non-veg"
-                                    >
-                                        <div>Non-Veg</div>
+                                    <span className="ml-3 w-full flex justify-between font-bold">
+                                        <div>Non - Veg</div>
                                         <img
                                             className="w-4 object-scale-down mr-2"
                                             src={nonVegIconImageBase64}
                                             alt=""
                                         />
-                                    </label>
-                                </div>
-                                <div className="flex-1 flex items-center ml-3 p-2">
-                                    <input
-                                        type="radio"
-                                        onChange={(e) =>
-                                            setFoodType(e.target.value)
-                                        }
-                                        checked={foodType === "veg"}
-                                        id="veg"
-                                        name="foodType"
-                                        value="veg"
+                                    </span>
+                                </button>
+                                <button
+                                    onClick={() => {setFoodType(veg)}}
+                                    className="py-2 flex-1 flex text-green items-center ml-3"
+                                >
+                                    <span
+                                        className={`far fa-${
+                                            foodType === veg ? "dot-" : ""
+                                        }circle`}
                                     />
-                                    <label
-                                        className="ml-3 w-full flex justify-between text-green font-bold"
-                                        htmlFor="veg"
-                                    >
+                                    <span className="ml-3 w-full flex justify-between font-bold">
                                         <div>Veg</div>
                                         <img
                                             className="w-4 object-scale-down mr-2"
                                             src={vegIconImageBase64}
                                             alt=""
                                         />
-                                    </label>
-                                </div>
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>

@@ -71,7 +71,7 @@ const Customers = () => {
           </div>
           <div className="justify-end  flex flex-row mr-12">
             <div className="text-white px-2 font-semibold mr-8">Customers</div>
-            <div className="border-b-2 border-white px-4 mx-6 text-white flex flex-row w-96"><i class="fas fa-search mr-2"></i><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className=" bg-primary focus:outline-none text-white text-sm w-full" />
+            <div className="border-b-2 border-white px-4 mx-6 text-white flex flex-row w-96"><i className="fas fa-search mr-2"></i><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className=" bg-primary focus:outline-none text-white text-sm w-full" />
             </div>
           </div>
         </div>

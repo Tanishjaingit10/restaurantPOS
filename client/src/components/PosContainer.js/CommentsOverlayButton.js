@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
-import { Modal } from "../Utils";
+import { Modal } from "../Common/Modal";
 
 function CommentsOverlayButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);

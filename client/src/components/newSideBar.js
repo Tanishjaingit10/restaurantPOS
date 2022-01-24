@@ -25,7 +25,7 @@ const SideBar = () => {
 	return (
 	<div id="sidebar">
 		<ProSidebar collapsed={menuCollapse}>
-			<div class="px-1 pt-4" style={{ backgroundColor: theme.backgroundColor}}>
+			<div className="px-1 pt-4" style={{ backgroundColor: theme.backgroundColor}}>
 				<SidebarHeader className="pb-4">
 					<div onClick={menuIconClick}>
 							{menuCollapse ? (

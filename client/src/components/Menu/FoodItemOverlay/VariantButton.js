@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal } from "../../Utils";
+import { Modal } from "../../Common/Modal";
 
 function VariantButton({ state: parentState }) {
     const variantTemplate = {
@@ -11,15 +11,16 @@ function VariantButton({ state: parentState }) {
     const [isOpen, setIsOpen] = useState(false);
     const [finalVariant, setFinalVariant] = useState([]);
 
-    useEffect(() => {
-        setFinalVariant((prev) => {
+    useEffect(
+        () => {
             let tempVar = parentState.finalVariant;
             for (let i = 0; i < tempVar.length; i++)
                 tempVar[i]["key"] = Math.random();
-            return tempVar;
-        });
+            setFinalVariant(tempVar);
+        },
         // eslint-disable-next-line
-    }, []);
+        []
+    );
 
     const handleAddVariant = () => {
         setFinalVariant((prev) => {

@@ -4,7 +4,7 @@ import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
-import { Modal } from "../Utils";
+import { Modal } from "../Common/Modal";
 import FoodItemOverlayButton from "./FoodItemOverlayButton";
 
 function ItemInfoButton({ item, children, ...rest }) {
@@ -35,7 +35,7 @@ function ItemInfoButton({ item, children, ...rest }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="w-1/2 h-5/6 p-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="w-1/2 p-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && (
                     <SpinLoader className="absolute left-1/2 top-1/2" />

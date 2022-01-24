@@ -1,13 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext } from "react";
-import axios from 'axios'
+import axios from "axios";
 
-import Countdown from "react-countdown";
-import Loader from "./Loader";
-import Popup from "./Popup";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
+// import Countdown from "react-countdown";
+// import Loader from "./Loader";
+// import Popup from "./Popup";
+// import { useDebounce, useDebouncedCallback } from "use-debounce";
 import CustomNavBar from "../items/CustomNavBar";
 import { ThemeContext } from "../context/Theme";
 import OrderCard from "./Kitchen/OrderCard";
+import { NotificationContext } from "../context/Notification";
+import SpinLoader from "./SpinLoader";
 
 // let arr = new Array(1000000).fill(false);
 // let stat = new Array(1000000).fill(false);
@@ -119,27 +122,60 @@ const Kitchen = () => {
     //     }
     // };
 
-    const theme = useContext(ThemeContext)
-    const [orders, setOrders] = useState([])
-    
+    const theme = useContext(ThemeContext);
+    const [orders, setOrders] = useState([]);
+    const [orderStatus, setOrderStatus] = useState();
+    const [loading, setLoading] = useState(false);
+    const [refreshLoading, setRefreshLoading] = useState(false);
+    const notify = useContext(NotificationContext);
+
     useEffect(() => {
-      axios.get('/app/orders')
-      .then(res=>setOrders(res.data))
-    }, [])
+        setLoading(true);
+        axios
+            .get("/app/orders")
+            .then((res) => setOrders(res.data))
+            .catch((err) => notify(err?.response?.data?.message || "Error!!"))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const handleRefresh = async () => {
+        setRefreshLoading(true);
+        axios
+            .get("/app/orders")
+            .then((res) => {
+                notify("Orders Updated");
+                setOrders(res.data);
+            })
+            .catch((err) => notify(err?.response?.data?.message || "Error !!"))
+            .finally(() => setRefreshLoading(false));
+    };
 
     return (
         <>
-            <div className="">
-              <CustomNavBar />
-              <div className="flex h-24 items-center justify-between border-b-2 border-gray-300">
-                <p className="text-2xl text-gray-500 ml-6 font-bold ">Kitchen Dashboard</p>
-                <button className="fas fa-sync-alt bg-red mr-6 p-4 text-white rounded-md" style={{backgroundColor:theme.backgroundColor}}></button>
-              </div>
-              <div className="grid grid-cols-5 items-center justify-center">
-                {
-                  orders.map(item=><OrderCard order={item}/>)
-                }
-              </div>
+            <div className="h-screen flex flex-col">
+                <CustomNavBar />
+                {loading && <SpinLoader className="fixed top-1/2 right-1/2" />}
+                <div className="flex h-24 items-center justify-between border-b-2 border-gray-300">
+                    <p className="text-2xl text-gray-500 ml-6 font-bold ">
+                        Kitchen Dashboard
+                    </p>
+                    <button
+                        onClick={handleRefresh}
+                        className="bg-red mr-6 p-4 leading-4 text-white rounded-md"
+                        style={{ backgroundColor: theme.backgroundColor }}
+                    >
+                        <div
+                            className={`${
+                                refreshLoading && "animate-spin"
+                            } rounded-full fas fa-sync-alt`}
+                        />
+                    </button>
+                </div>
+                <div className="flex-1 overflow-auto grid grid-cols-5 items-center justify-center">
+                    {orders.map((item) => (
+                        <OrderCard item={item} />
+                    ))}
+                </div>
             </div>
 
             {/* <div className="h-screen justify-items-conter overflow-hidden">
