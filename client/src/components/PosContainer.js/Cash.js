@@ -33,7 +33,7 @@ const Cash = () => {
         <div className="flex flex-wrap items-center">
           <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4">
             <button onClick={onBack}>
-              <i class="fas fa-arrow-left mr-4"></i>Back
+              <i className="fas fa-arrow-left mr-4"></i>Back
             </button>
           </div>
           <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 ml-8 font-semibold">

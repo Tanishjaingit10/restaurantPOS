@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const shortid = require('shortid');
 const autoIncrement = require('mongoose-sequence')(mongoose);
+
+const Processing = "Processing"
 const order_template = new mongoose.Schema({
     order_id: {
         type: Number
@@ -25,6 +27,10 @@ const order_template = new mongoose.Schema({
                             price: Number
                         }
                     ]
+                },
+                itemStatus:{
+                    type: String,
+                    default:Processing
                 },
                 price: Number,
                 subtotal: Number

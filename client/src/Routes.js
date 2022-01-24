@@ -59,14 +59,14 @@ const Routes = () => {
           <RouteWrapper exact path="/home" component={Home} layout={DefaultLayout} />
           <Route exact path="/" component={SignUp} />
           <Route exact path="/login" component={Login} />
-          <Route exact path="/menu" component={Menu} />
+          <RouteWrapper exact path="/menu" component={Menu} layout={DefaultLayout}/>
           <Route exact path="/categorydisplay/:id" component={CategoryDisplay} />
           <Route exact path="/addcategory" component={CategoryForm} />
           <Route exact path="/editcategory/:id" component={CategoryForm} />
           <Route exact path="/additem" component={ItemForm} />
           <Route exact path="/itemdisplay/:id" component={ItemDisplay} />
           <RouteWrapper exact path="/tables" component={Tables} layout={DefaultLayout} />
-          <Route exact path="/pos" component={Pos} />
+          <RouteWrapper exact path="/pos" component={Pos} layout={DefaultLayout} />
           <Route exact path="/addTable" component={TableForm} />
           <Route exact path="/categoryList" component={CategoryList} />
           <Route exact path="/payments" component={Payment} />
@@ -80,7 +80,7 @@ const Routes = () => {
           <Route exact path="/viewOrder" component={ViewOrder} />
           <RouteWrapper layout={DefaultLayout} exact path="/orders" component={Orders} />
           <Route exact path="/counter" component={Counter} />
-          <Route exact path="/kitchen" component={Kitchen} />
+          <RouteWrapper exact path="/kitchen" component={Kitchen} layout={DefaultLayout} />
           <Route exact path="/receipt" component={Receipt} />
           <Route exact path="/customers" component={Customers} />
           <Route exact path="/sales" component={Sales} />

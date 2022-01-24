@@ -1,13 +1,11 @@
 import React, { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/Theme";
 
 const Sidebar = () => {
   const [show, setShow] = useState(false);
   const theme = useContext(ThemeContext);
 
-  const openDrop = () => {
-    setShow(!show);
-  };
   return (
     <div className="flex md:flex-row overflow-y-auto border-r-4">
       <div className="bg-white overflow-y-auto shadow-xl h-16 fixed bottom-0 mt-12 md:relative md:h-screen z-10 w-full md:w-80">
@@ -28,69 +26,69 @@ const Sidebar = () => {
               </button>
             </li>
             <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
-              <a
-                href="/orders"
+              <Link
+                to="/orders"
                 className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white  "
               >
                 <i className="fas fa-utensils pr-0 md:pr-3"></i>
                 <span className="pb-1 md:pb-0   block md:inline-block">
                   Orders
                 </span>
-              </a>
+              </Link>
             </li>
             <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
-              <a
-                href="/tables"
+              <Link
+                to="/tables"
                 className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white  "
               >
                 <i className="fas fa-table pr-0 md:pr-3 "></i>
                 <span className="pb-1 md:pb-0 block md:inline-block">
                   Tables
                 </span>
-              </a>
+              </Link>
             </li>
             <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
-              <a
-                href="/kitchen"
+              <Link
+                to="/kitchen"
                 className="block py-1 md:py-3 pl-1 align-middle  no-underline text-white  "
               >
                 <i className="fas fa-concierge-bell pr-0 md:pr-3 "></i>
                 <span className="pb-1 md:pb-0 block md:inline-block">
                   Kitchen
                 </span>
-              </a>
+              </Link>
             </li>
 
             <li className=" flex-1   text-xl font-roboto font-semibold text-whitepl-2 pl-4">
-              <a
-                href="/menu"
+              <Link
+                to="/menu"
                 className="block py-1 md:py-3 pl-0 md:pl-1 align-middle  no-underline text-white "
               >
                 <i className="fa fa-wallet pr-0 md:pr-3"></i>
                 <span className="pb-1 md:pb-0 block md:inline-block">Menu</span>
-              </a>
+              </Link>
             </li>
             <li className=" flex-1   text-xl font-roboto font-semibold text-white pl-4">
-              <a
-                href="/attendance"
+              <Link
+                to="/attendance"
                 className="block py-1 md:py-3 pl-1 align-middle no-underline text-white  "
               >
                 <i className="fas fa-address-card pr-0 md:pr-3 "></i>
                 <span className="pb-1 md:pb-0 block md:inline-block">
                   Attendance
                 </span>
-              </a>
+              </Link>
             </li>
             <li className=" flex-1 text-xl font-roboto font-semibold text-white pl-4">
-              <a
-                href="/login"
+              <Link
+                to="/login"
                 className="block py-1 md:py-3 pl-1 align-middle no-underline text-white  "
               >
                 <i className="fas fa-sign-out-alt pr-0 md:pr-3 "></i>
                 <span className="pb-1 md:pb-0 block md:inline-block">
                   Logout
                 </span>
-              </a>
+              </Link>
             </li>
           </ul>
         </div>

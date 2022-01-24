@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import options from "../levels";
 import Logo from "../images/logo.jpeg";
 import signin from "../signin";
@@ -122,12 +122,12 @@ const Login = () => {
                   {"  "}Remember Me
                 </span>
               </div>
-              <a
+              <Link
                 style={{ color: theme.backgroundColor }}
                 className="text-base font-thin"
               >
                 Forgot ID / Password?
-              </a>
+              </Link>
             </div>
           </div>
           <div className="w-1/2 my-6 m-auto">
@@ -144,9 +144,9 @@ const Login = () => {
 
           <p className="text-center">
             New User ?{" "}
-            <a href="/" className="underline">
+            <Link to="/" className="underline">
               Sign Up
-            </a>
+            </Link>
           </p>
         </form>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react'
-import { useHistory, useParams} from 'react-router-dom';
+import { Link, useHistory, useParams} from 'react-router-dom';
 import colour from '../color';
 import Popup from './Popup';
 const CategoryDisplay = () => {
@@ -79,7 +79,7 @@ const CategoryDisplay = () => {
         <div className="justify-content-center h-screen">
             <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
                 <div className="flex flex-wrap items-center">
-                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><a href="/menu"><i class="fas fa-arrow-left mr-4"></i>Back</a></div>
+                    <div className="flex flex-shrink md:w-1/3 justify-center md:justify-start text-white ml-4"><Link to="/menu"><i className="fas fa-arrow-left mr-4"></i>Back</Link></div>
                     <div className="flex flex-1 md:w-1/3 justify-center md:justify-start text-white px-2 pl-40 ml-8 font-semibold">Category</div>
                 </div>
             </nav>
@@ -101,9 +101,9 @@ const CategoryDisplay = () => {
                 </div>
                 <div className=" w-full">
                     <div className=" flex flex-col w-96 justify-center mx-auto text-xl my-auto">
-                    <button className=" bg-primary text-white font-bold py-4 my-4" onClick={showItems}><a href={"/itemdisplay/"+id}>View Food Items in Category</a></button>
-                    <button className="bg-primary text-white font-bold py-4  my-4"><a href="/additem">Add New Food Item</a></button>
-                    <button className="bg-primary text-white font-bold py-4  my-4"><a href={"/editcategory/"+id}>Edit Category Details</a></button>
+                    <button className=" bg-primary text-white font-bold py-4 my-4" onClick={showItems}><Link to={"/itemdisplay/"+id}>View Food Items in Category</Link></button>
+                    <button className="bg-primary text-white font-bold py-4  my-4"><Link to="/additem">Add New Food Item</Link></button>
+                    <button className="bg-primary text-white font-bold py-4  my-4"><Link to={"/editcategory/"+id}>Edit Category Details</Link></button>
                     <button className="bg-gray-400 hover:bg-red text-white font-bold py-4  my-4" onClick={delCheck}>Delete</button>
                     </div>
                 </div>

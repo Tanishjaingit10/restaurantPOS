@@ -1,44 +1,48 @@
 import React, { useState, createContext, useEffect } from "react";
+import axios from "axios";
 
 export const CategoryContext = createContext();
 
-export const CategoryProvider= (props)=>{
+export const CategoryProvider = (props) => {
+    const [categories, setCategories] = useState([]);
+    const [foodItems, setFoodItems] = useState([]);
 
-    const [category, setCategory] = useState([]);
     const fetchCategories = async () => {
-        const response = await fetch("/app/category")
-          .then((res) => res.json())
-          .catch((err) => {
-            console.log("Error", err);
-          });
-        setCategory(response);
-      };
+        const res = await axios
+            .get("/app/category")
+        setCategories(res.data)
+    };
 
-      useEffect(() => {
+    const fetchItems = async () => {
+        const res = await axios
+            .get("/app/items")
+        setFoodItems(res.data)
+    };
+
+    useEffect(() => {
         fetchCategories();
         //eslint-disable-next-line
-      }, []);
+    }, []);
 
-      const [foodItems, setFoodItems] = useState([]);
-      const fetchItems = async () => {
-          const response = await fetch("/app/items")
-            .then((res) => res.json())
-            .catch((err) => {
-              console.log("Error", err);
-            });
-          setFoodItems(response);
-        };
-  
-        useEffect(() => {
-          fetchItems();
-          //eslint-disable-next-line
-        }, []);
+    useEffect(() => {
+        fetchItems();
+        //eslint-disable-next-line
+    }, []);
 
     return (
         <div>
-            <CategoryContext.Provider value = {[category, setCategory, foodItems, setFoodItems]}>
+            <CategoryContext.Provider
+                value={{
+                    categories,
+                    setCategories,
+                    foodItems,
+                    setFoodItems,
+                    fetchCategories,
+                    fetchItems,
+                }}
+            >
                 {props.children}
             </CategoryContext.Provider>
         </div>
     );
-}
+};

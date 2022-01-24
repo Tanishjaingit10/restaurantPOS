@@ -7,7 +7,7 @@ import { BsLayers } from 'react-icons/bs';
 import { BiFoodMenu } from 'react-icons/bi';
 import { IoIosPeople } from 'react-icons/io';
 import { FaConciergeBell, FaHome, FaArrowLeft } from 'react-icons/fa';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ThemeContext } from "../context/Theme";
 import 'react-pro-sidebar/dist/css/styles.css';
 import '../styles/SideBar.css';
@@ -25,7 +25,7 @@ const SideBar = () => {
 	return (
 	<div id="sidebar">
 		<ProSidebar collapsed={menuCollapse}>
-			<div class="px-1 pt-4" style={{ backgroundColor: theme.backgroundColor}}>
+			<div className="px-1 pt-4" style={{ backgroundColor: theme.backgroundColor}}>
 				<SidebarHeader className="pb-4">
 					<div onClick={menuIconClick}>
 							{menuCollapse ? (
@@ -38,12 +38,12 @@ const SideBar = () => {
 			</div>
 			<SidebarContent>
 				<Menu iconShape="square">
-					<MenuItem active={location.pathname === '/home' ? true: false} icon={<FaHome />}><a href="/home">Dashboard</a></MenuItem>
-					<MenuItem active={location.pathname === '/tables' ? true: false} icon={<AiOutlineEye color="white" />}><a href="/tables">Table View</a></MenuItem>
-					<MenuItem active={location.pathname === '/orders' ? true: false} icon={<BsLayers color="white" />}><a href="/orders">Orders</a></MenuItem>
-					<MenuItem active={location.pathname === '/kitchen' ? true: false} icon={<FaConciergeBell color="white" />}><a href="/kitchen">Kitchen Dashboard</a></MenuItem>
-					<MenuItem active={location.pathname === '/menu' ? true: false} icon={<BiFoodMenu color="white" />}><a href="/menu">Menu</a></MenuItem>
-					<MenuItem active={location.pathname === '/attendance' ? true: false} icon={<IoIosPeople color="white" />}><a href="/attendance">Attendance</a></MenuItem>
+					<MenuItem active={location.pathname === '/home' ? true: false} icon={<FaHome />}><Link to="/home">Dashboard</Link></MenuItem>
+					<MenuItem active={location.pathname === '/tables' ? true: false} icon={<AiOutlineEye color="white" />}><Link to="/tables">Table View</Link></MenuItem>
+					<MenuItem active={location.pathname === '/orders' ? true: false} icon={<BsLayers color="white" />}><Link to="/orders">Orders</Link></MenuItem>
+					<MenuItem active={location.pathname === '/kitchen' ? true: false} icon={<FaConciergeBell color="white" />}><Link to="/kitchen">Kitchen Dashboard</Link></MenuItem>
+					<MenuItem active={location.pathname === '/menu' ? true: false} icon={<BiFoodMenu color="white" />}><Link to="/menu">Menu</Link></MenuItem>
+					<MenuItem active={location.pathname === '/attendance' ? true: false} icon={<IoIosPeople color="white" />}><Link to="/attendance">Attendance</Link></MenuItem>
 					<MenuItem active={location.pathname === '/logout' ? true: false} icon={<FiLogOut color="white" />}>Log Out</MenuItem>
 				</Menu>
 			</SidebarContent>
