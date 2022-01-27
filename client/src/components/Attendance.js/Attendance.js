@@ -1,11 +1,13 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import Loader from "../Loader";
-import CustomNavBar from "../../items/CustomNavBar";
 import { ThemeContext } from "../../context/Theme";
 import Select from 'react-select';
-import CustomButton from "../../items/CustomButton";
+import CustomButton from "../Common/CustomButton";
 import { FiRefreshCcw } from 'react-icons/fi';
 import { useHistory, useParams } from 'react-router-dom';
+import CustomTable from '../Common/CustomTable';
+import CustomPagination from '../Common/CustomPagination';
+import { DownloadTable, PrintTable } from '../Common/download_print';
 
 const Attendance = () => {
     
@@ -18,6 +20,8 @@ const Attendance = () => {
 	const [pageLimit, setPageLimit] = useState(10);
 	const [pageList, setPageList] = useState([])
 	const [paginagtionBtn, setPaginagtionBtn] = useState({}) 
+  const [incriment, setIncriment] = useState(0)
+  const printTable = useRef();
 
   const theme = useContext(ThemeContext);
 	const history = useHistory();
@@ -154,20 +158,73 @@ const Attendance = () => {
 									style={{ backgroundColor: theme.backgroundColor }}
 									className="text-white py-2 px-2 rounded-md mx-2 shadow-md"
 								>
-									<i onClick={() => setReload(!reload)}><FiRefreshCcw size={22}/></i>
+									<i onClick={() => {setReload(!reload); setComponentLoading(true)}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
 								</div>
-								<CustomButton
+                <PrintTable printTableRef={printTable} />
+
+								{/* <CustomButton
 									title="Print"
 									customStyle={{ backgroundColor: theme.backgroundColor }}
-								/>
-								<CustomButton
-									title="Download"
-									customStyle={{ backgroundColor: theme.backgroundColor }}
-								/>
+								/> */}
+								<DownloadTable fileName="Atendance" tableId="DownloadTable" />
 							</div> 
 						</div>
-						<table className="min-w-full divide-y divide-x divide-gray-200">
-							<thead style={{ backgroundColor: theme.backgroundColor }}>
+            <table id="DownloadTable" style={{display: 'none'}}>
+              <thead>
+              <tr>
+									<th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking-wider border">
+											SL.NO
+									</th>
+									<th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+											Name
+									</th>
+									<th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+											ID
+									</th>
+									<th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+										Date
+									</th>
+									<th scope="col" colspan="2" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+										Action
+									</th>
+								</tr>
+              </thead>
+              <tbody>
+              { 
+									loading ? <Loader /> :
+									attendance.map((attendance, idx) => {
+										return (
+                      <tr className="">
+												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+													<div className="text-base text-gray-500 font-semibold">{idx + 1 + (pageNumber - 1)*pageLimit}</div>
+												</th>
+												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+													<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].fullName}</div>
+												</th>
+												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+													<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].email_id}</div>
+												</th>
+												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+													<div className="text-base text-gray-500 font-semibold">{attendance.date}</div>
+												</th>
+												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+													<div className="text-base text-gray-500 font-semibold" style={{color: theme.backgroundColor }}>{attendance.status}</div>
+												</th>
+												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												{
+													attendance.status !== 'Shift Completed' ?
+													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status == "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
+													: null
+												}
+												</th>
+											</tr>
+									)
+								})
+								}
+              </tbody>
+            </table>
+            <div  ref={printTable}>
+							<CustomTable>
 								<tr>
 									<th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking-wider border">
 											SL.NO
@@ -185,10 +242,9 @@ const Attendance = () => {
 										Action
 									</th>
 								</tr>
-							</thead>
-							<tbody className="bg-white divide-y divide-gray-200">
 								{ 
 									loading ? <Loader /> :
+                  attendance.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).length > 0 ?
 									attendance.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).map((attendance, idx) => {
 										return (
 											<tr className="">
@@ -216,67 +272,19 @@ const Attendance = () => {
 												</th>
 											</tr>
 										)
-								})
+                  }) : 
+            <tr>
+              <td colspan="6" >
+                <div className="flex justify-center w-100 my-5">
+                  <h5 className="text-xl font-semibold" style={{color: theme.backgroundColor}}>No Data Found</h5>
+                </div>
+              </td>
+            </tr>
 								}
-							</tbody>
-						</table>
+							</CustomTable>
+              </div>
 					</div>
-					<div className="flex items-end justify-end my-8">
-						<div className="mt-8">
-							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev')}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
-									Previous
-								</button>
-								{console.log(pageList, pageList[-1])}
-								{(() => {
-									if (pageList.length <= 4 ){
-										return(
-										pageList.slice(0, 4).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-										)
-									}
-									else {
-										return(
-										pageList.slice(0, 2).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-										)
-									}
-								}
-								)()}
-									{
-										pageList.length > 4 ?
-										<>
-										<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
-										...
-										</span>
-										{
-										pageList.slice(pageList.length - 1, pageList.length).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-									}
-									</> : null
-										
-									}
-								<button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next')}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
-									Next
-								</button>
-							</nav>
-						</div>
-					</div>
+          <CustomPagination pageNumber={pageNumber} setPageNumber={setPageNumber} updatePageBtnDict={updatePageBtnDict} pageList={pageList} paginagtionBtn={paginagtionBtn} incriment={incriment} setIncriment={setIncriment}/>
 				</div>
 			</div>
 		</div>

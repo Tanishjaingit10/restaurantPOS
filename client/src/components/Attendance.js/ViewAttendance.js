@@ -1,15 +1,18 @@
-import React, {useState, useEffect, useContext} from 'react'
+import React, {useState, useEffect, useContext, useRef} from 'react'
 import Loader from "../Loader";
 import { ThemeContext } from "../../context/Theme";
 import Select from 'react-select';
-import CustomButton from "../../items/CustomButton";
+import CustomButton from "../Common/CustomButton";
 import { FiRefreshCcw } from 'react-icons/fi';
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePicker, TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import {ThemeProvider} from "@material-ui/styles";
 import MomentUtils from '@date-io/moment';
 import {materialTheme} from '../../styles/clockMaterialTheme';
 import { GrClose } from 'react-icons/gr';
+import CustomTable from '../Common/CustomTable';
+import CustomPagination from '../Common/CustomPagination';
+import { DownloadTable, PrintTable } from '../Common/download_print';
 
 const ViewAttendance = () => {
 	    
@@ -25,7 +28,9 @@ const ViewAttendance = () => {
 	const [filterAttendanceStopDate, setFilterAttendanceStopDate] = useState(new Date())
 	const [selectAttendanceFilter, setSelectAttendanceFilter] = useState(false)
 	const [attendance, setAttendance] = useState([]);
+  const [incriment, setIncriment] = useState(0)
   const theme = useContext(ThemeContext);
+  const printTable = useRef();
 
 	useEffect(() => {
 		setPageList([])
@@ -66,7 +71,6 @@ const ViewAttendance = () => {
 	}, [reload])
 
 	const options = [
-		{ value: 1, label: '1' },
 		{ value: 10, label: '10' },
 		{ value: 50, label: '50' },
 		{ value: 100, label: '100' },
@@ -160,23 +164,77 @@ const ViewAttendance = () => {
 											style={{ backgroundColor: theme.backgroundColor }}
 											className="text-white py-2 px-2 rounded-md mx-2 shadow-md"
 										>
-											<i onClick={() => {setReload(!reload); setComponentLoading(true)}}><FiRefreshCcw size={22}/></i>
+											<i onClick={() => {setReload(!reload); setComponentLoading(true)}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
 										</div>
-										<CustomButton
+                    <PrintTable printTableRef={printTable} />
+
+										{/* <CustomButton
 											title="Print"
 											customStyle={{ backgroundColor: theme.backgroundColor }}
-										/>
-										<CustomButton
-											title="Download"
-											customStyle={{ backgroundColor: theme.backgroundColor }}
-										/>
+										/> */}
+										<DownloadTable fileName="Attendance Report" tableId="DownloadTable" />
 									</div> 
 								</div> 
 							</div>
 						</div>
-						<table className="min-w-full divide-y divide-x divide-gray-200">
-							<thead style={{ backgroundColor: theme.backgroundColor }}>
-								<tr>
+            <table id="DownloadTable" style={{display: 'none'}}>
+              <thead>
+                <tr>
+                  <th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking-wider border">
+                        SL.NO
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+                        Name
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+                        ID
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+                      Date
+                    </th>
+                    <th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border">
+                      Checked In
+                    </th>
+                    <th
+                      scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border"
+                    >
+                      Checked Out
+                    </th>
+                  </tr>
+                </thead>
+              <tbody>
+              { 
+									loading ? <Loader /> :
+									attendance.map((attendance, idx) => {
+										return (
+                      <tr className="font-medium ">
+											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{idx + 1 + (pageNumber - 1)*pageLimit}</div>
+											</th>
+											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].fullName}</div>
+											</th>
+											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].email_id}</div>
+											</th>
+											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{attendance.date}</div>
+											</th>
+											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{attendance.checkInTime}</div>
+											</th>
+											<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{attendance.checkOutTime}</div>
+											</th>
+										</tr>
+									)
+								})
+								}
+              </tbody>
+            </table>
+            <div  ref={printTable}>
+            <CustomTable>
+              <tr>
 								<th scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking-wider border">
 											SL.NO
 									</th>
@@ -198,8 +256,8 @@ const ViewAttendance = () => {
 										Checked Out
 									</th>
 								</tr>
-							</thead>
-							<tbody className="w-full">{loading ? <Loader /> : 
+							{loading ? <Loader /> : 
+                attendance.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).length > 0 ?
 								attendance.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).map((attendance, idx) => {
 									return (
 										<tr className="font-medium ">
@@ -222,66 +280,20 @@ const ViewAttendance = () => {
 												<div className="text-base text-gray-500 font-semibold">{attendance.checkOutTime}</div>
 											</th>
 										</tr>
-									)}
-									)}
-							</tbody>
-						</table>
+									)
+                  }) : 
+                  <tr>
+                    <td colspan="6" >
+                      <div className="flex justify-center w-100 mt-5">
+                        <h5 className="text-xl font-semibold" style={{color: theme.backgroundColor}}>No Data Found</h5>
+                      </div>
+                    </td>
+                  </tr>
+                }
+							</CustomTable>
+              </div>
 					</div>
-					<div className="flex items-end justify-end my-8">
-						<div className="mt-8">
-							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev')}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
-									Previous
-								</button>
-								{(() => {
-									if (pageList.length <= 4 ){
-										return(
-										pageList.slice(0, 4).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-										)
-									}
-									else {
-										return(
-										pageList.slice(0, 2).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-										)
-									}
-								}
-								)()}
-									{
-										pageList.length > 4 ?
-										<>
-										<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
-										...
-										</span>
-										{
-										pageList.slice(pageList.length - 1, pageList.length).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-									}
-									</> : null
-										
-									}
-								<button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next')}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
-									Next
-								</button>
-							</nav>
-						</div>
-					</div>
+          <CustomPagination pageNumber={pageNumber} setPageNumber={setPageNumber} updatePageBtnDict={updatePageBtnDict} pageList={pageList} paginagtionBtn={paginagtionBtn} incriment={incriment} setIncriment={setIncriment}/>
 				</div>
 			</div>
 		</div>

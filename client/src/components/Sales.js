@@ -150,7 +150,7 @@ const Sales = () => {
       <nav className="bg-primary py-2 md:py-4 px-1 mt-0 h-auto w-full top-0">
         <div className="text-center w-full relative">
           <div className=" text-white left-1 absolute sm:left-4">
-            <Link to="/home">
+            <Link to="/dashboard">
               <i className="fas fa-home font-semibold mr-2 sm:mr-4 text-sm sm:text-md md:text-lg lg:text-2xl"></i>
             </Link>
           </div>

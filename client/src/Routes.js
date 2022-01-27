@@ -8,7 +8,7 @@ import CategoryDisplay from "./components/CategoryDisplay";
 import CategoryForm from "./components/CategoryForm";
 import Counter from "./components/Counter";
 import Customers from "./components/Customers";
-import Home from "./components/Home";
+import Dashboard from "./components/dashboard";
 import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
 import Kitchen from "./components/Kitchen";
@@ -56,7 +56,7 @@ const Routes = () => {
     
       <Router>
         <Switch>
-          <RouteWrapper exact path="/home" component={Home} layout={DefaultLayout} />
+          <RouteWrapper exact path="/dashboard" component={Dashboard} layout={DefaultLayout} />
           <Route exact path="/" component={SignUp} />
           <Route exact path="/login" component={Login} />
           <RouteWrapper exact path="/menu" component={Menu} layout={DefaultLayout}/>
@@ -82,7 +82,7 @@ const Routes = () => {
           <Route exact path="/counter" component={Counter} />
           <RouteWrapper exact path="/kitchen" component={Kitchen} layout={DefaultLayout} />
           <Route exact path="/receipt" component={Receipt} />
-          <Route exact path="/customers" component={Customers} />
+          <RouteWrapper layout={DefaultLayout} exact path="/customers" component={Customers} />
           <Route exact path="/sales" component={Sales} />
           <RouteWrapper layout={DefaultLayout} exact path="/attendance" component={Attendance} />
           <RouteWrapper layout={DefaultLayout} exact path="/takeAttendance" component={TakeAttendance} />

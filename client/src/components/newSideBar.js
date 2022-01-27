@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
-import {  ProSidebar, SidebarHeader, SidebarFooter, SidebarContent, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
-import { FiHome, FiLogOut, FiArrowLeftCircle } from "react-icons/fi";
+import React, { useState, useContext } from "react";
+import { ProSidebar, SidebarHeader, SidebarContent, Menu, MenuItem } from 'react-pro-sidebar';
+import { FiLogOut } from "react-icons/fi";
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineEye } from 'react-icons/ai';
 import { BsLayers } from 'react-icons/bs';
@@ -29,16 +29,16 @@ const SideBar = () => {
 				<SidebarHeader className="pb-4">
 					<div onClick={menuIconClick}>
 							{menuCollapse ? (
-									<GiHamburgerMenu color="white" style={{'fontSize':23}} className="mx-auto"/>
+									<GiHamburgerMenu color="white" style={{fontSize:23, cursor: 'pointer'}} className="mx-auto"/>
 							) : (
-									<FaArrowLeft color="white" style={{'fontSize':23, 'transform': 'translateX(180px)'}}/>
+									<FaArrowLeft color="white" style={{fontSize:23, 'transform': 'translateX(180px)', cursor: 'pointer'}}/>
 							)}
 					</div>
 				</SidebarHeader>
 			</div>
 			<SidebarContent>
 				<Menu iconShape="square">
-					<MenuItem active={location.pathname === '/home' ? true: false} icon={<FaHome />}><Link to="/home">Dashboard</Link></MenuItem>
+					<MenuItem active={location.pathname === '/dashboard' ? true: false} icon={<FaHome />}><Link to="/dashboard">Dashboard</Link></MenuItem>
 					<MenuItem active={location.pathname === '/tables' ? true: false} icon={<AiOutlineEye color="white" />}><Link to="/tables">Table View</Link></MenuItem>
 					<MenuItem active={location.pathname === '/orders' ? true: false} icon={<BsLayers color="white" />}><Link to="/orders">Orders</Link></MenuItem>
 					<MenuItem active={location.pathname === '/kitchen' ? true: false} icon={<FaConciergeBell color="white" />}><Link to="/kitchen">Kitchen Dashboard</Link></MenuItem>

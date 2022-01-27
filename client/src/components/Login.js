@@ -33,7 +33,7 @@ const Login = () => {
 
     setIsOpen(!isOpen);
     if (res.status === 201) {
-      history.push("/home");
+      history.push("/dashboard");
     } else {
       let obj = signin.find((pop) => pop.id === res.status);
       setMsg(obj.title);

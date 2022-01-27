@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
-import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { ThemeContext } from "../context/Theme";
-import CustomButton from "../items/CustomButton";
-import Select, { StylesConfig } from 'react-select';
+import CustomButton from "./Common/CustomButton";
+import Select from 'react-select';
 import { FiRefreshCcw } from 'react-icons/fi';
 import { GoSearch } from 'react-icons/go';
 import "react-datepicker/dist/react-datepicker.css";
-import { DatePicker, TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import {ThemeProvider} from "@material-ui/styles";
 import MomentUtils from '@date-io/moment';
 import {materialTheme} from '../styles/clockMaterialTheme';
 import { GrClose } from 'react-icons/gr';
+import CustomTable from './Common/CustomTable';
+import CustomPagination from './Common/CustomPagination';
+import { DownloadTable, PrintTable } from './Common/download_print';
 
 let len = 0;
 const Orders = () => {
@@ -32,7 +34,9 @@ const Orders = () => {
 	const [completedOrders, setCompletedOrders] = useState(0)
 	const [pendingOrders, setPendingOrders] = useState(0)
 	const [cancelledOrders, setCancelledOrders] = useState(0)
+  const [incriment, setIncriment] = useState(0)
   const theme = useContext(ThemeContext);
+  const printTable = useRef();
 
 	useEffect(() => {
     setPageList([])
@@ -49,7 +53,7 @@ const Orders = () => {
         var cancelledOrders = 0;
         
 				for (let i = 0; i < json.length; i++) {
-					if (json[i].payment.orderStatus == 'Completed') {
+					if (json[i].payment.orderStatus.replace(/\s+/g, '').toLowerCase() == 'readytoserve') {
             completedOrders += 1;
 					}
 					else if (json[i].payment.orderStatus == 'Processing') {
@@ -82,20 +86,20 @@ const Orders = () => {
 }, [reload])
 
 	const getOrdersByInvoices = (invoices) => {
-		setLoading(true)
+		setComponentLoading(true)
 		fetch(`/app/orderById/${invoices}`)
 		.then((res) => res.json())
 		.then((json) => {
 			if (json !== "undefined") {
 				len = json.length;
 				setOrders(json);
-				setLoading(false)
+				setComponentLoading(false)
 				setPageNumber(1)
 				setPageLimit(10)
 			}
 		})
 		.catch((err) => {
-			setLoading(false);
+			setComponentLoading(false);
 			console.log("error: ", err);
 			setPageNumber(1)
 			setPageLimit(10)
@@ -150,6 +154,7 @@ const Orders = () => {
 	}
 
 	const options = [
+		{ value: 1, label: '1' },
 		{ value: 10, label: '10' },
 		{ value: 50, label: '50' },
 		{ value: 100, label: '100' },
@@ -175,6 +180,7 @@ const Orders = () => {
 			updatePageDict[pageNumber + 1] = 'Active'; 
 		setPaginagtionBtn(updatePageDict)
 	}
+  
   return (
     <div>
 		{console.log(componentLoading)}
@@ -186,7 +192,7 @@ const Orders = () => {
 					<div className="flex items-center justify-between my-5">
 						<h2 className="font-bold text-2xl text-gray-600">Orders Report</h2>
 						<div className="inline-block mx-5 rounded w-1/4">
-							<input onChange={(value) => {if (value.target.value.length == 7) getOrdersByInvoices(value.target.value); if (value.target.value.length == 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: order id"/>
+							<input onChange={(value) => {if (value.target.value.length >= 7) getOrdersByInvoices(value.target.value); if (value.target.value.length == 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: order id"/>
 							<GoSearch size={25} className="absolute inline-block mt-4 -ml-8" color="#a5a5a5d1"/>
 						</div>
 						<div className="flex flex-row items-center">
@@ -262,23 +268,22 @@ const Orders = () => {
 											style={{ backgroundColor: theme.backgroundColor }}
 											className="text-white py-2 px-2 rounded-md mx-2 shadow-md"
 										>
-											<i onClick={() => {setReload(!reload); setComponentLoading(true)}}><FiRefreshCcw size={22}/></i>
+											<i onClick={() => {setReload(!reload); setComponentLoading(true)}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
 										</div>
-										<CustomButton
+										{/* <CustomButton
 											title="Print"
 											customStyle={{ backgroundColor: theme.backgroundColor }}
-										/>
-										<CustomButton
-											title="Download"
-											customStyle={{ backgroundColor: theme.backgroundColor }}
-										/>
+										/> */}
+                    <PrintTable printTableRef={printTable} />
+
+                    <DownloadTable fileName="Orders" tableId="DownloadTable" />
 									</div> 
 								</div> 
 							</div>
 						</div>
-						<table className="min-w-full divide-y divide-x divide-gray-200">
-							<thead style={{ backgroundColor: theme.backgroundColor }}>
-								<tr>
+            <table id="DownloadTable" style={{display: 'none'}}>
+              <thead>
+              <tr>
 									<th
 										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking-wider border"
 									>
@@ -310,9 +315,77 @@ const Orders = () => {
 										Action
 									</th>
 								</tr>
-							</thead>
-							<tbody className="w-full">
+              </thead>
+              <tbody>
+              { 
+									loading ? <Loader /> :
+									orders.map(order => {
+										return (
+                      <tr className="font-medium ">
+											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{new Date(order.time).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )}</div>
+											</td>
+											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{order.order_id}</div>
+											</td>
+											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{order.payment.orderType}</div>
+											</td>
+											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">${order.payment.total}</div>
+											</td>
+											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<div className="text-base text-gray-500 font-semibold">{order.payment.orderStatus}</div>
+											</td>
+											<td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<CustomButton
+													title="View Order"
+													customStyle={{ backgroundColor: theme.backgroundColor }}
+												/>
+											</td>
+										</tr>
+									)
+								})
+								}
+              </tbody>
+            </table>
+            <div  ref={printTable}>
+             <CustomTable>
+              <tr>
+									<th
+										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking-wider border"
+									>
+										Date
+									</th>
+									<th
+										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border"
+									>
+										Order ID
+									</th>
+									<th
+										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border"
+									>
+										Sale Type
+									</th>
+									<th
+										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border"
+									>
+										Amount
+									</th>
+									<th
+										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border"
+									>
+										Status
+									</th>
+									<th
+										scope="col" className="px-6 py-4 text-center text-xl font-semibold text-white tracking border"
+									>
+										Action
+									</th>
+								</tr>
+						
 							{loading ? <Loader /> : 
+                orders.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).length > 0 ?
 								orders.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).map(order => {
 									return (
 										<tr className="font-medium ">
@@ -338,10 +411,18 @@ const Orders = () => {
 												/>
 											</td>
 										</tr>
-									)}
-									)}
-							</tbody>
-						</table>
+									)
+                  }) : 
+                  <tr>
+                    <td colspan="6" >
+                      <div className="flex justify-center w-100 my-5">
+                        <h5 className="text-xl font-semibold" style={{color: theme.backgroundColor}}>No Data Found</h5>
+                      </div>
+                    </td>
+                  </tr>
+                  }
+							</CustomTable>
+              </div>
 					</div>
 					<div className="flex flex-row items-end justify-between my-8">
 						<div>
@@ -349,59 +430,7 @@ const Orders = () => {
 						<div className="text-base text-gray-500 font-semibold">Pending: {pendingOrders}</div>
 						<div className="text-base text-gray-500 font-semibold">Cancelled: {cancelledOrders}</div>
 						</div>
-						<div className="mt-8">
-							<nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-								<button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev')}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
-									Previous
-								</button>
-								{(() => {
-									if (pageList.length <= 4 ){
-										return(
-										pageList.slice(0, 4).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-										)
-									}
-									else {
-										return(
-										pageList.slice(0, 2).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-										)
-									}
-								}
-								)()}
-									{
-										pageList.length > 4 ?
-										<>
-										<span className="relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn text-red-700">
-										...
-										</span>
-										{
-										pageList.slice(pageList.length - 1, pageList.length).map((i, idx) => {
-											return (
-												<button href="#"  id={"pagBtn" + String(i)} onClick={() => setPageNumber(i)} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
-													{i}
-												</button>
-											)
-										})
-									}
-									</> : null
-										
-									}
-								<button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next')}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
-									Next
-								</button>
-							</nav>
-						</div>
+            <CustomPagination pageNumber={pageNumber} setPageNumber={setPageNumber} updatePageBtnDict={updatePageBtnDict} pageList={pageList} paginagtionBtn={paginagtionBtn} incriment={incriment} setIncriment={setIncriment}/>
 					</div>
 				</div>
 			</div>

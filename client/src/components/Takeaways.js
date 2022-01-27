@@ -77,7 +77,7 @@ const Takeaways = () => {
       <nav className="bg-primary py-6 px-1 mt-0 h-auto w-full top-0 text-2xl">
         <div className="text-center w-full relative">
           <div className=" text-white ml-4 absolute left-4">
-            <Link to="/home">
+            <Link to="/dashboard">
               <i className="fas fa-home font-semibold mr-4"></i>
             </Link>
           </div>

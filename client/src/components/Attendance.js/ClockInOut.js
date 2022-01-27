@@ -22,7 +22,7 @@ const ClockInOut = () => {
     console.log(value)
   }
   const onHome = (e) => {
-    history.push('/home');
+    history.push('/dashboard');
 }
   const loadUser = async () => {
     if (user.email_id) {

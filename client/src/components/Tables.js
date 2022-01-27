@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import Popup from "./Popup";
 import Loader from "./Loader";
-import Logo from "../images/logo.jpeg";
 import { ThemeContext } from "../context/Theme";
-import CustomButton from "../items/CustomButton";
+import CustomButton from "./Common/CustomButton";
 import DateFnsUtils from "@date-io/date-fns";
 import "react-datepicker/dist/react-datepicker.css";
 import { DatePicker, TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -11,19 +10,11 @@ import {ThemeProvider} from "@material-ui/styles";
 import MomentUtils from '@date-io/moment';
 import { Link, useHistory } from 'react-router-dom';
 import { FiRefreshCcw } from 'react-icons/fi';
-import {createTheme} from "@material-ui/core";
 import { GrClose } from 'react-icons/gr';
 import {MdOutlineDelete} from 'react-icons/md'
-import Select, { StylesConfig } from 'react-select';
+import Select from 'react-select';
 import Modal from "react-modal";
 import {materialTheme} from '../styles/clockMaterialTheme';
-
-let arr = new Array(1000000).fill(false);
-let order = [];
-
-var today = new Date();
-var currTime = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-var currDate = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 
 const Tables = () => {
 	const [componentLoading, setComponentLoading] = useState(false)
@@ -49,7 +40,6 @@ const Tables = () => {
 	const [showDeleteTable, setShowDeleteTable] = useState(false)
 
 	useEffect(() => {
-		setLoading(true)
 		setShowDeleteTable(false)
 		fetch(`/app/table`)
 		.then((res) => res.json())
@@ -62,10 +52,12 @@ const Tables = () => {
 			}
 			setAllTables(tables)
 			setLoading(false)
+      setComponentLoading(false)
 		})
 		.catch((err) => {
 			console.log(err);
 			setLoading(false)
+      setComponentLoading(false)
 		})
 	}, [reload])
 
@@ -171,23 +163,6 @@ const Tables = () => {
     },
   };
 
-  const showDetails = async (index, obj) => {
-    console.log(index);
-    arr[index] = !arr[index];
-    console.log(arr[index]);
-    if (arr[index]) {
-      arr = arr.map((x) => false);
-      arr[index] = true;
-      await fetch(`/app/order/${obj.number}`)
-        .then((res) => res.json())
-        .then((json) => {
-          if (json.order) order = json;
-          else order = [];
-        });
-    } else order = [];
-    console.log(order.order);
-  };
-
   const deleteTable = async () => {
     await fetch(`/app/removeTable/${deleteTableId}`, {
       method: "DELETE",
@@ -215,7 +190,7 @@ const Tables = () => {
             style={{ backgroundColor: theme.backgroundColor }}
             className="text-white py-2 px-2 rounded-md mx-2"
           >
-            <i onClick={() => setReload(!reload)}><FiRefreshCcw size={22}/></i>
+            <i onClick={() => {setReload(!reload); setComponentLoading(true)}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
           </div>
           <CustomButton
             title="Actions"

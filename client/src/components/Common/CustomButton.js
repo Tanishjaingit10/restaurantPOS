@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { ThemeContext } from "../context/Theme";
+import { ThemeContext } from "../../context/Theme";
 
 const CustomButton = (props) => {
   const theme = useContext(ThemeContext);

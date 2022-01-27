@@ -6,7 +6,7 @@ import axios from "axios";
 // import Loader from "./Loader";
 // import Popup from "./Popup";
 // import { useDebounce, useDebouncedCallback } from "use-debounce";
-import CustomNavBar from "../items/CustomNavBar";
+import CustomNavBar from "./Common/CustomNavBar";
 import { ThemeContext } from "../context/Theme";
 import OrderCard from "./Kitchen/OrderCard";
 import { NotificationContext } from "../context/Notification";

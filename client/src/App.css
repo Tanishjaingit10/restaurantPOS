@@ -89,3 +89,32 @@
     transform: rotate(360deg);
   }
 }
+
+.downloadTable {
+  background-color: rgba(229, 73, 65, 1);
+}
+
+@media print {
+  .print-source {
+    display: block;
+  }
+}
+
+.on-print-source {
+  display: block;
+}
+
+.print-source {
+  display: none;
+}
+
+.home_chart_btn {
+  margin: 0 5px;
+  padding: 10px;
+  font-weight: 600;
+}
+
+.home_chart_btn:focus {
+  font-size: 1.2rem;
+  border-bottom: 5px solid rgba(229, 73, 65, 1);
+}

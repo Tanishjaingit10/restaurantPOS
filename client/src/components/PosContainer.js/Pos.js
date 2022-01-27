@@ -96,7 +96,7 @@
 //             <div className="w-3/5 border-r-2 border-primary shadow-2xl overflow-hidden ">
 //                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold ">
 //                     <div className="flex flex-row px-6 justify-items-center">
-//                         <div className=" justify-center md:justify-start text-white py-2"><Link to="/home"><i className="fas fa-home font-semibold"></i></Link></div>
+//                         <div className=" justify-center md:justify-start text-white py-2"><Link to="/dashboard"><i className="fas fa-home font-semibold"></i></Link></div>
 //                         <div className="flex flex-row w-full mx-24 relative">
 //                             <ul className=" text-white text-left" ref={typeRef}>
 //                                 <li className="p-2 cursor-pointer" onClick={() => { showList(!list) }}>{payment.orderType}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
@@ -173,7 +173,7 @@ import {
     vegIconImageBase64,
 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
-import CustomNavBar from "../../items/CustomNavBar";
+import CustomNavBar from "../Common/CustomNavBar";
 import { deepClone } from "../../Utils";
 import AuthenticateOverlayButton from "./AuthenticateOverlayButton";
 import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";

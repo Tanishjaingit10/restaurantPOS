@@ -1,6 +1,6 @@
 import React from 'react';  
 import SideBar from '../components/newSideBar';
-import CustomNavBar from "../items/CustomNavBar";
+import CustomNavBar from "../components/Common/CustomNavBar";
 
 export const DefaultLayout = ({children}) => {
 

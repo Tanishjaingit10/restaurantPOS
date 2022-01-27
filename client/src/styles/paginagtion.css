@@ -18,10 +18,10 @@
     color: white;
 }
 
-.pagination_btn:active {
+/* .pagination_btn:active {
     background-color: rgba(229, 73, 65, 1);
     color: white;
-}
+} */
 
 .pagination_btn:focus {
     background-color: rgba(229, 73, 65, 1);
