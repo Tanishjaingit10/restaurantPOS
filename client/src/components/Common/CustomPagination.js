@@ -7,7 +7,7 @@ const CustomPagination = ({pageNumber, setPageNumber, updatePageBtnDict, pageLis
   <div className="flex items-end justify-end my-8">
     <div className="mt-8">
       <nav className="relative z-0 inline-flex rounded-md shadow-sm" aria-label="Pagination">
-        <button href="#" disabled={pageNumber == 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev'); if (incriment >= 1 ) setIncriment((incriment) => incriment - 1)}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
+        <button href="#" disabled={pageNumber === 1 ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber - 1); updatePageBtnDict('prev'); if (incriment >= 1 ) setIncriment((incriment) => incriment - 1)}} className="relative inline-flex items-center px-8 py-2 rounded border text-sm font-medium mx-1 pagination_btn">
           Previous
         </button>
         {
@@ -19,7 +19,7 @@ const CustomPagination = ({pageNumber, setPageNumber, updatePageBtnDict, pageLis
             )
           })
         }
-        <button href="#" disabled={pageNumber == pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next'); if (pageList.length - incriment > 5 ) setIncriment((incriment) => incriment + 1)}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
+        <button href="#" disabled={pageNumber === pageList[pageList.length -1] ? true : false} onClick={() => {setPageNumber((pageNumber) => pageNumber + 1); updatePageBtnDict('next'); if (pageList.length - incriment > 5 ) setIncriment((incriment) => incriment + 1)}} className="relative inline-flex items-center px-8 py-2 rounded border border-red-600 bg-white text-sm font-medium mx-1 pagination_btn">
           Next
         </button>
       </nav>

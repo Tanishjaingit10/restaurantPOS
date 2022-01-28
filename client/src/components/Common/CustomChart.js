@@ -1,12 +1,10 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../../context/Theme";
-import { FiRefreshCcw } from 'react-icons/fi';
 
-const CustomChart = ({children, title, setReload, reload, setComponentLoading, icon}) => {
-  const theme = useContext(ThemeContext);
+const CustomChart = ({children, title, setComponentLoading, icon, fetchData}) => {
 
   return (
-    <div className="m-5 shadow-xl">
+    <div className="m-5 shadow-xl w-100">
       <div className="px-5 py-4 rounded-t-xl flex flex-row" style={{backgroundColor: "rgb(255, 102, 94)" }}>
         {icon}
         <h5 className="text-xl text-white font-semibold ml-5">{title}</h5>
@@ -17,19 +15,17 @@ const CustomChart = ({children, title, setReload, reload, setComponentLoading, i
           <div className="">
             {children[1]}
           </div>
-          <div
-            style={{ backgroundColor: theme.backgroundColor, height: 40 }}
-            className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
-          >
-            <i onClick={() => {setReload(!reload); setComponentLoading(true)}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
-          </div>
+          {children[2]}
         </div>
       </div>
       <div className="rounded-b-xl p-5">
         <div className="flex justify-end">
-          {children[2]}
+          {children[3]}
         </div>
-        {children[3]}
+        <div>
+          {children[4]}
+          {children[5]}
+        </div>
       </div>
     </div>
   )

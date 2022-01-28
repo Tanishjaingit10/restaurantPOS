@@ -8,7 +8,7 @@ import CategoryDisplay from "./components/CategoryDisplay";
 import CategoryForm from "./components/CategoryForm";
 import Counter from "./components/Counter";
 import Customers from "./components/Customers";
-import Dashboard from "./components/dashboard";
+import Dashboard from "./components/Dashboard";
 import ItemDisplay from "./components/ItemDisplay";
 import ItemForm from "./components/ItemForm";
 import Kitchen from "./components/Kitchen";

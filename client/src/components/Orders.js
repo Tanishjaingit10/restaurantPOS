@@ -16,9 +16,7 @@ import CustomTable from './Common/CustomTable';
 import CustomPagination from './Common/CustomPagination';
 import { DownloadTable, PrintTable } from './Common/download_print';
 
-let len = 0;
 const Orders = () => {
-  // const [inputValue, setInputvalue] = useState("Search for order or serial no.")
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -53,13 +51,13 @@ const Orders = () => {
         var cancelledOrders = 0;
         
 				for (let i = 0; i < json.length; i++) {
-					if (json[i].payment.orderStatus.replace(/\s+/g, '').toLowerCase() == 'readytoserve') {
+					if (json[i].payment.orderStatus.replace(/\s+/g, '').toLowerCase() === 'readytoserve') {
             completedOrders += 1;
 					}
-					else if (json[i].payment.orderStatus == 'Processing') {
+					else if (json[i].payment.orderStatus === 'Processing') {
             pendingOrders += 1;
 					}
-					else if (json[i].payment.orderStatus == 'Cancelled') {
+					else if (json[i].payment.orderStatus === 'Cancelled') {
             cancelledOrders += 1;
 					}
 				}
@@ -91,7 +89,6 @@ const Orders = () => {
 		.then((res) => res.json())
 		.then((json) => {
 			if (json !== "undefined") {
-				len = json.length;
 				setOrders(json);
 				setComponentLoading(false)
 				setPageNumber(1)
@@ -113,7 +110,6 @@ const Orders = () => {
 			.then((res) => res.json())
 			.then((json) => {
 				if (json !== "undefined") {
-					len = json.length;
 					setOrders(json);
 					setLoading(false)
 					setPageNumber(1)
@@ -138,7 +134,6 @@ const Orders = () => {
 		.then((res) => res.json())
 		.then((json) => {
 			if (json !== "undefined") {
-				len = json.length;
 				setOrders(json);
 				setLoading(false)
 				setPageNumber(1)
@@ -174,7 +169,7 @@ const Orders = () => {
 		var pageDict = paginagtionBtn; 
 		var updatePageDict = pageDict; 
 		updatePageDict[pageNumber] = ''; 
-		if (state == 'prev')
+		if (state === 'prev')
 			updatePageDict[pageNumber - 1] = 'Active'; 
 		else
 			updatePageDict[pageNumber + 1] = 'Active'; 
@@ -192,7 +187,7 @@ const Orders = () => {
 					<div className="flex items-center justify-between my-5">
 						<h2 className="font-bold text-2xl text-gray-600">Orders Report</h2>
 						<div className="inline-block mx-5 rounded w-1/4">
-							<input onChange={(value) => {if (value.target.value.length >= 7) getOrdersByInvoices(value.target.value); if (value.target.value.length == 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: order id"/>
+							<input onChange={(value) => {if (value.target.value.length >= 7) getOrdersByInvoices(value.target.value); if (value.target.value.length === 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: order id"/>
 							<GoSearch size={25} className="absolute inline-block mt-4 -ml-8" color="#a5a5a5d1"/>
 						</div>
 						<div className="flex flex-row items-center">

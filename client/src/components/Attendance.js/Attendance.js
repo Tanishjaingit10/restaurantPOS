@@ -72,12 +72,12 @@ const Attendance = () => {
 		var updatedData = {}
 		updatedData['date'] = attendance.date
 		updatedData['userId'] = attendance.user_id
-		if (attendance.status == 'Shift Not Started'){
+		if (attendance.status === 'Shift Not Started'){
 			updatedData['status'] = 'Clocked In'
 			updatedData['checkInTime'] = new Date().toLocaleTimeString('en-US', { hour12: false })
 			updatedData['checkOutTime'] = 'N/A'
 		}
-		else if (attendance.status == 'Clocked In'){
+		else if (attendance.status === 'Clocked In'){
 			updatedData['status'] = 'Shift Completed'
 			updatedData['checkInTime'] = attendance.checkInTime
 			updatedData['checkOutTime'] = new Date().toLocaleTimeString('en-US', { hour12: false })
@@ -120,7 +120,7 @@ const Attendance = () => {
 		var pageDict = paginagtionBtn; 
 		var updatePageDict = pageDict; 
 		updatePageDict[pageNumber] = ''; 
-		if (state == 'prev')
+		if (state === 'prev')
 			updatePageDict[pageNumber - 1] = 'Active'; 
 		else
 			updatePageDict[pageNumber + 1] = 'Active'; 
@@ -213,7 +213,7 @@ const Attendance = () => {
 												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
 												{
 													attendance.status !== 'Shift Completed' ?
-													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status == "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
+													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status === "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
 													: null
 												}
 												</th>
@@ -266,7 +266,7 @@ const Attendance = () => {
 												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
 												{
 													attendance.status !== 'Shift Completed' ?
-													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status == "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
+													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status === "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
 													: null
 												}
 												</th>

@@ -210,9 +210,9 @@ const AllReservations = () => {
 		var pageDict = paginagtionBtn; 
 		var updatePageDict = pageDict; 
 		updatePageDict[pageNumber] = ''; 
-		if (state == 'prev')
+		if (state === 'prev')
 			updatePageDict[pageNumber - 1] = 'Active'; 
-		else if (state == 'next')
+		else if (state === 'next')
 			updatePageDict[pageNumber + 1] = 'Active'; 
     else
       updatePageDict[state] = 'Active';

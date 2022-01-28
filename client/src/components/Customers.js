@@ -77,7 +77,7 @@ const Customers = () => {
 		var pageDict = paginagtionBtn; 
 		var updatePageDict = pageDict; 
 		updatePageDict[pageNumber] = ''; 
-		if (state == 'prev')
+		if (state === 'prev')
 			updatePageDict[pageNumber - 1] = 'Active'; 
 		else
 			updatePageDict[pageNumber + 1] = 'Active'; 
@@ -124,7 +124,7 @@ const Customers = () => {
 						<div className="inline-block w-1/2">
 							<h1 className="text-lg inline-block font-bold text-gray-600">Actions</h1>
 							<div className="inline-block mx-5 rounded relative w-2/3">
-								<input onChange={(value) => { if(value.target.value.length > 0) getCustomerByValue(value.target.value);  if (value.target.value.length == 0) setReload(!reload);}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for customer name/ phone/ email."/>
+								<input onChange={(value) => { if(value.target.value.length > 0) getCustomerByValue(value.target.value);  if (value.target.value.length === 0) setReload(!reload);}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for customer name/ phone/ email."/>
 								<GoSearch size={25} className="absolute inline-block mt-4 -ml-8" color="#a5a5a5d1"/>
 							</div>
 						</div>
