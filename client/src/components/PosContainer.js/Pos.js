@@ -1,180 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-// import React, { useState, useContext, useEffect, createRef } from 'react';
-// import { useHistory } from 'react-router-dom';
-// import CategoryList from './CategoryList';
-// import { OrderContext } from '../../context/Cart';
-// import Order from './Order';
-// import PaymentSummary from './PaymentSummary';
-// import { CustomerContext } from '../../context/Customer';
-// import { PaymentContext } from '../../context/Payment';
-// const Pos = () => {
-//     const [customer, setCustomer] = useContext(CustomerContext);
-//     const history = useHistory();
-//     const [payment, setPayment] = useContext(PaymentContext);
-//     const [list, showList] = useState(false);
-//     const [cust, showCust] = useState(false);
-//     const [pop, showPop] = useState(false);
-//     const [open, setOpen] = useState(false);
-//     const [Table, showTable] = useState(false);
-//     const [cart] = useContext(OrderContext);
-//     const [Cust, setCust] = useState()
-//     const [search, setSearch] = useState("");
-//     const [displayTable, setdisplayTable] = useState()
-//     const typeRef = createRef();
-//     const custRef = createRef();
-//     const tableRef = createRef();
 
-//     const handleClickOutside = e => {
-//         if (typeRef.current && !typeRef.current.contains(e.target)) {
-//             showList(false);
-//         };
-//         if (custRef.current && !custRef.current.contains(e.target)) {
-//             showCust(false);
-
-//         };
-//         if (tableRef.current && !tableRef.current.contains(e.target)) {
-//             showTable(false);
-//         }
-//     }
-//     const getCustomers = async (e)=>{
-//         await fetch("/app/customers")
-//         .then((res) => res.json())
-//         .then((json) =>
-//         setCust(
-//             json.filter((option) => {
-//                 if (search === "")
-//                     return option;
-//                 else if (option.contact.includes(search)||option.name.toLowerCase().includes(search.toLowerCase())) {
-//                     return option;
-//                 }
-//                 return null;
-//             })
-//                 .map((option) => {
-//                     return (<li className="flex flex-row text-black p-2 relative cursor-pointer" onClick={() => { setCustomer({ name: option.name, contact: option.contact, email: option.email }) }}><div className="flex flex-col" ><p className="text-left">{option.name}</p><p>{option.contact}</p></div><Link to={`/customerDetails/${option.contact}`}><i className="fas fa-arrow-right absolute right-0 p-2"></i></Link></li>)
-//                 })
-//         )
-//         )
-//     }
-
-//     useEffect(() => {
-//         getCustomers()
-//         //eslint-disable-next-line
-//     }, [search])
-//     useEffect(() => {
-//         document.addEventListener('mousedown', handleClickOutside);
-//         return () => document.removeEventListener('mousedown', handleClickOutside);
-//     });
-
-//     const orderSearch = (e) => {
-//         e.preventDefault();
-//         history.push("/viewOrder");
-//     }
-//     const openTable = async (e) => {
-//         e.preventDefault();
-//         showTable(!Table);
-//         await fetch(
-//             "/app/table")
-//             .then((res) => res.json())
-//             .then((json) => {
-//                 console.log(json)
-//                 setdisplayTable(json.map((option) => {
-//                     if (option.status === 'Free')
-//                         return (<li><button className="py-2 border-b-2 border-t-2 border-black w-full text-left" onClick={handleTable} name="category" value={option.number}>Table {option.number}</button></li>)
-//                     return null;
-//                 }))
-//             })
-
-//     }
-//     const handleTable = async (e) => {
-//         e.preventDefault();
-//         setPayment((prev) => ({ ...prev, table: e.target.value }))
-//         showTable(false)
-//     }
-
-//     return (
-//         <div className="flex flex-row overflow-hidden h-full">
-//             <div className="w-3/5 border-r-2 border-primary shadow-2xl overflow-hidden ">
-//                 <nav className="bg-primary p-2 mt-0 h-auto top-0 text-2xl text-white font-roboto font-semibold ">
-//                     <div className="flex flex-row px-6 justify-items-center">
-//                         <div className=" justify-center md:justify-start text-white py-2"><Link to="/dashboard"><i className="fas fa-home font-semibold"></i></Link></div>
-//                         <div className="flex flex-row w-full mx-24 relative">
-//                             <ul className=" text-white text-left" ref={typeRef}>
-//                                 <li className="p-2 cursor-pointer" onClick={() => { showList(!list) }}>{payment.orderType}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
-//                                 {list ? <ul className="absolute bg-primary p-2 text-left text-xl"><li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { showPop(!pop) }}>Take Away-Ordered Online</li>
-//                                     <li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { setPayment((prev) => ({ ...prev, orderType: 'Take Away' })) }}>Takeaway New</li>
-//                                     <li className="border-b-2 border-white py-2 cursor-pointer" onClick={() => { setPayment((prev) => ({ ...prev, orderType: 'Dine In' })) }}>Dine In New</li>
-//                                     <li className="py-2 cursor-pointer" onClick={() => { setOpen(!open) }} >Dine In Ordered Online</li></ul> : null}
-//                             </ul>
-//                             <ul className=" text-white text-left" ref={custRef}>
-//                             <li className="ml-10 text-center p-2 cursor-pointer" onClick={() => { showCust(!cust) }}>{customer.name ? customer.name : 'Walk In'}<span><i className="fas fa-chevron-down ml-8 cursor-pointer"></i></span></li>
-//                             {cust ? <ul className="absolute top-10 right-0 bg-white mt-4 border-2 shadow-lg w-2/3 font-thin text-lg z-30">
-//                                 <li className="bg-primary flex flex-row"><input value={search} onChange={(e) => setSearch(e.target.value)} type="text" className="bg-lightprimary py-2 w-full" /><i className="fas fa-search p-2"></i></li>
-//                                 {Cust}
-//                                 <li className="bg-green py-2 text-center"><Link to="/newCustomer">+ New Customer</Link></li>
-//                             </ul> : null}
-//                             </ul>
-
-//                             <div className="absolute text-center py-2 right-0"><i onClick={() => { window.location.reload(false)}} className="fas fa-trash-alt ml-10 cursor-pointer"></i></div>
-//                         </div>
-//                     </div>
-//                 </nav>
-//                 <div className="flex flex-col">
-// {cart[0] ? <Order /> : <div className="bg-white h-80">
-//     <div className="flex flex-col  w-1/3 mx-auto justify-items-center mt-10 space-y-2">
-//         <div className=" border-dashed border-2 border-gray-600 w-24 h-24 rounded-lg mx-auto"></div>
-//         <p className=" font-bold text-gray-600 text-center">Order is Empty</p>
-//         <p className=" text-gray-600 text-center">Add Food items</p>
-//     </div>
-// </div>}
-
-//                     <PaymentSummary />
-//                 </div>
-//             </div>
-//             <div className="w-2/5 border-l-2 border-primary h-full shadow-2xl">
-//                 <CategoryList />
-//             </div>
-
-//             {pop && <div className="bg-primary absolute top-16 left-40 p-20">
-//                 <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={() => { showPop(!pop) }} >
-//                     <span className=" text-white text-center object-center text-xl">x</span>
-//                 </div>
-//                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
-//                     <label>Enter Order Id</label>
-//                     <input type="text" className="py-2 border-black border-2"></input>
-//                     <button className="bg-white text-primary py-2 font-bold">Search</button>
-//                 </div>
-//             </div>}
-
-//             {open && <div className="bg-primary absolute top-16 left-40 p-20 z-30">
-//                 <div className=" absolute top-0 right-4 text-center cursor-pointer" onClick={() => { setOpen(!open) }} >
-//                     <span className=" text-white text-center object-center text-xl">x</span>
-//                 </div>
-//                 <div className="flex flex-col text-white space-y-2 font-bold w-96 text-xl" >
-//                     <label>Enter Table No.</label>
-//                     <ul ref={tableRef} className="bg-white text-black font-normal border-l-2 border-r-2 border-black">
-//                         <li className="py-2 border-b-2 border-t-2 border-black" onClick={openTable}>Table {payment.table !== 'N/A' ? payment.table : 'No.'}</li>
-//                         {Table ? <>{displayTable}</> : null}
-//                     </ul>
-//                     <button className="bg-white text-primary py-2 font-bold" onClick={orderSearch}>Search</button>
-//                 </div>
-//             </div>}
-//         </div>
-//     )
-// }
-
-// export default Pos
-
+import axios from "axios";
 import React, { useContext, useEffect } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import {
     nonVegIconImageBase64,
     UncategorizedBgImageBase64,
     vegIconImageBase64,
 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
-import CustomNavBar from "../Common/CustomNavBar";
-import { deepClone } from "../../Utils";
+import { NotificationContext } from "../../context/Notification";
+import SpinLoader from "../SpinLoader";
 import AuthenticateOverlayButton from "./AuthenticateOverlayButton";
 import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
 import CommentsOverlayButton from "./CommentsOverlayButton";
@@ -183,11 +20,13 @@ import DiscountOverlayButton from "./DiscountOverlayButton";
 import SingleSelectedItem from "./SingleSelectedItem";
 
 export default function Pos() {
-    const { categories, foodItems, fetchCategories, fetchItems } =
-        useContext(CategoryContext);
+    const location = useLocation();
+    const { categories, foodItems } = useContext(CategoryContext);
+    const history = useHistory();
+    const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [orderType, setOrderType] = useState("Dine In");
-    const [paymentMode, setPaymentMode] = useState();
+    const [paymentMode, setPaymentMode] = useState("cash");
     const [seeBillDetails, setSeeBillDetails] = useState(false);
     const [addServiceTax, setAddServiceTax] = useState(false);
     const [chargeNoPayment, setChargeNoPayment] = useState(false);
@@ -195,6 +34,16 @@ export default function Pos() {
     const [categoryFilteredItem, setCategoryFilteredItem] = useState([]);
     const [categoryFilter, setCategoryFilter] = useState("");
     const [selectedItems, setSelectedItems] = useState([]);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [order_id, setOrder_id] = useState();
+    const [customer, setCustomer] = useState({
+        name: "",
+        email: "",
+        contact: "",
+    });
+    const [comments, setComments] = useState("");
+    const [table, setTable] = useState();
+    const notify = useContext(NotificationContext);
     const subTotal = selectedItems.reduce(
         (sum, item) =>
             sum +
@@ -216,7 +65,7 @@ export default function Pos() {
     );
     const serviceTax = 0;
     const tip = 0;
-    const total = subTotal + serviceTax - discount + tip;
+    const total = subTotal + (addServiceTax ? serviceTax : 0) - discount + tip;
 
     const applyCategoryFilter = () => {
         setCategoryFilteredItem(() => {
@@ -240,6 +89,32 @@ export default function Pos() {
     };
 
     useEffect(() => {
+        if (location.state) {
+            setTable(location.state);
+            axios
+                .get(`/app/order/${location.state}`)
+                .then((res) => {
+                    setCustomer(res.data.customer);
+                    let temp = [];
+                    res.data.order.forEach((item) => {
+                        foodItems.forEach((it) => {
+                            if (it.foodItem === item.foodItem)
+                                temp.push({
+                                    ...it,
+                                    ...item,
+                                    key: Math.random() + 1,
+                                });
+                        });
+                    });
+                    setSelectedItems(temp);
+                    setComments(res.data.comments);
+                    setOrder_id(res.data.order_id);
+                })
+                .catch((err) => notify("error"));
+        }
+    }, [foodItems]);
+
+    useEffect(() => {
         applyCategoryFilter();
     }, [categoryFilter, foodItems]);
 
@@ -249,11 +124,64 @@ export default function Pos() {
 
     const handleSearch = (e) => {
         e.preventDefault();
-        console.log("Search");
+        searchFoodItem();
+    };
+
+    const generateKOT = () => {
+        setLoading(true);
+        let dataToPost = {
+            customer,
+            order: selectedItems.map((item) => ({
+                foodItem: item.foodItem,
+                orderedVariant: item.finalVariant.filter(
+                    (variant) => variant.isSelected
+                ),
+                price: item.price,
+                quantity: item.quantity,
+                subtotal:
+                    item.finalVariant.reduce(
+                        (sum, variant) =>
+                            sum +
+                            (variant.isSelected
+                                ? variant.price * variant.quantity
+                                : 0),
+                        0
+                    ) + item.price,
+                timeToCook:
+                    parseInt(item.time.split(":")[0]) * 3600 +
+                    parseInt(item.time.split(":")[1]) * 60 +
+                    parseInt(item.time.split(":")[2]),
+            })),
+            payment: {
+                subTotal,
+                tax: serviceTax,
+                discount,
+                total,
+                mode: paymentMode,
+                orderType,
+                orderStatus: "Processing",
+                table,
+            },
+            comments,
+        };
+        // if (order_id)
+        axios
+            .post("app/addOrder", dataToPost)
+            .then(() => history.push("/kitchen"))
+            .catch((err) => console.log(err.response.data))
+            .finally(() => setLoading(false));
+        // axios
+        //     .post("/app/kot", dataToPost)
+        //     .then((res) => console.log(res))
+        //     .catch((err) => console.log(err.response.data))
+        //     .finally((res) => {
+        //         setLoading(false);
+        //     });
     };
 
     return (
-        <div className="flex flex-col" style={{height:'calc(100vh - 56px)'}}>
+        <div className="flex flex-col" style={{ height: "calc(100vh - 56px)" }}>
+            {loading && <SpinLoader />}
             <div className="grid grid-cols-5 h-full">
                 <div className="py-6 overflow-auto">
                     <div className="col-span-1 h-full flex flex-col items-center pr-4 pl-2 overflow-auto">
@@ -397,19 +325,29 @@ export default function Pos() {
                             className="bg-red flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
                         >
                             <div className="h-4 w-4 fas fa-th-large" />
-                            <div className="text-xs">5</div>
+                            <div className="text-xs">{table || "Tables"}</div>
                         </Link>
-                        <CustomerInfoOverlayButton className="bg-red flex flex-col items-center justify-center text-white h-14 my-2 border-2 flex-1">
+                        <CustomerInfoOverlayButton
+                            customer={customer}
+                            setCustomer={setCustomer}
+                            currentTable={table}
+                            setCurrentTable={setTable}
+                            className="bg-red flex flex-col items-center justify-center text-white h-14 my-2 border-2 flex-1"
+                        >
                             <div className="h-4 w-4 far fa-user" />
                             <div className="text-xs">Coustomer Information</div>
                         </CustomerInfoOverlayButton>
-                        <CommentsOverlayButton className="bg-red flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1">
+                        <CommentsOverlayButton
+                            comments={comments}
+                            setComments={setComments}
+                            className="bg-red flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
+                        >
                             <div className="h-4 w-4 far fa-sticky-note" />
                             <div className="text-xs">Comments</div>
                         </CommentsOverlayButton>
                     </div>
                     {selectedItems.length ? (
-                        <div className="flex-auto h-0 border-t mx-4 overflow-y-auto">
+                        <div className="flex-auto h-0 border-t-2 mx-4 overflow-y-auto">
                             {selectedItems.map((item) => (
                                 <div key={item.key}>
                                     <SingleSelectedItem
@@ -497,6 +435,9 @@ export default function Pos() {
                                     Split
                                 </button>
                                 <AuthenticateOverlayButton
+                                    isAuthenticated={isAuthenticated}
+                                    setIsAuthenticated={setIsAuthenticated}
+                                    callback={() => setAddServiceTax((e) => !e)}
                                     title={"Add Service Tax"}
                                     className="px-2 text-white flex items-center"
                                 >
@@ -571,6 +512,9 @@ export default function Pos() {
                             style={{ backgroundColor: "#c4c4c4" }}
                         >
                             <AuthenticateOverlayButton
+                                isAuthenticated={isAuthenticated}
+                                setIsAuthenticated={setIsAuthenticated}
+                                callback={() => setChargeNoPayment((e) => !e)}
                                 title={"Charge No Payment"}
                                 className="p-2 flex items-center"
                             >
@@ -596,7 +540,10 @@ export default function Pos() {
                             <button className="p-2 text-white font-semibold rounded-md w-1/4 mx-2 bg-yellow-300">
                                 Print Bill
                             </button>
-                            <button className="p-2 text-white font-semibold rounded-md w-1/4 mx-2 bg-yellow-300">
+                            <button
+                                onClick={generateKOT}
+                                className="p-2 text-white font-semibold rounded-md w-1/4 mx-2 bg-yellow-300"
+                            >
                                 Genetare KOT
                             </button>
                         </div>
@@ -605,34 +552,4 @@ export default function Pos() {
             </div>
         </div>
     );
-
-    // const [state, setState] = useState([0]);
-    // useEffect(() => console.log("Parent rerendered"), state);
-    // console.log("state in parent",state)
-    // return (
-    //     <div className="h-screen flex flex-col justify-center items-center">
-    //         <Child1 state={state} setState={setState} />
-    //         <button
-    //             className="h-14 w-32 bg-red rounded-lg"
-    //             onClick={() =>{
-    //                 console.log("------------")
-    //                 setState((prev) => {
-    //                     prev[0]=prev[0]+1;
-    //                     return deepClone(prev);
-    //                 })
-    //             }}
-    //         />
-    //     </div>
-    // );
 }
-
-// function Child1({ state }) {
-//     console.log("state in child 1",state)
-//     useEffect(() => console.log("Child 1 rerendered"), state);
-//     return <Child2 state={state[0]} />;
-// }
-// function Child2({ state }) {
-//     console.log("state in child 2",state)
-//     useEffect(() => console.log("Child 2 rerendered", state), state);
-//     return <div>{state}</div>;
-// }

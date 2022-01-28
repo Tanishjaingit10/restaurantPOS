@@ -1,27 +1,85 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
+import { NotificationContext } from "../../context/Notification";
+import SpinLoader from "../SpinLoader";
 
 const ReadyToServe = "Ready to Serve";
 const Processing = "Processing";
 
-function OrderCard({ item }) {
-    let late = false;
-
+function OrderCard({ item, fetchOrders }) {
+    const notify = useContext(NotificationContext);
     const [orderStatus, setOrderStatus] = useState(item.payment.orderStatus);
-    
-    const toggelOrderStatus = () => {
-        setOrderStatus((prev) =>
-            prev === Processing ? ReadyToServe : Processing
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [estimatedTime, setEstimatedTime] = useState();
+    const [timeTakenToComplete, setTimeTakenToComplete] = useState(
+        item.payment.timeTakenToComplete
+    );
+    const [loading, setLoading] = useState(false);
+    const order_id = item.order_id;
+    const late = elapsedTime > estimatedTime;
+
+    const calcEstimatedTime = () => {
+        setEstimatedTime(
+            item.order.reduce(
+                (max, item) =>
+                    Math.max(
+                        max,
+                        item.itemStatus === Processing
+                            ? item.timeToCook || 0
+                            : 0
+                    ),
+                0
+            )
         );
+    };
+
+    const calcElapsedTime = () => {
+        setElapsedTime(
+            Math.floor((Date.now() - new Date(item.time).getTime()) / 1000)
+        );
+    };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            calcElapsedTime();
+        }, 1000);
+        calcEstimatedTime();
+        return () => clearInterval(interval);
+    }, []);
+
+    const toggleOrderStatus = () => {
+        setOrderStatus((prev) => {
+            if (prev === ReadyToServe) {
+                setLoading(true);
+                axios
+                    .delete(`/app/order/${order_id}`)
+                    .then(() => fetchOrders())
+                    .catch(() => notify("Unable to delete order"))
+                    .finally(() => setLoading(false));
+                setOrderStatus(ReadyToServe);
+            } else {
+                setLoading(true);
+                axios
+                    .post(`/app/orderReady/${order_id}`, {
+                        timeTakenToComplete: elapsedTime,
+                    })
+                    .catch((err) => notify("Unable to update order status"))
+                    .finally(() => setLoading(false));
+                setTimeTakenToComplete(elapsedTime);
+                setOrderStatus(ReadyToServe);
+            }
+        });
     };
 
     return (
         <div
             className={`${
                 late && orderStatus === Processing && "border-red text-white"
-            } border-2 h-72 w-56 bg-white m-9 shadow flex flex-col`}
+            } border-2 relative h-72 w-56 bg-white m-9 shadow flex flex-col`}
             key={item._id}
         >
+            {loading && <SpinLoader />}
             <div className="h-14 flex">
                 <div
                     className={`${
@@ -38,7 +96,7 @@ function OrderCard({ item }) {
                     </div>
                 </div>
                 <button
-                    onClick={toggelOrderStatus}
+                    onClick={toggleOrderStatus}
                     className={`${
                         orderStatus === Processing
                             ? late
@@ -63,7 +121,7 @@ function OrderCard({ item }) {
                 >
                     <div className="text-xs">K.O.T</div>
                     <div className="leading-4 text-sm font-medium">
-                        {item.order_id}
+                        {order_id}
                     </div>
                 </div>
                 <div
@@ -76,7 +134,13 @@ function OrderCard({ item }) {
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
                 >
                     <div className="text-xxs">E.T.A.</div>
-                    <div className="text-xs leading-3 font-medium">02:30</div>
+                    <div className="text-xs leading-3 font-medium">{`${Math.floor(
+                        estimatedTime / 60
+                    )
+                        .toString()
+                        .padStart(2, "0")}:${Math.floor(estimatedTime % 60)
+                        .toString()
+                        .padStart(2, "0")}`}</div>
                     <div className="text-xxs">MM:SS</div>
                 </div>
                 <div
@@ -86,8 +150,26 @@ function OrderCard({ item }) {
                             : "bg-gray-200"
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
                 >
-                    <div className="text-xxs">{orderStatus===Processing?"Time Elapsed":"Time Taken To Complete"}</div>
-                    <div className="text-xs leading-3 font-medium">{orderStatus===Processing?`02:30`:"02:00"}</div>
+                    <div className="text-xxs">
+                        {orderStatus === Processing
+                            ? "Time Elapsed"
+                            : "Time Taken To Complete"}
+                    </div>
+                    <div className="text-xs leading-3 font-medium">
+                        {orderStatus === Processing
+                            ? `${Math.floor(elapsedTime / 60)
+                                  .toString()
+                                  .padStart(2, "0")}:${(elapsedTime % 60)
+                                  .toString()
+                                  .padStart(2, "0")}`
+                            : `${Math.floor(timeTakenToComplete / 60)
+                                  .toString()
+                                  .padStart(2, "0")}:${Math.floor(
+                                  timeTakenToComplete
+                              )
+                                  .toString()
+                                  .padStart(2, "0")}`}
+                    </div>
                     <div className="text-xxs">MM:SS</div>
                 </div>
             </div>
@@ -100,7 +182,12 @@ function OrderCard({ item }) {
                                 orderStatus === Processing && late && "text-red"
                             } border-b-2 h-6 flex justify-between`}
                         >
-                            <SingleItem item={item} orderStatus={orderStatus} />
+                            <SingleItem
+                                calcEstimatedTime={calcEstimatedTime}
+                                order_id={order_id}
+                                item={item}
+                                orderStatus={orderStatus}
+                            />
                         </div>
                     ))}
                 </div>
@@ -111,17 +198,25 @@ function OrderCard({ item }) {
 
 export default OrderCard;
 
-function SingleItem({ item, orderStatus }) {
+function SingleItem({ item, orderStatus, order_id, calcEstimatedTime }) {
     const [status, setStatus] = useState(item.itemStatus);
 
     const toggleStatus = () => {
         setStatus((prev) => (prev === Processing ? ReadyToServe : Processing));
+        calcEstimatedTime();
     };
+
+    useEffect(() => {
+        axios.post(`/app/orderItemStatus/${order_id}`, {
+            itemStatus: status,
+            item: item,
+        });
+    }, [status]);
 
     return (
         <>
             <div className="ml-2 text-xs flex items-center">
-                <div className="mr-2">1</div>
+                <div className="mr-2">{item.quantity}</div>
                 <div className="">{item.foodItem}</div>
             </div>
             <button

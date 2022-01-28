@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 
 import { ThemeContext } from "../context/Theme";
-import CustomNavBar from "./Common/CustomNavBar";
 import CategoryInfoButton from "./Menu/CategoryInfoButton";
 import ItemInfoButton from "./Menu/ItemInfoButton";
 import { CategoryContext } from "../context/Category";

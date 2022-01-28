@@ -2,21 +2,37 @@ import React, { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
+import axios from "axios";
 
-function AuthenticateOverlayButton({ item, title, children, ...rest }) {
-    const [userId, setUserId] = useState("");
-    const [password, setPassword] = useState("");
+function AuthenticateOverlayButton({
+    item,
+    title,
+    children,
+    isAuthenticated,
+    setIsAuthenticated,
+    callback,
+    ...rest
+}) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [type, setType] = useState("fixed");
-    const [amount, setAmount] = useState(0);
-    const [coupon, setCoupon] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        setLoading(true)
+        axios.post('/app/signin',{email_id:e.target.email.value,password:e.target.password.value})
+        .then(()=>{setIsAuthenticated(true);callback();setIsOpen(false)})
+        .catch(err=>notify(err?.response?.data?.message||"Unable to Authenticate, Try again"))
+        .finally(()=>setLoading(false))
+    }
 
     const notify = useContext(NotificationContext);
 
     return (
         <>
-            <button onClick={() => setIsOpen((prev) => !prev)} {...rest}>
+            <button
+                onClick={() => (isAuthenticated ? callback() : setIsOpen(true))}
+                {...rest}
+            >
                 {children}
             </button>
 
@@ -33,33 +49,35 @@ function AuthenticateOverlayButton({ item, title, children, ...rest }) {
                 <div className="text-center text-3xl mb-10 text-red font-semibold">
                     {title}
                 </div>
-                <div className="mb-10 space-y-3">
-                    <div className="relative">
-                        <input
-                            value={userId}
-                            onChange={(e) => setUserId(e.target.value)}
-                            type="text"
-                            className="rounded-md border w-80 p-3"
-                            placeholder="Enter User ID"
-                        />
-                        <div className="<h-3 w-3 text-sm fas fa-user text-red absolute right-4 top-1/2 transform -translate-y-1/2" />
+                <form onSubmit={(e)=>handleSubmit(e)}>
+                    <div className="mb-10 space-y-3">
+                        <div className="relative">
+                            <input
+                                name="email"
+                                type="text"
+                                required
+                                className="rounded-md border w-80 p-3"
+                                placeholder="Enter User ID"
+                            />
+                            <div className="<h-3 w-3 text-sm fas fa-user text-red absolute right-4 top-1/2 transform -translate-y-1/2" />
+                        </div>
+                        <div className="relative">
+                            <input
+                                name="password"
+                                type="password"
+                                required
+                                className="rounded-md border w-80 p-3"
+                                placeholder="Password / Employee Code"
+                            />
+                            <div className="<h-3 w-3 text-sm fas fa-key text-red absolute right-4 top-1/2 transform -translate-y-1/2" />
+                        </div>
                     </div>
-                    <div className="relative">
-                        <input
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            type="password"
-                            className="rounded-md border w-80 p-3"
-                            placeholder="Password / Employee Code"
-                        />
-                        <div className="<h-3 w-3 text-sm fas fa-key text-red absolute right-4 top-1/2 transform -translate-y-1/2" />
+                    <div className="flex justify-center mb-4">
+                        <button className="bg-red p-2 text-white font-semibold px-10 rounded-md">
+                            Continue
+                        </button>
                     </div>
-                </div>
-                <div className="flex justify-center mb-4">
-                    <button className="bg-red p-2 text-white font-semibold px-10 rounded-md">
-                        Continue
-                    </button>
-                </div>
+                </form>
             </Modal>
         </>
     );

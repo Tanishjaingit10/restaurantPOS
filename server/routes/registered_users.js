@@ -1,10 +1,7 @@
 const express = require('express')
-const jwt = require('jsonwebtoken')
+
 const router = express.Router()
-const signup_template_copy = require('../models/registered_users')
-const items_template_copy = require('../models/food_items')
-const colour_template_copy = require('../models/colour')
-const bcrypt = require('bcrypt')
+
 const userController = require('../controllers/userController')
 const itemController = require('../controllers/itemController');
 const categoryController= require('../controllers/categoryController')
@@ -16,6 +13,7 @@ const customerController = require('../controllers/customerController')
 const reservationController = require('../controllers/reservationController')
 const attendanceController = require('../controllers/attendanceController')
 const salesController = require('../controllers/salesController')
+const kotController = require('../controllers/KOTController')
 
 
 router.post('/addReservation', reservationController.add_reservation)
@@ -77,6 +75,13 @@ router.get('/getDashboardOrder/:type/:date', orderController.getDashboardOrder)
 router.get('/getDashboardSales/:type/:date', salesController.getDashboardSales)
 router.get('/getCompletedOrders', salesController.getCompletedOrders)
 router.get('/getCompletedOrderByDate/:startDate/:stopDate', salesController.getCompletedOrderByDate)
+
+router.delete('/order/:id',orderController.delete_order)
+router.post('/orderReady/:id',orderController.order_ready)
+router.post('/orderItemStatus/:id',orderController.order_item_status)
+
+router.post('/kot',kotController.generate_kot)
+router.get('/getkot',kotController.get_kot)
 
 router.put('/updateUser/:id', userController.update_user)
 router.post("/addItem", itemController.add_item);

@@ -6,7 +6,6 @@ import axios from "axios";
 // import Loader from "./Loader";
 // import Popup from "./Popup";
 // import { useDebounce, useDebouncedCallback } from "use-debounce";
-import CustomNavBar from "./Common/CustomNavBar";
 import { ThemeContext } from "../context/Theme";
 import OrderCard from "./Kitchen/OrderCard";
 import { NotificationContext } from "../context/Notification";
@@ -124,18 +123,20 @@ const Kitchen = () => {
 
     const theme = useContext(ThemeContext);
     const [orders, setOrders] = useState([]);
-    const [orderStatus, setOrderStatus] = useState();
     const [loading, setLoading] = useState(false);
     const [refreshLoading, setRefreshLoading] = useState(false);
     const notify = useContext(NotificationContext);
 
-    useEffect(() => {
-        setLoading(true);
-        axios
+    const fetchOrders = () => {
+        return axios
             .get("/app/orders")
             .then((res) => setOrders(res.data))
-            .catch((err) => notify(err?.response?.data?.message || "Error!!"))
-            .finally(() => setLoading(false));
+            .catch((err) => notify(err?.response?.data?.message || "Error!!"));
+    };
+
+    useEffect(() => {
+        setLoading(true);
+        fetchOrders().finally(() => setLoading(false));
     }, []);
 
     const handleRefresh = async () => {
@@ -172,7 +173,9 @@ const Kitchen = () => {
                 </div>
                 <div className="grid grid-cols-5 items-center justify-center">
                     {orders.map((item) => (
-                        <OrderCard item={item} />
+                        <div key={item._id}>
+                            <OrderCard fetchOrders={fetchOrders} item={item} />
+                        </div>
                     ))}
                 </div>
             </div>

@@ -38,7 +38,7 @@ const food_item_template = new mongoose.Schema({
         type: String,
     },
     foodType: {
-        type: String,
+        type: String, // veg // non-veg
     },
     image: {
         type: String,
