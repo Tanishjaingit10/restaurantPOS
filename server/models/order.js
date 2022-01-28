@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const shortid = require('shortid');
+
 const autoIncrement = require('mongoose-sequence')(mongoose);
 
 const Processing = "Processing"
@@ -18,13 +18,13 @@ const order_template = new mongoose.Schema({
         type: [
             {
                 foodItem: String,
-                image: String,
                 orderedVariant: {
                     type: [
                         {
                             variant: String,
                             description: String,
-                            price: Number
+                            price: Number,
+                            quantity: Number
                         }
                     ]
                 },
@@ -33,7 +33,9 @@ const order_template = new mongoose.Schema({
                     default:Processing
                 },
                 price: Number,
-                subtotal: Number
+                subtotal: Number,
+                timeToCook:Number,
+                quantity:Number
             }
         ]
     },
@@ -44,14 +46,17 @@ const order_template = new mongoose.Schema({
             discount: Number,
             total: Number,
             mode: String, 
-            status: String,
-            orderType: String,
-            orderStatus: String,
+            status: String, // Pending // Completed //
+            orderType: String, // Dine In // Take Away //
+            orderStatus: String, // Processing // 
             table: String,
-            timeToCook: Number
-
+            timeTakenToComplete: {
+                type:Number,
+                default:0
+            }
         }
     },
+    comments:String,
     time: {
         type: Date,
         default: Date.now()

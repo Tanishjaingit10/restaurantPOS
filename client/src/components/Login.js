@@ -46,7 +46,7 @@ const Login = () => {
         <img className="mx-auto w-28 h-auto mb-4 " src={Logo} alt="" />
       </div>
       <div className="flex flex-row h-auto m-auto bg-white w-3/4 rounded-3xl shadow-2xl">
-        <img src={chefLogin} />
+        <img src={chefLogin} alt="" />
         <form className="w-1/2 md:w-1/3 mx-auto py-10 font-bold font-roboto text-lg">
           <div>
             <div className="bg-white px-6 py-4 ">

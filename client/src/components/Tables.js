@@ -407,12 +407,12 @@ const Tables = () => {
 						<div className="flex flex-row w-full flex-wrap">
 							{displayTable.map(table => {
 								return (
-									<div>
+									<div key={table._id}>
 										{
 											showDeleteTable ? <div className="-mb-8"><MdOutlineDelete onClick={() => {if (table.status === 'Free'){setConfirmDeleteTable(true); setDeleteTableId(table._id)}}} color={table.status !== 'Free' ?  '#faaf9a': theme.backgroundColor} size={25}/> </div> : null
 										}
 										<div style={ table.status !== 'Free' ? {backgroundColor: theme.backgroundColor, color: 'white' }: {borderColor: theme.backgroundColor, borderWidth: '1px', color: 'grey'}} className="py-5 m-5 rounded">
-											<Link className="font-bold text-2xl" style={{padding: '30px 30px'}} href="#">{table.number}</Link>
+											<Link to={{pathname:"/pos",state:table.number}} className="font-bold text-2xl p-8">{table.number}</Link>
 										</div>
 									</div>
 								)
