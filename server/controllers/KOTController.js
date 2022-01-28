@@ -1,4 +1,4 @@
-const kot_template_copy = require("../models/kot");
+const kot_template_copy = require("../models/KOT");
 const order_template_copy = require("../models/order");
 
 const generate_kot = (req, res) => {
