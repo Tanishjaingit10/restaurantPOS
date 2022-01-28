@@ -284,6 +284,15 @@ const order_item_status = async (request,response) => {
     }).catch(err=>response.status(401).json({ message: 'Item could not be updated!' }))
 }
 
+const getTakeAwayOrders = async (request, response) => {
+  order_template_copy.find({'payment.orderType': 'Take Away'}, (err, data) => {
+    if (!err)
+        response.send(data);
+    else
+        console.log(err);
+});
+}
+
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status, getDashboardOrder
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status, getDashboardOrder, getTakeAwayOrders
 }

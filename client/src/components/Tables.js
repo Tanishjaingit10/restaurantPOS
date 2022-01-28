@@ -200,6 +200,7 @@ const Tables = () => {
           <CustomButton
             title="Take Away"
             customStyle={{ backgroundColor: "#f0fd59" }}
+            onPress={() => {history.push('/takeaways')}}
           />
           <CustomButton
             title="- Delete Table"

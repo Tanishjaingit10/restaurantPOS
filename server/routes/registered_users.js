@@ -71,6 +71,7 @@ router.get('/orderByDate/:startDate/:stopDate', orderController.getOrderByDate)
 router.get('/orderByStatus/:status', orderController.getOrderByStatus)
 router.get('/orderById/:id', orderController.getOrderById)
 router.get('/getDashboardOrder/:type/:date', orderController.getDashboardOrder)
+router.get('/getTakeAwayOrders', orderController.getTakeAwayOrders)
 
 router.get('/getDashboardSales/:type/:date', salesController.getDashboardSales)
 router.get('/getCompletedOrders', salesController.getCompletedOrders)
