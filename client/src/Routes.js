@@ -85,7 +85,7 @@ const Routes = () => {
           <RouteWrapper exact path="/kitchen" component={Kitchen} layout={DefaultLayout} />
           <Route exact path="/receipt" component={Receipt} />
           <RouteWrapper layout={DefaultLayout} exact path="/customers" component={Customers} />
-          <Route exact path="/sales" component={Sales} />
+          <RouteWrapper layout={DefaultLayout} exact path="/sales" component={Sales} />
           <RouteWrapper layout={DefaultLayout} exact path="/attendance" component={Attendance} />
           <RouteWrapper layout={DefaultLayout} exact path="/takeAttendance" component={TakeAttendance} />
           <RouteWrapper layout={DefaultLayout} exact path="/viewAttendance" component={ViewAttendance} />

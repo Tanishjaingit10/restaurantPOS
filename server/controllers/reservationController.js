@@ -123,13 +123,13 @@ const get_reservation_by_time = async (request, response, next) =>{
 
 
 const getDashboardReservation = async (request, response) => {
-  console.log(request.params)
+  // console.log(request.params)
   const labels = ['12:00am-4:00am', '4:00am-8:00am', '8:00am-12:00pm', '12:00pm-4:00pm', '4:00pm-8:00pm', '8:00pm-12:00am'];
   var DineIn = [0, 0, 0, 0, 0, 0]
   var TakeAway = [0, 0, 0, 0, 0, 0]
   reservation_template_copy.find({ date: request.params.date}, (err, data) => {
     if (!err) {
-      console.log(data)
+      // console.log(data)
       for (var i = 0; i < data.length; i++) {
         if (data[i].start_time >= '00:00:00' && data[i].start_time < '04:00:00')
           DineIn[0] += 1
@@ -144,7 +144,7 @@ const getDashboardReservation = async (request, response) => {
         else if (data[i].start_time >= '20:00:00' && data[i].start_time < '24:00:00')
           DineIn[5] += 1
       }
-      console.log('DineIn', DineIn, TakeAway)
+      // console.log('DineIn', DineIn, TakeAway)
       response.status(200).send([
         {
           label: 'Dine In',

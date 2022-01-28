@@ -123,10 +123,10 @@ const getDashboardSales = async (request, response) => {
   else{
     order_template_copy.find({'payment.orderStatus': 'Ready to Serve'}, (err, dbData) => {
       if (!err) {
-        console.log(dbData)
+        // console.log(dbData)
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
-          console.log(dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ), request.params.date)
+          // console.log(dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ), request.params.date)
           if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
             data.push(dbData[i])
         }

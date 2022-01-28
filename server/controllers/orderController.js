@@ -285,5 +285,5 @@ const order_item_status = async (request,response) => {
 }
 
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status, getDashboardOrder
 }
