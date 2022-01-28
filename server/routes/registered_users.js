@@ -15,6 +15,7 @@ const orderController = require('../controllers/orderController')
 const customerController = require('../controllers/customerController')
 const reservationController = require('../controllers/reservationController')
 const attendanceController = require('../controllers/attendanceController')
+const salesController = require('../controllers/salesController')
 
 
 router.post('/addReservation', reservationController.add_reservation)
@@ -24,6 +25,7 @@ router.get('/getReservationByTable/:table', reservationController.get_reservatio
 router.put('/editReservation/:id', reservationController.update_reservation)
 router.delete('/removeReservation/:id', reservationController.remove_reservation)
 router.get('/getReservationByTime/:date/:start_time/:end_time', reservationController.get_reservation_by_time)
+router.get('/getDashboardReservation/:type/:date', reservationController.getDashboardReservation)
 
 router.post('/addAttendance', attendanceController.add_attendance)
 router.get('/attendance', attendanceController.get_attendance)
@@ -71,6 +73,10 @@ router.get('/orderByDate/:startDate/:stopDate', orderController.getOrderByDate)
 router.get('/orderByStatus/:status', orderController.getOrderByStatus)
 router.get('/orderById/:id', orderController.getOrderById)
 router.get('/getDashboardOrder/:type/:date', orderController.getDashboardOrder)
+
+router.get('/getDashboardSales/:type/:date', salesController.getDashboardSales)
+router.get('/getCompletedOrders', salesController.getCompletedOrders)
+router.get('/getCompletedOrderByDate/:startDate/:stopDate', salesController.getCompletedOrderByDate)
 
 router.put('/updateUser/:id', userController.update_user)
 router.post("/addItem", itemController.add_item);

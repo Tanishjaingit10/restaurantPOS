@@ -121,6 +121,49 @@ const get_reservation_by_time = async (request, response, next) =>{
     });
 }
 
+
+const getDashboardReservation = async (request, response) => {
+  console.log(request.params)
+  const labels = ['12:00am-4:00am', '4:00am-8:00am', '8:00am-12:00pm', '12:00pm-4:00pm', '4:00pm-8:00pm', '8:00pm-12:00am'];
+  var DineIn = [0, 0, 0, 0, 0, 0]
+  var TakeAway = [0, 0, 0, 0, 0, 0]
+  reservation_template_copy.find({ date: request.params.date}, (err, data) => {
+    if (!err) {
+      console.log(data)
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].start_time >= '00:00:00' && data[i].start_time < '04:00:00')
+          DineIn[0] += 1
+        else if (data[i].start_time >= '04:00:00' && data[i].start_time < '08:00:00')
+          DineIn[1] += 1
+        else if (data[i].start_time >= '08:00:00' && data[i].start_time < '12:00:00')
+          DineIn[2] += 1
+        else if (data[i].start_time >= '12:00:00' && data[i].start_time < '16:00:00')
+          DineIn[3] += 1
+        else if (data[i].start_time >= '16:00:00' && data[i].start_time < '20:00:00')
+          DineIn[4] += 1
+        else if (data[i].start_time >= '20:00:00' && data[i].start_time < '24:00:00')
+          DineIn[5] += 1
+      }
+      console.log('DineIn', DineIn, TakeAway)
+      response.status(200).send([
+        {
+          label: 'Dine In',
+          data: DineIn
+        },
+        {
+        label: 'Take Away',
+        data: []
+      }
+    ]);
+    }
+    else
+    {
+      console.log('Error: ', err)
+      response.status(401).send([]).json({ message: 'Item could not be shown!' })
+    }
+  });
+}
+
 module.exports = {
-    add_reservation, update_reservation, all_reservations, remove_reservation, get_reservation_by_date, get_reservation_by_table, get_reservation_by_time
+    add_reservation, update_reservation, all_reservations, remove_reservation, get_reservation_by_date, get_reservation_by_table, get_reservation_by_time, getDashboardReservation
 }
