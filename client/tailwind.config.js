@@ -18,7 +18,7 @@ module.exports = {
                 tealblue: "#39BEB9",
                 teal: "#16B6AA",
                 mustard: "#F2AD22",
-                lightgreen: "#BCD63D",
+                lightgreen: "#9df187",
                 purple: "#5B64AF",
                 orange: "#F15A25",
                 magenta: "#E71880",

@@ -1,22 +1,45 @@
-import React, { useContext, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
+import axios from "axios";
 
-function CustomerInfoOverlayButton({ item, children, ...rest }) {
+function CustomerInfoOverlayButton({
+    item,
+    children,
+    customer,
+    currentTable,
+    setCurrentTable,
+    setCustomer,
+    ...rest
+}) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [tables, setTables] = useState([]);
-    const [name, setName] = useState("");
-    const [contact, setContact] = useState("");
-    const [email, setEmail] = useState("");
-
-    const [tableNumber, setTableNumber] = useState();
 
     const notify = useContext(NotificationContext);
 
+    useEffect(() => {
+        setLoading(true);
+        axios
+            .get("/app/table")
+            .then((res) => setTables(res.data))
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable to fetch tables")
+            )
+            .finally(() => setLoading(false));
+    }, []);
+
     const handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
+        setCustomer({
+            name: e.target.name.value,
+            email: e.target.email.value,
+            contact: e.target.contact.value,
+        });
+        setCurrentTable(e.target.table.value);
+        setIsOpen(false);
     };
 
     return (
@@ -38,14 +61,13 @@ function CustomerInfoOverlayButton({ item, children, ...rest }) {
                 <div className="text-center text-3xl mb-6 text-red font-semibold">
                     Customer Information
                 </div>
-                <form onSubmit={e=>handleSubmit(e)}>
+                <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="mb-10">
                         <label htmlFor="name">Name</label>
                         <input
                             type="text"
                             id="name"
-                            value={name}
-                            onChange={(e)=>setName(e.target.value)}
+                            defaultValue={customer.name}
                             placeholder="Customer Name"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
@@ -53,8 +75,7 @@ function CustomerInfoOverlayButton({ item, children, ...rest }) {
                         <input
                             type="tel"
                             id="contact"
-                            value={contact}
-                            onChange={(e)=>setContact(e.target.value)}
+                            defaultValue={customer.contact}
                             placeholder="Contact Number"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
@@ -62,29 +83,39 @@ function CustomerInfoOverlayButton({ item, children, ...rest }) {
                         <input
                             type="email"
                             id="email"
-                            value = {email}
-                            onChange={(e)=>setEmail(e.target.value)}
+                            defaultValue={customer.email}
                             placeholder="Email address"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
-                        <label htmlFor="tableNumber">Table Number</label>
+                        <label htmlFor="table">Table Number</label>
                         <select
-                            id="tableNumber"
+                            id="table"
+                            name="table"
                             className="border items-center px-4 flex text-white bg-lightred w-80 rounded-md h-12"
-                            onChange={(e) => {setTableNumber(e.target.value)}}
-                            value={tableNumber}
+                            defaultValue={currentTable || null}
                         >
-                            <option
-                                value="Table No.3"
-                                className="bg-lightred"
-                                selected={""}
-                            >
-                                Table No.3
-                            </option>
+                            {tables
+                                .filter(
+                                    (table) =>
+                                        table.status === "Free" ||
+                                        table.number === currentTable
+                                )
+                                .map((table) => (
+                                    <option
+                                        key={table._id}
+                                        value={table.number}
+                                        className="bg-lightred"
+                                    >
+                                        {table.number}
+                                    </option>
+                                ))}
                         </select>
                     </div>
                     <div className="flex justify-center mb-4">
-                        <button type="submit" className="bg-red p-2 text-white font-semibold px-10 rounded-md">
+                        <button
+                            type="submit"
+                            className="bg-red p-2 text-white font-semibold px-10 rounded-md"
+                        >
                             Continue
                         </button>
                     </div>

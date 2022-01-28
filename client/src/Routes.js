@@ -29,6 +29,7 @@ import ViewOrder from "./components/PosContainer.js/ViewOrder";
 import Reservations from "./components/Reservations";
 import Sales from "./components/Sales";
 import SignUp from "./components/SignUp";
+import Split from "./components/Split";
 import TableForm from "./components/TableForm";
 import Tables from "./components/Tables";
 import Takeaways from "./components/Takeaways";
@@ -36,6 +37,7 @@ import TodayOrders from "./components/TodayOrders";
 import TodaySale from "./components/TodaySale";
 
 import { DefaultLayout } from './layouts/DefaultLayout';
+import Test from "./Test";
 
 function RouteWrapper({
     component: Component, 
@@ -92,7 +94,8 @@ const Routes = () => {
           <Route exact path="/takeaways" component={Takeaways} />
           <RouteWrapper exact path="/reservations" component={Reservations} layout={DefaultLayout} />
           <Route exact path="/todaySale" component={TodaySale} />
-
+          <RouteWrapper exact path="/split" component={Split} layout={DefaultLayout} />
+          <Route exact path="/test" component={Test} />
         </Switch>
       </Router>
     
