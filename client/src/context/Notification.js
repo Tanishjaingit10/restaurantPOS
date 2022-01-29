@@ -1,4 +1,5 @@
 import React, { useState, createContext, useEffect } from "react";
+import { getNewId } from "../Utils";
 
 export const NotificationContext = createContext();
 
@@ -6,7 +7,7 @@ export const NotificationProvider = (props) => {
     const [notifications, setNotifications] = useState([]);
 
     const notify = (message) => {
-        setNotifications((prev) => [...prev, { key: Math.random(), message }]);
+        setNotifications((prev) => [...prev, { key: getNewId(), message }]);
     };
 
     return (

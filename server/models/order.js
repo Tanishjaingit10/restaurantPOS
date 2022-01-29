@@ -59,7 +59,7 @@ const order_template = new mongoose.Schema({
     comments:String,
     time: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
     
 })

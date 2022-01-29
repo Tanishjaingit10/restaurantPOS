@@ -81,7 +81,7 @@ router.delete('/order/:id',orderController.delete_order)
 router.post('/orderReady/:id',orderController.order_ready)
 router.post('/orderItemStatus/:id',orderController.order_item_status)
 
-router.post('/kot',kotController.generate_kot)
+router.post('/generateKot',kotController.generate_kot)
 router.get('/getkot',kotController.get_kot)
 
 router.put('/updateUser/:id', userController.update_user)

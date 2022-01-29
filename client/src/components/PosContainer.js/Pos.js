@@ -11,6 +11,7 @@ import {
 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
+import { deepClone } from "../../Utils";
 import SpinLoader from "../SpinLoader";
 import AuthenticateOverlayButton from "./AuthenticateOverlayButton";
 import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
@@ -98,12 +99,23 @@ export default function Pos() {
                     let temp = [];
                     res.data.order.forEach((item) => {
                         foodItems.forEach((it) => {
-                            if (it.foodItem === item.foodItem)
-                                temp.push({
+                            if (it.foodItem === item.foodItem){
+                                let itm = {
                                     ...it,
                                     ...item,
-                                    key: Math.random() + 1,
-                                });
+                                    _id: it._id,
+                                    key: item._id,
+                                }
+                                itm = deepClone(itm)
+                                itm.finalVariant.forEach(va=>{
+                                    itm.orderedVariant.forEach(v=>{
+                                        if(va._id===v._id)
+                                            va.isSelected=true
+                                            va.quantity=v.quantity
+                                    })
+                                })
+                                temp.push(itm);
+                            }
                         });
                     });
                     setSelectedItems(temp);
@@ -132,6 +144,7 @@ export default function Pos() {
         let dataToPost = {
             customer,
             order: selectedItems.map((item) => ({
+                _id:item.key,
                 foodItem: item.foodItem,
                 orderedVariant: item.finalVariant.filter(
                     (variant) => variant.isSelected
@@ -164,19 +177,19 @@ export default function Pos() {
             },
             comments,
         };
-        // if (order_id)
-        axios
-            .post("app/addOrder", dataToPost)
-            .then(() => history.push("/kitchen"))
-            .catch((err) => console.log(err.response.data))
-            .finally(() => setLoading(false));
+        if (order_id) dataToPost["order_id"] = order_id
         // axios
-        //     .post("/app/kot", dataToPost)
-        //     .then((res) => console.log(res))
+        //     .post("app/addOrder", dataToPost)
+        //     .then(() => history.push("/kitchen"))
         //     .catch((err) => console.log(err.response.data))
-        //     .finally((res) => {
-        //         setLoading(false);
-        //     });
+        //     .finally(() => setLoading(false));
+        axios
+            .post("/app/generatekot", dataToPost)
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err.response.data))
+            .finally((res) => {
+                setLoading(false);
+            });
     };
 
     return (
@@ -350,7 +363,7 @@ export default function Pos() {
                         <div className="flex-auto h-0 border-t-2 mx-4 overflow-y-auto">
                             {selectedItems.map((item) => (
                                 <div key={item.key}>
-                                    <SingleSelectedItem
+                                <SingleSelectedItem
                                         setSelectedItems={setSelectedItems}
                                         item={item}
                                     />

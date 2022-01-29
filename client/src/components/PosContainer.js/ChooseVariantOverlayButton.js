@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deepClone } from "../../Utils";
+import { deepClone, getNewId } from "../../Utils";
 import { Modal } from "../Common/Modal";
 
 function ChooseVariantOverlayButton({
@@ -39,7 +39,7 @@ function ChooseVariantOverlayButton({
                 ...item,
                 finalVariant: variants,
                 quantity,
-                key: newKey || Math.random() + 1,
+                key: newKey || getNewId(),
             });
             if (newKey) {
                 for (let i = 0; i < temp.length; i++)
