@@ -17,6 +17,7 @@ function CustomerInfoOverlayButton({
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [tables, setTables] = useState([]);
+    const [table, setTable] = useState();
 
     const notify = useContext(NotificationContext);
 
@@ -24,12 +25,19 @@ function CustomerInfoOverlayButton({
         setLoading(true);
         axios
             .get("/app/table")
-            .then((res) => setTables(res.data))
+            .then((res) => {
+                setTables(res.data);
+            })
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable to fetch tables")
             )
             .finally(() => setLoading(false));
     }, []);
+
+    useEffect(() => {
+        setTable(currentTable)
+    }, [tables]);
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -92,21 +100,24 @@ function CustomerInfoOverlayButton({
                             id="table"
                             name="table"
                             className="border items-center px-4 flex text-white bg-lightred w-80 rounded-md h-12"
-                            defaultValue={currentTable || null}
+                            onChange={(e) => setTable(e.target.value)}
+                            value={table}
                         >
+                            {/* <option
+                                value={currentTable}
+                                className="bg-lightred"
+                            >
+                                Table: {currentTable}
+                            </option> */}
                             {tables
-                                .filter(
-                                    (table) =>
-                                        table.status === "Free" ||
-                                        table.number === currentTable
-                                )
+                                .filter((table) => table.status === "Free")
                                 .map((table) => (
                                     <option
                                         key={table._id}
                                         value={table.number}
                                         className="bg-lightred"
                                     >
-                                        {table.number}
+                                        Table: {table.number}
                                     </option>
                                 ))}
                         </select>

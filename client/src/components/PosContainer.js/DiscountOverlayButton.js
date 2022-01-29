@@ -1,16 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
-import { NotificationContext } from "../../context/Notification";
+import React, { useState } from "react";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
 
 function DiscountOverlayButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [type, setType] = useState("fixed");
     const [discount, setDiscount] = useState(0);
     const [coupon, setCoupon] = useState("");
-
-    const notify = useContext(NotificationContext);
 
     return (
         <>
