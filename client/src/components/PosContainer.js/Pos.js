@@ -185,7 +185,7 @@ export default function Pos() {
         //     .finally(() => setLoading(false));
         axios
             .post("/app/generatekot", dataToPost)
-            .then((res) => console.log(res))
+            .then((res) => history.push("/tables"))
             .catch((err) => console.log(err.response.data))
             .finally((res) => {
                 setLoading(false);

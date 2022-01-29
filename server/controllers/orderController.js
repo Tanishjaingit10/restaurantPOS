@@ -51,7 +51,7 @@ const get_order = async (request, response, next)=>{
     order_template_copy.findOne({ 'payment.table': request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)
-                response.send({ message: 'Item not found!', data:null })
+                response.status(404).json({ message: 'Item not found!', data:null })
             else response.send(data);
         }
         else
@@ -240,50 +240,6 @@ const getDashboardOrder = async (request, response) => {
   }
 }
 
-const delete_order = async (request,response) => {
-    let itemId = request.params.id;
-    order_template_copy
-        .findOneAndDelete({ order_id: itemId })
-        .then(() => {
-            response.json({ message: "Item removed successfully!" });
-        })
-        .catch((error) => {
-            response.json({ message: "Item could not be removed!" });
-        });
-}
-
-const order_ready = async (request,response) => {
-    let itemId = request.params.id;
-    const timeTakenToComplete = request.body.timeTakenToComplete
-    order_template_copy.findOne({ order_id: itemId }).then((data) => {
-        if (data === null)
-        response.json({ message: 'Item not found!' })
-        else {
-            data.payment.orderStatus = "ReadyToServe"
-            data.payment.timeTakenToComplete = timeTakenToComplete
-            data.save().then(()=>
-                response.status(200).json({ message: 'Item updated successfully!' })
-            ).catch(()=>response.status(401).json({ message: 'Item could not be updated!' }))
-        }
-    })
-        .catch(error => {
-            response.status(401).json({ message: 'Item could not be updated!' })
-        })
-}
-
-const order_item_status = async (request,response) => {
-    const itemId = request.params.id;
-    const item = request.body.item;
-    const itemStatus = request.body.itemStatus
-    order_template_copy.findOne({ order_id: itemId }).then((data) => {
-        const indx = data.order.findIndex((it)=>JSON.stringify(it)===JSON.stringify(item))
-        data.order[indx].itemStatus = itemStatus
-        data.save().then(()=>
-            response.json({message:"status updated"})
-        )
-    }).catch(err=>response.status(401).json({ message: 'Item could not be updated!' }))
-}
-
 const getTakeAwayOrders = async (request, response) => {
   order_template_copy.find({'payment.orderType': 'Take Away'}, (err, data) => {
     if (!err)
@@ -294,5 +250,5 @@ const getTakeAwayOrders = async (request, response) => {
 }
 
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status, getDashboardOrder, getTakeAwayOrders
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, getDashboardOrder, getTakeAwayOrders
 }

@@ -4,6 +4,27 @@ const order_template_copy = require("../models/order");
 const { ObjectId } = require("mongodb");
 const { isValidObjectId } = require("mongoose");
 
+const Processing = "Processing";
+const isUpdated = "isUpdated";
+const ReadyToServe = "ReadyToServe";
+const Completed = "Completed";
+
+const areSame = (orderVar1, orderVar2) => {
+    if (Object.keys(orderVar1).length !== Object.keys(orderVar2).length)
+        return false;
+    let areSame = true;
+    orderVar1.forEach((va1) => {
+        orderVar2.forEach((va2) => {
+            if (va1.variant === va2.variant) {
+                if (va1.quantity !== va2.quantity) {
+                    areSame = false;
+                }
+            }
+        });
+    });
+    return areSame;
+};
+
 const generate_kot = (req, res) => {
     if (req.body.order) {
         for (let order of req.body.order)
@@ -28,72 +49,212 @@ const generate_kot = (req, res) => {
             }
             // else existing order
             else {
-                const oldOrderInfo = data.toJSON()
-                const newOrderInfo = req.body
+                const oldOrderInfo = data.toJSON();
+                const newOrderInfo = req.body;
                 const newKotOrders = [];
-                newOrderInfo.order.forEach((newOrder) => {
-                    const oldOrder = oldOrderInfo.order.find(
-                        (it) => it._id.toString() === newOrder._id
-                    );
-                    if (!oldOrder) newKotOrders.push(newOrder);
-                    else if (
-                        areSame(
-                            newOrder.orderedVariant,
-                            oldOrder.orderedVariant
-                        ) &&
-                        newOrder.quantity > oldOrder.quantity
-                    ) {
-                        newKotOrders.push({
-                            ...oldOrder,
-                            quantity: newOrder.quantity - oldOrder.quantity,
+                kot_template_copy
+                    .find({ order_id: oldOrderInfo.order_id })
+                    .then((obj) => {
+                        const oldKotList = obj.map((it) => it.toJSON());
+                        newOrderInfo.order.forEach((newOrder) => {
+                            const oldOrder = oldOrderInfo.order.find(
+                                (it) => it._id.toString() === newOrder._id
+                            );
+                            if (!oldOrder) newKotOrders.push(newOrder);
+                            else {
+                                if (
+                                    !areSame(
+                                        newOrder.orderedVariant,
+                                        oldOrder.orderedVariant
+                                    )
+                                ) {
+                                    oldKotList.forEach((kot) => {
+                                        const item = kot.order.find(
+                                            (item) =>
+                                                item._id.toString() ===
+                                                newOrder._id
+                                        );
+                                        if (item) {
+                                            item.orderedVariant =
+                                                newOrder.orderedVariant;
+                                            kot[isUpdated] = true;
+                                            kot.status = Processing;
+                                        }
+                                    });
+                                }
+                                if (newOrder.quantity > oldOrder.quantity) {
+                                    newKotOrders.push({
+                                        ...newOrder,
+                                        quantity:
+                                            newOrder.quantity -
+                                            oldOrder.quantity,
+                                    });
+                                } else if (
+                                    newOrder.quantity < oldOrder.quantity
+                                ) {
+                                    let quantDiff =
+                                        oldOrder.quantity - newOrder.quantity;
+                                    oldKotList.forEach((kot) => {
+                                        const item = kot.order.find(
+                                            (item) =>
+                                                item._id.toString() ===
+                                                newOrder._id
+                                        );
+                                        if (item && quantDiff) {
+                                            const q = Math.min(
+                                                quantDiff,
+                                                item.quantity
+                                            );
+                                            quantDiff -= q;
+                                            if (q === item.quantity) {
+                                                kot.order = kot.order.filter(
+                                                    (it) =>
+                                                        it._id.toString() !==
+                                                        newOrder._id
+                                                );
+                                            } else {
+                                                item.quantity -= q;
+                                            }
+                                            kot[isUpdated] = true;
+                                            kot.status = Processing;
+                                        }
+                                    });
+                                }
+                            }
                         });
-                    }
-                });
-                const newKOT = new kot_template_copy({
-                    ...oldOrderInfo,
-                    _id: new ObjectId(),
-                    order: newKotOrders,
-                    tableNumber: oldOrderInfo.payment.table,
-                });
-                newKOT.save().then((kot) => console.log(kot));
-                order_template_copy.findOneAndUpdate(
-                    { order_id: newOrderInfo.order_id },
-                    req.body
-                );
+                        oldOrderInfo.order.forEach((oldOrderItem) => {
+                            if (
+                                !newOrderInfo.order.some(
+                                    (item) =>
+                                        item._id.toString() ===
+                                        oldOrderItem._id.toString()
+                                )
+                            )
+                                oldKotList.forEach((kot) => {
+                                    if (
+                                        kot.order.some(
+                                            (it) =>
+                                                it._id.toString() ===
+                                                oldOrderItem._id.toString()
+                                        )
+                                    ) {
+                                        kot[isUpdated] = true;
+                                        kot.order = kot.order.filter(
+                                            (it) =>
+                                                it._id.toString() !==
+                                                oldOrderItem._id.toString()
+                                        );
+                                    }
+                                });
+                        });
+                        oldKotList.forEach((item) => {
+                            if (item.isUpdated)
+                                kot_template_copy
+                                    .findOneAndUpdate({ _id: item._id }, item)
+                                    .then(() => {});
+                        });
+                        if (newKotOrders.length) {
+                            const newKOT = new kot_template_copy({
+                                ...oldOrderInfo,
+                                time: Date.now(),
+                                _id: new ObjectId(),
+                                order: newKotOrders,
+                                tableNumber: oldOrderInfo.payment.table,
+                            });
+                            newKOT.save().then((kot) => console.log(kot));
+                        }
+                        order_template_copy
+                            .findOneAndUpdate(
+                                { order_id: newOrderInfo.order_id },
+                                req.body
+                            )
+                            .then(() => {});
+                    });
             }
-        });
-    // .catch(() => console.log("error"));
-
-    res.json("done");
+        })
+        .catch(() => res.status(500).json({ message: "Unable to Generate KOT" }));
 };
 
-const get_kot = (req, res) => {
-    // kot_template_copy.deleteMany({})
-    // .then(()=>res.json("deleted"))
-    // .catch(()=>res.json("unable to delete"))
+const get_incomplete_kot = async (request, response) => {
     kot_template_copy
-        .find()
-        .then((data) => res.json(data))
-        .catch((err) => res.json(err));
+        .find({ status: { $in: [Processing, ReadyToServe] } })
+        .then((data) => {
+            response.json(data);
+        })
+        .catch(() =>
+            response.status(401).json({ message: "Unable To fetch data" })
+        );
+};
+
+const kot_order_status = async (request, response) => {
+    let itemId = request.params.id;
+    const body = request.body;
+    kot_template_copy
+        .findOne({ _id: itemId })
+        .then((data) => {
+            if (data === null)
+                response.status(404).json({ message: "Item not found!" });
+            else {
+                data.status = body.status;
+                if (request.body.status === Completed) {
+                    kot_template_copy.findOne({ _id: itemId }).then((kot) => {
+                        kot_template_copy
+                            .findOne({
+                                order_id: kot.order_id,
+                                status: { $in: [Processing, ReadyToServe] },
+                            })
+                            .then((kots) => {
+                                if (!kots) {
+                                    order_template_copy
+                                        .findOne({ order_id: kot.order_id })
+                                        .then((order) => {
+                                            order.payment.orderStatus =
+                                                Completed;
+                                            order.save();
+                                        });
+                                }
+                            });
+                    });
+                }
+                return data
+                    .save()
+                    .then(() =>
+                        response
+                            .status(200)
+                            .json({ message: "Item updated successfully!" })
+                    );
+            }
+        })
+        .catch(() => {
+            response
+                .status(401)
+                .json({ message: "Item could not be updated!" });
+        });
+};
+
+const kot_item_status = async (request, response) => {
+    const kotId = request.params.id;
+    const itemId = request.body.itemId;
+    const itemStatus = request.body.itemStatus;
+    kot_template_copy
+        .findOne({ _id: kotId })
+        .then((data) => {
+            const indx = data.order.findIndex(
+                (it) => it._id.toString() === itemId
+            );
+            data.order[indx].itemStatus = itemStatus;
+            return data
+                .save()
+                .then(() => response.json({ message: "status updated" }));
+        })
+        .catch(() =>
+            response.status(401).json({ message: "Item could not be updated!" })
+        );
 };
 
 module.exports = {
     generate_kot,
-    get_kot,
-};
-
-const areSame = (orderVar1, orderVar2) => {
-    if (Object.keys(orderVar1).length !== Object.keys(orderVar2).length)
-        return false;
-    let areSame = true;
-    orderVar1.forEach((va1) => {
-        orderVar2.forEach((va2) => {
-            if (va1.variant === va2.variant) {
-                if (va1.quantity !== va2.quantity) {
-                    areSame = false;
-                }
-            }
-        });
-    });
-    return areSame;
+    kot_order_status,
+    kot_item_status,
+    get_incomplete_kot,
 };
