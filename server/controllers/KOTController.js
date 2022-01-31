@@ -1,5 +1,6 @@
 const kot_template_copy = require("../models/KOT");
 const order_template_copy = require("../models/order");
+const table_template_copy = require("../models/tables");
 
 const { ObjectId } = require("mongodb");
 const { isValidObjectId } = require("mongoose");
@@ -33,19 +34,24 @@ const generate_kot = (req, res) => {
     order_template_copy
         .findOne({ order_id: req.body?.order_id })
         .then((data) => {
-            // if new order
+            table_template_copy
+                .findOneAndUpdate(
+                    { number: req?.body?.payment?.table },
+                    { status: "Unavailable" }
+                ).then(()=>{})
             if (data === null) {
+                if (!req.body?.order?.length)
+                    return res
+                        .status(400)
+                        .json({ message: "Please Provide Food Items" });
                 const newOrder = new order_template_copy(req.body);
-                return newOrder
-                    .save()
-                    .then((data) => {
-                        const newKOT = new kot_template_copy({
-                            ...data._doc,
-                            tableNumber: data._doc.payment.table,
-                        });
-                        return newKOT.save();
-                    })
-                    .then((data) => console.log(data._doc)); // return res.json(data._doc)
+                newOrder.save().then((data) => {
+                    const newKOT = new kot_template_copy({
+                        ...data.toJSON(),
+                        tableNumber: data.payment.table,
+                    });
+                    newKOT.save().then(() => res.status(202).json(data));
+                });
             }
             // else existing order
             else {
@@ -148,10 +154,22 @@ const generate_kot = (req, res) => {
                                 });
                         });
                         oldKotList.forEach((item) => {
-                            if (item.isUpdated)
-                                kot_template_copy
-                                    .findOneAndUpdate({ _id: item._id }, item)
-                                    .then(() => {});
+                            if (item.isUpdated) {
+                                if (item.order?.length)
+                                    kot_template_copy
+                                        .findOneAndUpdate(
+                                            { _id: item._id },
+                                            item
+                                        )
+                                        .then(() => {});
+                                else
+                                    kot_template_copy
+                                        .findOneAndDelete(
+                                            { _id: item._id },
+                                            item
+                                        )
+                                        .then(() => {});
+                            }
                         });
                         if (newKotOrders.length) {
                             const newKOT = new kot_template_copy({
@@ -161,18 +179,23 @@ const generate_kot = (req, res) => {
                                 order: newKotOrders,
                                 tableNumber: oldOrderInfo.payment.table,
                             });
-                            newKOT.save().then((kot) => console.log(kot));
+                            newKOT.save().then(() => {});
                         }
                         order_template_copy
                             .findOneAndUpdate(
                                 { order_id: newOrderInfo.order_id },
-                                req.body
+                                req.body,
+                                { new: true }
                             )
-                            .then(() => {});
+                            .then((updatedOrder) =>
+                                res.status(202).json(updatedOrder)
+                            );
                     });
             }
         })
-        .catch(() => res.status(500).json({ message: "Unable to Generate KOT" }));
+        .catch(() =>
+            res.status(500).json({ message: "Unable to Generate KOT" })
+        );
 };
 
 const get_incomplete_kot = async (request, response) => {

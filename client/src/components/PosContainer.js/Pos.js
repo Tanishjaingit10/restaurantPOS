@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 import { useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import {
@@ -84,7 +85,7 @@ export default function Pos() {
     const applyCategoryFilter = () => {
         setCategoryFilteredItem(() => {
             if (!categoryFilter) return foodItems;
-            if (categoryFilter === "uncategorised")
+            if (categoryFilter === "uncategorized")
                 return foodItems.filter(
                     (e) => !categories.some((x) => e.category === x.category)
                 );
@@ -102,44 +103,46 @@ export default function Pos() {
         setFilteredFoodItem(result);
     };
 
+    const debouncedSearch = useDebouncedCallback(searchFoodItem,3000)
+    
+    const loadOrder = (order) => {
+        let temp = [];
+        order.order.forEach((item) => {
+            foodItems.forEach((it) => {
+                if (it.foodItem === item.foodItem) {
+                    let itm = {
+                        ...it,
+                        ...item,
+                        _id: it._id,
+                        key: item._id,
+                    };
+                    itm = deepClone(itm);
+                    itm.finalVariant.forEach((va) => {
+                        itm.orderedVariant.forEach((v) => {
+                            if (va._id === v._id) va.isSelected = true;
+                            va.quantity = v.quantity;
+                        });
+                    });
+                    temp.push(itm);
+                }
+            });
+        });
+        setSelectedItems(temp);
+        setCustomer(order.customer);
+        setComments(order.comments);
+        setOrder_id(order.order_id);
+    };
+
     useEffect(() => {
         if (location.state) {
             setTable(location.state);
-            setOrderType("Dine In")
-            setLoading(true)
+            setOrderType("Dine In");
+            setLoading(true);
             axios
                 .get(`/app/order/${location.state}`)
-                .then((res) => {
-                    console.log(res.data)
-                    setCustomer(res.data.customer);
-                    let temp = [];
-                    res.data.order.forEach((item) => {
-                        foodItems.forEach((it) => {
-                            if (it.foodItem === item.foodItem) {
-                                let itm = {
-                                    ...it,
-                                    ...item,
-                                    _id: it._id,
-                                    key: item._id,
-                                };
-                                itm = deepClone(itm);
-                                itm.finalVariant.forEach((va) => {
-                                    itm.orderedVariant.forEach((v) => {
-                                        if (va._id === v._id)
-                                            va.isSelected = true;
-                                        va.quantity = v.quantity;
-                                    });
-                                });
-                                temp.push(itm);
-                            }
-                        });
-                    });
-                    setSelectedItems(temp);
-                    setComments(res.data.comments);
-                    setOrder_id(res.data.order_id);
-                })
-                .catch((err) => {})
-                .finally(()=>setLoading(false))
+                .then((res) => loadOrder(res.data))
+                .catch(() => {})
+                .finally(() => setLoading(false));
         }
     }, [foodItems]);
 
@@ -149,14 +152,18 @@ export default function Pos() {
 
     useEffect(() => {
         searchFoodItem();
-    }, [searchQuery, categoryFilteredItem]);
+    }, [categoryFilteredItem]);
+
+    useEffect(() => {
+        debouncedSearch();
+    }, [searchQuery]);
 
     const handleSearch = (e) => {
         e.preventDefault();
         searchFoodItem();
     };
 
-    const generateKOT = () => {
+    const generateKOT = useThrottledCallback(() => {
         setLoading(true);
         let dataToPost = {
             customer,
@@ -197,14 +204,24 @@ export default function Pos() {
         if (order_id) dataToPost["order_id"] = order_id;
         axios
             .post("/app/generatekot", dataToPost)
-            .then((res) => history.push("/tables"))
+            .then((res) => {
+                notify([
+                    "Order Receieved",
+                    `${
+                        res?.data?.order_id && !order_id
+                            ? `Order Id: ${res.data.order_id}`
+                            : ""
+                    }`,
+                ]);
+                loadOrder(res.data);
+            })
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable To Generate KOT")
             )
             .finally((res) => {
                 setLoading(false);
             });
-    };
+    },600);
 
     return (
         <div className="flex flex-col" style={{ height: "calc(100vh - 56px)" }}>
@@ -257,7 +274,7 @@ export default function Pos() {
                         ) && (
                             <button
                                 onClick={() =>
-                                    setCategoryFilter("uncategorised")
+                                    setCategoryFilter("uncategorized")
                                 }
                                 style={{
                                     backgroundImage: `url(${UncategorizedBgImageBase64})`,
@@ -266,7 +283,7 @@ export default function Pos() {
                             >
                                 <div
                                     className={`${
-                                        categoryFilter === "uncategorised"
+                                        categoryFilter === "uncategorized"
                                             ? "text-red border-red bg-opacity-90"
                                             : "text-gray-600 border-black bg-opacity-80"
                                     } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
@@ -469,7 +486,15 @@ export default function Pos() {
                             style={{ backgroundColor: "#c4c4c4" }}
                         >
                             <div className="flex">
-                                <button className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red">
+                                <button
+                                    onClick={() =>
+                                        history.push({
+                                            pathname: "/split",
+                                            state: table,
+                                        })
+                                    }
+                                    className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red"
+                                >
                                     Split
                                 </button>
                                 <AuthenticateOverlayButton
