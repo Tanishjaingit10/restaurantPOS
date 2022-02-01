@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { getNewId } from "../../../Utils";
 import { Modal } from "../../Common/Modal";
 
 function VariantButton({ state: parentState }) {
@@ -15,7 +16,7 @@ function VariantButton({ state: parentState }) {
         () => {
             let tempVar = parentState.finalVariant;
             for (let i = 0; i < tempVar.length; i++)
-                tempVar[i]["key"] = Math.random();
+                tempVar[i]["key"] = getNewId();
             setFinalVariant(tempVar);
         },
         // eslint-disable-next-line
@@ -24,7 +25,7 @@ function VariantButton({ state: parentState }) {
 
     const handleAddVariant = () => {
         setFinalVariant((prev) => {
-            prev = [...prev, { ...variantTemplate, key: Math.random() }];
+            prev = [...prev, { ...variantTemplate, key: getNewId() }];
             return prev;
         });
     };

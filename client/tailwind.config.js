@@ -15,6 +15,7 @@ module.exports = {
                 blue: "#195BBE",
                 red: "#e54941",
                 lightred: "#ed7b75",
+                fadered: "#f8d0ce",
                 tealblue: "#39BEB9",
                 teal: "#16B6AA",
                 mustard: "#F2AD22",

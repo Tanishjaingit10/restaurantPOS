@@ -42,6 +42,7 @@
     "react-timekeeper": "^2.1.3",
     "react-to-pdf": "0.0.14",
     "react-to-print": "^2.14.4",
+    "react-uuid": "^1.0.2",
     "redux": "^4.1.1",
     "use-debounce": "^7.0.1",
     "web-vitals": "^1.1.2"

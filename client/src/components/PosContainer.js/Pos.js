@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
+import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
 import { useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import {
@@ -11,21 +12,27 @@ import {
 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
+import { deepClone } from "../../Utils";
 import SpinLoader from "../SpinLoader";
 import AuthenticateOverlayButton from "./AuthenticateOverlayButton";
 import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
 import CommentsOverlayButton from "./CommentsOverlayButton";
 import CustomerInfoOverlayButton from "./CustomerInfoOverlayButton";
 import DiscountOverlayButton from "./DiscountOverlayButton";
+import ServiceTaxOverlayButton from "./ServiceTaxOverlayButton";
 import SingleSelectedItem from "./SingleSelectedItem";
+import TipOverlayButton from "./TipOverlayButton";
 
 export default function Pos() {
     const location = useLocation();
-    const { categories, foodItems } = useContext(CategoryContext);
     const history = useHistory();
+
+    const { categories, foodItems } = useContext(CategoryContext);
+    const notify = useContext(NotificationContext);
+
     const [loading, setLoading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [orderType, setOrderType] = useState("Dine In");
+    const [orderType, setOrderType] = useState("Take Away");
     const [paymentMode, setPaymentMode] = useState("cash");
     const [seeBillDetails, setSeeBillDetails] = useState(false);
     const [addServiceTax, setAddServiceTax] = useState(false);
@@ -36,14 +43,16 @@ export default function Pos() {
     const [selectedItems, setSelectedItems] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [order_id, setOrder_id] = useState();
+    const [serviceTax, setServiceTax] = useState(15);
+    const [serviceTaxType, setServiceTaxType] = useState("percentage");
+    const [comments, setComments] = useState("");
+    const [table, setTable] = useState();
+    const [tip, setTip] = useState(0);
     const [customer, setCustomer] = useState({
         name: "",
         email: "",
         contact: "",
     });
-    const [comments, setComments] = useState("");
-    const [table, setTable] = useState();
-    const notify = useContext(NotificationContext);
     const subTotal = selectedItems.reduce(
         (sum, item) =>
             sum +
@@ -63,14 +72,20 @@ export default function Pos() {
         (sum, item) => sum + item.discount * item.quantity,
         0
     );
-    const serviceTax = 0;
-    const tip = 0;
-    const total = subTotal + (addServiceTax ? serviceTax : 0) - discount + tip;
+    const total =
+        subTotal +
+        (addServiceTax
+            ? serviceTaxType === "percentage"
+                ? (subTotal * serviceTax) / 100
+                : serviceTax
+            : 0) -
+        discount +
+        tip;
 
     const applyCategoryFilter = () => {
         setCategoryFilteredItem(() => {
             if (!categoryFilter) return foodItems;
-            if (categoryFilter === "uncategorised")
+            if (categoryFilter === "uncategorized")
                 return foodItems.filter(
                     (e) => !categories.some((x) => e.category === x.category)
                 );
@@ -88,29 +103,46 @@ export default function Pos() {
         setFilteredFoodItem(result);
     };
 
+    const debouncedSearch = useDebouncedCallback(searchFoodItem,3000)
+    
+    const loadOrder = (order) => {
+        let temp = [];
+        order.order.forEach((item) => {
+            foodItems.forEach((it) => {
+                if (it.foodItem === item.foodItem) {
+                    let itm = {
+                        ...it,
+                        ...item,
+                        _id: it._id,
+                        key: item._id,
+                    };
+                    itm = deepClone(itm);
+                    itm.finalVariant.forEach((va) => {
+                        itm.orderedVariant.forEach((v) => {
+                            if (va._id === v._id) va.isSelected = true;
+                            va.quantity = v.quantity;
+                        });
+                    });
+                    temp.push(itm);
+                }
+            });
+        });
+        setSelectedItems(temp);
+        setCustomer(order.customer);
+        setComments(order.comments);
+        setOrder_id(order.order_id);
+    };
+
     useEffect(() => {
         if (location.state) {
             setTable(location.state);
+            setOrderType("Dine In");
+            setLoading(true);
             axios
                 .get(`/app/order/${location.state}`)
-                .then((res) => {
-                    setCustomer(res.data.customer);
-                    let temp = [];
-                    res.data.order.forEach((item) => {
-                        foodItems.forEach((it) => {
-                            if (it.foodItem === item.foodItem)
-                                temp.push({
-                                    ...it,
-                                    ...item,
-                                    key: Math.random() + 1,
-                                });
-                        });
-                    });
-                    setSelectedItems(temp);
-                    setComments(res.data.comments);
-                    setOrder_id(res.data.order_id);
-                })
-                .catch((err) => notify("error"));
+                .then((res) => loadOrder(res.data))
+                .catch(() => {})
+                .finally(() => setLoading(false));
         }
     }, [foodItems]);
 
@@ -120,18 +152,23 @@ export default function Pos() {
 
     useEffect(() => {
         searchFoodItem();
-    }, [searchQuery, categoryFilteredItem]);
+    }, [categoryFilteredItem]);
+
+    useEffect(() => {
+        debouncedSearch();
+    }, [searchQuery]);
 
     const handleSearch = (e) => {
         e.preventDefault();
         searchFoodItem();
     };
 
-    const generateKOT = () => {
+    const generateKOT = useThrottledCallback(() => {
         setLoading(true);
         let dataToPost = {
             customer,
             order: selectedItems.map((item) => ({
+                _id: item.key,
                 foodItem: item.foodItem,
                 orderedVariant: item.finalVariant.filter(
                     (variant) => variant.isSelected
@@ -159,25 +196,32 @@ export default function Pos() {
                 total,
                 mode: paymentMode,
                 orderType,
-                orderStatus: "Processing",
+                orderStatus: "Pending",
                 table,
             },
             comments,
         };
-        // if (order_id)
+        if (order_id) dataToPost["order_id"] = order_id;
         axios
-            .post("app/addOrder", dataToPost)
-            .then(() => history.push("/kitchen"))
-            .catch((err) => console.log(err.response.data))
-            .finally(() => setLoading(false));
-        // axios
-        //     .post("/app/kot", dataToPost)
-        //     .then((res) => console.log(res))
-        //     .catch((err) => console.log(err.response.data))
-        //     .finally((res) => {
-        //         setLoading(false);
-        //     });
-    };
+            .post("/app/generatekot", dataToPost)
+            .then((res) => {
+                notify([
+                    "Order Receieved",
+                    `${
+                        res?.data?.order_id && !order_id
+                            ? `Order Id: ${res.data.order_id}`
+                            : ""
+                    }`,
+                ]);
+                loadOrder(res.data);
+            })
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable To Generate KOT")
+            )
+            .finally((res) => {
+                setLoading(false);
+            });
+    },600);
 
     return (
         <div className="flex flex-col" style={{ height: "calc(100vh - 56px)" }}>
@@ -230,7 +274,7 @@ export default function Pos() {
                         ) && (
                             <button
                                 onClick={() =>
-                                    setCategoryFilter("uncategorised")
+                                    setCategoryFilter("uncategorized")
                                 }
                                 style={{
                                     backgroundImage: `url(${UncategorizedBgImageBase64})`,
@@ -239,7 +283,7 @@ export default function Pos() {
                             >
                                 <div
                                     className={`${
-                                        categoryFilter === "uncategorised"
+                                        categoryFilter === "uncategorized"
                                             ? "text-red border-red bg-opacity-90"
                                             : "text-gray-600 border-black bg-opacity-80"
                                     } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
@@ -298,26 +342,24 @@ export default function Pos() {
                 </div>
                 <div className="col-span-2 flex flex-col h-full">
                     <div className="p-4 flex px-10">
-                        <button
-                            onClick={() => setOrderType("Dine In")}
+                        <div
                             className={`border-2 font-bold mx-3 flex-1 p-2 ${
                                 orderType === "Dine In"
                                     ? "text-white bg-red"
                                     : "text-red bg-white"
-                            } rounded-md border-red`}
+                            } rounded-md text-center border-red`}
                         >
                             Dine In
-                        </button>
-                        <button
-                            onClick={() => setOrderType("Take Away")}
+                        </div>
+                        <div
                             className={`border-2 font-bold mx-3 flex-1 p-2 ${
                                 orderType === "Take Away"
                                     ? "text-white bg-red"
                                     : "text-red bg-white"
-                            } rounded-md border-red`}
+                            } rounded-md text-center border-red`}
                         >
                             Take Away
-                        </button>
+                        </div>
                     </div>
                     <div className="flex">
                         <Link
@@ -409,9 +451,18 @@ export default function Pos() {
                                     <div className="text-white font-semibold">
                                         Service Tax
                                     </div>
-                                    <button className="p-2 text-center w-32 font-semibold rounded-md bg-white">
-                                        {`$${serviceTax.toFixed(2)}`}
-                                    </button>
+                                    <ServiceTaxOverlayButton
+                                        serviceTax={serviceTax}
+                                        setServiceTax={setServiceTax}
+                                        serviceTaxType={serviceTaxType}
+                                        setServiceTaxType={setServiceTaxType}
+                                        className="p-2 text-center w-32 font-semibold rounded-md bg-white"
+                                    >
+                                        {`$${(serviceTaxType === "percentage"
+                                            ? (subTotal * serviceTax) / 100
+                                            : serviceTax
+                                        ).toFixed(2)}`}
+                                    </ServiceTaxOverlayButton>
                                 </div>
                                 <div
                                     className="h-14 flex items-center justify-between px-4"
@@ -420,9 +471,13 @@ export default function Pos() {
                                     <div className="text-white font-semibold">
                                         Tip
                                     </div>
-                                    <button className="p-2 text-center w-32 font-semibold rounded-md bg-white">
+                                    <TipOverlayButton
+                                        tip={tip}
+                                        setTip={setTip}
+                                        className="p-2 text-center w-32 font-semibold rounded-md bg-white"
+                                    >
                                         {`$${tip.toFixed(2)}`}
-                                    </button>
+                                    </TipOverlayButton>
                                 </div>
                             </div>
                         </div>
@@ -431,7 +486,15 @@ export default function Pos() {
                             style={{ backgroundColor: "#c4c4c4" }}
                         >
                             <div className="flex">
-                                <button className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red">
+                                <button
+                                    onClick={() =>
+                                        history.push({
+                                            pathname: "/split",
+                                            state: table,
+                                        })
+                                    }
+                                    className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red"
+                                >
                                     Split
                                 </button>
                                 <AuthenticateOverlayButton
@@ -464,7 +527,10 @@ export default function Pos() {
                             >
                                 <span
                                     className={`far fa-${
-                                        paymentMode === "cash" ? "dot-" : ""
+                                        paymentMode === "cash" &&
+                                        !chargeNoPayment
+                                            ? "dot-"
+                                            : ""
                                     }circle`}
                                 />
                                 <span className="font-semibold mx-4">Cash</span>
@@ -475,7 +541,10 @@ export default function Pos() {
                             >
                                 <span
                                     className={`far fa-${
-                                        paymentMode === "card" ? "dot-" : ""
+                                        paymentMode === "card" &&
+                                        !chargeNoPayment
+                                            ? "dot-"
+                                            : ""
                                     }circle`}
                                 />
                                 <span className="font-semibold mx-4">Card</span>
@@ -486,7 +555,10 @@ export default function Pos() {
                             >
                                 <span
                                     className={`far fa-${
-                                        paymentMode === "payLater" ? "dot-" : ""
+                                        paymentMode === "payLater" &&
+                                        !chargeNoPayment
+                                            ? "dot-"
+                                            : ""
                                     }circle`}
                                 />
                                 <span className="font-semibold mx-4">
@@ -499,7 +571,10 @@ export default function Pos() {
                             >
                                 <span
                                     className={`far fa-${
-                                        paymentMode === "online" ? "dot-" : ""
+                                        paymentMode === "online" &&
+                                        !chargeNoPayment
+                                            ? "dot-"
+                                            : ""
                                     }circle`}
                                 />
                                 <span className="font-semibold mx-4">
@@ -534,15 +609,12 @@ export default function Pos() {
                             </button>
                         </div>
                         <div className="h-14 bg-white flex items-center justify-center">
-                            <button className="p-2 text-white font-semibold rounded-md w-1/4 mx-2 bg-red">
-                                Save
-                            </button>
-                            <button className="p-2 text-white font-semibold rounded-md w-1/4 mx-2 bg-yellow-300">
+                            <button className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-yellow-300">
                                 Print Bill
                             </button>
                             <button
                                 onClick={generateKOT}
-                                className="p-2 text-white font-semibold rounded-md w-1/4 mx-2 bg-yellow-300"
+                                className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-yellow-300"
                             >
                                 Genetare KOT
                             </button>

@@ -28,10 +28,6 @@ const order_template = new mongoose.Schema({
                         }
                     ]
                 },
-                itemStatus:{
-                    type: String,
-                    default:Processing
-                },
                 price: Number,
                 subtotal: Number,
                 timeToCook:Number,
@@ -46,20 +42,16 @@ const order_template = new mongoose.Schema({
             discount: Number,
             total: Number,
             mode: String, 
-            status: String, // Pending // Completed //
+            status: String, // Pending // Completed // Cancelled //
             orderType: String, // Dine In // Take Away //
-            orderStatus: String, // Processing // 
+            orderStatus: String, // Pending // Completed // Cancelled //
             table: String,
-            timeTakenToComplete: {
-                type:Number,
-                default:0
-            }
         }
     },
     comments:String,
     time: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     }
     
 })

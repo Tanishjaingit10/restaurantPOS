@@ -1,151 +1,47 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
-
-// import Countdown from "react-countdown";
-// import Loader from "./Loader";
-// import Popup from "./Popup";
-// import { useDebounce, useDebouncedCallback } from "use-debounce";
 import { ThemeContext } from "../context/Theme";
-import OrderCard from "./Kitchen/OrderCard";
 import { NotificationContext } from "../context/Notification";
 import SpinLoader from "./SpinLoader";
+import KotCard from "./Kitchen/KotCard";
+import { fetchKot_worker } from "../workers/fetchKot";
 
-// let arr = new Array(1000000).fill(false);
-// let stat = new Array(1000000).fill(false);
-// let len = 0;
 const Kitchen = () => {
-    // const [orders, setOrders] = useState();
-    // const [loading, setLoading] = useState(true);
-    // const [open, setOpen] = useState(false);
-    // const [rows, setRows] = useState(false);
-    // const getOrders = async () => {
-    //     await fetch("/app/orders")
-    //         .then((res) => res.json())
-    //         .then((json) => {
-    //             if (json !== "undefined") {
-    //                 len = json.length;
-    //                 console.log("json=>", json);
-    //                 setOrders(
-    //                     json.slice(0, rows ? len : 4).map((option, index) => {
-    //                         setLoading(false);
-    //                         var date = new Date(option.time);
-    //                         arr[index] = date.getTime();
-    //                         return (
-    //                             <tr className="font-medium">
-    //                                 <td className="bg-secondary py-2 text-center border-2">
-    //                                     {option.order_id}
-    //                                 </td>
-    //                                 <td className="bg-secondary py-2 text-center border-2">
-    //                                     {option.payment.orderType}
-    //                                 </td>
-    //                                 <td className="bg-secondary py-2 text-center border-2">
-    //                                     {option.payment.table}
-    //                                 </td>
-    //                                 <td className="bg-secondary py-2 text-center border-2">
-    //                                     {
-    //                                         option.time
-    //                                             .toLocaleString()
-    //                                             .split("T")[1]
-    //                                             .split(".")[0]
-    //                                     }
-    //                                 </td>
-    //                                 <td className="bg-secondary py-2 text-center border-2">
-    //                                     <Countdown
-    //                                         onComplete={() =>
-    //                                             showStatus(option, index)
-    //                                         }
-    //                                         date={
-    //                                             arr[index] +
-    //                                             option.payment.timeToCook *
-    //                                                 60000
-    //                                         }
-    //                                         renderer={renderer}
-    //                                     />
-    //                                 </td>
-    //                                 <td className="bg-secondary py-2 text-center">
-    //                                     {stat[index]
-    //                                         ? "Ready to serve"
-    //                                         : option.payment.orderStatus}
-    //                                 </td>
-    //                             </tr>
-    //                         );
-    //                     })
-    //                 );
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             setLoading(false);
-    //             console.log("1", err);
-    //             setOpen(!open);
-    //         });
-    // };
-    // const showMore = (e) => {
-    //     setLoading(true);
-
-    //     setRows(!rows);
-    // };
-    // useEffect(() => {
-    //     getOrders();
-    // }, [rows]);
-
-    // const showStatus = async (option, index) => {
-    //     const { customer, order, payment, time, order_id } = option;
-    //     payment.orderStatus = "Ready to Serve";
-    //     stat[index] = true;
-    //     await fetch(`/app/updateOrder/${option._id}`, {
-    //         method: "PUT",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         body: JSON.stringify({
-    //             customer,
-    //             order,
-    //             payment,
-    //             time,
-    //             order_id,
-    //         }),
-    //     });
-    // };
-    // const renderer = ({ hours, minutes, seconds, completed }) => {
-    //     if (completed) {
-    //         // Render a completed state
-    //         return <span>Time Over</span>;
-    //     } else {
-    //         // Render a countdown
-    //         return (
-    //             <span>
-    //                 {hours}:{minutes}:{seconds}
-    //             </span>
-    //         );
-    //     }
-    // };
-
+    const IncompleteKot_URL = "/app/getIncompleteKot"
     const theme = useContext(ThemeContext);
-    const [orders, setOrders] = useState([]);
+    const [kots, setKots] = useState([]);
     const [loading, setLoading] = useState(false);
     const [refreshLoading, setRefreshLoading] = useState(false);
     const notify = useContext(NotificationContext);
 
-    const fetchOrders = () => {
+    const fetchKots = async () => {
         return axios
-            .get("/app/orders")
-            .then((res) => setOrders(res.data))
+            .get(IncompleteKot_URL)
+            .then((res) => setKots(res.data))
             .catch((err) => notify(err?.response?.data?.message || "Error!!"));
     };
 
+    fetchKot_worker.onmessage = (message) => {
+        if (message?.data?.success) setKots(message.data?.data);
+    };
+
     useEffect(() => {
+        const fetchKotInterval = setInterval(() => {
+            fetchKot_worker.postMessage(IncompleteKot_URL);
+        }, 3000);
         setLoading(true);
-        fetchOrders().finally(() => setLoading(false));
+        fetchKots().finally(() => setLoading(false));
+        return () => clearInterval(fetchKotInterval);
     }, []);
 
     const handleRefresh = async () => {
         setRefreshLoading(true);
         axios
-            .get("/app/orders")
+            .get(IncompleteKot_URL)
             .then((res) => {
                 notify("Orders Updated");
-                setOrders(res.data);
+                setKots(res.data);
             })
             .catch((err) => notify(err?.response?.data?.message || "Error !!"))
             .finally(() => setRefreshLoading(false));
@@ -171,75 +67,20 @@ const Kitchen = () => {
                         />
                     </button>
                 </div>
-                <div className="grid grid-cols-5 items-center justify-center">
-                    {orders.map((item) => (
-                        <div key={item._id}>
-                            <OrderCard fetchOrders={fetchOrders} item={item} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-
-            {/* <div className="h-screen justify-items-conter overflow-hidden">
-                <CustomNavBar />
-                <div className="flex flex-col h-screen">
-                    <div className="h-3/4 overflow-y-scroll">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="">
-                                    <th className="p-2 border-2 bg-lightprimary">
-                                        Order Id#
-                                    </th>
-                                    <th className="p-2 border-2 bg-lightprimary">
-                                        Order Type
-                                    </th>
-                                    <th className="p-2 border-2 bg-lightprimary">
-                                        Table No.
-                                    </th>
-                                    <th className="p-2 border-2 bg-lightprimary">
-                                        Order Time
-                                    </th>
-                                    <th className="p-2 border-2 bg-lightprimary">
-                                        Remaining Time
-                                    </th>
-                                    <th className="p-2 border-2 bg-lightprimary">
-                                        Status
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>{loading ? <Loader /> : orders}</tbody>
-                        </table>
+                {kots.length ? (
+                    <div className="grid grid-cols-5 items-center justify-center">
+                        {kots.map((item) => (
+                            <div key={item._id}>
+                                <KotCard setKots={setKots} item={item} />
+                            </div>
+                        ))}
                     </div>
-                    <button
-                        className="bg-green w-96 mx-auto py-4 text-lg font-roboto font-semibold text-white"
-                        onClick={showMore}
-                    >
-                        {rows ? "Show Less" : "Show More"}
-                    </button>
-                </div>
-                {open && (
-                    <Popup
-                        content={
-                            <>
-                                <p className="pb-4 font-bold text-green">
-                                    Unable to Load Server
-                                </p>
-                                <button
-                                    className="bg-primary px-10 py-2"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                >
-                                    Try Again
-                                </button>
-                            </>
-                        }
-                        handleClose={() => {
-                            setOpen(false);
-                        }}
-                    />
+                ) : (
+                    <div className="h-40 flex items-center justify-center font-semibold text-gray-400">
+                        No Incomplete Orders
+                    </div>
                 )}
-            </div> */}
+            </div>
         </>
     );
 };

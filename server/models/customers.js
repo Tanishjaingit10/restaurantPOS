@@ -15,7 +15,7 @@ const customer_template = new mongoose.Schema({
     },
     date:{
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     num_orders:{
       type: Number,

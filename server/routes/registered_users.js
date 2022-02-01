@@ -78,12 +78,10 @@ router.get('/getDashboardSales/:type/:date', salesController.getDashboardSales)
 router.get('/getCompletedOrders', salesController.getCompletedOrders)
 router.get('/getCompletedOrderByDate/:startDate/:stopDate', salesController.getCompletedOrderByDate)
 
-router.delete('/order/:id',orderController.delete_order)
-router.post('/orderReady/:id',orderController.order_ready)
-router.post('/orderItemStatus/:id',orderController.order_item_status)
-
-router.post('/kot',kotController.generate_kot)
-router.get('/getkot',kotController.get_kot)
+router.post('/generateKot',kotController.generate_kot)
+router.get('/getIncompleteKot',kotController.get_incomplete_kot)
+router.post('/kotStatus/:id',kotController.kot_order_status)
+router.post('/kotItemStatus/:id',kotController.kot_item_status)
 
 router.put('/updateUser/:id', userController.update_user)
 router.post("/addItem", itemController.add_item);
