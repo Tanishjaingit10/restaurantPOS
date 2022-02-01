@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React from "react";
 import '../../styles/paginagtion.css';
 
 const CustomPagination = ({pageNumber, setPageNumber, updatePageBtnDict, pageList, paginagtionBtn, incriment, setIncriment }) => {
@@ -13,7 +13,7 @@ const CustomPagination = ({pageNumber, setPageNumber, updatePageBtnDict, pageLis
         {
           pageList.slice(0 + incriment, 5 + incriment).map((i, idx) => {
             return (
-              <button href="#"  id={"pagBtn" + String(i)} onClick={() => {setPageNumber(i); updatePageBtnDict(i)}} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
+              <button href="#" key={idx} id={"pagBtn" + String(i)} onClick={() => {setPageNumber(i); updatePageBtnDict(i)}} className={paginagtionBtn[i] ? "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn" + paginagtionBtn[i] : "z-10 relative inline-flex items-center px-4 py-2 border text-sm font-medium mx-1 rounded pagination_btn"}>
                 {i}
               </button>
             )

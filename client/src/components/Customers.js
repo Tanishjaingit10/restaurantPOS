@@ -14,6 +14,8 @@ import { GrClose } from 'react-icons/gr';
 import CustomTable from './Common/CustomTable';
 import CustomPagination from './Common/CustomPagination';
 import { DownloadTable, PrintTable } from './Common/download_print';
+import OrderDetailComponent from "./Common/orderDetail";
+import Popup from "./Popup";
 
 const Customers = () => {
 
@@ -29,8 +31,12 @@ const Customers = () => {
 	const [selectOrderFilter, setSelectOrderFilter] = useState(false)
 	const [filterOrderStartDate, setFilterOrderStartDate] = useState(new Date())
 	const [filterOrderStopDate, setFilterOrderStopDate] = useState(new Date())
+  const [showOrderDetails, setShowOrderDetails] = useState(false)
+  const [showComments, setShowComments] = useState(false)
+  const [orderDetails, setOrderDetails] = useState({})
   const theme = useContext(ThemeContext);
   const printTable = useRef();
+  const printOrderDetails = useRef();
 
   useEffect(() => {
     setPageList([])
@@ -89,7 +95,6 @@ const Customers = () => {
 		fetch(`/app/getCustomerByValue/${value}`)
     .then((res) => res.json())
     .then((json) => {
-			console.log(json)
 			setCustomers(json)
       setComponentLoading(false)
     })
@@ -104,7 +109,6 @@ const Customers = () => {
 		fetch(`/app/getCustomerByDate/${startDate}/${endDate}`)
     .then((res) => res.json())
     .then((json) => {
-			console.log(json)
 			setCustomers(json)
 			setLoading(false);
     })
@@ -112,6 +116,23 @@ const Customers = () => {
         console.log(err);
     })
 	}
+
+  const getOrderById = (id) => {
+    setComponentLoading(true)
+    console.log(id)
+    fetch(`/app/orderById/${id}`)
+    .then((response) => response.json())
+    .then((json) => {
+      if (json !== undefined && json.length > 0) {
+        setOrderDetails(json[0])
+      }
+      setComponentLoading(false)
+      setShowOrderDetails(true); 
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }
 
   return (
     <div>
@@ -287,6 +308,7 @@ const Customers = () => {
             <th scope="col" className="px-6 py-3 text-center text-xl font-semibold text-white tracking border">Orders</th>
             <th scope="col" className="px-6 py-3 text-center text-xl font-semibold text-white tracking border">Paid</th>
             <th scope="col" className="px-6 py-3 text-center text-xl font-semibold text-white tracking border">Action</th>
+            {console.log(customers)}
           </tr>
           {
             loading ? <Loader /> :
@@ -316,6 +338,7 @@ const Customers = () => {
                     <CustomButton
                       title="View Order"
                       customStyle={{ backgroundColor: theme.backgroundColor }}
+                      onPress={() => {getOrderById(customer.order_id)}}
                     />
                   </td>
                 </tr>
@@ -336,26 +359,37 @@ const Customers = () => {
       </div>
     </div>
   </div>
-      {/* {open && (
+  
+  {
+        showOrderDetails ? 
+        <div className="popup-box" ref={printOrderDetails}>
+          <OrderDetailComponent orderDetails={orderDetails} setShowOrderDetails={setShowOrderDetails} setShowComments={setShowComments} />
+        </div>
+        : null
+      }
+      {
+        showComments ? 
         <Popup
           content={
             <>
-              <p className="pb-4 font-bold text-green">Unable to Load Server</p>
+              <p className="pb-4 font-bold text-xl" style={{color: theme.backgroundColor}}>Comments</p>
+              <p className="text-gray-500 mb-16">{orderDetails.comments ? orderDetails.comments : 'No comments from customer'}</p>
               <button
-                className="bg-primary px-10 py-2"
+                className="px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
                 onClick={() => {
-                  setOpen(false);
+                  setShowComments(false);
                 }}
               >
-                Try Again
+                Done
               </button>
             </>
           }
           handleClose={() => {
-            setOpen(false);
+            setShowComments(false);
           }}
         />
-      )} */}
+        : null
+      }
     </div>
   )
 }

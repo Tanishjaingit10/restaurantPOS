@@ -1,5 +1,4 @@
-import React, { useContext } from "react";
-import { ThemeContext } from "../../context/Theme";
+import React from "react";
 
 const CustomChart = ({children, title, setComponentLoading, icon, fetchData}) => {
 

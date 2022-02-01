@@ -1,8 +1,6 @@
-import React, { useContext } from "react";
-import { ThemeContext } from "../../context/Theme";
+import React from "react";
 
 const CustomButton = (props) => {
-  const theme = useContext(ThemeContext);
   return (
     <button
       style={props.customStyle}

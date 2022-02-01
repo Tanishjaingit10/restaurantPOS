@@ -453,7 +453,7 @@ const Dashboard = () => {
         <div className="" style={{width: '49%'}}>
           <CustomChart title="Customers" icon={<FaUser color="white" size={25} />}>
             <div className="flex flex-row justify-between">
-              <button className="home_chart_btn" id="totalCust" onClick={() => {getDashboardData('Customers', 'Total', customersDate)}}>Total Sales</button>
+              <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Total', customersDate)}}>Total Sales</button>
               <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Dine In', customersDate)}}>Dine In</button>
               <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Take away', customersDate)}}>Take away</button>
             </div>

@@ -40,6 +40,7 @@ const Tables = () => {
 	const [showDeleteTable, setShowDeleteTable] = useState(false)
 
 	useEffect(() => {
+    setComponentLoading(true)
 		setShowDeleteTable(false)
 		fetch(`/app/table`)
 		.then((res) => res.json())
@@ -372,20 +373,18 @@ const Tables = () => {
 				</div>
 					: null
 			}
-			{console.log(deleteTableId)}
       <div className="flex flex-col">
         <h2 className="my-5 ml-11 font-semibold text-gray-600 text-lg">
           Hall Way
         </h2>
         <div className="flex flex-wrapw-full justify-evenly">
-				{console.log(loading)}
           {loading ? <Loader /> : 
 						<div className="flex flex-row w-full flex-wrap">
 							{displayTable.map(table => {
 								return (
 									<div key={table._id}>
 										{
-											showDeleteTable ? <div className="-mb-8"><MdOutlineDelete onClick={() => {if (table.status === 'Free'){setConfirmDeleteTable(true); setDeleteTableId(table._id)}}} color={table.status !== 'Free' ?  '#faaf9a': theme.backgroundColor} size={25}/> </div> : null
+											showDeleteTable ? <div className="-mb-10 -ml-1"><MdOutlineDelete onClick={() => {if (table.status === 'Free'){setConfirmDeleteTable(true); setDeleteTableId(table._id)}}} color={table.status !== 'Free' ?  '#faaf9a': theme.backgroundColor} size={25}/> </div> : null
 										}
 										<div style={ table.status !== 'Free' ? {backgroundColor: theme.backgroundColor, color: 'white' }: {borderColor: theme.backgroundColor, borderWidth: '1px', color: 'grey'}} className="py-5 m-5 rounded">
 											<Link to={{pathname:"/pos",state:table.number}} className="font-bold text-2xl p-8">{table.number}</Link>
@@ -407,7 +406,7 @@ const Tables = () => {
                 Please confirm to delete the table
               </p>
               <button
-                className="mt-10 bg-primary px-10 py-2"
+                className="mt-10 px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
                 onClick={deleteTable}
               >
                 Confirm
@@ -425,7 +424,7 @@ const Tables = () => {
             <>
               <p className="font-bold text-green">Deleted Successfully</p>
               <button
-                className="mt-10 bg-primary px-10 py-2"
+                className="mt-10 px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
                 onClick={() => {
                   setOpen(!Open);
                 }}

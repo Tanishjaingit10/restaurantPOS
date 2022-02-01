@@ -1,19 +1,33 @@
 const order_template_copy = require('../models/order')
+const customer_template_copy = require('../models/customers')
+
 const add_order = async (request, response, next) => {
     const { customer, order, payment } = request.body;
     if (!order[0] || !customer.contact) {
         return response.status(422).json({ error: "Please fill out the required fields!" })
     }
-
     const new_order = new order_template_copy({ customer, order, payment })
-    new_order.save().then(() => {
-        response.status(201).json({ message: "Order added successfully!" })
-    })
-        .catch(error => {
-            response.status(401).json({ error: "Order could not be added!" })
+    new_order.save()
+    .then((savedData) => {
+      if (customer){
+        const new_customer = new customer_template_copy({ name: customer.name, contact: customer.contact, email: customer.email, date: new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ), num_orders: 1, total_amount_spent: payment.total, time: new Date().toLocaleTimeString('en-US', { hour12: false }), order_type: payment.orderType, order_id: savedData.order_id })
+        new_customer.save()
+        .then((res) => {
+          console.log("Customer added", res)
         })
+        .catch(err => { 
+          console.log("Error adding customer: " + err)
+        })
+      }
+      response.status(201).json({ message: "Order added successfully!" })
+    })
+    .catch(error => {
+      response.status(401).json({ error: "Order could not be added!" })
+    })
 
+    
 }
+
 const all_order = async (request, response) => {
     order_template_copy.find({}, (err, data) => {
         if (!err)
@@ -47,7 +61,6 @@ const update_order = async (request, response, next) => {
 
 }
 const get_order = async (request, response, next)=>{
-    console.log(request.params.id)
     order_template_copy.findOne({ 'payment.table': request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)
@@ -63,14 +76,21 @@ const get_order = async (request, response, next)=>{
 }
 
 const getOrderByDate = async (request, response) => {
-    order_template_copy.find({ 'date': { $gte: request.params.startDate, $lte: request.params.stopDate} }, (err, data) => {
-        if (!err) {
-            response.send(data);
-        }
-        else
-        {
-            response.json({ message: 'Item could not be shown!' })
-        }
+    order_template_copy.find({}, (err, dbData) => {
+      var data = [];
+      for (var i = 0; i < dbData.length; i++) {
+        if (dbData[i].time)
+          if ( dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate){
+            data.push(dbData[i])
+          }
+      }
+      if (!err) {
+        response.send(data);
+      }
+      else
+      {
+        response.json({ message: 'Item could not be shown!' })
+      }
     });
 }
 
@@ -93,7 +113,7 @@ const getOrderById = async (request, response) => {
     }
     else
     {
-        response.status(401).send([]).json({ message: 'Item could not be shown!' })
+        response.status(401).send([])
     }
   });
 }
@@ -293,6 +313,25 @@ const getTakeAwayOrders = async (request, response) => {
 });
 }
 
+const getTakeAwayOrderByDate = async (request, response) => {
+  order_template_copy.find({'payment.orderType': 'Take Away'}, (err, dbData) => {
+    var data = [];
+    for (var i = 0; i < dbData.length; i++) {
+      if (dbData[i].time)
+        if ( dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate){
+          data.push(dbData[i])
+        }
+    }
+    if (!err) {
+      response.send(data);
+    }
+    else
+    {
+      response.json({ message: 'Item could not be shown!' })
+    }
+  });
+}
+
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status, getDashboardOrder, getTakeAwayOrders
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, delete_order, order_ready, order_item_status, getDashboardOrder, getTakeAwayOrders, getTakeAwayOrderByDate
 }

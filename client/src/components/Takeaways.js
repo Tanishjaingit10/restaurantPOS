@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
+import { useHistory} from 'react-router-dom';
 import Loader from "./Loader";
 import Popup from "./Popup";
 import { ThemeContext } from "../context/Theme";
@@ -15,6 +16,7 @@ import { GrClose } from 'react-icons/gr';
 import CustomTable from './Common/CustomTable';
 import CustomPagination from './Common/CustomPagination';
 import { DownloadTable, PrintTable } from './Common/download_print';
+import OrderDetailComponent from "./Common/orderDetail";
 
 const TakeAwayOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -29,12 +31,14 @@ const TakeAwayOrders = () => {
 	const [filterOrderStartDate, setFilterOrderStartDate] = useState(new Date())
 	const [filterOrderStopDate, setFilterOrderStopDate] = useState(new Date())
 	const [selectOrderFilter, setSelectOrderFilter] = useState(false)
-	const [completedOrders, setCompletedOrders] = useState(0)
-	const [pendingOrders, setPendingOrders] = useState(0)
-	const [cancelledOrders, setCancelledOrders] = useState(0)
   const [incriment, setIncriment] = useState(0)
   const theme = useContext(ThemeContext);
   const printTable = useRef();
+  const history = useHistory();
+  const [showOrderDetails, setShowOrderDetails] = useState(false)
+  const [showComments, setShowComments] = useState(false)
+  const [orderDetails, setOrderDetails] = useState({})
+  const printOrderDetails = useRef();
 
 	useEffect(() => {
     setPageList([])
@@ -46,24 +50,6 @@ const TakeAwayOrders = () => {
 				console.log(json)
 				setComponentLoading(false)
 				setLoading(false)
-        var completedOrders = 0;
-        var pendingOrders = 0;
-        var cancelledOrders = 0;
-        
-				for (let i = 0; i < json.length; i++) {
-					if (json[i].payment.orderStatus.replace(/\s+/g, '').toLowerCase() === 'readytoserve') {
-            completedOrders += 1;
-					}
-					else if (json[i].payment.orderStatus === 'Processing') {
-            pendingOrders += 1;
-					}
-					else if (json[i].payment.orderStatus === 'Cancelled') {
-            cancelledOrders += 1;
-					}
-				}
-        setCompletedOrders(completedOrders)
-        setPendingOrders(pendingOrders)
-        setCancelledOrders(cancelledOrders)
 				var dict = {}
 				var len = json.length
 				for (var i = 0; i < len/pageLimit; i++) {
@@ -103,45 +89,20 @@ const TakeAwayOrders = () => {
 		});
 	}	
 
-	const getOrderByStatus = (status) => {
-		setLoading(true)
-		if (status !== 'allOrders') {
-			fetch(`/app/orderByStatus/${status}`)
-			.then((res) => res.json())
-			.then((json) => {
-				if (json !== "undefined") {
-					setOrders(json);
-					setLoading(false)
-					setPageNumber(1)
-					setPageLimit(10)
-				}
-			})
-			.catch((err) => {
-				setLoading(false);
-				console.log("error: ", err);
-				setPageNumber(1)
-				setPageLimit(10)
-			});
-		}
-		else{
-			setReload(!reload)
-		}
-	}
-
 	const getOrderByDate = (startDate, endDate) => {
-		setLoading(true)
-		fetch(`/app/orderByDate/${startDate}/${endDate}`)
+		setComponentLoading(true)
+		fetch(`/app/getTakeAwayOrderByDate/${startDate}/${endDate}`)
 		.then((res) => res.json())
 		.then((json) => {
 			if (json !== "undefined") {
 				setOrders(json);
-				setLoading(false)
+				setComponentLoading(false)
 				setPageNumber(1)
 				setPageLimit(10)
 			}
 		})
 		.catch((err) => {
-			setLoading(false);
+			setComponentLoading(false);
 			console.log("eror: ", err);
 			setPageNumber(1)
 			setPageLimit(10)
@@ -185,7 +146,7 @@ const TakeAwayOrders = () => {
 					<div className="py-2 align-middle inline-block min-w-full px-5">
 					<div className="flex items-center justify-between my-5">
           <div className="flex flex-row px-5 w-1/2">
-						<h2 className="font-bold text-2xl text-gray-600">Orders Report</h2>
+						<h2 className="font-bold text-2xl text-gray-600">Take Away Orders Report</h2>
 						<div className="inline-block mx-5 rounded w-1/2">
 							<input onChange={(value) => {if (value.target.value.length >= 7) getOrdersByInvoices(value.target.value); if (value.target.value.length === 0) setReload(!reload)}} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Search for sale: order id"/>
 							<GoSearch size={25} className="absolute inline-block mt-4 -ml-8" color="#a5a5a5d1"/>
@@ -302,9 +263,10 @@ const TakeAwayOrders = () => {
 												<CustomButton
 													title="View Order"
 													customStyle={{ backgroundColor: theme.backgroundColor }}
+                          onPress={() => {setShowOrderDetails(true); setOrderDetails(order)}}
 												/>
                         <CustomButton
-													title="Action"
+													title="Edit"
 													customStyle={{ backgroundColor: theme.backgroundColor }}
 												/>
 											</td>
@@ -373,10 +335,12 @@ const TakeAwayOrders = () => {
 												<CustomButton
 													title="View Order"
 													customStyle={{ backgroundColor: theme.backgroundColor }}
+                          onPress={() => {setShowOrderDetails(true); setOrderDetails(order)}}
 												/>
                         <CustomButton
-													title="Action"
+													title="Edit"
 													customStyle={{ backgroundColor: theme.backgroundColor }}
+                          onPress={() => { history.push('pos')}}
 												/>
 											</td>
 										</tr>
@@ -393,14 +357,7 @@ const TakeAwayOrders = () => {
 							</CustomTable>
               </div>
 					</div>
-					<div className="flex flex-row items-end justify-between my-8">
-						<div>
-						<div className="text-base text-gray-500 font-semibold">Completed Orders: {completedOrders}</div>
-						<div className="text-base text-gray-500 font-semibold">Pending: {pendingOrders}</div>
-						<div className="text-base text-gray-500 font-semibold">Cancelled: {cancelledOrders}</div>
-						</div>
             <CustomPagination pageNumber={pageNumber} setPageNumber={setPageNumber} updatePageBtnDict={updatePageBtnDict} pageList={pageList} paginagtionBtn={paginagtionBtn} incriment={incriment} setIncriment={setIncriment}/>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -410,7 +367,7 @@ const TakeAwayOrders = () => {
             <>
               <p className="pb-4 font-bold text-green">Unable to Load Server</p>
               <button
-                className="bg-primary px-10 py-2"
+                className="px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
                 onClick={() => {
                   setOpen(false);
                 }}
@@ -473,6 +430,36 @@ const TakeAwayOrders = () => {
 					</div>
 				</div>
       )}
+      {
+        showOrderDetails ? 
+        <div className="popup-box" ref={printOrderDetails}>
+          <OrderDetailComponent orderDetails={orderDetails} setShowOrderDetails={setShowOrderDetails} setShowComments={setShowComments} />
+        </div>
+        : null
+      }
+      {
+        showComments ? 
+        <Popup
+          content={
+            <>
+              <p className="pb-4 font-bold text-xl" style={{color: theme.backgroundColor}}>Comments</p>
+              <p className="text-gray-500 mb-16">{orderDetails.comments ? orderDetails.comments : 'No comments from customer'}</p>
+              <button
+                className="px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
+                onClick={() => {
+                  setShowComments(false);
+                }}
+              >
+                Done
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setShowComments(false);
+          }}
+        />
+        : null
+      }
 		</div>
   );
 };

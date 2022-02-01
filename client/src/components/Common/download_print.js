@@ -2,8 +2,9 @@
 import React, { useContext } from "react";
 import ReactToPrint from 'react-to-print';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
-import { useReactToPrint } from 'react-to-print';
 import { ThemeContext } from "../../context/Theme";
+import Pdf from "react-to-pdf";
+import ReactToPdf from "react-to-pdf";
 
 const DownloadTable = ({fileName, tableId}) => {
   return(
@@ -19,10 +20,8 @@ const DownloadTable = ({fileName, tableId}) => {
 
 const PrintTable = ({printTableRef, children, onPress, setOnPrint}) => {
   const theme = useContext(ThemeContext);
-  console.log(printTableRef, children);
-  
+  console.log(printTableRef);
   return (
-
   <ReactToPrint
     trigger={() => <button
       style={{backgroundColor: theme.backgroundColor}}
@@ -35,4 +34,30 @@ const PrintTable = ({printTableRef, children, onPress, setOnPrint}) => {
   )
 }
 
-export { DownloadTable, PrintTable }
+const DownloadOrderDetail = ({fileName, orderDetailref}) => {
+  const theme = useContext(ThemeContext);
+  return(
+    <ReactToPdf targetRef={orderDetailref} filename="div-blue.pdf" scale={0.7}>
+        {({toPdf}) => (
+            <button onClick={toPdf} className="py-2 px-5 rounded" style={{color: theme.backgroundColor, backgroundColor: 'white', width: 200}}>Download</button>
+        )}
+    </ReactToPdf>
+  )
+}
+
+const PrintOrderDetail = ({printOrderDetailRef}) => {
+  const theme = useContext(ThemeContext);
+  console.log(printOrderDetailRef);
+  return (
+  <ReactToPrint
+    trigger={() => <button
+      className="py-2 px-5 rounded" style={{color: theme.backgroundColor, backgroundColor: 'white', width: 200}}
+    >
+      Print Invoice
+    </button>}
+    content={() => printOrderDetailRef.current}
+  />
+  )
+}
+
+export { DownloadTable, PrintTable, DownloadOrderDetail, PrintOrderDetail }

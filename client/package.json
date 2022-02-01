@@ -40,6 +40,7 @@
     "react-tailwind-table": "^1.1.1",
     "react-time-picker": "^4.4.4",
     "react-timekeeper": "^2.1.3",
+    "react-to-pdf": "0.0.14",
     "react-to-print": "^2.14.4",
     "redux": "^4.1.1",
     "use-debounce": "^7.0.1",

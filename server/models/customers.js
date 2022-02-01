@@ -24,6 +24,15 @@ const customer_template = new mongoose.Schema({
     total_amount_spent:{
       type: Number,
       default: 0
+    },
+    time: {
+      type: String
+    },
+    order_type:{
+      type: String,
+    },
+    order_id: {
+      type: String
     }
 })
 

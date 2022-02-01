@@ -123,7 +123,6 @@ const get_reservation_by_time = async (request, response, next) =>{
 
 
 const getDashboardReservation = async (request, response) => {
-  // console.log(request.params)
   const labels = ['12:00am-4:00am', '4:00am-8:00am', '8:00am-12:00pm', '12:00pm-4:00pm', '4:00pm-8:00pm', '8:00pm-12:00am'];
   var DineIn = [0, 0, 0, 0, 0, 0]
   var TakeAway = [0, 0, 0, 0, 0, 0]

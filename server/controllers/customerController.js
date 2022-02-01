@@ -110,25 +110,20 @@ const getDashboardCustomer = async (request, response) => {
   var DineIn = [0, 0, 0, 0, 0, 0]
   var TakeAway = [0, 0, 0, 0, 0, 0]
   if (request.params.type == 'Take Away') {
-    order_template_copy.find({ 'payment.orderType': request.params.type }, (err, dbData) => {
+    customer_template_copy.find({ 'order_type': request.params.type, date: request.params.date+'T00:00:00.000Z' }, (err, data) => {
       if (!err) {
-        var data = [];
-        for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
-            data.push(dbData[i])
-        }
           for (var i = 0; i < data.length; i++) {
-            if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '00:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '04:00:00')
+            if (data[i].time >= '00:00:00' && data[i].time < '04:00:00')
               TakeAway[0] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '04:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '08:00:00')
+            else if (data[i].time >= '04:00:00' && data[i].time < '08:00:00')
               TakeAway[1] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '08:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '12:00:00')
+            else if (data[i].time >= '08:00:00' && data[i].time < '12:00:00')
               TakeAway[2] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '12:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '16:00:00')
+            else if (data[i].time >= '12:00:00' && data[i].time < '16:00:00')
               TakeAway[3] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '16:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '20:00:00')
+            else if (data[i].time >= '16:00:00' && data[i].time < '20:00:00')
               TakeAway[4] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '20:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '24:00:00')
+            else if (data[i].time >= '20:00:00' && data[i].time < '24:00:00')
               TakeAway[5] += 1
           }
           response.status(200).send([
@@ -150,25 +145,20 @@ const getDashboardCustomer = async (request, response) => {
     });
   }
   else if (request.params.type == 'Dine In') {
-    order_template_copy.find({ 'payment.orderType': request.params.type }, (err, dbData) => {
+    customer_template_copy.find({ 'order_type': request.params.type, date: request.params.date+'T00:00:00.000Z' }, (err, data) => {
       if (!err) {
-        var data = [];
-        for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
-            data.push(dbData[i])
-        }
         for (var i = 0; i < data.length; i++) {
-          if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '00:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '04:00:00')
+          if (data[i].time >= '00:00:00' && data[i].time < '04:00:00')
             DineIn[0] += 1
-          else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '04:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '08:00:00')
+          else if (data[i].time >= '04:00:00' && data[i].time < '08:00:00')
             DineIn[1] += 1
-          else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '08:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '12:00:00')
+          else if (data[i].time >= '08:00:00' && data[i].time < '12:00:00')
             DineIn[2] += 1
-          else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '12:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '16:00:00')
+          else if (data[i].time >= '12:00:00' && data[i].time < '16:00:00')
             DineIn[3] += 1
-          else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '16:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '20:00:00')
+          else if (data[i].time >= '16:00:00' && data[i].time < '20:00:00')
             DineIn[4] += 1
-          else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '20:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '24:00:00')
+          else if (data[i].time >= '20:00:00' && data[i].time < '24:00:00')
             DineIn[5] += 1
         }
         response.status(200).send([
@@ -190,44 +180,39 @@ const getDashboardCustomer = async (request, response) => {
     });
   }
   else{
-    order_template_copy.find({}, (err, dbData) => {
+    customer_template_copy.find({date: request.params.date+'T00:00:00.000Z'}, (err, data) => {
       if (!err) {
-        var data = [];
-        for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
-            data.push(dbData[i])
-        }
         for (var i = 0; i < data.length; i++) {
-          if (data[i].payment.orderType == 'Take Away'){
-            if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '00:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '04:00:00')
+          if (data[i].order_type == 'Take Away'){
+            if (data[i].time >= '00:00:00' && data[i].time < '04:00:00')
               TakeAway[0] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '04:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '08:00:00')
+            else if (data[i].time >= '04:00:00' && data[i].time < '08:00:00')
               TakeAway[1] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '08:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '12:00:00')
+            else if (data[i].time >= '08:00:00' && data[i].time < '12:00:00')
               TakeAway[2] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '12:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '16:00:00')
+            else if (data[i].time >= '12:00:00' && data[i].time < '16:00:00')
               TakeAway[3] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '16:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '20:00:00')
+            else if (data[i].time >= '16:00:00' && data[i].time < '20:00:00')
               TakeAway[4] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '20:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '24:00:00')
+            else if (data[i].time >= '20:00:00' && data[i].time < '24:00:00')
               TakeAway[5] += 1
           }
-          else if (data[i].payment.orderType == 'Dine In'){
-            if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '00:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '04:00:00')
+          else if (data[i].order_type == 'Dine In'){
+            if (data[i].time >= '00:00:00' && data[i].time < '04:00:00')
               DineIn[0] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '04:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '08:00:00')
+            else if (data[i].time >= '04:00:00' && data[i].time < '08:00:00')
               DineIn[1] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '08:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '12:00:00')
+            else if (data[i].time >= '08:00:00' && data[i].time < '12:00:00')
               DineIn[2] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '12:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '16:00:00')
+            else if (data[i].time >= '12:00:00' && data[i].time < '16:00:00')
               DineIn[3] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '16:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '20:00:00')
+            else if (data[i].time >= '16:00:00' && data[i].time < '20:00:00')
               DineIn[4] += 1
-            else if (new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) >= '20:00:00' && new Date(data[i].time).toLocaleTimeString('en-US', { hour12: false }) < '24:00:00')
+            else if (data[i].time >= '20:00:00' && data[i].time < '24:00:00')
               DineIn[5] += 1
           }
         }
-        response.status(200).send([
+          response.status(200).send([
           {
             label: 'Dine In',
             data: DineIn

@@ -15,6 +15,7 @@ import { GrClose } from 'react-icons/gr';
 import CustomTable from './Common/CustomTable';
 import CustomPagination from './Common/CustomPagination';
 import { DownloadTable, PrintTable } from './Common/download_print';
+import OrderDetailComponent from "./Common/orderDetail";
 
 const Sales = () => {
   const [orders, setOrders] = useState([]);
@@ -34,8 +35,12 @@ const Sales = () => {
 	const [cashPayment, setCashPayment] = useState(0)
   const [incriment, setIncriment] = useState(0)
   const [totalSales, setTotalSales] = useState(0)
+  const [showOrderDetails, setShowOrderDetails] = useState(false)
+  const [showComments, setShowComments] = useState(false)
+  const [orderDetails, setOrderDetails] = useState({})
   const theme = useContext(ThemeContext);
   const printTable = useRef();
+  const printOrderDetails = useRef();
 
 	useEffect(() => {
     setPageList([])
@@ -350,6 +355,7 @@ const Sales = () => {
 												<CustomButton
 													title="View Order"
 													customStyle={{ backgroundColor: theme.backgroundColor }}
+                          onPress={() => {setShowOrderDetails(true); setOrderDetails(order)}}
 												/>
 											</td>
 										</tr>
@@ -386,7 +392,7 @@ const Sales = () => {
             <>
               <p className="pb-4 font-bold text-green">Unable to Load Server</p>
               <button
-                className="bg-primary px-10 py-2"
+                className="px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
                 onClick={() => {
                   setOpen(false);
                 }}
@@ -449,6 +455,36 @@ const Sales = () => {
 					</div>
 				</div>
       )}
+      {
+        showOrderDetails ? 
+        <div className="popup-box" ref={printOrderDetails}>
+          <OrderDetailComponent orderDetails={orderDetails} setShowOrderDetails={setShowOrderDetails} setShowComments={setShowComments} />
+        </div>
+        : null
+      }
+      {
+        showComments ? 
+        <Popup
+          content={
+            <>
+              <p className="pb-4 font-bold text-xl" style={{color: theme.backgroundColor}}>Comments</p>
+              <p className="text-gray-500 mb-16">{orderDetails.comments ? orderDetails.comments : 'No comments from customer'}</p>
+              <button
+                className="px-10 py-2 rounded" style={{backgroundColor: theme.backgroundColor}}
+                onClick={() => {
+                  setShowComments(false);
+                }}
+              >
+                Done
+              </button>
+            </>
+          }
+          handleClose={() => {
+            setShowComments(false);
+          }}
+        />
+        : null
+      }
 		</div>
   );
 };
