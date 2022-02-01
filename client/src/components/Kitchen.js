@@ -5,8 +5,10 @@ import { ThemeContext } from "../context/Theme";
 import { NotificationContext } from "../context/Notification";
 import SpinLoader from "./SpinLoader";
 import KotCard from "./Kitchen/KotCard";
+import { fetchKot_worker } from "../workers/fetchKot";
 
 const Kitchen = () => {
+    const IncompleteKot_URL = "/app/getIncompleteKot"
     const theme = useContext(ThemeContext);
     const [kots, setKots] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -15,20 +17,28 @@ const Kitchen = () => {
 
     const fetchKots = async () => {
         return axios
-            .get("/app/getIncompleteKot")
+            .get(IncompleteKot_URL)
             .then((res) => setKots(res.data))
             .catch((err) => notify(err?.response?.data?.message || "Error!!"));
     };
 
+    fetchKot_worker.onmessage = (message) => {
+        if (message?.data?.success) setKots(message.data?.data);
+    };
+
     useEffect(() => {
+        const fetchKotInterval = setInterval(() => {
+            fetchKot_worker.postMessage(IncompleteKot_URL);
+        }, 3000);
         setLoading(true);
         fetchKots().finally(() => setLoading(false));
+        return () => clearInterval(fetchKotInterval);
     }, []);
 
     const handleRefresh = async () => {
         setRefreshLoading(true);
         axios
-            .get("/app/getIncompleteKot")
+            .get(IncompleteKot_URL)
             .then((res) => {
                 notify("Orders Updated");
                 setKots(res.data);
