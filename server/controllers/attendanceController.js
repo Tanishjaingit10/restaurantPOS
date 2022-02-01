@@ -15,7 +15,7 @@ const add_attendance = async (request, response, next) =>{
 }
 
 const get_attendance = async (request, response) =>{
-    attendance_template_copy.find({}, (err, data) =>{
+    attendance_template_copy.find({date: new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )}, (err, data) =>{
         if (!err)
             response.send(data);
         else
@@ -38,7 +38,7 @@ const update_attendance = async (request, response, next) =>{
         else { 
             response.status(200).json({ message: 'Item updated successfully!' })
             if (status === 'Shift Completed'){ 
-                const new_attendance = attendance_template_copy({user_id: userId, status: 'Shift Not Started', checkInTime: 'N/A', checkOutTime: 'N/A', date: new Date(new Date().setDate(new Date(date).getDate() + 1)).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )})
+                const new_attendance = attendance_template_copy({user_id: userId, status: 'Shift Not Started', checkInTime: 'N/A', checkOutTime: 'N/A', date: new Date(new Date().setDate(new Date().getDate() + 1)).toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )})
                 new_attendance.save(err =>{
                     if (err != null){
                         console.log(err, ': error adding record')

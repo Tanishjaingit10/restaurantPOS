@@ -4,10 +4,11 @@ import { ThemeContext } from "../../context/Theme";
 import Select from 'react-select';
 import CustomButton from "../Common/CustomButton";
 import { FiRefreshCcw } from 'react-icons/fi';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import CustomTable from '../Common/CustomTable';
 import CustomPagination from '../Common/CustomPagination';
 import { DownloadTable, PrintTable } from '../Common/download_print';
+import Popup from '../Popup';
 
 const Attendance = () => {
     
@@ -16,6 +17,8 @@ const Attendance = () => {
 	const [reload, setReload] = useState(false)
 	const [attendance, setAttendance] = useState([]);
 	const [componentLoading, setComponentLoading] = useState(false)
+  const [attendanceStatus, setAttendanceStatus] = useState(false)
+  const [currAttendance, setCurrAttendance] = useState({})
 	const [pageNumber, setPageNumber] = useState(1);
 	const [pageLimit, setPageLimit] = useState(10);
 	const [pageList, setPageList] = useState([])
@@ -195,22 +198,22 @@ const Attendance = () => {
 									attendance.map((attendance, idx) => {
 										return (
                       <tr className="">
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
 													<div className="text-base text-gray-500 font-semibold">{idx + 1 + (pageNumber - 1)*pageLimit}</div>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
 													<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].fullName}</div>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
 													<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].email_id}</div>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
 													<div className="text-base text-gray-500 font-semibold">{attendance.date}</div>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
 													<div className="text-base text-gray-500 font-semibold" style={{color: theme.backgroundColor }}>{attendance.status}</div>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+												<th className="px-1 py-2 whitespace-nowrap border border-gray-400 text-center">
 												{
 													attendance.status !== 'Shift Completed' ?
 													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status === "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
@@ -248,25 +251,25 @@ const Attendance = () => {
 									attendance.slice((pageNumber - 1)*pageLimit, ((pageNumber - 1)*pageLimit + pageLimit)).map((attendance, idx) => {
 										return (
 											<tr className="">
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-													<div className="text-base text-gray-500 font-semibold">{idx + 1 + (pageNumber - 1)*pageLimit}</div>
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+													<h5 className="text-base text-gray-500 font-semibold">{idx + 1 + (pageNumber - 1)*pageLimit}</h5>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-													<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].fullName}</div>
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+													<h5 className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].fullName}</h5>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-													<div className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].email_id}</div>
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+													<h5 className="text-base text-gray-500 font-semibold">{users[attendance['user_id']].email_id}</h5>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-													<div className="text-base text-gray-500 font-semibold">{attendance.date}</div>
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+													<h5 className="text-base text-gray-500 font-semibold">{attendance.date}</h5>
 												</th>
-												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-													<div className="text-base text-gray-500 font-semibold" style={{color: theme.backgroundColor }}>{attendance.status}</div>
+												<th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
+													<h5 className="text-base text-gray-500 font-semibold" style={{color: theme.backgroundColor }}>{attendance.status}</h5>
 												</th>
 												<th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
 												{
 													attendance.status !== 'Shift Completed' ?
-													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status === "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {updateAttendance(attendance)}}/>
+													<CustomButton customStyle={{ backgroundColor: theme.backgroundColor, fontSize: 14, width: 150 }} title={attendance.status === "Clocked In" ? "Clock Out" : "Clock In"} onPress={() => {setCurrAttendance(attendance); setAttendanceStatus(true)}}/>
 													: null
 												}
 												</th>
@@ -288,6 +291,15 @@ const Attendance = () => {
 				</div>
 			</div>
 		</div>
+    {attendanceStatus && <Popup
+      content={
+      <>
+        <p className='pb-4 font-bold text-red'>{currAttendance.status === "Clocked In" ? "Clock Out" : "Clock In"}</p>
+        <button className="bg-green px-10 py-2 rounded" onClick={() => {updateAttendance(currAttendance); setAttendanceStatus(false)}}>Yes</button>
+      </>
+      }
+      handleClose={() => setAttendanceStatus(false)}
+    />}
 		</div>
   );
 };

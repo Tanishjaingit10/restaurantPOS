@@ -126,7 +126,7 @@ const getDashboardReservation = async (request, response) => {
   const labels = ['12:00am-4:00am', '4:00am-8:00am', '8:00am-12:00pm', '12:00pm-4:00pm', '4:00pm-8:00pm', '8:00pm-12:00am'];
   var DineIn = [0, 0, 0, 0, 0, 0]
   var TakeAway = [0, 0, 0, 0, 0, 0]
-  reservation_template_copy.find({ date: request.params.date}, (err, data) => {
+  reservation_template_copy.find({ date: { $gte: request.params.startDate, $lte: request.params.stopDate }}, (err, data) => {
     if (!err) {
       // console.log(data)
       for (var i = 0; i < data.length; i++) {

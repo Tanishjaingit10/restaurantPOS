@@ -60,10 +60,14 @@ const Loader = () => {
 
 
 const Dashboard = () => {
-  const [salesDate, setSalesDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
-  const [ordersDate, setOrdersDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
-  const [customersDate, setCustomersDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
-  const [reservationsDate, setReservationsDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [startSalesDate, setStartSalesDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [stopSalesDate, setStopSalesDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [startOrdersDate, setStartOrdersDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [stopOrdersDate, setStopOrdersDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [startCustomersDate, setStartCustomersDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [stopCustomersDate, setStopCustomersDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [startReservationsDate, setStartReservationsDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
+  const [stopReservationsDate, setStopReservationsDate] = useState(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ));
   const [saleReload, setSaleReload] = useState(false)
   const [orderReload, setOrderReload] = useState(false)
   const [customerReload, setCustomerReload] = useState(false)
@@ -85,11 +89,11 @@ const Dashboard = () => {
 					width: '100%',
 			}
 		},
-    MuiInputLabel: {
-      root: {
-        display: 'none',
-      }
-    },
+    // MuiInputLabel: {
+    //   root: {
+    //     display: 'none',
+    //   }
+    // },
 			MuiPickersToolbar: {
 				root: {
 					width: '100%',
@@ -188,7 +192,7 @@ const Dashboard = () => {
   };
 
   const FetchOrders = (type) => {
-    fetch(`/app/getDashboardOrder/${type}/${ordersDate}`)
+    fetch(`/app/getDashboardOrder/${type}/${startOrdersDate}/${stopOrdersDate}`)
     .then((res) => res.json())
     .then((json) =>
     {
@@ -217,7 +221,7 @@ const Dashboard = () => {
   }  
 
   const FetchSales = (type) => {
-    fetch(`/app/getDashboardSales/${type}/${salesDate}`)
+    fetch(`/app/getDashboardSales/${type}/${startSalesDate}/${stopSalesDate}`)
     .then((res) => res.json())
     .then((json) =>
     {
@@ -246,7 +250,7 @@ const Dashboard = () => {
   }  
 
   const FetchReservations = (type) => {
-    fetch(`/app/getDashboardReservation/${type}/${reservationsDate}`)
+    fetch(`/app/getDashboardReservation/${type}/${startReservationsDate}/${stopReservationsDate}`)
     .then((res) => res.json())
     .then((json) =>
     {
@@ -289,7 +293,7 @@ const Dashboard = () => {
   }  
 
   const FetchCustomers = (type) => {
-    fetch(`/app/getDashboardCustomer/${type}/${customersDate}`)
+    fetch(`/app/getDashboardCustomer/${type}/${startCustomersDate}/${stopCustomersDate}`)
     .then((res) => res.json())
     .then((json) =>
     {
@@ -335,25 +339,25 @@ const Dashboard = () => {
     setReservations(initData)
     FetchReservations('Total')
     setReservationReload(false)
-  }, [reservationsDate, reservationReload ])
+  }, [startReservationsDate, reservationReload, stopReservationsDate ])
 
   useEffect(() => {
     setSales(initData)
     FetchSales('Total')
     setCustomerReload(false)
-  }, [salesDate, saleReload])
+  }, [startSalesDate, saleReload, stopSalesDate])
 
   useEffect(() => {
     setOrders(initData)
     FetchOrders('Total')
     setOrderReload(false)
-  }, [ordersDate, orderReload])
+  }, [startOrdersDate, orderReload, stopOrdersDate])
 
   useEffect(() => {
     setCustomers(initData)
     FetchCustomers('Total')
     setCustomerReload(false)
-  }, [customersDate, customerReload])
+  }, [startCustomersDate, customerReload, stopCustomersDate])
 
   const getDashboardData = (dataOf, dataType) => {
     if ( dataOf === 'Orders'){
@@ -382,30 +386,50 @@ const Dashboard = () => {
   return (
     <div className="px-8">
       <div className="flex flex-row justify-between">
-        <div className="" style={{width: '49%'}}>
+        <div className="flex flex-row" style={{width: '48%'}}>
           <CustomChart title="Sales" icon={<FaChartBar size={25} color="white"/>}>
-            <div className="flex flex-row justify-between">
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Sales', 'Total', salesDate)}}>Total Sales</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Sales', 'Dine In', salesDate)}}>Dine In</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Sales', 'Take Away', salesDate)}}>Take away</button>
-            </div>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <ThemeProvider theme={materialTheme}>
-                <DatePicker
-                InputProps={{
-                    disableUnderline: true
-                  }}
-                  label="Date"
-                  value={salesDate}
-                  onChange={(date) => {setSalesDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
-                />
-              </ThemeProvider>
-            </MuiPickersUtilsProvider>
-            <div
-              style={{ backgroundColor: theme.backgroundColor, height: 40 }}
-              className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
-            >
-              <i onClick={() => {setSaleReload(true); FetchSales('Total'); setSalesDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+            <div className="flex flex-row justify-between" style={{width: '100%'}}>
+              <div className="flex flex-row justify-between" style={{width: "45%"}}>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Sales', 'Total')}}>Total Sales</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Sales', 'Dine In')}}>Dine In</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Sales', 'Take Away')}}>Take away</button>
+              </div>
+              <div className="flex flex-row justify-between" style={{width: "40%"}}>
+                <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <ThemeProvider theme={materialTheme}>
+                      <DatePicker
+                      InputProps={{
+                          disableUnderline: true
+                        }}
+                        label="Start Date"
+                        value={startSalesDate}
+                        onChange={(date) => {setStartSalesDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+                <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <ThemeProvider theme={materialTheme}>
+                      <DatePicker
+                      InputProps={{
+                          disableUnderline: true
+                        }}
+                        label="End Date"
+                        value={stopSalesDate}
+                        onChange={(date) => {setStopSalesDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+              </div>
+              <div
+                style={{ backgroundColor: theme.backgroundColor, height: 40 }}
+                className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
+              >
+                <i onClick={() => {setSaleReload(true); FetchSales('Total'); setStartSalesDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+              </div>
             </div>
             <a href="/sales" className="text-gray-500 font-semibold mb-4"> View Detailed Reports{'>'} </a>
             {
@@ -415,30 +439,50 @@ const Dashboard = () => {
           </CustomChart>
         </div>
 
-        <div className="" style={{width: '49%'}}>
+        <div className="" style={{width: '48%'}}>
           <CustomChart title="Orders" icon={<FaClipboardList color="white" size={25} />}>
-            <div className="flex flex-row justify-between">
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Orders', 'Total', ordersDate)}}>Total Sales</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Orders', 'Dine In', ordersDate)}}>Dine In</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Orders', 'Take Away', ordersDate)}}>Take away</button>
-            </div>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <ThemeProvider theme={materialTheme}>
-                <DatePicker
-                InputProps={{
-                    disableUnderline: true
-                  }}
-                  label="Date"
-                  value={ordersDate}
-                  onChange={(date) => {setOrdersDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
-                />
-              </ThemeProvider>
-            </MuiPickersUtilsProvider>
-            <div
-              style={{ backgroundColor: theme.backgroundColor, height: 40 }}
-              className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
-            >
-              <i onClick={() => {setOrderReload(true); FetchOrders('Total'); setOrdersDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+            <div className="flex flex-row justify-between" style={{width: '100%'}}>
+              <div className="flex flex-row justify-between" style={{width: "45%"}}>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Orders', 'Total')}}>Total Sales</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Orders', 'Dine In')}}>Dine In</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Orders', 'Take Away')}}>Take away</button>
+              </div>
+              <div className="flex flex-row justify-between" style={{width: "40%"}}>
+              <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <ThemeProvider theme={materialTheme}>
+                      <DatePicker
+                      InputProps={{
+                          disableUnderline: true
+                        }}
+                        label="Start Date"
+                        value={startOrdersDate}
+                        onChange={(date) => {setStartOrdersDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+                <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <ThemeProvider theme={materialTheme}>
+                      <DatePicker
+                      InputProps={{
+                          disableUnderline: true
+                        }}
+                        label="End Date"
+                        value={stopOrdersDate}
+                        onChange={(date) => {setStopOrdersDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+              </div>
+              <div
+                style={{ backgroundColor: theme.backgroundColor, height: 40 }}
+                className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
+              >
+                <i onClick={() => {setOrderReload(true); FetchOrders('Total'); setStartOrdersDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+              </div>
             </div>
             <a href="/orders" className="text-gray-500 font-semibold mb-4"> View Detailed Reports{'>'} </a>
             {
@@ -450,30 +494,50 @@ const Dashboard = () => {
       </div>
 
       <div className="flex flex-row justify-between">
-        <div className="" style={{width: '49%'}}>
+        <div className="" style={{width: '48%'}}>
           <CustomChart title="Customers" icon={<FaUser color="white" size={25} />}>
-            <div className="flex flex-row justify-between">
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Total', customersDate)}}>Total Sales</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Dine In', customersDate)}}>Dine In</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Take away', customersDate)}}>Take away</button>
+            <div className="flex flex-row justify-between" style={{width: '100%'}}>
+              <div className="flex flex-row justify-between" style={{width: "45%"}}>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Total')}}>Total Sales</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Dine In')}}>Dine In</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Customers', 'Take away')}}>Take away</button>
+              </div>
+              <div className="flex flex-row justify-between" style={{width: "40%"}}>
+                <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <ThemeProvider theme={materialTheme}>
+                      <DatePicker
+                      InputProps={{
+                          disableUnderline: true
+                        }}
+                        label="Start Date"
+                        value={startCustomersDate}
+                        onChange={(date) => {setStartCustomersDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+                <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <ThemeProvider theme={materialTheme}>
+                    <DatePicker
+                    InputProps={{
+                        disableUnderline: true
+                      }}
+                      label="End Date"
+                      value={stopCustomersDate}
+                      onChange={(date) => {setStopCustomersDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                    />
+                  </ThemeProvider>
+                </MuiPickersUtilsProvider>
+              </div>
             </div>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <ThemeProvider theme={materialTheme}>
-                <DatePicker
-                InputProps={{
-                    disableUnderline: true
-                  }}
-                  label="Date"
-                  value={customersDate}
-                  onChange={(date) => {setCustomersDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
-                />
-              </ThemeProvider>
-            </MuiPickersUtilsProvider>
             <div
               style={{ backgroundColor: theme.backgroundColor, height: 40 }}
               className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
             >
-              <i onClick={() => {setCustomerReload(true); FetchCustomers('Total'); setCustomersDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+              <i onClick={() => {setCustomerReload(true); FetchCustomers('Total'); setStartCustomersDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+            </div>
             </div>
             <a href="/customers" className="text-gray-500 font-semibold mb-4"> View Detailed Reports{'>'} </a>
             {
@@ -483,31 +547,50 @@ const Dashboard = () => {
           </CustomChart>
         </div>
 
-        <div className="" style={{width: '49%'}}>
+        <div className="" style={{width: '48%'}}>
         {console.log(reservationReload)}
           <CustomChart title="Reservations" icon={<FaUser color="white" size={25} />}>
-            <div className="flex flex-row justify-between">
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Reservations', 'Total', reservationsDate)}}>Total Sales</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Reservations', 'Dine In', reservationsDate)}}>Dine In</button>
-              <button className="home_chart_btn" onClick={() => {getDashboardData('Reservations', 'Take Away', reservationsDate)}}>Take away</button>
+            <div className="flex flex-row justify-between" style={{width: '100%'}}>
+              <div className="flex flex-row justify-between" style={{width: "45%"}}>
+                  <button className="home_chart_btn" onClick={() => {getDashboardData('Reservations', 'Total')}}>Total Sales</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Reservations', 'Dine In')}}>Dine In</button>
+                <button className="home_chart_btn" onClick={() => {getDashboardData('Reservations', 'Take Away')}}>Take away</button>
+              </div>
+              <div className="flex flex-row justify-between" style={{width: "40%"}}>
+                <div style={{width: '45%'}}>
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <ThemeProvider theme={materialTheme}>
+                      <DatePicker
+                      InputProps={{
+                          disableUnderline: true
+                        }}
+                        label="Start Date"
+                        value={startReservationsDate}
+                        onChange={(date) => {setStartReservationsDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                      />
+                    </ThemeProvider>
+                  </MuiPickersUtilsProvider>
+                </div>
+                <div style={{width: '45%'}}><MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <ThemeProvider theme={materialTheme}>
+                    <DatePicker
+                    InputProps={{
+                        disableUnderline: true
+                      }}
+                      label="End Date"
+                      value={stopReservationsDate}
+                      onChange={(date) => {setStopReservationsDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
+                    />
+                  </ThemeProvider>
+                </MuiPickersUtilsProvider>
+              </div>
             </div>
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <ThemeProvider theme={materialTheme}>
-                <DatePicker
-                InputProps={{
-                    disableUnderline: true
-                  }}
-                  label="Date"
-                  value={reservationsDate}
-                  onChange={(date) => {setReservationsDate(date.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' )); }}
-                />
-              </ThemeProvider>
-            </MuiPickersUtilsProvider>
             <div
               style={{ backgroundColor: theme.backgroundColor, height: 40 }}
               className="text-white py-2 px-2 rounded-md mx-2 shadow-md mt-4" 
             >
-              <i onClick={() => {setReservationReload(true); FetchReservations('Total'); setReservationsDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+              <i onClick={() => {setReservationReload(true); FetchReservations('Total'); setStartReservationsDate(new Date().toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ))}} style={{cursor: "pointer"}}><FiRefreshCcw size={22}/></i>
+            </div>
             </div>
             <a href="/reservations" className="text-gray-500 font-semibold mb-4"> View Detailed Reports{'>'} </a>
             {

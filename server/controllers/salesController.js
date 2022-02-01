@@ -45,7 +45,7 @@ const getDashboardSales = async (request, response) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
+          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate  )
             data.push(dbData[i])
         }
           for (var i = 0; i < data.length; i++) {
@@ -85,7 +85,7 @@ const getDashboardSales = async (request, response) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
+          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate  )
             data.push(dbData[i])
         }
         for (var i = 0; i < data.length; i++) {
@@ -127,7 +127,7 @@ const getDashboardSales = async (request, response) => {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
           // console.log(dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ), request.params.date)
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
+          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate  )
             data.push(dbData[i])
         }
         for (var i = 0; i < data.length; i++) {

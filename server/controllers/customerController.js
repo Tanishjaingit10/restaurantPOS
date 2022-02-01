@@ -14,7 +14,7 @@ const add_customer =async (request, response, next)=>{
         const cat = new customer_template_copy({name,contact,email})
         cat.save().then(()=>{
             response.status(201).json({message: "Customer added successfully!"})
-        })
+        }) 
         .catch(error =>{
             response.status(401).json({error: "Customer could not be added!"})
         })
@@ -110,9 +110,9 @@ const getDashboardCustomer = async (request, response) => {
   var DineIn = [0, 0, 0, 0, 0, 0]
   var TakeAway = [0, 0, 0, 0, 0, 0]
   if (request.params.type == 'Take Away') {
-    customer_template_copy.find({ 'order_type': request.params.type, date: request.params.date+'T00:00:00.000Z' }, (err, data) => {
+    customer_template_copy.find({ 'order_type': request.params.type, date: {$gte: request.params.startDate+'T00:00:00.000Z', $lte: request.params.stopDate+'T00:00:00.000Z'} }, (err, data) => {
       if (!err) {
-          for (var i = 0; i < data.length; i++) {
+          for (var i = 0; i < data.length; i++) {  
             if (data[i].time >= '00:00:00' && data[i].time < '04:00:00')
               TakeAway[0] += 1
             else if (data[i].time >= '04:00:00' && data[i].time < '08:00:00')
@@ -145,7 +145,7 @@ const getDashboardCustomer = async (request, response) => {
     });
   }
   else if (request.params.type == 'Dine In') {
-    customer_template_copy.find({ 'order_type': request.params.type, date: request.params.date+'T00:00:00.000Z' }, (err, data) => {
+    customer_template_copy.find({ 'order_type': request.params.type, date: {$gte: request.params.startDate+'T00:00:00.000Z', $lte: request.params.stopDate+'T00:00:00.000Z'} }, (err, data) => {
       if (!err) {
         for (var i = 0; i < data.length; i++) {
           if (data[i].time >= '00:00:00' && data[i].time < '04:00:00')
@@ -180,7 +180,7 @@ const getDashboardCustomer = async (request, response) => {
     });
   }
   else{
-    customer_template_copy.find({date: request.params.date+'T00:00:00.000Z'}, (err, data) => {
+    customer_template_copy.find({date: {$gte: request.params.startDate+'T00:00:00.000Z', $lte: request.params.stopDate+'T00:00:00.000Z'}}, (err, data) => {
       if (!err) {
         for (var i = 0; i < data.length; i++) {
           if (data[i].order_type == 'Take Away'){

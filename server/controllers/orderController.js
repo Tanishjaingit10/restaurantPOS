@@ -127,7 +127,7 @@ const getDashboardOrder = async (request, response) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
+          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate)
             data.push(dbData[i])
         }
           for (var i = 0; i < data.length; i++) {
@@ -160,14 +160,14 @@ const getDashboardOrder = async (request, response) => {
         console.log('Error: ', err)
         response.status(401).send([]).json({ message: 'Item could not be shown!' })
       }
-    });
+    }); 
   }
   else if (request.params.type == 'Dine In') {
     order_template_copy.find({ 'payment.orderType': request.params.type }, (err, dbData) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
+          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate)
             data.push(dbData[i])
         }
         for (var i = 0; i < data.length; i++) {
@@ -207,7 +207,7 @@ const getDashboardOrder = async (request, response) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
-          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) == request.params.date )
+          if (dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) >= request.params.startDate && dbData[i].time.toLocaleDateString('pt-br').split( '/' ).reverse( ).join( '-' ) <= request.params.stopDate)
             data.push(dbData[i])
         }
         for (var i = 0; i < data.length; i++) {
