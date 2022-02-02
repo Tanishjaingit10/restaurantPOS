@@ -6,9 +6,13 @@ import { NotificationContext } from "../context/Notification";
 import SpinLoader from "./SpinLoader";
 import KotCard from "./Kitchen/KotCard";
 import { fetchKot_worker } from "../workers/fetchKot";
+import Add_tone from "../assets/notificationTones/KOTCardAdded.wav";
+import Remove_tone from "../assets/notificationTones/KOTCardRemoved.wav";
 
 const Kitchen = () => {
-    const IncompleteKot_URL = "/app/getIncompleteKot"
+    const cardAdd_tone = new Audio(Add_tone);
+    const cardRemove_tone = new Audio(Remove_tone);
+    const IncompleteKot_URL = "/app/getIncompleteKot";
     const theme = useContext(ThemeContext);
     const [kots, setKots] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -23,7 +27,12 @@ const Kitchen = () => {
     };
 
     fetchKot_worker.onmessage = (message) => {
-        if (message?.data?.success) setKots(message.data?.data);
+        if (message?.data?.success) {
+            if (message.data?.data?.length > kots.length) cardAdd_tone.play();
+            if (message.data?.data?.length < kots.length)
+                cardRemove_tone.play();
+            setKots(message.data?.data);
+        }
     };
 
     useEffect(() => {

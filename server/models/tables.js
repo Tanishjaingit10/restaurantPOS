@@ -16,7 +16,10 @@ const table_template = new mongoose.Schema({
     },
     status:{
         type:String   //{'Free', 'Unavailable'}
-    }
+    },
+    time:{
+        type:Date
+    },
 })
 
 module.exports = mongoose.model('table', table_template)

@@ -9,23 +9,31 @@ const Processing = "Processing";
 const Completed = "Completed";
 
 function KotCard({ item, setKots }) {
+    const getAllItemsStatus = () =>
+        item.order.reduce(
+            (obj, item) => ({ ...obj, [item._id]: item.itemStatus }),
+            {}
+        );
 
-    const initialItemsStatus = {}
-    item.order.forEach(item=>initialItemsStatus[item._id]=item.itemStatus)
-    
     const notify = useContext(NotificationContext);
     const [status, setStatus] = useState(item.status);
-    const [itemsStatus, setItemsStatus] = useState(initialItemsStatus);
+    const [itemsStatus, setItemsStatus] = useState(getAllItemsStatus());
     const [elapsedTime, setElapsedTime] = useState(0);
     const [estimatedTime, setEstimatedTime] = useState();
     const [timeTakenToComplete, setTimeTakenToComplete] = useState(
         item.timeTakenToComplete
     );
     const [loading, setLoading] = useState(false);
-    const item_id = item._id;
+    const card_id = item._id;
     const late = elapsedTime > estimatedTime;
 
-    const calcEstimatedTime = () => {
+    useEffect(() => setStatus(item.status), [item.status]);
+    useEffect(
+        () => setTimeTakenToComplete(item.timeTakenToComplete),
+        [item.timeTakenToComplete]
+    );
+
+    const calcEstimatedTime = (itemsStatus) => {
         setEstimatedTime(
             item.order.reduce(
                 (max, item) =>
@@ -40,11 +48,6 @@ function KotCard({ item, setKots }) {
         );
     };
 
-    useEffect(() => {
-        calcEstimatedTime();
-    }, [itemsStatus]);
-    
-
     const calcElapsedTime = () => {
         setElapsedTime(
             Math.floor((Date.now() - new Date(item.time).getTime()) / 1000)
@@ -55,24 +58,24 @@ function KotCard({ item, setKots }) {
         const interval = setInterval(() => {
             calcElapsedTime();
         }, 1000);
-        calcEstimatedTime();
+        calcEstimatedTime(itemsStatus);
         return () => clearInterval(interval);
     }, []);
 
-    const toggleOrderStatus = () => {
+    const toggleOrderStatus = (newStatus) => {
         setLoading(true);
         const dataToPost = {
-            status: status === Processing ? ReadyToServe : Completed,
+            status: newStatus,
             timeTakenToComplete: elapsedTime,
         };
         axios
-            .post(`/app/kotStatus/${item_id}`, dataToPost)
+            .post(`/app/kotStatus/${card_id}`, dataToPost)
             .then(() => {
-                if (status === Processing) {
-                    setStatus(ReadyToServe);
+                setStatus(newStatus);
+                if (newStatus === ReadyToServe)
                     setTimeTakenToComplete(elapsedTime);
-                } else
-                    setKots((prev) => prev.filter((it) => it._id !== item_id));
+                else if (newStatus === Completed)
+                    setKots((prev) => prev.filter((it) => it._id !== card_id));
             })
             .catch((err) => notify(err?.response?.data?.message || "Error!!"))
             .finally(() => setLoading(false));
@@ -96,20 +99,26 @@ function KotCard({ item, setKots }) {
                             : "bg-green text-white"
                     } w-1/2 border border-white h-full flex flex-col items-center justify-center`}
                 >
-                    <div className="text-xs leading-3">Table</div>
+                    <div className="text-xs leading-3">
+                        {item.tableNumber ? "Table" : "Take Away"}
+                    </div>
                     <div className="leading-4 font-semibold">
                         {item.tableNumber}
                     </div>
                 </div>
                 <button
-                    onClick={toggleOrderStatus}
+                    onClick={() =>
+                        toggleOrderStatus(
+                            status === Processing ? ReadyToServe : Completed
+                        )
+                    }
                     className={`${
                         status === Processing
                             ? late
                                 ? "bg-red"
                                 : "bg-yellow-300"
                             : "bg-green text-white"
-                    } w-1/2 flex border-white flex-col shadow-md z-10 items-center justify-center border-2 h-full`}
+                    } w-1/2 flex border-white flex-col shadow-md items-center justify-center border-2 h-full`}
                 >
                     <div className="far fa-check-circle text-lg"></div>
                     <div className="text-xs leading-3">
@@ -182,11 +191,13 @@ function KotCard({ item, setKots }) {
                             key={item._id}
                             className={`${
                                 status === Processing && late && "text-red"
-                            } border-b-2 h-6 flex justify-between`}
+                            } border-b-2`}
                         >
                             <SingleItem
+                                calcEstimatedTime={calcEstimatedTime}
+                                toggleOrderStatus={toggleOrderStatus}
                                 setItemsStatus={setItemsStatus}
-                                item_id={item_id}
+                                card_id={card_id}
                                 item={item}
                                 status={status}
                             />
@@ -200,35 +211,66 @@ function KotCard({ item, setKots }) {
 
 export default KotCard;
 
-function SingleItem({ item, KotStatus, item_id, setItemsStatus }) {
+function SingleItem({
+    item,
+    KotStatus,
+    card_id,
+    setItemsStatus,
+    toggleOrderStatus,
+    calcEstimatedTime,
+}) {
     const [status, setStatus] = useState(item.itemStatus);
 
-    const toggleStatus = () => {
-        setStatus((prev) => (prev === Processing ? ReadyToServe : Processing));
-    };
+    useEffect(() => setStatus(item.itemStatus), [item.itemStatus]);
 
-    useEffect(() => {
-        setItemsStatus(prev=>({...prev,[item._id]:status}))
-        axios.post(`/app/kotItemStatus/${item_id}`, {
-            itemStatus: status,
+    const toggleStatus = () => {
+        const newStatus = status === Processing ? ReadyToServe : Processing;
+        setStatus(newStatus);
+        axios.post(`/app/kotItemStatus/${card_id}`, {
+            itemStatus: status === Processing ? ReadyToServe : Processing,
             itemId: item._id,
         });
-    }, [status]);
+        setItemsStatus((itemsStatus) => {
+            let allWereReady = true;
+            for (const item in itemsStatus)
+                if (itemsStatus[item] === Processing) allWereReady = false;
+            if (allWereReady) toggleOrderStatus(Processing);
+            const newItemsStatus = { ...itemsStatus, [item._id]: newStatus };
+            let allReady = true;
+            for (const item in newItemsStatus)
+                if (newItemsStatus[item] === Processing) allReady = false;
+            if (allReady) toggleOrderStatus(ReadyToServe);
+            else calcEstimatedTime(newItemsStatus);
+            return newItemsStatus;
+        });
+    };
 
     return (
         <>
-            <div className="ml-2 text-xs flex items-center">
-                <div className="mr-2">{item.quantity}</div>
-                <div className="">{item.foodItem}</div>
-            </div>
-            <button
-                onClick={toggleStatus}
-                className={`fas fa-toggle-on ${
-                    status === ReadyToServe ? "text-green" : "rotate-180"
-                } ${
-                    KotStatus === ReadyToServe && "hidden"
-                } transform text-sm text-gray-400 mr-2`}
-            />
+            {item.deleted !== 0 && (
+                <div className="line-through h-6 pl-2 text-xs flex items-center">
+                    <div className="mr-2">{item.deleted + item.quantity}</div>
+                    <div>{item.foodItem}</div>
+                </div>
+            )}
+            {item.quantity !== 0 && (
+                <div className="h-6 flex justify-between">
+                    <div className="ml-2 text-xs flex items-center">
+                        <div className="mr-2">{item.quantity}</div>
+                        <div>{item.foodItem}</div>
+                    </div>
+                    <button
+                        onClick={toggleStatus}
+                        className={`fas fa-toggle-on ${
+                            status === ReadyToServe
+                                ? "text-green"
+                                : "rotate-180"
+                        } ${
+                            KotStatus === ReadyToServe && "hidden"
+                        } transform text-sm text-gray-400 mr-2`}
+                    />
+                </div>
+            )}
         </>
     );
 }

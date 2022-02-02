@@ -5,9 +5,10 @@ import { useLocation } from "react-router-dom";
 import { NotificationContext } from "../context/Notification";
 import { getNewId } from "../Utils";
 import SpinLoader from "./SpinLoader";
+import SingleInput from "./Split/SingleInput";
 
 function Split() {
-    const notify = useContext(NotificationContext)
+    const notify = useContext(NotificationContext);
     const location = useLocation();
     const [splitInto, setSplitInto] = useState(2);
     const [partList, setPartList] = useState([]);
@@ -15,32 +16,39 @@ function Split() {
     const [order, setOrder] = useState({});
 
     useEffect(() => {
-        setLoading(true)
-        axios.get(`/app/order/${location.state}`)
-        .then(res=>setOrder(res.data))
-        .catch((err)=>notify(err?.response?.data?.message||"Unable To Fetch Data"))
-        .finally(()=>setLoading(false))
+        setLoading(true);
+        axios
+            .get(`/app/orderById/${location.state}`)
+            .then((res) => setOrder(res.data))
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable To Fetch Data")
+            )
+            .finally(() => setLoading(false));
     }, [location.state]);
-    
+
     const resize = (array, newSize) => {
         while (newSize > array.length)
-            array.push({ amount: 0, key: getNewId(), paid:false });
+            array.push({ amount: 0, key: getNewId(), paid: false });
         array.length = newSize;
         return [...array];
     };
 
     useEffect(() => {
-        setPartList((prev) => resize(prev, splitInto||1));
+        setPartList((prev) => resize(prev, splitInto || 1));
     }, [splitInto]);
 
     return (
         <div className="flex" style={{ height: "calc(100vh - 56px)" }}>
-            {loading&&<SpinLoader/>}
+            {loading && <SpinLoader />}
             <div className="h-full flex flex-col pt-4 w-5/12">
                 <div className="flex flex-auto overflow-auto flex-col">
                     <div className="flex flex-col border-gray-300">
-                        {order?.order?.map((item,index) => (
-                            <div className={`${index&&"border-t-0"} border-2 font-semibold flex py-5 items-center border-gray-300 flex-shrink-0`}>
+                        {order?.order?.map((item, index) => (
+                            <div
+                                className={`${
+                                    index && "border-t-0"
+                                } border-2 font-semibold flex py-5 items-center border-gray-300 flex-shrink-0`}
+                            >
                                 <div className="flex flex-col w-2/3">
                                     <div className="flex mb-2 text-gray-700 text-lg">
                                         <div className="w-3/4 px-4">
@@ -79,24 +87,32 @@ function Split() {
                     <div className="bg-lightred text-white w-full text-lg p-8 h-64">
                         <div className="flex justify-between p-2">
                             <div>Subtotal</div>
-                            <div>{order?.payment?.subTotal?.toFixed(2)||"0.00"}</div>
+                            <div>
+                                {order?.payment?.subTotal?.toFixed(2) || "0.00"}
+                            </div>
                         </div>
                         <div className="flex justify-between p-2">
                             <div>Tax</div>
-                            <div>{order?.payment?.tax?.toFixed(2)||"0.00"}</div>
+                            <div>
+                                {order?.payment?.tax?.toFixed(2) || "0.00"}
+                            </div>
                         </div>
                         <div className="flex justify-between p-2">
                             <div>Discount</div>
-                            <div>{order?.payment?.discount?.toFixed(2)||"0.00"}</div>
+                            <div>
+                                {order?.payment?.discount?.toFixed(2) || "0.00"}
+                            </div>
                         </div>
                         <div className="flex font-bold justify-between p-2">
                             <div>Total</div>
-                            <div>{order?.payment?.total?.toFixed(2)||"0.00"}</div>
+                            <div>
+                                {order?.payment?.total?.toFixed(2) || "0.00"}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="h-full w-7/12 p-10">
+            <div className="h-full flex flex-col w-7/12 p-10">
                 <div className="m-4 px-6 flex items-center justify-between">
                     <div className="text-2xl font-bold text-red">
                         Split Payment Into
@@ -123,12 +139,17 @@ function Split() {
                         />
                     </div>
                 </div>
-                <div className="mt-16">
+                <div className="flex-auto overflow-auto h-0 mt-16">
                     {partList.map((item) => (
                         <div key={item._id}>
                             <SingleInput item={item} />
                         </div>
                     ))}
+                </div>
+                <div className="h-32 my-10 flex items-center justify-center">
+                    <button className="bg-red rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white">
+                        Process
+                    </button>
                 </div>
             </div>
         </div>
@@ -136,44 +157,3 @@ function Split() {
 }
 
 export default Split;
-
-function SingleInput({ item }) {
-    const [amount, setAmount] = useState(item.amount);
-    const [paid, setPaid] = useState(item.paid);
-
-    return (
-        <div className="flex justify-center my-3">
-            <select className="p-3 w-1/4 mx-2 bg-lightred text-white rounded-md">
-                <option value="cash">Cash</option>
-                <option value="card">Card</option>
-                <option value="online">Online</option>
-            </select>
-            <input
-                disabled={paid}
-                type="number"
-                value={amount}
-                onBlur={() => setAmount(amount || 0)}
-                onChange={(e) => setAmount(parseFloat(e.target.value))}
-                className={`text-center text-lg w-1/6 border mx-2 ${
-                    paid ? "text-gray-400" : "border-gray-400"
-                } rounded-md`}
-            />
-            <button
-                onClick={() => setPaid(true)}
-                className={`${
-                    paid ? "bg-fadered" : "bg-red"
-                } rounded-lg p-2 my-1 mx-2 w-40 font-medium bg-red text-white`}
-            >
-                Charge
-            </button>
-            <button
-                onClick={() => setPaid(false)}
-                className={`${
-                    paid ? "bg-red" : "bg-fadered"
-                } rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white`}
-            >
-                Void
-            </button>
-        </div>
-    );
-}

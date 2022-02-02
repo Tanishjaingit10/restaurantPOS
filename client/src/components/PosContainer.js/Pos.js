@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import React, { useContext, useEffect } from "react";
-import { useDebouncedCallback, useThrottledCallback } from "use-debounce";
+import { useDebouncedCallback } from "use-debounce";
 import { useState } from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import {
@@ -103,8 +103,8 @@ export default function Pos() {
         setFilteredFoodItem(result);
     };
 
-    const debouncedSearch = useDebouncedCallback(searchFoodItem,3000)
-    
+    const debouncedSearch = useDebouncedCallback(searchFoodItem, 3000);
+
     const loadOrder = (order) => {
         let temp = [];
         order.order.forEach((item) => {
@@ -163,7 +163,16 @@ export default function Pos() {
         searchFoodItem();
     };
 
-    const generateKOT = useThrottledCallback(() => {
+    const handleSplit = () => {
+        if (order_id)
+            history.push({
+                pathname: "/split",
+                state: order_id,
+            });
+        else notify("Please Generate a KOT first");
+    };
+
+    const generateKOT = () => {
         setLoading(true);
         let dataToPost = {
             customer,
@@ -206,7 +215,7 @@ export default function Pos() {
             .post("/app/generatekot", dataToPost)
             .then((res) => {
                 notify([
-                    "Order Receieved",
+                    `Order ${order_id ? "Updated" : "Receieved"}`,
                     `${
                         res?.data?.order_id && !order_id
                             ? `Order Id: ${res.data.order_id}`
@@ -221,7 +230,7 @@ export default function Pos() {
             .finally((res) => {
                 setLoading(false);
             });
-    },600);
+    };
 
     return (
         <div className="flex flex-col" style={{ height: "calc(100vh - 56px)" }}>
@@ -487,12 +496,7 @@ export default function Pos() {
                         >
                             <div className="flex">
                                 <button
-                                    onClick={() =>
-                                        history.push({
-                                            pathname: "/split",
-                                            state: table,
-                                        })
-                                    }
+                                    onClick={handleSplit}
                                     className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red"
                                 >
                                     Split

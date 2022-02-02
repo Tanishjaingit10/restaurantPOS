@@ -9,6 +9,7 @@ const Processing = "Processing";
 const isUpdated = "isUpdated";
 const ReadyToServe = "ReadyToServe";
 const Completed = "Completed";
+const Pending = "Pending";
 
 const areSame = (orderVar1, orderVar2) => {
     if (Object.keys(orderVar1).length !== Object.keys(orderVar2).length)
@@ -38,7 +39,8 @@ const generate_kot = (req, res) => {
                 .findOneAndUpdate(
                     { number: req?.body?.payment?.table },
                     { status: "Unavailable" }
-                ).then(()=>{})
+                )
+                .then(() => {});
             if (data === null) {
                 if (!req.body?.order?.length)
                     return res
@@ -62,6 +64,7 @@ const generate_kot = (req, res) => {
                     .find({ order_id: oldOrderInfo.order_id })
                     .then((obj) => {
                         const oldKotList = obj.map((it) => it.toJSON());
+                        oldKotList.sort((kot1, kot2) => kot2.time - kot1.time);
                         newOrderInfo.order.forEach((newOrder) => {
                             const oldOrder = oldOrderInfo.order.find(
                                 (it) => it._id.toString() === newOrder._id
@@ -112,15 +115,9 @@ const generate_kot = (req, res) => {
                                                 item.quantity
                                             );
                                             quantDiff -= q;
-                                            if (q === item.quantity) {
-                                                kot.order = kot.order.filter(
-                                                    (it) =>
-                                                        it._id.toString() !==
-                                                        newOrder._id
-                                                );
-                                            } else {
-                                                item.quantity -= q;
-                                            }
+                                            item.quantity -= q;
+                                            item.deleted += q;
+                                            item.itemStatus = Processing;
                                             kot[isUpdated] = true;
                                             kot.status = Processing;
                                         }
@@ -137,20 +134,18 @@ const generate_kot = (req, res) => {
                                 )
                             )
                                 oldKotList.forEach((kot) => {
-                                    if (
-                                        kot.order.some(
-                                            (it) =>
-                                                it._id.toString() ===
-                                                oldOrderItem._id.toString()
-                                        )
-                                    ) {
-                                        kot[isUpdated] = true;
-                                        kot.order = kot.order.filter(
-                                            (it) =>
-                                                it._id.toString() !==
-                                                oldOrderItem._id.toString()
-                                        );
-                                    }
+                                    kot.order.forEach((item) => {
+                                        if (
+                                            item._id.toString() ===
+                                            oldOrderItem._id.toString()
+                                        ) {
+                                            item.deleted += item.quantity;
+                                            item.quantity = 0;
+                                            item.itemStatus = Processing;
+                                            kot.status = Processing;
+                                            kot[isUpdated] = true;
+                                        }
+                                    });
                                 });
                         });
                         oldKotList.forEach((item) => {
@@ -172,6 +167,7 @@ const generate_kot = (req, res) => {
                             }
                         });
                         if (newKotOrders.length) {
+                            req.body.payment.orderStatus = Pending;
                             const newKOT = new kot_template_copy({
                                 ...oldOrderInfo,
                                 time: Date.now(),
@@ -214,20 +210,23 @@ const kot_order_status = async (request, response) => {
     const body = request.body;
     kot_template_copy
         .findOne({ _id: itemId })
-        .then((data) => {
-            if (data === null)
+        .then((kot) => {
+            if (kot === null)
                 response.status(404).json({ message: "Item not found!" });
             else {
-                data.status = body.status;
-                if (request.body.status === Completed) {
-                    kot_template_copy.findOne({ _id: itemId }).then((kot) => {
+                kot.status = body.status;
+                if (request.body.status === ReadyToServe) {
+                    kot.timeTakenToComplete = body.timeTakenToComplete;
+                }
+                kot.save().then(() => {
+                    if (request.body.status === Completed) {
                         kot_template_copy
                             .findOne({
                                 order_id: kot.order_id,
                                 status: { $in: [Processing, ReadyToServe] },
                             })
-                            .then((kots) => {
-                                if (!kots) {
+                            .then((incompleteKOT) => {
+                                if (!incompleteKOT) {
                                     order_template_copy
                                         .findOne({ order_id: kot.order_id })
                                         .then((order) => {
@@ -237,15 +236,11 @@ const kot_order_status = async (request, response) => {
                                         });
                                 }
                             });
-                    });
-                }
-                return data
-                    .save()
-                    .then(() =>
-                        response
-                            .status(200)
-                            .json({ message: "Item updated successfully!" })
-                    );
+                    }
+                    response
+                        .status(200)
+                        .json({ message: "Item updated successfully!" });
+                });
             }
         })
         .catch(() => {
