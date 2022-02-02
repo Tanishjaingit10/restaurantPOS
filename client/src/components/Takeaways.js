@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-import { useHistory} from 'react-router-dom';
 import Loader from "./Loader";
 import Popup from "./Popup";
 import { ThemeContext } from "../context/Theme";
@@ -17,6 +16,7 @@ import CustomTable from './Common/CustomTable';
 import CustomPagination from './Common/CustomPagination';
 import { DownloadTable, PrintTable } from './Common/download_print';
 import OrderDetailComponent from "./Common/orderDetail";
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 const TakeAwayOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -39,6 +39,7 @@ const TakeAwayOrders = () => {
   const [showComments, setShowComments] = useState(false)
   const [orderDetails, setOrderDetails] = useState({})
   const printOrderDetails = useRef();
+  const location = useLocation();
 
 	useEffect(() => {
     setPageList([])
@@ -338,9 +339,9 @@ const TakeAwayOrders = () => {
                           onPress={() => {setShowOrderDetails(true); setOrderDetails(order)}}
 												/>
                         <CustomButton
-													title="Edit"
+													title={<Link to={{pathname:"/pos", state: {orderId: order.order_id, prevPath: location.pathname}}} className="">Edit</Link>}
 													customStyle={{ backgroundColor: theme.backgroundColor }}
-                          onPress={() => { history.push('pos')}}
+                          // onPress={() => { history.push('pos')}}
 												/>
 											</td>
 										</tr>

@@ -106,6 +106,7 @@ export default function Pos() {
     const debouncedSearch = useDebouncedCallback(searchFoodItem,3000)
     
     const loadOrder = (order) => {
+        console.log(order, '======================');
         let temp = [];
         order.order.forEach((item) => {
             foodItems.forEach((it) => {
@@ -134,7 +135,21 @@ export default function Pos() {
     };
 
     useEffect(() => {
-        if (location.state) {
+        console.log(location)
+        if (location.state && location.state.prevPath === '/takeaways'){
+            setOrderType("Take Away");
+            setLoading(true);
+            fetch(`/app/orderById/${location.state.orderId}`)
+            .then((res) => res.json())
+            .then((json) => {
+                loadOrder(json[0])
+                setLoading(false)
+            })
+            .catch((err) => {
+                setLoading(false)
+            })
+        }
+        else if (location.state) {
             setTable(location.state);
             setOrderType("Dine In");
             setLoading(true);
