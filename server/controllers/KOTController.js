@@ -116,8 +116,9 @@ const generate_kot = (req, res) => {
                                             );
                                             quantDiff -= q;
                                             item.quantity -= q;
-                                            item.deleted += q;
+                                            item.deleted.push(q);
                                             item.itemStatus = Processing;
+                                            if(item.quantity===0)item.itemStatus = ReadyToServe
                                             kot[isUpdated] = true;
                                             kot.status = Processing;
                                         }
@@ -139,9 +140,9 @@ const generate_kot = (req, res) => {
                                             item._id.toString() ===
                                             oldOrderItem._id.toString()
                                         ) {
-                                            item.deleted += item.quantity;
+                                            item.deleted.push(item.quantity);
                                             item.quantity = 0;
-                                            item.itemStatus = Processing;
+                                            item.itemStatus = ReadyToServe;
                                             kot.status = Processing;
                                             kot[isUpdated] = true;
                                         }

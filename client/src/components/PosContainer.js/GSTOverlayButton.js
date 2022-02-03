@@ -1,23 +1,22 @@
 import React, { useState } from "react";
 import { Modal } from "../Common/Modal";
 
-function ServiceTaxOverlayButton({
+function GSTOverlayButton({
     item,
-    serviceTax,
-    setServiceTax,
-    serviceTaxType,
-    setServiceTaxType,
+    GST,
+    setGST,
+    GSTType,
+    setGSTType,
     children,
     ...rest
 }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [type, setType] = useState(serviceTaxType);
-    const [tax, setTax] = useState(serviceTax);
+    const [type, setType] = useState(GSTType);
+    const [tax, setTax] = useState(GST);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setServiceTax(tax);
-        setServiceTaxType(type);
+    const handleSubmit = () => {
+        setGST(tax);
+        setGSTType(type);
         setIsOpen(false);
     };
 
@@ -37,9 +36,8 @@ function ServiceTaxOverlayButton({
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
                 <div className="text-center text-3xl mb-10 text-red font-semibold">
-                    Service Tax
+                    GST
                 </div>
-                <form onSubmit={(e) => handleSubmit(e)}>
                     <div className="mb-10 space-y-8">
                         <div className="flex justify-between w-96">
                             <button
@@ -77,16 +75,15 @@ function ServiceTaxOverlayButton({
                     </div>
                     <div className="flex justify-center mb-4">
                         <button
-                            type="submit"
+                            onClick={handleSubmit}
                             className="bg-red p-2 text-white font-semibold px-10 rounded-md"
                         >
                             Done
                         </button>
                     </div>
-                </form>
             </Modal>
         </>
     );
 }
 
-export default ServiceTaxOverlayButton;
+export default GSTOverlayButton;

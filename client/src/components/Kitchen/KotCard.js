@@ -220,14 +220,12 @@ function SingleItem({
     calcEstimatedTime,
 }) {
     const [status, setStatus] = useState(item.itemStatus);
-
     useEffect(() => setStatus(item.itemStatus), [item.itemStatus]);
 
-    const toggleStatus = () => {
-        const newStatus = status === Processing ? ReadyToServe : Processing;
+    const toggleStatus = (newStatus) => {
         setStatus(newStatus);
         axios.post(`/app/kotItemStatus/${card_id}`, {
-            itemStatus: status === Processing ? ReadyToServe : Processing,
+            itemStatus: newStatus,
             itemId: item._id,
         });
         setItemsStatus((itemsStatus) => {
@@ -245,14 +243,27 @@ function SingleItem({
         });
     };
 
+    let deleteHistory = [];
+    if (item?.deleted?.length) {
+        let total =
+            item.quantity + item.deleted.reduce((sum, num) => sum + num,0);
+        item.deleted.forEach((num) => {
+            deleteHistory.push(total);
+            total -= num;
+        });
+    }
     return (
         <>
-            {item.deleted !== 0 && (
-                <div className="line-through h-6 pl-2 text-xs flex items-center">
-                    <div className="mr-2">{item.deleted + item.quantity}</div>
-                    <div>{item.foodItem}</div>
-                </div>
-            )}
+            {deleteHistory.length !== 0 &&
+                deleteHistory.map((num, index) => (
+                    <div
+                        key={index}
+                        className="line-through h-6 pl-2 text-xs flex items-center"
+                    >
+                        <div className="mr-2">{num}</div>
+                        <div>{item.foodItem}</div>
+                    </div>
+                ))}
             {item.quantity !== 0 && (
                 <div className="h-6 flex justify-between">
                     <div className="ml-2 text-xs flex items-center">
@@ -260,7 +271,13 @@ function SingleItem({
                         <div>{item.foodItem}</div>
                     </div>
                     <button
-                        onClick={toggleStatus}
+                        onClick={() =>
+                            toggleStatus(
+                                status === Processing
+                                    ? ReadyToServe
+                                    : Processing
+                            )
+                        }
                         className={`fas fa-toggle-on ${
                             status === ReadyToServe
                                 ? "text-green"

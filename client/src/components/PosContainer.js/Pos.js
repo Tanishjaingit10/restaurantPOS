@@ -19,11 +19,12 @@ import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
 import CommentsOverlayButton from "./CommentsOverlayButton";
 import CustomerInfoOverlayButton from "./CustomerInfoOverlayButton";
 import DiscountOverlayButton from "./DiscountOverlayButton";
-import ServiceTaxOverlayButton from "./ServiceTaxOverlayButton";
+import GSTOverlayButton from "./GSTOverlayButton";
 import SingleSelectedItem from "./SingleSelectedItem";
 import TipOverlayButton from "./TipOverlayButton";
 
 export default function Pos() {
+    const percentage = "percentage"
     const location = useLocation();
     const history = useHistory();
 
@@ -35,7 +36,7 @@ export default function Pos() {
     const [orderType, setOrderType] = useState("Take Away");
     const [paymentMode, setPaymentMode] = useState("cash");
     const [seeBillDetails, setSeeBillDetails] = useState(false);
-    const [addServiceTax, setAddServiceTax] = useState(false);
+    const [addGST, setAddGST] = useState(false);
     const [chargeNoPayment, setChargeNoPayment] = useState(false);
     const [filteredFoodItem, setFilteredFoodItem] = useState([]);
     const [categoryFilteredItem, setCategoryFilteredItem] = useState([]);
@@ -43,11 +44,13 @@ export default function Pos() {
     const [selectedItems, setSelectedItems] = useState([]);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [order_id, setOrder_id] = useState();
-    const [serviceTax, setServiceTax] = useState(15);
-    const [serviceTaxType, setServiceTaxType] = useState("percentage");
+    const [GST, setGST] = useState(10);
+    const [GSTType, setGSTType] = useState(percentage);
     const [comments, setComments] = useState("");
     const [table, setTable] = useState();
     const [tip, setTip] = useState(0);
+    const [discount, setDiscount] = useState(0);
+    const [discountType, setDiscountType] = useState(percentage);
     const [customer, setCustomer] = useState({
         name: "",
         email: "",
@@ -56,7 +59,8 @@ export default function Pos() {
     const subTotal = selectedItems.reduce(
         (sum, item) =>
             sum +
-            (item.price +
+            ((item.price || 0) -
+                (item.discount || 0) +
                 item.finalVariant.reduce(
                     (sum, variant) =>
                         sum +
@@ -68,18 +72,16 @@ export default function Pos() {
                 item.quantity,
         0
     );
-    const discount = selectedItems.reduce(
-        (sum, item) => sum + item.discount * item.quantity,
-        0
-    );
     const total =
         subTotal +
-        (addServiceTax
-            ? serviceTaxType === "percentage"
-                ? (subTotal * serviceTax) / 100
-                : serviceTax
+        (addGST
+            ? GSTType === percentage
+                ? (subTotal * GST) / 100
+                : GST
             : 0) -
-        discount +
+        (discountType === percentage
+            ? (subTotal * discount) / 100
+            : discount) +
         tip;
 
     const applyCategoryFilter = () => {
@@ -106,7 +108,7 @@ export default function Pos() {
     const debouncedSearch = useDebouncedCallback(searchFoodItem, 3000);
 
     const loadOrder = (order) => {
-        console.log(order, '======================');
+        console.log(order, "======================");
         let temp = [];
         order.order.forEach((item) => {
             foodItems.forEach((it) => {
@@ -135,21 +137,20 @@ export default function Pos() {
     };
 
     useEffect(() => {
-        console.log(location)
-        if (location.state && location.state.prevPath === '/takeaways'){
+        console.log(location);
+        if (location.state && location.state.prevPath === "/takeaways") {
             setOrderType("Take Away");
             setLoading(true);
             fetch(`/app/orderById/${location.state.orderId}`)
-            .then((res) => res.json())
-            .then((json) => {
-                loadOrder(json[0])
-                setLoading(false)
-            })
-            .catch((err) => {
-                setLoading(false)
-            })
-        }
-        else if (location.state) {
+                .then((res) => res.json())
+                .then((json) => {
+                    loadOrder(json[0]);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    setLoading(false);
+                });
+        } else if (location.state) {
             setTable(location.state);
             setOrderType("Dine In");
             setLoading(true);
@@ -197,7 +198,7 @@ export default function Pos() {
                 orderedVariant: item.finalVariant.filter(
                     (variant) => variant.isSelected
                 ),
-                price: item.price,
+                price: item.price - (item.discount || 0),
                 quantity: item.quantity,
                 subtotal:
                     item.finalVariant.reduce(
@@ -207,7 +208,8 @@ export default function Pos() {
                                 ? variant.price * variant.quantity
                                 : 0),
                         0
-                    ) + item.price,
+                    ) +
+                    (item.price - (item.discount || 0)) * item.quantity,
                 timeToCook:
                     parseInt(item.time.split(":")[0]) * 3600 +
                     parseInt(item.time.split(":")[1]) * 60 +
@@ -215,7 +217,7 @@ export default function Pos() {
             })),
             payment: {
                 subTotal,
-                tax: serviceTax,
+                tax: GST,
                 discount,
                 total,
                 mode: paymentMode,
@@ -464,8 +466,14 @@ export default function Pos() {
                                     <div className="text-white font-semibold">
                                         Discount
                                     </div>
-                                    <DiscountOverlayButton className="p-2 text-center w-32 font-semibold rounded-md bg-white">
-                                        {`$${discount.toFixed(2)}`}
+                                    <DiscountOverlayButton
+                                        discount={discount}
+                                        setDiscount={setDiscount}
+                                        discountType={discountType}
+                                        setDiscountType={setDiscountType}
+                                        className="p-2 text-center w-32 font-semibold rounded-md bg-white"
+                                    >
+                                        {`$${(discountType===percentage?subTotal*discount/100:discount).toFixed(2)}`}
                                     </DiscountOverlayButton>
                                 </div>
                                 <div
@@ -473,20 +481,22 @@ export default function Pos() {
                                     style={{ backgroundColor: "#c4c4c4" }}
                                 >
                                     <div className="text-white font-semibold">
-                                        Service Tax
+                                        GST
                                     </div>
-                                    <ServiceTaxOverlayButton
-                                        serviceTax={serviceTax}
-                                        setServiceTax={setServiceTax}
-                                        serviceTaxType={serviceTaxType}
-                                        setServiceTaxType={setServiceTaxType}
-                                        className="p-2 text-center w-32 font-semibold rounded-md bg-white"
+                                    <GSTOverlayButton
+                                        GST={GST}
+                                        setGST={setGST}
+                                        GSTType={GSTType}
+                                        setGSTType={setGSTType}
+                                        className={`${
+                                            addGST || "text-gray-300"
+                                        } p-2 text-center w-32 font-semibold rounded-md bg-white`}
                                     >
-                                        {`$${(serviceTaxType === "percentage"
-                                            ? (subTotal * serviceTax) / 100
-                                            : serviceTax
+                                        {`$${(GSTType === percentage
+                                            ? (subTotal * GST) / 100
+                                            : GST
                                         ).toFixed(2)}`}
-                                    </ServiceTaxOverlayButton>
+                                    </GSTOverlayButton>
                                 </div>
                                 <div
                                     className="h-14 flex items-center justify-between px-4"
@@ -519,19 +529,19 @@ export default function Pos() {
                                 <AuthenticateOverlayButton
                                     isAuthenticated={isAuthenticated}
                                     setIsAuthenticated={setIsAuthenticated}
-                                    callback={() => setAddServiceTax((e) => !e)}
-                                    title={"Add Service Tax"}
+                                    callback={() => setAddGST((e) => !e)}
+                                    title={"Add GST"}
                                     className="px-2 text-white flex items-center"
                                 >
                                     <span
                                         className={`${
-                                            addServiceTax
+                                            addGST
                                                 ? "fas fa-check-square"
                                                 : "far fa-square"
                                         }`}
                                     />
                                     <span className="ml-2 font-semibold">
-                                        Add Service Tax
+                                        Add GST
                                     </span>
                                 </AuthenticateOverlayButton>
                             </div>

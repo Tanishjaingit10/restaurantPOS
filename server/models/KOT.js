@@ -34,10 +34,14 @@ const kot_template = new mongoose.Schema({
                 },
                 timeToCook: Number,
                 quantity: Number,
-                deleted:{
-                    type:Number,
-                    default:0
-                }
+                deleted: {
+                    type: [
+                        {
+                            type: Number,
+                        },
+                    ],
+                    default: [],
+                },
             },
         ],
     },

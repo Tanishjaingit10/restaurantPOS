@@ -27,7 +27,7 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                 (variant.isSelected ? variant.price * variant.quantity : 0),
             0
         ) +
-            item.price) *
+            item.price-(item.discount||0)) *
         quantity;
 
     return (

@@ -15,11 +15,14 @@ function Split() {
     const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState({});
 
+    console.log(location.state)
+    console.log(order)
+
     useEffect(() => {
         setLoading(true);
         axios
             .get(`/app/orderById/${location.state}`)
-            .then((res) => setOrder(res.data))
+            .then((res) => setOrder(res.data[0]))
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable To Fetch Data")
             )
@@ -84,7 +87,7 @@ function Split() {
                     </div>
                 </div>
                 <div className="mt-auto py-8 flex items-center">
-                    <div className="bg-lightred text-white w-full text-lg p-8 h-64">
+                    <div className="bg-lightred text-white w-full text-lg p-8 h-72">
                         <div className="flex justify-between p-2">
                             <div>Subtotal</div>
                             <div>
@@ -101,6 +104,12 @@ function Split() {
                             <div>Discount</div>
                             <div>
                                 {order?.payment?.discount?.toFixed(2) || "0.00"}
+                            </div>
+                        </div>
+                        <div className="flex justify-between p-2">
+                            <div>Tip</div>
+                            <div>
+                                {order?.payment?.tip?.toFixed(2) || "0.00"}
                             </div>
                         </div>
                         <div className="flex font-bold justify-between p-2">
