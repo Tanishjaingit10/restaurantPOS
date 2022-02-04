@@ -1,18 +1,18 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const autoIncrement = require('mongoose-sequence')(mongoose);
+const autoIncrement = require("mongoose-sequence")(mongoose);
 
-const Processing = "Processing"
+const Processing = "Processing";
 const order_template = new mongoose.Schema({
     order_id: {
-        type: Number
+        type: Number,
     },
-    customer:{
+    customer: {
         type: {
             name: String,
             contact: String,
-            email: String
-        }
+            email: String,
+        },
     },
     order: {
         type: [
@@ -24,38 +24,42 @@ const order_template = new mongoose.Schema({
                             variant: String,
                             description: String,
                             price: Number,
-                            quantity: Number
-                        }
-                    ]
+                            quantity: Number,
+                        },
+                    ],
                 },
                 price: Number,
+                discount: Number,
                 subtotal: Number,
-                timeToCook:Number,
-                quantity:Number
-            }
-        ]
+                timeToCook: Number,
+                quantity: Number,
+            },
+        ],
     },
     payment: {
         type: {
             subTotal: Number,
-            tax:Number,
+            tax: Number,
             discount: Number,
             total: Number,
-            mode: String, 
+            tip: Number,
+            mode: String,
             status: String, // Pending // Completed // Cancelled //
             orderType: String, // Dine In // Take Away //
             orderStatus: String, // Pending // Completed // Cancelled //
             table: String,
-        }
+        },
     },
-    comments:String,
+    comments: String,
     time: {
         type: Date,
-        default: Date.now
-    }
-    
-})
+        default: Date.now,
+    },
+});
 
-order_template.plugin(autoIncrement, {inc_field: 'order_id', start_seq: 2021001})
+order_template.plugin(autoIncrement, {
+    inc_field: "order_id",
+    start_seq: 2021001,
+});
 
-module.exports = mongoose.model('order', order_template)
+module.exports = mongoose.model("order", order_template);

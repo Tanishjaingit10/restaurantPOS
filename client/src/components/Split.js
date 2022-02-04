@@ -4,19 +4,21 @@ import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { NotificationContext } from "../context/Notification";
 import { getNewId } from "../Utils";
+import { Modal } from "./Common/Modal";
+import PrintBillButton from "./PosContainer.js/PrintBillButton";
 import SpinLoader from "./SpinLoader";
 import SingleInput from "./Split/SingleInput";
 
 function Split() {
     const notify = useContext(NotificationContext);
     const location = useLocation();
+    const [loading, setLoading] = useState(false);
     const [splitInto, setSplitInto] = useState(2);
     const [partList, setPartList] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [order, setOrder] = useState({});
-
-    console.log(location.state)
-    console.log(order)
+    const [amountDue, setAmountDue] = useState(0);
+    const [paymentDoneOverlayIsOpen, setPaymentDoneOverlayIsOpen] =
+        useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -29,16 +31,73 @@ function Split() {
             .finally(() => setLoading(false));
     }, [location.state]);
 
-    const resize = (array, newSize) => {
-        while (newSize > array.length)
-            array.push({ amount: 0, key: getNewId(), paid: false });
-        array.length = newSize;
-        return [...array];
-    };
+    useEffect(() => {
+        resize(partList, splitInto);
+        const dueAmount =
+            order?.payment?.total -
+            partList.reduce(
+                (sum, item) => sum + (item.paid ? item.amount || 0 : 0),
+                0
+            );
+        distributeEqually(dueAmount, partList);
+        setPartList([...partList]);
+    }, [splitInto, order?.payment?.total]);
 
     useEffect(() => {
-        setPartList((prev) => resize(prev, splitInto || 1));
-    }, [splitInto]);
+        setAmountDue(calculateAmountDue());
+    }, [partList]);
+
+    const distributeEqually = (dueAmount, partList) => {
+        let unpaidLeft = partList.reduce(
+            (sum, item) => sum + (item.paid ? 0 : 1),
+            0
+        );
+        partList.forEach((item) => {
+            if (!item.paid) {
+                const amt =
+                    Math.floor(dueAmount / unpaidLeft) +
+                    (dueAmount % unpaidLeft > 1 ? 1 : 0);
+                item.amount = amt;
+                dueAmount -= amt;
+                unpaidLeft--;
+            }
+        });
+        if (dueAmount && partList.find((item) => !item.paid))
+            partList.find((item) => !item.paid).amount += dueAmount;
+    };
+
+    const calculateAmountDue = () => {
+        const total = order?.payment?.total || 0;
+        const done = partList.reduce((sum, item) => sum + item.amount || 0, 0);
+        const left = Math.max(0, total - done);
+        return left;
+    };
+
+    const resize = (array, newSize) => {
+        while (newSize > array.length)
+            array.push({
+                amount: 0,
+                key: getNewId(),
+                paid: false,
+                method: "cash",
+            });
+        array.length = newSize;
+    };
+
+    const handleProcess = () => {
+        if (amountDue || partList.some((item) => !item.paid))
+            notify("Please Clear The Due Amount");
+        else {
+            setLoading(true);
+            axios
+                .post(`/app/makePayment/${order?.order_id}`, {
+                    mode: "split",
+                })
+                .then((res) => setPaymentDoneOverlayIsOpen(true))
+                .catch((err) => console.log(err.response))
+                .finally(() => setLoading(false));
+        }
+    };
 
     return (
         <div className="flex" style={{ height: "calc(100vh - 56px)" }}>
@@ -48,6 +107,7 @@ function Split() {
                     <div className="flex flex-col border-gray-300">
                         {order?.order?.map((item, index) => (
                             <div
+                                key={item._id}
                                 className={`${
                                     index && "border-t-0"
                                 } border-2 font-semibold flex py-5 items-center border-gray-300 flex-shrink-0`}
@@ -65,7 +125,10 @@ function Split() {
                                         </div>
                                     </div>
                                     {item.orderedVariant.map((variant) => (
-                                        <div className="flex my-1 font-bold text-xs text-gray-400">
+                                        <div
+                                            key={variant._id}
+                                            className="flex my-1 font-bold text-xs text-gray-400"
+                                        >
                                             <div className="w-3/4 px-4">
                                                 {`${variant.quantity}x With ${variant.variant}`}
                                             </div>
@@ -106,12 +169,14 @@ function Split() {
                                 {order?.payment?.discount?.toFixed(2) || "0.00"}
                             </div>
                         </div>
-                        <div className="flex justify-between p-2">
-                            <div>Tip</div>
-                            <div>
-                                {order?.payment?.tip?.toFixed(2) || "0.00"}
+                        {Boolean(order?.payment?.tip) && (
+                            <div className="flex justify-between p-2">
+                                <div>Tip</div>
+                                <div>
+                                    {order?.payment?.tip?.toFixed(2) || "0.00"}
+                                </div>
                             </div>
-                        </div>
+                        )}
                         <div className="flex font-bold justify-between p-2">
                             <div>Total</div>
                             <div>
@@ -150,15 +215,74 @@ function Split() {
                 </div>
                 <div className="flex-auto overflow-auto h-0 mt-16">
                     {partList.map((item) => (
-                        <div key={item._id}>
-                            <SingleInput item={item} />
+                        <div key={item.key}>
+                            <SingleInput
+                                setPartList={setPartList}
+                                amountDue={amountDue}
+                                setAmountDue={setAmountDue}
+                                item={item}
+                            />
                         </div>
                     ))}
                 </div>
                 <div className="h-32 my-10 flex items-center justify-center">
-                    <button className="bg-red rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white">
+                    <button
+                        onClick={handleProcess}
+                        className="bg-red rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white"
+                    >
                         Process
                     </button>
+                    <Modal
+                        isOpen={paymentDoneOverlayIsOpen}
+                        controller={setPaymentDoneOverlayIsOpen}
+                        className="py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
+                    >
+                        <button
+                            onClick={() => setPaymentDoneOverlayIsOpen(false)}
+                            className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                        />
+                        <div className="text-center text-3xl m-3 text-red font-semibold">
+                            Payment Completed
+                        </div>
+                        <div className="flex gap-8">
+                            <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
+                                <div className="text-xl">Amount Tendered</div>
+                                <div className="text-3xl">
+                                    ${(order?.payment?.total || 0).toFixed(2)}
+                                </div>
+                            </div>
+                            <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
+                                <div className="text-xl">Change Due</div>
+                                <div className="text-3xl">
+                                    ${(amountDue || 0).toFixed(2)}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex">
+                            <PrintBillButton
+                                order_id={order?.order_id}
+                                className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                            >
+                                Print Receipt
+                            </PrintBillButton>
+                            <button
+                                onClick={() => {
+                                    setPaymentDoneOverlayIsOpen(false);
+                                }}
+                                className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red text-white"
+                            >
+                                Email Receipt
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setPaymentDoneOverlayIsOpen(false);
+                                }}
+                                className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                            >
+                                Text Receipt
+                            </button>
+                        </div>
+                    </Modal>
                 </div>
             </div>
         </div>

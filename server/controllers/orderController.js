@@ -1,5 +1,6 @@
 const order_template_copy = require('../models/order')
 const customer_template_copy = require('../models/customers')
+const table_template_copy = require('../models/tables')
 
 const add_order = async (request, response, next) => {
     const { customer, order, payment } = request.body;
@@ -25,7 +26,7 @@ const add_order = async (request, response, next) => {
       response.status(401).json({ error: "Order could not be added!" })
     })
 
-    
+
 }
 
 const all_order = async (request, response) => {
@@ -61,7 +62,7 @@ const update_order = async (request, response, next) => {
 
 }
 const get_order = async (request, response, next)=>{
-    order_template_copy.findOne({ 'payment.table': request.params.id }, (err, data) => {
+    order_template_copy.findOne({ 'payment.table': request.params.id, 'payment.status':{$ne:"Completed"} }, (err, data) => {
         if (!err) {
             if (data === null)
                 response.status(404).json({ message: 'Item not found!', data:null })
@@ -288,6 +289,29 @@ const getTakeAwayOrderByDate = async (request, response) => {
   });
 }
 
+const make_payment = (req,res) => {
+  const mode = req?.body?.paymentMode
+  const order_id = req.params.id
+  order_template_copy.findOne({order_id:order_id})
+    .then((data)=>{
+      if(data===null)
+        return res.status(500).json({message:"Order Not Found"})
+      if(data.payment.status==="Completed")
+        return res.json({message:"Payment Already Completed"})
+      data.payment.status = "Completed"
+      data.save().then(()=>{})
+      table_template_copy.findOne({number:data?.payment?.table})
+        .then(data=>{
+          if(data){
+            data.status = "Free"
+            data.save().then(()=>{})
+          }
+        })
+      res.json("ok")
+    })
+    .catch(()=>res.status(500).json({message:"Payment Failed"}))
+}
+
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, getDashboardOrder, getTakeAwayOrders, getTakeAwayOrderByDate
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, getDashboardOrder, getTakeAwayOrders, getTakeAwayOrderByDate,make_payment
 }

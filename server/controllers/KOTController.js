@@ -1,6 +1,7 @@
 const kot_template_copy = require("../models/KOT");
 const order_template_copy = require("../models/order");
 const table_template_copy = require("../models/tables");
+const customer_template_copy = require("../models/customers");
 
 const { ObjectId } = require("mongodb");
 const { isValidObjectId } = require("mongoose");
@@ -48,6 +49,31 @@ const generate_kot = (req, res) => {
                         .json({ message: "Please Provide Food Items" });
                 const newOrder = new order_template_copy(req.body);
                 newOrder.save().then((data) => {
+                    if (
+                        data.customer?.name ||
+                        data.customer?.contact ||
+                        data.customer?.email
+                    ) {
+                        customer = req.body.customer;
+                        const new_customer = new customer_template_copy({
+                            name: customer.name,
+                            contact: customer.contact,
+                            email: customer.email,
+                            date: new Date()
+                                .toLocaleDateString("pt-br")
+                                .split("/")
+                                .reverse()
+                                .join("-"),
+                            num_orders: 1,
+                            total_amount_spent: data.payment?.total,
+                            time: new Date().toLocaleTimeString("en-US", {
+                                hour12: false,
+                            }),
+                            order_type: data?.payment?.orderType,
+                            order_id: data.order_id,
+                        });
+                        new_customer.save().then((res) => {});
+                    }
                     const newKOT = new kot_template_copy({
                         ...data.toJSON(),
                         tableNumber: data.payment.table,
@@ -118,7 +144,8 @@ const generate_kot = (req, res) => {
                                             item.quantity -= q;
                                             item.deleted.push(q);
                                             item.itemStatus = Processing;
-                                            if(item.quantity===0)item.itemStatus = ReadyToServe
+                                            if (item.quantity === 0)
+                                                item.itemStatus = ReadyToServe;
                                             kot[isUpdated] = true;
                                             kot.status = Processing;
                                         }

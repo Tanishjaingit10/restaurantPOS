@@ -22,9 +22,12 @@ import DiscountOverlayButton from "./DiscountOverlayButton";
 import GSTOverlayButton from "./GSTOverlayButton";
 import SingleSelectedItem from "./SingleSelectedItem";
 import TipOverlayButton from "./TipOverlayButton";
+import { Modal } from "../Common/Modal";
+import PrintBillButton from "./PrintBillButton";
 
 export default function Pos() {
-    const percentage = "percentage"
+    const percentage = "percentage";
+    const fixed = "fixed";
     const location = useLocation();
     const history = useHistory();
 
@@ -50,7 +53,9 @@ export default function Pos() {
     const [table, setTable] = useState();
     const [tip, setTip] = useState(0);
     const [discount, setDiscount] = useState(0);
-    const [discountType, setDiscountType] = useState(percentage);
+    const [discountType, setDiscountType] = useState(fixed);
+    const [paymentDoneOverlayIsOpen, setPaymentDoneOverlayIsOpen] =
+        useState(false);
     const [customer, setCustomer] = useState({
         name: "",
         email: "",
@@ -74,14 +79,8 @@ export default function Pos() {
     );
     const total =
         subTotal +
-        (addGST
-            ? GSTType === percentage
-                ? (subTotal * GST) / 100
-                : GST
-            : 0) -
-        (discountType === percentage
-            ? (subTotal * discount) / 100
-            : discount) +
+        (addGST ? (GSTType === percentage ? (subTotal * GST) / 100 : GST) : 0) -
+        (discountType === percentage ? (subTotal * discount) / 100 : discount) +
         tip;
 
     const applyCategoryFilter = () => {
@@ -108,7 +107,6 @@ export default function Pos() {
     const debouncedSearch = useDebouncedCallback(searchFoodItem, 3000);
 
     const loadOrder = (order) => {
-        console.log(order, "======================");
         let temp = [];
         order.order.forEach((item) => {
             foodItems.forEach((it) => {
@@ -134,10 +132,11 @@ export default function Pos() {
         setCustomer(order.customer);
         setComments(order.comments);
         setOrder_id(order.order_id);
+        setTip(order?.payment?.tip || 0);
+        setDiscount(order?.payment?.discount || 0);
     };
 
     useEffect(() => {
-        console.log(location);
         if (location.state && location.state.prevPath === "/takeaways") {
             setOrderType("Take Away");
             setLoading(true);
@@ -155,7 +154,7 @@ export default function Pos() {
             setOrderType("Dine In");
             setLoading(true);
             axios
-                .get(`/app/order/${location.state}`)
+                .get(`/app/orderForTable/${location.state}`)
                 .then((res) => loadOrder(res.data))
                 .catch(() => {})
                 .finally(() => setLoading(false));
@@ -188,6 +187,23 @@ export default function Pos() {
         else notify("Please Generate a KOT first");
     };
 
+    const handleCompletePayment = () => {
+        if (!order_id) {
+            notify("Please Generate KOT First");
+        } else {
+            setLoading(true);
+            axios
+                .post(`/app/makePayment/${order_id}`, {
+                    mode: chargeNoPayment ? "ChargeNoPayment" : paymentMode,
+                })
+                .then((res) => setPaymentDoneOverlayIsOpen(true))
+                .catch((err) =>
+                    notify(err?.response?.message || "Payment Failed")
+                )
+                .finally(() => setLoading(false));
+        }
+    };
+
     const generateKOT = () => {
         setLoading(true);
         let dataToPost = {
@@ -198,7 +214,8 @@ export default function Pos() {
                 orderedVariant: item.finalVariant.filter(
                     (variant) => variant.isSelected
                 ),
-                price: item.price - (item.discount || 0),
+                price: item.price,
+                discount: item.discount,
                 quantity: item.quantity,
                 subtotal:
                     item.finalVariant.reduce(
@@ -217,9 +234,10 @@ export default function Pos() {
             })),
             payment: {
                 subTotal,
-                tax: GST,
+                tax: addGST ? GST : 0,
                 discount,
                 total,
+                tip,
                 mode: paymentMode,
                 orderType,
                 orderStatus: "Pending",
@@ -473,7 +491,10 @@ export default function Pos() {
                                         setDiscountType={setDiscountType}
                                         className="p-2 text-center w-32 font-semibold rounded-md bg-white"
                                     >
-                                        {`$${(discountType===percentage?subTotal*discount/100:discount).toFixed(2)}`}
+                                        {`$${(discountType === percentage
+                                            ? (subTotal * discount) / 100
+                                            : discount
+                                        ).toFixed(2)}`}
                                     </DiscountOverlayButton>
                                 </div>
                                 <div
@@ -633,14 +654,71 @@ export default function Pos() {
                                     Charge No Payment
                                 </span>
                             </AuthenticateOverlayButton>
-                            <button className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-green">
+                            <button
+                                onClick={handleCompletePayment}
+                                className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-green"
+                            >
                                 Complete Payment
                             </button>
+                            <Modal
+                                isOpen={paymentDoneOverlayIsOpen}
+                                controller={setPaymentDoneOverlayIsOpen}
+                                className="py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
+                            >
+                                <button
+                                    onClick={() =>
+                                        setPaymentDoneOverlayIsOpen(false)
+                                    }
+                                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                                />
+                                <div className="text-center text-3xl m-3 text-red font-semibold">
+                                    Payment Completed
+                                </div>
+                                <div className="flex gap-8">
+                                    <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
+                                        <div className="text-xl">
+                                            Amount Charged
+                                        </div>
+                                        <div className="text-3xl">
+                                            ${total.toFixed(2)}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex">
+                                    <button
+                                        onClick={() => {
+                                            setPaymentDoneOverlayIsOpen(false);
+                                        }}
+                                        className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                                    >
+                                        Print Receipt
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setPaymentDoneOverlayIsOpen(false);
+                                        }}
+                                        className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red text-white"
+                                    >
+                                        Email Receipt
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setPaymentDoneOverlayIsOpen(false);
+                                        }}
+                                        className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                                    >
+                                        Text Receipt
+                                    </button>
+                                </div>
+                            </Modal>
                         </div>
                         <div className="h-14 bg-white flex items-center justify-center">
-                            <button className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-yellow-300">
+                            <PrintBillButton
+                                order_id={order_id}
+                                className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-yellow-300"
+                            >
                                 Print Bill
-                            </button>
+                            </PrintBillButton>
                             <button
                                 onClick={generateKOT}
                                 className="p-2 text-white font-semibold rounded-md w-1/3 mx-2 bg-yellow-300"

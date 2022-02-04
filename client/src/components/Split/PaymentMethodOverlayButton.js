@@ -1,9 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "../Common/Modal";
 
-function PaymentMethodOverlayButton({ item, children, className }) {
+function PaymentMethodOverlayButton({
+    children,
+    item,
+    method,
+    setPaid,
+    setAmount,
+    amountDue,
+    className,
+}) {
+    const PaymentMethod =
+        method === "online"
+            ? "Online Payment"
+            : `Payment by ${method === "cash" ? "Cash" : "Card"}`;
     const [isOpen, setIsOpen] = useState(false);
-    const [amountString, setAmountString] = useState("");
+    const [confirmationIsOpen, setConfirmationIsOpen] = useState(false);
+
+    const [amountString, setAmountString] = useState(item.amount.toFixed(2));
+    const [enteredAmount, setEnteredAmount] = useState(item.amount);
+
+    const onModalOpen = () => {
+        setAmountString(item.amount.toFixed(2));
+        setEnteredAmount(item.amount);
+    };
+
+    useEffect(
+        () => setEnteredAmount(parseFloat(amountString) || 0),
+        [amountString]
+    );
+
     const enterAmount = (s) => {
         let i = amountString.indexOf(".");
         if (amountString === "" && s === "0");
@@ -22,8 +48,15 @@ function PaymentMethodOverlayButton({ item, children, className }) {
                 amountString.substring(i)
         );
     };
+
+    const handleExact = () => {
+        setAmountString((amountDue + item.amount).toString());
+    };
+
     const handleSubmit = () => {
-        // const amount = parseFloat(amountString !== "" ? amountString : 0);
+        setPaid(true);
+        setAmount(enteredAmount);
+        setIsOpen(false);
     };
 
     return (
@@ -37,6 +70,7 @@ function PaymentMethodOverlayButton({ item, children, className }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
+                onAfterOpen={onModalOpen}
                 className="py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
             >
                 <button
@@ -44,11 +78,13 @@ function PaymentMethodOverlayButton({ item, children, className }) {
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
                 <div className="text-center text-3xl m-3 text-red font-semibold">
-                    Payment By Cash
+                    {PaymentMethod}
                 </div>
                 <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
                     <div className="text-xl">Amount Due</div>
-                    <div className="text-3xl">$0.00</div>
+                    <div className="text-3xl">
+                        ${(amountDue + item.amount - enteredAmount).toFixed(2)}
+                    </div>
                 </div>
                 <div className="w-full p-2 mb-1 bg-gray-200 flex justify-between text-sm font-semibold text-gray-600 rounded-md">
                     <div className="mx-2 mb-1">
@@ -66,7 +102,10 @@ function PaymentMethodOverlayButton({ item, children, className }) {
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-1 mb-3">
-                    <button className="rounded-lg py-2 w-36 font-medium bg-lightred text-white">
+                    <button
+                        onClick={handleExact}
+                        className="rounded-lg py-2 w-36 font-medium bg-lightred text-white"
+                    >
                         Exact
                     </button>
                     <button
@@ -83,6 +122,7 @@ function PaymentMethodOverlayButton({ item, children, className }) {
                     </button>
                     {[...Array(9)].map((item, index) => (
                         <button
+                            key={index}
                             onClick={() => enterAmount((index + 1).toString())}
                             className="rounded-lg py-2 w-36 font-medium bg-gray-200"
                         >
@@ -111,7 +151,7 @@ function PaymentMethodOverlayButton({ item, children, className }) {
                         }
                         className="rounded-lg py-2 w-36 font-medium flex justify-center items-center bg-gray-200"
                     >
-                        <button className="fas fa-backspace" />
+                        <div className="fas fa-backspace" />
                     </button>
                     <div />
                     <button
@@ -122,11 +162,53 @@ function PaymentMethodOverlayButton({ item, children, className }) {
                     </button>
                 </div>
                 <button
-                    onClick={handleSubmit}
+                    onClick={() => setConfirmationIsOpen(true)}
                     className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red text-white"
                 >
                     Continue
                 </button>
+                <Modal
+                    isOpen={confirmationIsOpen}
+                    controller={setConfirmationIsOpen}
+                    className="py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
+                >
+                    <button
+                        onClick={() => setConfirmationIsOpen(false)}
+                        className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                    />
+                    <div className="text-center text-3xl m-3 text-red font-semibold">
+                        {PaymentMethod}
+                    </div>
+                    <div className="flex gap-8">
+                        <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
+                            <div className="text-xl">Amount Tendered</div>
+                            <div className="text-3xl">
+                                ${enteredAmount.toFixed(2)}
+                            </div>
+                        </div>
+                        <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
+                            <div className="text-xl">Change Due</div>
+                            <div className="text-3xl">
+                                $
+                                {(
+                                    amountDue +
+                                    item.amount -
+                                    enteredAmount
+                                ).toFixed(2)}
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => {
+                            handleSubmit();
+                            setConfirmationIsOpen(false);
+                            setIsOpen(false);
+                        }}
+                        className="rounded-lg py-2 my-1 mx-2 px-8 font-medium bg-red text-white"
+                    >
+                        Complete Payment
+                    </button>
+                </Modal>
             </Modal>
         </>
     );
