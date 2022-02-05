@@ -7,8 +7,6 @@ let finalUser;
 const ClockInOut = () => {
   const history = useHistory();
   const [user, setUser] = useState({ fullName: "", email_id: "" });
-  const [attendance, setAttendance] = useState({ status: "1", checkinTime: "", checkoutTime: "", date: "" })
-  const [button, setButton] = useState('Clock In')
   const [isOpen, setIsOpen] = useState(false);
   const [isError, setIsError] = useState(false);
   const [msg, setMsg] = useState("");

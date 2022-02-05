@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Loader from "./Loader";
@@ -28,7 +29,7 @@ const Orders = () => {
                     }
                     return null;
                 }
-                
+                return null
               })
               .map((option) => {
                 return (

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, useContext } from "react";
 import { OrderContext } from "../../context/Cart";
 import { PaymentContext } from "../../context/Payment";
@@ -9,7 +10,7 @@ const CategoryList = () => {
   const [loading, setLoading] = useState(false);
   const [orderLoading, setOrderLoading] = useState(true);
   const [catLoading, setCatLoading] = useState(true);
-  const [cart, setCart] = useContext(OrderContext);
+  const [setCart] = useContext(OrderContext);
   const [payment, setPayment] = useContext(PaymentContext);
   const [showError, setError] = useState(false);
   const [renderList, setRenderList] = useState();
@@ -213,7 +214,7 @@ const CategoryList = () => {
                       </button>
                     </div>
                   );
-                }
+                }else return <></>
               })
           );
         }
@@ -242,7 +243,7 @@ const CategoryList = () => {
               </span>
             </button>
           );
-        }
+        }else return <></>
       })
     );
     //eslint-disable-next-line

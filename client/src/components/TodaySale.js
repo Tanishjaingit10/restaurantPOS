@@ -3,24 +3,18 @@ import { Link } from 'react-router-dom';
 import Loader from "./Loader";
 import Popup from "./Popup";
 let [total, totalCard, totalCash, totalOnline,item] = [0,0,0,0,''];
-let dateInput;
 var todayDate = new Date()
   todayDate = todayDate.toISOString().split('T')[0]
 const Sales = () => {
   const [loading, setLoading] = useState(false);
   const [orderLoading, setorderLoading] = useState(true);
-  const [catLoading, setCatLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [show, setShow] = useState(false);
   const [displayCategory, setDisplayCategory] = useState(false);
   const [disp, setDisp] = useState(false);
   const [category, setCategory] = useState();
   const [displayItems, setDisplayItems] = useState();
   const [showError, setError] = useState(false);
   const [orders, showOrders] = useState()
-  const handleDate = (e) => {
-    dateInput= (e.target.value)
-  }
   const loadCategory = async () => {
     await fetch("/app/category")
       .then((res) => res.json())

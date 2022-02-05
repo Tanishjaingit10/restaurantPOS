@@ -129,7 +129,7 @@ const Tables = () => {
 			console.log(reservedTable, "reservedTable")
 			var availableTables = allTables.filter(function(obj) { return reservedTable.indexOf(obj) === -1; });
 			console.log(availableTables, 'available table')
-			for (var i = 0; i < availableTables.length; i++){
+			for (let i = 0; i < availableTables.length; i++){
 				tableList.push({label: availableTables[i], value: availableTables[i]})
 			}
 			console.log(tableList, 'table list')

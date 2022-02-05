@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
@@ -71,9 +72,12 @@ const Orders = () => {
         setCancelledOrders(cancelledOrders)
 				var dict = {}
 				var len = json.length
-				for (var i = 0; i < len/pageLimit; i++) {
-					setPageList((pageList) => [...pageList, i+1])
-				}
+				setPageList((pageList) => {
+					for (var i = 0; i < len/pageLimit; i++) {
+						pageList.push(i+1)
+					}
+					return [...pageList]
+				})
 				dict[1] = 'Active'
 				setPaginagtionBtn(dict)
 				setPageNumber(1)

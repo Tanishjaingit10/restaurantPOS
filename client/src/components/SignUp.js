@@ -18,7 +18,7 @@ const SignUp = () => {
   });
   const theme = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
-  const [attendance, setAttendance] = useState({
+  const [attendance] = useState({
     status: "Session Not Started",
     checkinTime: "N/A",
     checkoutTime: "N/A",
@@ -73,7 +73,7 @@ const SignUp = () => {
       </div>
       <div className="mb-10">
         <div className="flex flex-row h-auto m-auto bg-white w-3/4 rounded-3xl shadow-2xl">
-          <img src={chefLogin} />
+          <img src={chefLogin} alt="" />
 
           <form className="w-1/2 md:w-1/3 mx-auto py-4 font-bold font-roboto text-lg justify">
             <div>

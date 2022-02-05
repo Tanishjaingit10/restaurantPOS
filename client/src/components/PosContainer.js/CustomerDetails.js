@@ -35,7 +35,7 @@ const CustomerDetails = () => {
               </td>
             </tr>
           )
-        }}))
+        }else return <></>}))
       })
   }
   useEffect(() => {

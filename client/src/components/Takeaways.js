@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
@@ -16,7 +17,7 @@ import CustomTable from './Common/CustomTable';
 import CustomPagination from './Common/CustomPagination';
 import { DownloadTable, PrintTable } from './Common/download_print';
 import OrderDetailComponent from "./Common/orderDetail";
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const TakeAwayOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -34,7 +35,6 @@ const TakeAwayOrders = () => {
   const [incriment, setIncriment] = useState(0)
   const theme = useContext(ThemeContext);
   const printTable = useRef();
-  const history = useHistory();
   const [showOrderDetails, setShowOrderDetails] = useState(false)
   const [showComments, setShowComments] = useState(false)
   const [orderDetails, setOrderDetails] = useState({})
@@ -53,9 +53,12 @@ const TakeAwayOrders = () => {
 				setLoading(false)
 				var dict = {}
 				var len = json.length
-				for (var i = 0; i < len/pageLimit; i++) {
-					setPageList((pageList) => [...pageList, i+1])
-				}
+				setPageList((pageList)=>{
+					for (var i = 0; i < len/pageLimit; i++) {
+						pageList.push(pageList, i+1)
+					}
+					return [...pageList]
+				})
 				dict[1] = 'Active'
 				setPaginagtionBtn(dict)
 				setPageNumber(1)

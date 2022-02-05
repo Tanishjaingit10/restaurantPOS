@@ -1,12 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import Logo from "../../images/logo.jpeg";
-import { PaymentContext } from '../../context/Payment'
-import { OrderContext } from '../../context/Cart';
-import { CustomerContext } from '../../context/Customer';
 const Receipt = () => {
-  const [payment] = useContext(PaymentContext)
-  const [cart] = useContext(OrderContext);
-  const [customer] = useContext(CustomerContext);
   return (
     <div className="py-8 pb-16 px-16 bg-yellow h-screen">
       <div className="border-2 border-black flex flex-col font-roboto">

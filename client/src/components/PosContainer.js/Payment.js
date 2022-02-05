@@ -1,10 +1,10 @@
-import React,{useContext, useState} from 'react'
+import React,{useContext} from 'react'
 import { PaymentContext } from '../../context/Payment';
 import { useHistory } from 'react-router-dom';
 
 const Payment = () => {
     const history = useHistory();
-    const [payment, setPayment] = useContext(PaymentContext);
+    const [setPayment] = useContext(PaymentContext);
     const onlinePay = async (e)=> {
         e.preventDefault();
         setPayment((prev) => ({

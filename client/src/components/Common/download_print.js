@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import ReactToPrint from 'react-to-print';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import { ThemeContext } from "../../context/Theme";
-import Pdf from "react-to-pdf";
 import ReactToPdf from "react-to-pdf";
 
 const DownloadTable = ({fileName, tableId}) => {

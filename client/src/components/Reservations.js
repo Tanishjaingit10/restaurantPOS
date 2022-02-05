@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Loader from "./Loader";
 import Popup from "./Popup";
@@ -56,9 +57,12 @@ const AllReservations = () => {
 			setLoading(false);
 			var dict = {}
 			var len = json.length
-			for (var i = 0; i < len/pageLimit; i++) {
-				setPageList((pageList) => [...pageList, i+1])
-			}
+			setPageList((pageList) => {
+				for (var i = 0; i < len/pageLimit; i++) {
+					pageList.push(i+1)
+				}
+				return [...pageList]
+			})
 			dict[1] = 'Active'
 			setPaginagtionBtn(dict)
       setComponentLoading(false)
@@ -86,15 +90,6 @@ const AllReservations = () => {
 		})
 	}, [reload])
 
-  const printOrder = () => {
-    const printableElements = document.getElementById('DownloadTable').innerHTML;
-    const orderHtml = '<html><head><title></title></head><body>' + printableElements + '</body></html>'
-    const oldPage = document.body.innerHTML;
-    document.body.innerHTML = orderHtml;
-    window.print();
-    document.body.innerHTML = oldPage
-}
-
 	const getReservationByTime = (date, startTime, endTime) => {
 		setComponentLoading(true)
 		console.log('getReservationByTime', date, startTime, endTime)
@@ -111,7 +106,7 @@ const AllReservations = () => {
 			console.log(reservedTable, "reservedTable")
 			var availableTables = allTables.filter(function(obj) { return reservedTable.indexOf(obj) === -1; });
 			console.log(availableTables, 'available table')
-			for (var i = 0; i < availableTables.length; i++){
+			for (let i = 0; i < availableTables.length; i++){
 				tableList.push({label: availableTables[i], value: availableTables[i]})
 			}
 			console.log(tableList, 'table list')
