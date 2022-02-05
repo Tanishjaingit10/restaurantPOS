@@ -38,6 +38,7 @@ const Tables = () => {
 	const [reload, setReload] = useState(false)
 	const [newTableAdded, setNewTableAdded] = useState(false)
 	const [showDeleteTable, setShowDeleteTable] = useState(false)
+	const [timeNow, setTimeNow] = useState(Date.now());
 
 	useEffect(() => {
     setComponentLoading(true)
@@ -61,6 +62,13 @@ const Tables = () => {
       setComponentLoading(false)
 		})
 	}, [reload])
+
+	useEffect(() => {
+	  const interval = setInterval(() => {
+		  setTimeNow(Date.now())
+	  }, 1000);
+	  return () => clearInterval(interval);
+	}, []);
 
 	const submitNewReservation = () => {
 		setComponentLoading(true)
@@ -386,7 +394,19 @@ const Tables = () => {
 										{
 											showDeleteTable ? <div className="-mb-10 -ml-1"><MdOutlineDelete onClick={() => {if (table.status === 'Free'){setConfirmDeleteTable(true); setDeleteTableId(table._id)}}} color={table.status !== 'Free' ?  '#faaf9a': theme.backgroundColor} size={25}/> </div> : null
 										}
-										<div style={ table.status !== 'Free' ? {backgroundColor: theme.backgroundColor, color: 'white' }: {borderColor: theme.backgroundColor, borderWidth: '1px', color: 'grey'}} className="py-5 m-5 rounded">
+										<div className="mx-5 text-red flex h-6 items-center justify-center">
+											{ table.status!=='Free' &&
+												<>
+													<i className="far fa-clock mr-1"/>
+													<div className="font-semibold">
+														{timeNow-new Date(table.time).valueOf()>3600000 && `${Math.floor((timeNow-new Date(table.time).valueOf())/3600000).toString().padStart(2,'0')}:`}
+														{Math.floor((timeNow-new Date(table.time).valueOf())/60000%60).toString().padStart(2,'0')}:
+														{Math.floor((timeNow-new Date(table.time).valueOf())/1000%60).toString().padStart(2,'0')}
+													</div>
+												</>
+											}
+										</div>
+										<div className={`${table.status !== 'Free'?"text-white bg-lightred":"text-gray-500"} py-5 m-5 mt-0 rounded border border-red`}>
 											<Link to={{pathname:"/pos", state:table.number}} className="font-bold text-2xl p-8">{table.number}</Link>
 										</div>
 									</div>

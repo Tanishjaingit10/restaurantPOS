@@ -39,7 +39,7 @@ const generate_kot = (req, res) => {
             table_template_copy
                 .findOneAndUpdate(
                     { number: req?.body?.payment?.table },
-                    { status: "Unavailable" }
+                    { status: "Unavailable", time:Date.now() }
                 )
                 .then(() => {});
             if (data === null) {

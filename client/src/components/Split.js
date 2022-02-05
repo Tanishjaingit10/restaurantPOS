@@ -112,15 +112,21 @@ function Split() {
                                     index && "border-t-0"
                                 } border-2 font-semibold flex py-5 items-center border-gray-300 flex-shrink-0`}
                             >
+                                {item.quantity !== 0 && (
+                                    <div className="pl-3 text-lg">
+                                        {item.quantity}x
+                                    </div>
+                                )}
                                 <div className="flex flex-col w-2/3">
                                     <div className="flex mb-2 text-gray-700 text-lg">
                                         <div className="w-3/4 px-4">
-                                            {`${item.quantity}x ${item.foodItem}`}
+                                            {item.foodItem}
                                         </div>
                                         <div className="w-1/4 text-center">
                                             $
                                             {(
-                                                item.price * item.quantity
+                                                item.price -
+                                                (item.discount || 0)
                                             ).toFixed(2)}
                                         </div>
                                     </div>
