@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../../context/Theme";
-import Logo from "../../images/logo.jpeg";
+import Logo from "../.././assets/Images/logo.jpeg";
 
 const CustomNavBar = () => {
   const theme = useContext(ThemeContext);

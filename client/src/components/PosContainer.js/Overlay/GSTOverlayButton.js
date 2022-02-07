@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal } from "../Common/Modal";
+import { Modal } from "../../Common/Modal";
 
 function GSTOverlayButton({
     item,

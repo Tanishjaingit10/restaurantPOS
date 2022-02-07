@@ -2,9 +2,9 @@ import React, { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import signup from "../popup";
 import options from "../levels";
-import Logo from "../images/logo.jpeg";
+import Logo from ".././assets/Images/logo.jpeg";
 import Popup from "./Popup";
-import chefLogin from "../images/chefLogin.png";
+import chefLogin from ".././assets/Images/chefLogin.png";
 import { ThemeContext } from "../context/Theme";
 
 const SignUp = () => {

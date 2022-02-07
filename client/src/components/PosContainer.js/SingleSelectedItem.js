@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
+import ChooseVariantOverlayButton from "./Overlay/ChooseVariantOverlayButton";
 
 function SingleSelectedItem({ item, setSelectedItems }) {
     const [quantity, setQuantity] = useState(item.quantity);

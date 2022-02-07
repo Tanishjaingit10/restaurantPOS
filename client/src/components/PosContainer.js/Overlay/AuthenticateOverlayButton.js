@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import { NotificationContext } from "../../context/Notification";
-import SpinLoader from "../SpinLoader";
-import { Modal } from "../Common/Modal";
+import { NotificationContext } from "../../../context/Notification";
+import SpinLoader from "../../SpinLoader";
+import { Modal } from "../../Common/Modal";
 import axios from "axios";
 
 function AuthenticateOverlayButton({

@@ -36,10 +36,17 @@ const generate_kot = (req, res) => {
     order_template_copy
         .findOne({ order_id: req.body?.order_id })
         .then((data) => {
+            if (data.payment.status === Completed)
+                return res
+                    .status(400)
+                    .json({
+                        message:
+                            "This order is already paid. Please generate a new order",
+                    });
             table_template_copy
                 .findOneAndUpdate(
                     { number: req?.body?.payment?.table },
-                    { status: "Unavailable", time:Date.now() }
+                    { status: "Unavailable", time: Date.now() }
                 )
                 .then(() => {});
             if (data === null) {

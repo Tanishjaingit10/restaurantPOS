@@ -17,11 +17,16 @@ function PrintBillButton({ children, order_id, className }) {
         content: () => componentToPrint.current,
     });
 
-    const handleAfterOpen = () => {
+    const printTheBill = () => {
         setLoading(true);
         axios
             .get(`/app/orderById/${order_id}`)
-            .then((res) => setOrder(res.data[0]))
+            .then((res) => {
+                if (res?.data[0]?.payment?.status === "Completed") {
+                    setIsOpen(true);
+                    setOrder(res.data[0]);
+                } else notify("Please Complete The Payment First");
+            })
             .catch((err) => console.log(err))
             .finally(setLoading(false));
     };
@@ -35,21 +40,20 @@ function PrintBillButton({ children, order_id, className }) {
             <button
                 onClick={() =>
                     order_id
-                        ? setIsOpen(true)
+                        ? printTheBill(true)
                         : notify("Please Generate KOT First")
                 }
                 className={className}
             >
                 {children}
             </button>
+            {loading && <SpinLoader className="fixed top-1/2 left-1/2" />}
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                onAfterOpen={handleAfterOpen}
                 contentRef={(el) => (componentToPrint.current = el)}
                 className="p-2 flex flex-col w-96 items-center relative bg-white"
             >
-                {loading && <SpinLoader />}
                 <div className="text-2xl my-2">RESTAURANT</div>
                 <div className="border-2 border-dotted h-0 w-full border-gray-700" />
                 <div className="text-sm my-2 flex flex-col items-center">
@@ -82,7 +86,7 @@ function PrintBillButton({ children, order_id, className }) {
                 </div>
                 <div className="border-t border-dashed h-0 w-full border-gray-400" />
                 <table className="w-full mb-2">
-                    <tr className="font-normal grid grid-cols-6 my-1">
+                    <tr className="font-normal grid grid-cols-6 mt-1 pb-1 border-b border-dashed w-full border-gray-400">
                         <th className="font-normal col-span-3 text-left">
                             ITEMS
                         </th>
@@ -90,7 +94,6 @@ function PrintBillButton({ children, order_id, className }) {
                         <th className="font-normal text-right">PRICE</th>
                         <th className="font-normal text-right">TOTAL</th>
                     </tr>
-                    <div className="border-t border-dashed h-0 w-full border-gray-400" />
                     {order?.order?.map((item) => (
                         <tr key={item._id} className="text-sm grid grid-cols-6">
                             <td className="col-span-3 text-left">

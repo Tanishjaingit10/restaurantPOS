@@ -17,7 +17,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import {ThemeProvider} from "@material-ui/styles";
 import { FaChartBar, FaClipboardList, FaUser } from 'react-icons/fa';
 import {createTheme} from "@material-ui/core";
-import Loading from '../images/loading.gif'
+import Loading from '.././assets/Images/loading.gif'
 import { ThemeContext } from "../context/Theme";
 import { FiRefreshCcw } from 'react-icons/fi';
 

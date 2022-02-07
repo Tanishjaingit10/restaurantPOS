@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../../images/logo.jpeg";
+import Logo from "../.././assets/Images/logo.jpeg";
 const Receipt = () => {
   return (
     <div className="py-8 pb-16 px-16 bg-yellow h-screen">

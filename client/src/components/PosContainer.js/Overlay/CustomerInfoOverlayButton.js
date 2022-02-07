@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
-import { NotificationContext } from "../../context/Notification";
-import SpinLoader from "../SpinLoader";
-import { Modal } from "../Common/Modal";
+import { NotificationContext } from "../../../context/Notification";
+import SpinLoader from "../../SpinLoader";
+import { Modal } from "../../Common/Modal";
 import axios from "axios";
 
 function CustomerInfoOverlayButton({

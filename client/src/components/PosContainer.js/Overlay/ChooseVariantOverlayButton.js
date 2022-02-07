@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { deepClone, getNewId } from "../../Utils";
-import { Modal } from "../Common/Modal";
+import { deepClone, getNewId } from "../../../Utils";
+import { Modal } from "../../Common/Modal";
 
 function ChooseVariantOverlayButton({
     item,

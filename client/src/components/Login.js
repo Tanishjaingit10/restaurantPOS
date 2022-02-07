@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import options from "../levels";
-import Logo from "../images/logo.jpeg";
+import Logo from ".././assets/Images/logo.jpeg";
 import signin from "../signin";
 import Popup from "./Popup";
-import chefLogin from "../images/chefLogin.png";
+import chefLogin from ".././assets/Images/chefLogin.png";
 import { ThemeContext } from "../context/Theme";
 
 const Login = () => {

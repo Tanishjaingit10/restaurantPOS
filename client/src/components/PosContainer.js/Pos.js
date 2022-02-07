@@ -14,14 +14,14 @@ import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
 import { deepClone } from "../../Utils";
 import SpinLoader from "../SpinLoader";
-import AuthenticateOverlayButton from "./AuthenticateOverlayButton";
-import ChooseVariantOverlayButton from "./ChooseVariantOverlayButton";
-import CommentsOverlayButton from "./CommentsOverlayButton";
-import CustomerInfoOverlayButton from "./CustomerInfoOverlayButton";
-import DiscountOverlayButton from "./DiscountOverlayButton";
-import GSTOverlayButton from "./GSTOverlayButton";
+import AuthenticateOverlayButton from "./Overlay/AuthenticateOverlayButton";
+import ChooseVariantOverlayButton from "./Overlay/ChooseVariantOverlayButton";
+import CommentsOverlayButton from "./Overlay/CommentsOverlayButton";
+import CustomerInfoOverlayButton from "./Overlay/CustomerInfoOverlayButton";
+import DiscountOverlayButton from "./Overlay/DiscountOverlayButton";
+import GSTOverlayButton from "./Overlay/GSTOverlayButton";
 import SingleSelectedItem from "./SingleSelectedItem";
-import TipOverlayButton from "./TipOverlayButton";
+import TipOverlayButton from "./Overlay/TipOverlayButton";
 import { Modal } from "../Common/Modal";
 import PrintBillButton from "./PrintBillButton";
 
@@ -196,7 +196,10 @@ export default function Pos() {
                 .post(`/app/makePayment/${order_id}`, {
                     mode: chargeNoPayment ? "ChargeNoPayment" : paymentMode,
                 })
-                .then((res) => setPaymentDoneOverlayIsOpen(true))
+                .then((res) => {
+                    if (res.data?.message) notify(res.data.message);
+                    setPaymentDoneOverlayIsOpen(true);
+                })
                 .catch((err) =>
                     notify(err?.response?.message || "Payment Failed")
                 )
@@ -217,16 +220,7 @@ export default function Pos() {
                 price: item.price,
                 discount: item.discount,
                 quantity: item.quantity,
-                subtotal:
-                    item.finalVariant.reduce(
-                        (sum, variant) =>
-                            sum +
-                            (variant.isSelected
-                                ? variant.price * variant.quantity
-                                : 0),
-                        0
-                    ) +
-                    (item.price - (item.discount || 0)) * item.quantity,
+                subtotal: subTotal,
                 timeToCook:
                     parseInt(item.time.split(":")[0]) * 3600 +
                     parseInt(item.time.split(":")[1]) * 60 +
@@ -685,14 +679,12 @@ export default function Pos() {
                                     </div>
                                 </div>
                                 <div className="flex">
-                                    <button
-                                        onClick={() => {
-                                            setPaymentDoneOverlayIsOpen(false);
-                                        }}
+                                    <PrintBillButton
+                                        order_id={order_id}
                                         className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
                                     >
                                         Print Receipt
-                                    </button>
+                                    </PrintBillButton>
                                     <button
                                         onClick={() => {
                                             setPaymentDoneOverlayIsOpen(false);

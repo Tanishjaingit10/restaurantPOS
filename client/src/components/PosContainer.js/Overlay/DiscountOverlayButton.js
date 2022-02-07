@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import SpinLoader from "../SpinLoader";
-import { Modal } from "../Common/Modal";
+import SpinLoader from "../../SpinLoader";
+import { Modal } from "../../Common/Modal";
 
 function DiscountOverlayButton({
     item,
