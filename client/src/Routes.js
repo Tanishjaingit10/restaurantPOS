@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import TakeAttendance from "./components/Attendance.js/TakeAttendance";
 import ViewAttendance from "./components/Attendance.js/ViewAttendance";
 import Customers from "./components/Customers";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 import Kitchen from "./components/Kitchen";
 import Login from "./components/Login";
 import Menu from "./components/Menu";

@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../../context/Theme";
 import Logo from "../.././assets/Images/logo.jpeg";
+import { Link } from "@material-ui/core";
 
 const CustomNavBar = () => {
   const theme = useContext(ThemeContext);
@@ -12,9 +13,9 @@ const CustomNavBar = () => {
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-shrink md:w-1/3 justify-start md:justify-start text-white ml-0">
-          <a href="/dashboard">
+          <Link to="/dashboard">
             <img src={Logo} alt="Logo" className="w-16 h-14 ml-0" />
-          </a>
+          </Link>
         </div>
         <button
           style={{color: theme.backgroundColor}}

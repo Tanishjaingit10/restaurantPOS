@@ -36,7 +36,7 @@ const generate_kot = (req, res) => {
     order_template_copy
         .findOne({ order_id: req.body?.order_id })
         .then((data) => {
-            if (data.payment.status === Completed)
+            if (data?.payment?.status === Completed)
                 return res
                     .status(400)
                     .json({
