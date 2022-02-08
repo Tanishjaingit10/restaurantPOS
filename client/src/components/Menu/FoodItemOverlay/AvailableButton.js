@@ -1,12 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
 import TimePicker from "react-gradient-timepicker";
 import days from "../../.././days";
 import { Modal } from "../../Common/Modal";
 
+const allTime = "allTime";
+const custom = "custom";
 function AvailableButton({ state: parentState }) {
-    const allTime = "allTime";
-    const custom = "custom";
-
     const [isOpen, setIsOpen] = useState(false);
     const [availabilityType, setAvailabilityType] = useState(allTime);
     const [finalAvailable, setFinalAvailable] = useState([]);
@@ -31,7 +31,7 @@ function AvailableButton({ state: parentState }) {
                 id="Available"
                 className="p-3 flex items-center justify-between bg-lightred text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
             >
-                {availabilityType === "allTime" ? "All Time" : "Custom"}{" "}
+                {availabilityType === "allTime" ? "All Time" : "Custom"}
                 <span className="fas fa-chevron-down" />
             </button>
 
@@ -57,10 +57,11 @@ function AvailableButton({ state: parentState }) {
                                 }circle`}
                             />
                         </div>
-                        <div className="ml-10">
+                        <div className="ml-4">
                             {days.map((day) => (
                                 <div key={day.day}>
                                     <SingleDay
+                                        availType={availabilityType}
                                         finalAvailable={finalAvailable}
                                         day={day}
                                         setFinalAvailable={setFinalAvailable}
@@ -70,12 +71,12 @@ function AvailableButton({ state: parentState }) {
                         </div>
                     </div>
                     <button
-                        onClick={() => setAvailabilityType(custom)}
+                        onClick={() => setAvailabilityType(allTime)}
                         className="text-red flex items-center w-40"
                     >
                         <div
                             className={` far fa-${
-                                availabilityType === custom ? "dot-" : ""
+                                availabilityType === allTime ? "dot-" : ""
                             }circle`}
                         />
                         <div className="ml-10 font-bold text-gray-500">
@@ -96,17 +97,17 @@ function AvailableButton({ state: parentState }) {
     );
 }
 
-function SingleDay({ day, finalAvailable, setFinalAvailable }) {
+function SingleDay({ day, finalAvailable, setFinalAvailable, availType }) {
     const [available, setAvailable] = useState({
         day: day.day,
         startTime: "",
         endTime: "",
+        checked: false,
     });
 
     useEffect(() => {
         for (let avail of finalAvailable)
             if (avail.day === day.day) setAvailable(avail);
-        // eslint-disable-next-line
     }, []);
 
     const handleTimeChange = (name, value) => {
@@ -124,12 +125,28 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
             if (!found) prev.push(available);
             return prev;
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [available]);
 
     return (
         <div className="flex items-center mb-4">
-            <div className="w-40 font-bold text-gray-500">{day.day}</div>
+            <button
+                disabled={availType === allTime}
+                onClick={() =>
+                    setAvailable((e) => ({ ...e, checked: !e.checked }))
+                }
+                className="w-40 font-bold text-left relative text-gray-500"
+            >
+                {availType === custom && (
+                    <div
+                        className={`${
+                            available.checked
+                                ? "fas fa-check-square"
+                                : "far fa-square"
+                        } text-lightred absolute left-0 top-1/2 transform -translate-y-1/2`}
+                    />
+                )}
+                <div className="ml-8">{day.day}</div>
+            </button>
             <TimePicker
                 placeholder={available.startTime || "Start Time"}
                 className={`rounded p-2 w-52 ml-6 text-center placeholder-white ${

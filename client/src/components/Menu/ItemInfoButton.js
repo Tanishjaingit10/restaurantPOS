@@ -90,9 +90,8 @@ function ItemInfoButton({ item, children, ...rest }) {
                                                   >
                                                       <div className="w-28">
                                                           {day.day}
-                                                      </div>{" "}
-                                                      | {day.startTime} -{" "}
-                                                      {day.endTime}
+                                                      </div>
+                                                      {` | ${day.startTime} - ${day.endTime}`}
                                                   </div>
                                               ))}
                                 </div>

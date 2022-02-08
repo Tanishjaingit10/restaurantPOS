@@ -182,7 +182,7 @@ const Sales = () => {
 								customStyle={{ backgroundColor: theme.backgroundColor }}
 							/>
 							<CustomButton
-								title="Select Data Range"
+								title="Select Date Range"
 								customStyle={{ backgroundColor: theme.backgroundColor }}
 								onPress={() => {setSelectOrderFilter(true)}}
 							/>

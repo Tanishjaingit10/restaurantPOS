@@ -234,7 +234,7 @@ export default function Pos() {
                 tip,
                 mode: paymentMode,
                 orderType,
-                orderStatus: "Pending",
+                orderStatus: "Processing",
                 table,
             },
             comments,

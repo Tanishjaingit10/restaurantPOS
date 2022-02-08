@@ -22,6 +22,7 @@ const food_item_template = new mongoose.Schema({
                 day: String,
                 startTime: String,
                 endTime: String,
+                checked: Boolean
             },
         ],
     },

@@ -16,11 +16,12 @@ import { FiRefreshCcw } from "react-icons/fi";
 import DateFnsUtils from "@date-io/date-fns";
 import { ThemeProvider } from "@material-ui/styles";
 import { FaChartBar, FaClipboardList, FaUser } from "react-icons/fa";
-import { createTheme, Link } from "@material-ui/core";
+import { createTheme } from "@material-ui/core";
 import CustomChart from "../Common/CustomChart";
 import Loading from "../../assets/Images/loading.gif";
 import { ThemeContext } from "../../context/Theme";
 import StoreTimingButton from "./StoreTimingButton";
+import { Link } from "react-router-dom";
 
 ChartJS.register(
     CategoryScale,
@@ -670,13 +671,12 @@ const Dashboard = () => {
                                 </i>
                             </div>
                         </div>
-                        <a
-                            href="/orders"
+                        <Link
+                            to="/orders"
                             className="text-gray-500 font-semibold mb-4"
                         >
-                            {" "}
-                            View Detailed Reports{">"}{" "}
-                        </a>
+                            {"View Detailed Reports >"}
+                        </Link>
                         {orderReload || orderLoad ? <Loader /> : null}
                         <Bar options={options} data={orders} />
                     </CustomChart>
@@ -810,13 +810,12 @@ const Dashboard = () => {
                                 </i>
                             </div>
                         </div>
-                        <a
-                            href="/customers"
+                        <Link
+                            to="/customers"
                             className="text-gray-500 font-semibold mb-4"
                         >
-                            {" "}
-                            View Detailed Reports{">"}{" "}
-                        </a>
+                            {"View Detailed Reports > "}
+                        </Link>
                         {customerReload || customerLoad ? <Loader /> : null}
                         <Bar options={options} data={customers} />
                     </CustomChart>
@@ -952,13 +951,12 @@ const Dashboard = () => {
                                 </i>
                             </div>
                         </div>
-                        <a
-                            href="/reservations"
+                        <Link
+                            to="/reservations"
                             className="text-gray-500 font-semibold mb-4"
                         >
-                            {" "}
-                            View Detailed Reports{">"}{" "}
-                        </a>
+                            {"View Detailed Reports > "}
+                        </Link>
                         {reservationReload || reservationLoad ? (
                             <Loader />
                         ) : null}
@@ -966,7 +964,7 @@ const Dashboard = () => {
                     </CustomChart>
                 </div>
             </div>
-            <StoreTimingButton/>
+            <StoreTimingButton />
         </div>
     );
 };

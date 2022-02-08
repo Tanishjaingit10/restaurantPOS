@@ -28,14 +28,19 @@ function CategoryOverlayButton({ item, children, ...rest }) {
 
     const handleImageUpload = (e) => {
         const img = e.target.files[0];
-        setImageName(img?.name);
-        const reader = new FileReader();
-        reader.readAsDataURL(img);
-        reader.onload = () => {
-            if (reader.readyState === 2) {
-                setImage(reader.result);
-            }
-        };
+        if (!img) {
+            setImageName("");
+            setImage("");
+        } else {
+            setImageName(img?.name);
+            const reader = new FileReader();
+            reader.readAsDataURL(img);
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setImage(reader.result);
+                }
+            };
+        }
     };
 
     const handleSubmit = () => {
@@ -69,10 +74,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
 
     return (
         <>
-            <button
-                onClick={() => setIsOpen((prev) => !prev)}
-                {...rest}
-            >
+            <button onClick={() => setIsOpen((prev) => !prev)} {...rest}>
                 {children}
             </button>
 

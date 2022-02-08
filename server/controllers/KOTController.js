@@ -10,7 +10,6 @@ const Processing = "Processing";
 const isUpdated = "isUpdated";
 const ReadyToServe = "ReadyToServe";
 const Completed = "Completed";
-const Pending = "Pending";
 
 const areSame = (orderVar1, orderVar2) => {
     if (Object.keys(orderVar1).length !== Object.keys(orderVar2).length)
@@ -37,12 +36,10 @@ const generate_kot = (req, res) => {
         .findOne({ order_id: req.body?.order_id })
         .then((data) => {
             if (data?.payment?.status === Completed)
-                return res
-                    .status(400)
-                    .json({
-                        message:
-                            "This order is already paid. Please generate a new order",
-                    });
+                return res.status(400).json({
+                    message:
+                        "This order is already paid. Please generate a new order",
+                });
             table_template_copy
                 .findOneAndUpdate(
                     { number: req?.body?.payment?.table },
@@ -202,7 +199,7 @@ const generate_kot = (req, res) => {
                             }
                         });
                         if (newKotOrders.length) {
-                            req.body.payment.orderStatus = Pending;
+                            req.body.payment.orderStatus = Processing;
                             const newKOT = new kot_template_copy({
                                 ...oldOrderInfo,
                                 time: Date.now(),

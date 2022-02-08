@@ -69,7 +69,7 @@ function Split() {
     const calculateAmountDue = () => {
         const total = order?.payment?.total || 0;
         const done = partList.reduce((sum, item) => sum + item.amount || 0, 0);
-        const left = Math.max(0, total - done);
+        const left = total - done;
         return left;
     };
 
@@ -85,8 +85,12 @@ function Split() {
     };
 
     const handleProcess = () => {
-        if (amountDue || partList.some((item) => !item.paid))
-            notify("Please Clear The Due Amount");
+        if (amountDue || partList.some((item) => !item.paid)){
+            const msg = ["Please Clear The Due Amount."]
+            if(amountDue<0)msg.push(`Given amount is $${-amountDue} more than due amount.`)
+            else if(amountDue>0)msg.push(`Given amount is $${amountDue} less than due amount.`)
+            notify(msg)
+        }
         else {
             setLoading(true);
             axios

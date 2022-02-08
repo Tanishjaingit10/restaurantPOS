@@ -46,7 +46,7 @@ const order_template = new mongoose.Schema({
             mode: String,
             status: String, // Pending // Completed // Cancelled //
             orderType: String, // Dine In // Take Away //
-            orderStatus: String, // Pending // Completed // Cancelled //
+            orderStatus: String, // Processing // ReadyToServe // Completed // Cancelled //
             table: String,
         },
     },

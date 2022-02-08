@@ -11,6 +11,7 @@ const CustomChart = ({children, title, icon}) => {
       <div className="flex flex-row justify-between" >
         {children[0]}
       </div>
+      <div className="flex justify-end pr-4 m-2 p-2">{children[1]}</div>
       <div className="rounded-b-xl p-5">
         <div className="flex justify-end">
           {children[3]}

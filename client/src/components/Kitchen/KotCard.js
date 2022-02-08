@@ -34,24 +34,25 @@ function KotCard({ item, setKots }) {
     );
 
     const calcEstimatedTime = (itemsStatus) => {
-        setEstimatedTime(
-            item.order.reduce(
-                (max, item) =>
-                    Math.max(
-                        max,
-                        itemsStatus[item._id] === Processing
-                            ? item.timeToCook || 0
-                            : 0
-                    ),
-                0
-            )
+        const est = item.order.reduce(
+            (max, item) =>
+                Math.max(
+                    max,
+                    itemsStatus[item._id] === Processing
+                        ? item.timeToCook || 0
+                        : 0
+                ),
+            0
         );
+        if (est === 0) toggleOrderStatus(ReadyToServe);
+        setEstimatedTime(est);
     };
 
     const calcElapsedTime = () => {
-        setElapsedTime(
-            Math.floor((Date.now() - new Date(item.time).getTime()) / 1000)
+        const elapsedTime = Math.floor(
+            (Date.now() - new Date(item.time).getTime()) / 1000
         );
+        setElapsedTime(elapsedTime);
     };
 
     useEffect(() => {
@@ -246,7 +247,7 @@ function SingleItem({
     let deleteHistory = [];
     if (item?.deleted?.length) {
         let total =
-            item.quantity + item.deleted.reduce((sum, num) => sum + num,0);
+            item.quantity + item.deleted.reduce((sum, num) => sum + num, 0);
         item.deleted.forEach((num) => {
             deleteHistory.push(total);
             total -= num;

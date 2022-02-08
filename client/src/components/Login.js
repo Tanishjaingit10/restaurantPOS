@@ -119,7 +119,7 @@ const Login = () => {
                   style={{ color: theme.backgroundColor }}
                   className="text-base font-thin"
                 >
-                  {"  "}Remember Me
+                  Remember Me
                 </span>
               </div>
               <Link
@@ -143,7 +143,7 @@ const Login = () => {
           </div>
 
           <p className="text-center">
-            New User ?{" "}
+            New User ?
             <Link to="/" className="underline">
               Sign Up
             </Link>

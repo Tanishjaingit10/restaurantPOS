@@ -178,7 +178,7 @@ const SignUp = () => {
               </button>
             </div>
             <p className="text-center">
-              Already registered ?{" "}
+              {"Already registered ? "}
               <Link to="/login" className="underline">
                 Login
               </Link>

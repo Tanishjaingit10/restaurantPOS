@@ -1,7 +1,7 @@
 const order_template_copy = require('../models/order')
 
 const getCompletedOrders = async (request, response) => {
-    order_template_copy.find({'payment.orderStatus': 'Ready to Serve'}, (err, data) => {
+    order_template_copy.find({'payment.orderStatus': 'Completed'}, (err, data) => {
         if (!err)
             response.send(data);
         else
@@ -11,7 +11,7 @@ const getCompletedOrders = async (request, response) => {
 }
 
 const getCompletedOrderByDate = async (request, response) => {
-    order_template_copy.find({ 'date': { $gte: request.params.startDate, $lte: request.params.stopDate}, 'payment.orderStatus': 'Ready to Serve' }, (err, data) => {
+    order_template_copy.find({ 'date': { $gte: request.params.startDate, $lte: request.params.stopDate}, 'payment.orderStatus': 'Completed' }, (err, data) => {
         if (!err) {
             response.send(data);
         }
@@ -41,7 +41,7 @@ const getDashboardSales = async (request, response) => {
   var DineIn = [0, 0, 0, 0, 0, 0]
   var TakeAway = [0, 0, 0, 0, 0, 0]
   if (request.params.type == 'Take Away') {
-    order_template_copy.find({ 'payment.orderType': request.params.type, 'payment.orderStatus': 'Ready to Serve' }, (err, dbData) => {
+    order_template_copy.find({ 'payment.orderType': request.params.type, 'payment.orderStatus': 'Completed' }, (err, dbData) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
@@ -81,7 +81,7 @@ const getDashboardSales = async (request, response) => {
     });
   }
   else if (request.params.type == 'Dine In') {
-    order_template_copy.find({ 'payment.orderType': request.params.type, 'payment.orderStatus': 'Ready to Serve' }, (err, dbData) => {
+    order_template_copy.find({ 'payment.orderType': request.params.type, 'payment.orderStatus': 'Completed' }, (err, dbData) => {
       if (!err) {
         var data = [];
         for (var i = 0; i < dbData.length; i++) {
@@ -121,7 +121,7 @@ const getDashboardSales = async (request, response) => {
     });
   }
   else{
-    order_template_copy.find({'payment.orderStatus': 'Ready to Serve'}, (err, dbData) => {
+    order_template_copy.find({'payment.orderStatus': 'Completed'}, (err, dbData) => {
       if (!err) {
         // console.log(dbData)
         var data = [];

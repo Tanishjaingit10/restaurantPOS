@@ -21,7 +21,7 @@ function PaymentMethodOverlayButton({
     const [enteredAmount, setEnteredAmount] = useState(item.amount);
 
     const onModalOpen = () => {
-        setAmountString(item.amount.toFixed(2));
+        setAmountString(item.amount.toString());
         setEnteredAmount(item.amount);
     };
 
@@ -83,7 +83,11 @@ function PaymentMethodOverlayButton({
                 <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
                     <div className="text-xl">Amount Due</div>
                     <div className="text-3xl">
-                        ${(amountDue + item.amount - enteredAmount).toFixed(2)}
+                        $
+                        {Math.max(
+                            amountDue + item.amount - enteredAmount,
+                            0
+                        ).toFixed(2)}
                     </div>
                 </div>
                 <div className="w-full p-2 mb-1 bg-gray-200 flex justify-between text-sm font-semibold text-gray-600 rounded-md">
@@ -190,10 +194,9 @@ function PaymentMethodOverlayButton({
                             <div className="text-xl">Change Due</div>
                             <div className="text-3xl">
                                 $
-                                {(
-                                    amountDue +
-                                    item.amount -
-                                    enteredAmount
+                                {Math.max(
+                                    amountDue + item.amount - enteredAmount,
+                                    0
                                 ).toFixed(2)}
                             </div>
                         </div>

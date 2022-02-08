@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TimePicker from "react-gradient-timepicker";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
@@ -19,7 +18,7 @@ function StoreTimingButton() {
     ];
 
     const [isOpen, setIsOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [availability, setAvailability] = useState(alwaysOpen);
 
     return (
@@ -148,7 +147,13 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                 />
                                 {index !== 0 && (
                                     <button
-                                        onClick={()=>setAvailable(prev=>prev.filter(it=>it.key!==avail.key))}
+                                        onClick={() =>
+                                            setAvailable((prev) =>
+                                                prev.filter(
+                                                    (it) => it.key !== avail.key
+                                                )
+                                            )
+                                        }
                                         className="fas fa-times h-8 w-8 flex-shrink-0 ml-2 bg-lightred text-white rounded-md"
                                     />
                                 )}

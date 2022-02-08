@@ -158,7 +158,7 @@ const TakeAwayOrders = () => {
           </div>
 						<div className="flex flex-row items-center">
 							<CustomButton
-								title="Select Data Range"
+								title="Select Date Range"
 								customStyle={{ backgroundColor: theme.backgroundColor }}
 								onPress={() => {setSelectOrderFilter(true)}}
 							/>

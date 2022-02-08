@@ -57,10 +57,10 @@ const Orders = () => {
         var cancelledOrders = 0;
         
 				for (let i = 0; i < json.length; i++) {
-					if (json[i].payment.orderStatus.replace(/\s+/g, '').toLowerCase() === 'readytoserve') {
+					if (json[i].payment.orderStatus === 'Completed') {
             completedOrders += 1;
 					}
-					else if (json[i].payment.orderStatus === 'Processing') {
+					else if (json[i].payment.orderStatus === 'Processing' || json[i].payment.orderStatus === 'ReadyToServe') {
             pendingOrders += 1;
 					}
 					else if (json[i].payment.orderStatus === 'Cancelled') {
@@ -114,7 +114,35 @@ const Orders = () => {
 
 	const getOrderByStatus = (status) => {
 		setLoading(true)
-		if (status !== 'allOrders') {
+		if(status === 'Processing'){
+			fetch(`/app/orderByStatus/Processing`)
+			.then((res) => res.json())
+			.then((json) => {
+				if (json !== "undefined") {
+					setOrders(json);
+					setLoading(false)
+					setPageNumber(1)
+					setPageLimit(10)
+				}
+			})
+			.then(()=>fetch(`/app/orderByStatus/ReadyToServe`))
+			.then((res) => res.json())
+			.then((json) => {
+				if (json !== "undefined") {
+					setOrders(prev=>[...prev,...json]);
+					setLoading(false)
+					setPageNumber(1)
+					setPageLimit(10)
+				}
+			})
+			.catch((err) => {
+				setLoading(false);
+				console.log("error: ", err);
+				setPageNumber(1)
+				setPageLimit(10)
+			});
+		}
+		else if (status !== 'allOrders') {
 			fetch(`/app/orderByStatus/${status}`)
 			.then((res) => res.json())
 			.then((json) => {
@@ -204,7 +232,7 @@ const Orders = () => {
 								customStyle={{ backgroundColor: theme.backgroundColor }}
 							/>
 							<CustomButton
-								title="Select Data Range"
+								title="Select Date Range"
 								customStyle={{ backgroundColor: theme.backgroundColor }}
 								onPress={() => {setSelectOrderFilter(true)}}
 							/>
@@ -245,14 +273,14 @@ const Orders = () => {
 									<span className="text-red">Pending</span>
 									<input
 										type="radio"
-										value="Ready to Serve"
+										value="Completed"
 										name="orderStatus"
 										className="ml-5 mr-3"
 									/>
 									<span className="text-green">Completed</span>
 									<input
 										type="radio"
-										value="cancelled"
+										value="Cancelled"
 										name="orderStatus"
 										className="ml-5 mr-3"
 									/>

@@ -43,7 +43,7 @@ function VariantButton({ state: parentState }) {
                 id="itemVariant"
                 className="p-3 flex items-center justify-between bg-lightred text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
             >
-                <span>Variant ({finalVariant.length})</span>{" "}
+                <span>Variant ({finalVariant.length})</span>
                 <span className="fas fa-chevron-down" />
             </button>
 

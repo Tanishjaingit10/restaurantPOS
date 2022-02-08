@@ -132,7 +132,7 @@ const ViewAttendance = () => {
 						<h2 className="font-bold text-2xl text-gray-600">Attendance</h2>
 						<div className="flex flex-row items-center">
 							<CustomButton
-								title="Select Data Range"
+								title="Select Date Range"
 								customStyle={{ backgroundColor: theme.backgroundColor }}
 								onPress={() => {setSelectAttendanceFilter(true)}}
 							/>
