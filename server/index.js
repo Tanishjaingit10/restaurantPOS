@@ -6,14 +6,14 @@ dotenv.config({path: './config.env'});
 const routesUrls = require('./routes/registered_users')
 const cors = require('cors')
 const DB = process.env.DATABASE
-const multer = require('multer');
-const path = require('path');
+const PORT = 4000
+
 mongoose.connect(DB)
-.then(() => console.log('Connected to DB'))
+.then(() => console.log('Connected to Database'))
 .catch(err => console.log('DB connection error: ', err))
 
 app.use(express.json())
 app.use(cors())
 app.use('/app', routesUrls)
 
-app.listen(4000, ()=>console.log("server is up and running"))
+app.listen(PORT, ()=>console.log(`Server running at http://localhost:${PORT}`))

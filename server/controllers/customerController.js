@@ -34,12 +34,12 @@ const get_customer = async (request, response) => {
     customer_template_copy.findOne({ contact: request.params.id }, (err, data) => {
         if (!err) {
             if (data === null)
-                response.json({ message: 'Customer not found!' })
+                response.status(404).json({ message: 'Customer not found!' })
             else response.send(data);
         }
         else
         {
-            response.json({ message: 'Customer could not be shown!' })
+            response.status(500).json({ message: 'Customer could not be shown!' })
         }
 
     });
