@@ -85,7 +85,7 @@ function KotCard({ item, setKots }) {
     return (
         <div
             className={`${
-                late && status === Processing && "border-red text-white"
+                late && status === Processing && "border-red-500 text-white"
             } border-2 relative h-72 w-56 bg-white m-9 shadow flex flex-col`}
             key={item._id}
         >
@@ -95,7 +95,7 @@ function KotCard({ item, setKots }) {
                     className={`${
                         status === Processing
                             ? late
-                                ? "bg-red"
+                                ? "bg-red-500"
                                 : "bg-yellow-300"
                             : "bg-green text-white"
                     } w-1/2 border border-white h-full flex flex-col items-center justify-center`}
@@ -116,7 +116,7 @@ function KotCard({ item, setKots }) {
                     className={`${
                         status === Processing
                             ? late
-                                ? "bg-red"
+                                ? "bg-red-500"
                                 : "bg-yellow-300"
                             : "bg-green text-white"
                     } w-1/2 flex border-white flex-col shadow-md items-center justify-center border-2 h-full`}
@@ -130,7 +130,7 @@ function KotCard({ item, setKots }) {
             <div className="flex h-10">
                 <div
                     className={`${
-                        status === Processing && late ? "bg-red" : "bg-gray-200"
+                        status === Processing && late ? "bg-red-500" : "bg-gray-200"
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
                 >
                     <div className="text-xs">K.O.T</div>
@@ -142,7 +142,7 @@ function KotCard({ item, setKots }) {
                     className={`${
                         status === Processing
                             ? late
-                                ? "bg-red"
+                                ? "bg-red-500"
                                 : "bg-gray-200"
                             : "hidden"
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
@@ -159,7 +159,7 @@ function KotCard({ item, setKots }) {
                 </div>
                 <div
                     className={`${
-                        status === Processing && late ? "bg-red" : "bg-gray-200"
+                        status === Processing && late ? "bg-red-500" : "bg-gray-200"
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
                 >
                     <div className="text-xxs">
@@ -191,7 +191,7 @@ function KotCard({ item, setKots }) {
                         <div
                             key={item._id}
                             className={`${
-                                status === Processing && late && "text-red"
+                                status === Processing && late && "text-red-500"
                             } border-b-2`}
                         >
                             <SingleItem

@@ -42,7 +42,7 @@ function CategoryInfoButton({ category, children, ...rest }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     Category - {category.category}
                 </div>
                 <div className="w-2/3">
@@ -66,7 +66,7 @@ function CategoryInfoButton({ category, children, ...rest }) {
                         </div>
                         <div>
                             <img
-                                className="border border-red w-40 h-40"
+                                className="border border-red-500 w-40 h-40"
                                 src={category.image}
                                 alt=""
                             />
@@ -76,13 +76,13 @@ function CategoryInfoButton({ category, children, ...rest }) {
                 <div className="flex justify-center mt-6">
                     <button
                         onClick={() => setIsOpen(false)}
-                        className="rounded-lg p-3 w-40 font-medium m-2 bg-red text-white"
+                        className="rounded-lg p-3 w-40 font-medium m-2 bg-red-500 text-white"
                     >
                         Menu
                     </button>
                     <button
                         onClick={handleDeleteCategory}
-                        className="rounded-lg p-3 w-40 font-medium m-2 bg-red text-white"
+                        className="rounded-lg p-3 w-40 font-medium m-2 bg-red-500 text-white"
                     >
                         - Delete Category
                     </button>

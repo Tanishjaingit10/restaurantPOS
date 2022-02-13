@@ -66,7 +66,7 @@ function CustomerInfoOverlayButton({
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     Customer Information
                 </div>
                 <form onSubmit={(e) => handleSubmit(e)}>
@@ -99,13 +99,13 @@ function CustomerInfoOverlayButton({
                         <select
                             id="table"
                             name="table"
-                            className="border items-center px-4 flex text-white bg-lightred w-80 rounded-md h-12"
+                            className="border items-center px-4 flex text-white bg-red-400 w-80 rounded-md h-12"
                             onChange={(e) => setTable(e.target.value)}
                             value={table}
                         >
                             {/* <option
                                 value={currentTable}
-                                className="bg-lightred"
+                                className="bg-red-400"
                             >
                                 Table: {currentTable}
                             </option> */}
@@ -115,7 +115,7 @@ function CustomerInfoOverlayButton({
                                     <option
                                         key={table._id}
                                         value={table.number}
-                                        className="bg-lightred"
+                                        className="bg-red-400"
                                     >
                                         Table: {table.number}
                                     </option>
@@ -125,7 +125,7 @@ function CustomerInfoOverlayButton({
                     <div className="flex justify-center mb-4">
                         <button
                             type="submit"
-                            className="bg-red p-2 text-white font-semibold px-10 rounded-md"
+                            className="bg-red-500 p-2 text-white font-semibold px-10 rounded-md"
                         >
                             Continue
                         </button>

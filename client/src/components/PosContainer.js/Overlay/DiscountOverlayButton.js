@@ -41,14 +41,14 @@ function DiscountOverlayButton({
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-10 text-red font-semibold">
+                <div className="text-center text-3xl mb-10 text-red-500 font-semibold">
                     Discount
                 </div>
                 <div className="mb-10 space-y-8">
                     <div className="flex justify-between w-96">
                         <button
                             onClick={() => setType(percentage)}
-                            className="text-red text-lg font-semibold"
+                            className="text-red-500 text-lg font-semibold"
                         >
                             <span
                                 className={`mr-3 far fa-${
@@ -59,7 +59,7 @@ function DiscountOverlayButton({
                         </button>
                         <button
                             onClick={() => setType(fixed)}
-                            className="text-red text-lg font-semibold"
+                            className="text-red-500 text-lg font-semibold"
                         >
                             <span
                                 className={`mr-3 far fa-${
@@ -94,7 +94,7 @@ function DiscountOverlayButton({
                 <div className="flex justify-center mb-4">
                     <button
                         onClick={handleSubmit}
-                        className="bg-red p-2 text-white font-semibold px-10 rounded-md"
+                        className="bg-red-500 p-2 text-white font-semibold px-10 rounded-md"
                     >
                         Done
                     </button>

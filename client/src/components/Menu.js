@@ -78,7 +78,7 @@ const Menu = () => {
                         <div>
                             <button
                                 onClick={handleRefresh}
-                                className="leading-4 bg-red mr-6 p-4 text-white rounded-md"
+                                className="leading-4 bg-red-500 mr-6 p-4 text-white rounded-md"
                                 style={{
                                     backgroundColor: theme.backgroundColor,
                                 }}
@@ -107,7 +107,7 @@ const Menu = () => {
                                 onClick={() =>
                                     setDeleteCategory((prev) => !prev)
                                 }
-                                className="mr-6 p-4 text-white rounded-md leading-4 bg-red"
+                                className="mr-6 p-4 text-white rounded-md leading-4 bg-red-500"
                             >
                                 - Delete Category
                             </button>
@@ -126,7 +126,7 @@ const Menu = () => {
                                         onClick={() =>
                                             handleDeleteCategory(item)
                                         }
-                                        className={`far fa-trash-alt h-4 m-1 text-red ${
+                                        className={`far fa-trash-alt h-4 m-1 text-red-500 ${
                                             deleteCategory || "hidden"
                                         }`}
                                     />
@@ -155,7 +155,7 @@ const Menu = () => {
                                                 onClick={() =>
                                                     handleDeleteFoodItem(item)
                                                 }
-                                                className={`far fa-trash-alt mt-2 p-1 pl-0 h-6 text-red ${
+                                                className={`far fa-trash-alt mt-2 p-1 pl-0 h-6 text-red-500 ${
                                                     deleteFoodItem || "hidden"
                                                 }`}
                                             />
@@ -213,7 +213,7 @@ const Menu = () => {
                                                 onClick={() =>
                                                     handleDeleteFoodItem(item)
                                                 }
-                                                className={`far fa-trash-alt mt-2 p-1 pl-0 h-6 text-red ${
+                                                className={`far fa-trash-alt mt-2 p-1 pl-0 h-6 text-red-500 ${
                                                     deleteFoodItem || "hidden"
                                                 }`}
                                             />

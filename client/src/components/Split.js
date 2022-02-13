@@ -160,7 +160,7 @@ function Split() {
                     </div>
                 </div>
                 <div className="mt-auto py-8 flex items-center">
-                    <div className="bg-lightred text-white w-full text-lg p-8 h-72">
+                    <div className="bg-red-400 text-white w-full text-lg p-8 h-72">
                         <div className="flex justify-between p-2">
                             <div>Subtotal</div>
                             <div>
@@ -198,7 +198,7 @@ function Split() {
             </div>
             <div className="h-full flex flex-col w-7/12 p-10">
                 <div className="m-4 px-6 flex items-center justify-between">
-                    <div className="text-2xl font-bold text-red">
+                    <div className="text-2xl font-bold text-red-500">
                         Split Payment Into
                     </div>
                     <div className="flex">
@@ -238,7 +238,7 @@ function Split() {
                 <div className="h-32 my-10 flex items-center justify-center">
                     <button
                         onClick={handleProcess}
-                        className="bg-red rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white"
+                        className="bg-red-500 rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white"
                     >
                         Process
                     </button>
@@ -251,7 +251,7 @@ function Split() {
                             onClick={() => setPaymentDoneOverlayIsOpen(false)}
                             className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                         />
-                        <div className="text-center text-3xl m-3 text-red font-semibold">
+                        <div className="text-center text-3xl m-3 text-red-500 font-semibold">
                             Payment Completed
                         </div>
                         <div className="flex gap-8">
@@ -271,7 +271,7 @@ function Split() {
                         <div className="flex">
                             <PrintBillButton
                                 order_id={order?.order_id}
-                                className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                                className="rounded-lg py-2 my-1 w-36 font-medium bg-red-500 text-white"
                             >
                                 Print Receipt
                             </PrintBillButton>
@@ -279,7 +279,7 @@ function Split() {
                                 onClick={() => {
                                     setPaymentDoneOverlayIsOpen(false);
                                 }}
-                                className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red text-white"
+                                className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red-500 text-white"
                             >
                                 Email Receipt
                             </button>
@@ -287,7 +287,7 @@ function Split() {
                                 onClick={() => {
                                     setPaymentDoneOverlayIsOpen(false);
                                 }}
-                                className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                                className="rounded-lg py-2 my-1 w-36 font-medium bg-red-500 text-white"
                             >
                                 Text Receipt
                             </button>

@@ -88,7 +88,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     {item ? "Edit" : "Add"} Category
                 </div>
                 <div className="w-2/3">
@@ -119,7 +119,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                             </div>
                             <div className="m-4">
                                 <label
-                                    className="rounded-lg px-6 p-3 font-medium bg-red text-white"
+                                    className="rounded-lg px-6 p-3 font-medium bg-red-500 text-white"
                                     htmlFor="image"
                                 >
                                     Choose&nbsp;File
@@ -135,7 +135,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                         </div>
                         <div>
                             <img
-                                className="border border-red w-40 h-40"
+                                className="border border-red-500 w-40 h-40"
                                 src={image}
                                 alt=""
                             />
@@ -144,7 +144,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                     <div className="flex justify-center mt-6">
                         <button
                             onClick={handleSubmit}
-                            className="rounded-lg p-3 w-40 font-medium m-4 bg-red text-white"
+                            className="rounded-lg p-3 w-40 font-medium m-4 bg-red-500 text-white"
                         >
                             Done
                         </button>

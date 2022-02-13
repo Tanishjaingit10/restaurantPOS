@@ -44,7 +44,7 @@ function ItemInfoButton({ item, children, ...rest }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     Food Item - {item.foodItem}
                 </div>
                 <div className="w-full h-full flex flex-col justify-between">
@@ -154,13 +154,13 @@ function ItemInfoButton({ item, children, ...rest }) {
                     <div className="flex justify-end mt-6">
                         <button
                             onClick={() => setIsOpen(false)}
-                            className="rounded-lg p-2 w-40 font-medium mx-2 bg-red text-white"
+                            className="rounded-lg p-2 w-40 font-medium mx-2 bg-red-500 text-white"
                         >
                             Menu
                         </button>
                         <button
                             onClick={handleDelete}
-                            className="rounded-lg p-2 w-40 font-medium mx-2 bg-red text-white"
+                            className="rounded-lg p-2 w-40 font-medium mx-2 bg-red-500 text-white"
                         >
                             - Delete Food Item
                         </button>

@@ -23,7 +23,7 @@ function SingleInput({ item, amountDue, setPartList }) {
         <div className="flex justify-center my-3">
             <select
                 onChange={(e) => setMethod(e.target.value)}
-                className="p-3 w-1/4 mx-2 bg-lightred text-white rounded-md"
+                className="p-3 w-1/4 mx-2 bg-red-400 text-white rounded-md"
                 value={method}
             >
                 <option value="cash">Cash</option>
@@ -45,15 +45,15 @@ function SingleInput({ item, amountDue, setPartList }) {
                 setAmount={setAmount}
                 onClick={() => setPaid(true)}
                 className={`${
-                    paid ? "bg-fadered" : "bg-red"
-                } rounded-lg p-2 my-1 mx-2 w-40 font-medium bg-red text-white`}
+                    paid ? "bg-red-200" : "bg-red-500"
+                } rounded-lg p-2 my-1 mx-2 w-40 font-medium bg-red-500 text-white`}
             >
                 Charge
             </PaymentMethodOverlayButton>
             <button
                 onClick={() => setPaid(false)}
                 className={`${
-                    paid ? "bg-red" : "bg-fadered"
+                    paid ? "bg-red-500" : "bg-red-200"
                 } rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white`}
             >
                 Void

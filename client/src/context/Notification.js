@@ -52,7 +52,7 @@ const SingleNotification = ({ item, setNotifications }) => {
                 onClick={deleteNotification}
                 className="fas fa-times absolute text-black top-0 right-0 p-5 pt-4 rounded-lg"
             />
-            <div className="text-red text-center">
+            <div className="text-red-500 text-center">
                 {typeof (item.message) === "string"
                     ? item.message
                     : <div>{item.message.map((mes, index) => (

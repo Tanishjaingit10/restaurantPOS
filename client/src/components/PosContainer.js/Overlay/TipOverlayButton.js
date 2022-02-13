@@ -26,7 +26,7 @@ function TipOverlayButton({ tip, setTip, children, ...rest }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-10 text-red font-semibold">
+                <div className="text-center text-3xl mb-10 text-red-500 font-semibold">
                     Tip
                 </div>
                 <form form onSubmit={(e) => handleSubmit(e)}>
@@ -47,7 +47,7 @@ function TipOverlayButton({ tip, setTip, children, ...rest }) {
                     <div className="flex justify-center mb-4">
                         <button
                             type="submit"
-                            className="bg-red p-2 text-white font-semibold px-10 rounded-md"
+                            className="bg-red-500 p-2 text-white font-semibold px-10 rounded-md"
                         >
                             Done
                         </button>

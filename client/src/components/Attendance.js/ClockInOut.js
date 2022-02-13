@@ -138,7 +138,7 @@ const ClockInOut = () => {
       {isOpen && <Popup
         content={<>
 
-          <p className="pb-4 text-red font-bold">{msg}</p>
+          <p className="pb-4 text-red-500 font-bold">{msg}</p>
           <button className="bg-green px-10 py-2" onClick={onHome}>Ok</button>
         </>}
         handleClose={onHome}
@@ -147,7 +147,7 @@ const ClockInOut = () => {
             {isError && <Popup
                 content={<>
 
-                    <p className='pb-4 font-bold text-red'>{msg}</p>
+                    <p className='pb-4 font-bold text-red-500'>{msg}</p>
                     <button className="bg-green px-10 py-2" onClick={enterUser}>Try Again</button>
                 </>}
                 handleClose={enterUser}

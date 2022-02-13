@@ -9,7 +9,7 @@ const CustomNavBar = () => {
   return (
     <nav
       style={{ backgroundColor: theme.backgroundColor }}
-      className="bg-red px-1 mt-0 h-auto w-full top-0 text-2xl"
+      className="bg-red-500 px-1 mt-0 h-auto w-full top-0 text-2xl"
     >
       <div className="flex items-center justify-between">
         <div className="flex flex-shrink md:w-1/3 justify-start md:justify-start text-white ml-0">

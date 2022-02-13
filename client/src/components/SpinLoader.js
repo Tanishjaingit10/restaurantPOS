@@ -6,13 +6,13 @@ function SpinLoader({ className }) {
             <div className="h-0 w-0 relative">
                 <div className="p-2 absolute top-0 border left-0 transform -translate-y-1/2 -translate-x-1/2 rounded-full h-14 w-14 bg-white shadow-md">
                     <div
-                        className="h-full w-full rounded-full border-solid border-4 border-red animate-spin"
+                        className="h-full w-full rounded-full border-solid border-4 border-red-500 animate-spin"
                         style={{ borderTopColor: "transparent" }}
                     />
                 </div>
                 <div className="p-2 absolute top-0 left-0 transform -translate-y-1/2 -translate-x-1/2 rounded-full h-14 w-14 bg-white shadow-md">
                     <div
-                        className="h-full w-full rounded-full border-solid border-4 border-red animate-spin"
+                        className="h-full w-full rounded-full border-solid border-4 border-red-500 animate-spin"
                         style={{ borderTopColor: "transparent" }}
                     />
                 </div>

@@ -394,7 +394,7 @@ const Tables = () => {
 										{
 											showDeleteTable ? <div className="-mb-10 -ml-1"><MdOutlineDelete onClick={() => {if (table.status === 'Free'){setConfirmDeleteTable(true); setDeleteTableId(table._id)}}} color={table.status !== 'Free' ?  '#faaf9a': theme.backgroundColor} size={25}/> </div> : null
 										}
-										<div className="mx-5 text-red flex h-6 items-center justify-center">
+										<div className="mx-5 text-red-500 flex h-6 items-center justify-center">
 											{ table.status!=='Free' &&
 												<>
 													<i className="far fa-clock mr-1"/>
@@ -406,7 +406,7 @@ const Tables = () => {
 												</>
 											}
 										</div>
-										<div className={`${table.status !== 'Free'?"text-white bg-lightred":"text-gray-500"} py-5 m-5 mt-0 rounded border border-red`}>
+										<div className={`${table.status !== 'Free'?"text-white bg-red-400":"text-gray-500"} py-5 m-5 mt-0 rounded border border-red-500`}>
 											<Link to={{pathname:"/pos", state:table.number}} className="font-bold text-2xl p-8">{table.number}</Link>
 										</div>
 									</div>

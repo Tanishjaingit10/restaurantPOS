@@ -41,7 +41,7 @@ function VariantButton({ state: parentState }) {
             <button
                 onClick={() => setIsOpen((prev) => !prev)}
                 id="itemVariant"
-                className="p-3 flex items-center justify-between bg-lightred text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
+                className="p-3 flex items-center justify-between bg-red-400 text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
             >
                 <span>Variant ({finalVariant.length})</span>
                 <span className="fas fa-chevron-down" />
@@ -56,7 +56,7 @@ function VariantButton({ state: parentState }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     Variant
                 </div>
                 <div className="w-full">
@@ -78,7 +78,7 @@ function VariantButton({ state: parentState }) {
                         </button>
                         <button
                             onClick={handleSubmit}
-                            className="m-3 rounded-lg p-3 px-10 font-medium bg-red text-white"
+                            className="m-3 rounded-lg p-3 px-10 font-medium bg-red-500 text-white"
                         >
                             Done
                         </button>
@@ -139,7 +139,7 @@ function SingleVariant({ setFinalVariant, item }) {
             <button
                 onClick={handleDelete}
                 type="submit"
-                className="m-3 rounded-lg p-3 px-10 font-medium bg-red text-white"
+                className="m-3 rounded-lg p-3 px-10 font-medium bg-red-500 text-white"
             >
                 Delete
             </button>

@@ -113,7 +113,7 @@ const OrderDetailComponent = ({orderDetails, setShowOrderDetails, setShowComment
           </div>
         </div>
         </> : 
-        <div className="flex justify-center align-center text-xl text-red-600 h-full my-auto">
+        <div className="flex justify-center align-center text-xl text-red-500-600 h-full my-auto">
           <div>
             Data could not be retrieved
           </div>

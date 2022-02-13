@@ -39,7 +39,7 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                             return prev.filter((it) => it !== item);
                         })
                     }
-                    className="fas fa-times-circle text-xl text-red p-2"
+                    className="fas fa-times-circle text-xl text-red-500 p-2"
                 />
                 <ChooseVariantOverlayButton
                     item={item}
@@ -47,7 +47,7 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                     className="flex my-2 flex-col justify-center"
                 >
                     <div className="flex-1">{item.foodItem}</div>
-                    <div className="flex-1 text-xxs text-blue font-bold">
+                    <div className="flex-1 text-xxs text-blue-800 font-bold">
                         {item.finalVariant.map((variant) => {
                             if (variant.isSelected && variant.quantity)
                                 return `${variant.quantity}x With ${variant.variant} ($${variant.price})`;

@@ -66,7 +66,7 @@ const Kitchen = () => {
                     </p>
                     <button
                         onClick={handleRefresh}
-                        className="bg-red mr-6 p-4 leading-4 text-white rounded-md"
+                        className="bg-red-500 mr-6 p-4 leading-4 text-white rounded-md"
                         style={{ backgroundColor: theme.backgroundColor }}
                     >
                         <div

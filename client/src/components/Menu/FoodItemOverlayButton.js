@@ -105,7 +105,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl m-3 text-red font-semibold">
+                <div className="text-center text-3xl m-3 text-red-500 font-semibold">
                     {item ? "Edit" : "Add"} Food Item
                 </div>
                 <div className="flex w-full justify-between">
@@ -177,7 +177,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                         <label htmlFor="category">Category</label>
                         <select
                             name="category"
-                            className="p-3 bg-lightred text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
+                            className="p-3 bg-red-400 text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
                             onChange={(e) => setCategory(e.target.value)}
                             value={category}
                         >
@@ -188,7 +188,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                             {categories.map((option) => (
                                 <option
                                     value={option.value}
-                                    className="bg-lightred"
+                                    className="bg-red-400"
                                     key={option._id}
                                 >
                                     {option.category}
@@ -202,7 +202,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                             <div className="flex items-center">
                                 <button
                                     onClick={() => {setFoodType(nonVeg)}}
-                                    className="py-2 flex-1 flex text-red items-center mr-3"
+                                    className="py-2 flex-1 flex text-red-500 items-center mr-3"
                                 >
                                     <span
                                         className={`far fa-${
@@ -243,7 +243,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                 <div className="flex justify-center mt-2">
                     <button
                         onClick={handleSubmit}
-                        className="rounded-lg p-3 w-40 font-medium m-4 bg-red text-white"
+                        className="rounded-lg p-3 w-40 font-medium m-4 bg-red-500 text-white"
                     >
                         Done
                     </button>

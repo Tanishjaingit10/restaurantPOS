@@ -2,10 +2,28 @@ import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import options from "../levels";
 import Logo from ".././assets/Images/logo.jpeg";
-import signin from "../signin";
 import Popup from "./Popup";
 import chefLogin from ".././assets/Images/chefLogin.png";
 import { ThemeContext } from "../context/Theme";
+
+let signin = [
+  {
+      id:401,
+      title: "Invalid credentials"
+  },
+  {
+      id:402,
+      title: "Please fill all the details"
+  },
+  {
+      id:404,
+      title: "Login unsuccessful"
+  },
+  {
+      id: 500,
+      title: "Unable to Load Server"
+  }
+]
 
 const Login = () => {
   const history = useHistory();
@@ -154,7 +172,7 @@ const Login = () => {
         <Popup
           content={
             <>
-              <p className="pb-4 text-red font-bold">{msg}</p>
+              <p className="pb-4 text-red-500 font-bold">{msg}</p>
               <button className="bg-green px-10 py-2" onClick={loginUser}>
                 Try Again
               </button>

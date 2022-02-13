@@ -190,7 +190,7 @@ const SignUp = () => {
         <Popup
           content={
             <>
-              <p className="pb-4 text-red font-bold">{msg}</p>
+              <p className="pb-4 text-red-500 font-bold">{msg}</p>
               <button className="bg-green px-10 py-2" onClick={registerUser}>
                 Try Again
               </button>

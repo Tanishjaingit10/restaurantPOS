@@ -29,7 +29,7 @@ function AvailableButton({ state: parentState }) {
             <button
                 onClick={() => setIsOpen((prev) => !prev)}
                 id="Available"
-                className="p-3 flex items-center justify-between bg-lightred text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
+                className="p-3 flex items-center justify-between bg-red-400 text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
             >
                 {availabilityType === "allTime" ? "All Time" : "Custom"}
                 <span className="fas fa-chevron-down" />
@@ -44,12 +44,12 @@ function AvailableButton({ state: parentState }) {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-6 text-red font-semibold">
+                <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     Available
                 </div>
                 <div className="flex flex-col">
                     <div className="flex mb-4">
-                        <div className="mt-2 text-red">
+                        <div className="mt-2 text-red-500">
                             <button
                                 onClick={() => setAvailabilityType(custom)}
                                 className={` far fa-${
@@ -72,7 +72,7 @@ function AvailableButton({ state: parentState }) {
                     </div>
                     <button
                         onClick={() => setAvailabilityType(allTime)}
-                        className="text-red flex items-center w-40"
+                        className="text-red-500 flex items-center w-40"
                     >
                         <div
                             className={` far fa-${
@@ -86,7 +86,7 @@ function AvailableButton({ state: parentState }) {
                     <div className="flex justify-center">
                         <button
                             onClick={handleSubmit}
-                            className="m-3 rounded-lg p-3 px-10 font-medium bg-red text-white"
+                            className="m-3 rounded-lg p-3 px-10 font-medium bg-red-500 text-white"
                         >
                             Done
                         </button>
@@ -142,7 +142,7 @@ function SingleDay({ day, finalAvailable, setFinalAvailable, availType }) {
                             available.checked
                                 ? "fas fa-check-square"
                                 : "far fa-square"
-                        } text-lightred absolute left-0 top-1/2 transform -translate-y-1/2`}
+                        } text-red-400 absolute left-0 top-1/2 transform -translate-y-1/2`}
                     />
                 )}
                 <div className="ml-8">{day.day}</div>
@@ -151,14 +151,14 @@ function SingleDay({ day, finalAvailable, setFinalAvailable, availType }) {
                 placeholder={available.startTime || "Start Time"}
                 className={`rounded p-2 w-52 ml-6 text-center placeholder-white ${
                     available.startTime && "font-bold"
-                } bg-lightred text-white`}
+                } bg-red-400 text-white`}
                 onSet={(val) => handleTimeChange("startTime", val.format12)}
             />
             <TimePicker
                 placeholder={available.endTime || "End Time"}
                 className={`rounded p-2 w-52 ml-6 text-center placeholder-white ${
                     available.endTime && "font-bold"
-                } bg-lightred text-white`}
+                } bg-red-400 text-white`}
                 onSet={(val) => handleTimeChange("endTime", val.format12)}
             />
         </div>

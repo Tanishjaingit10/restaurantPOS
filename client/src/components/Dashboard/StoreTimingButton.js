@@ -27,7 +27,7 @@ function StoreTimingButton() {
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="flex m-4 font-semibold mb-8"
             >
-                <div className="flex items-center text-red">
+                <div className="flex items-center text-red-500">
                     <i className="fas fa-clock" />
                     <div className="ml-2">Store Timing:</div>
                     <div className="mx-2 text-gray-500">{availability}</div>
@@ -45,10 +45,10 @@ function StoreTimingButton() {
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-2xl mb-6 text-red font-semibold">
+                <div className="text-center text-2xl mb-6 text-red-500 font-semibold">
                     Store Timing
                 </div>
-                <div className="flex flex-col text-red items-start gap-4 mr-12">
+                <div className="flex flex-col text-red-500 items-start gap-4 mr-12">
                     {availabilityType.map((avail) => (
                         <button
                             key={avail}
@@ -74,7 +74,7 @@ function StoreTimingButton() {
                                     />
                                 </div>
                             ))}
-                            <button className="px-8 py-1 mt-4 bg-red text-white rounded-md">
+                            <button className="px-8 py-1 mt-4 bg-red-500 text-white rounded-md">
                                 Done
                             </button>
                         </div>
@@ -126,7 +126,7 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                 placeholder={avail.startTime || "Opening"}
                                 className={`rounded p-1 w-32 ml-6 text-center placeholder-white ${
                                     avail.startTime && "font-bold"
-                                } bg-lightred text-white`}
+                                } bg-red-400 text-white`}
                                 onSet={(val) =>
                                     handleTimeChange("startTime", val.format12)
                                 }
@@ -135,7 +135,7 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                 placeholder={avail.endTime || "Closing"}
                                 className={`rounded p-1 w-32 ml-6 text-center placeholder-white ${
                                     avail.endTime && "font-bold"
-                                } bg-lightred text-white`}
+                                } bg-red-400 text-white`}
                                 onSet={(val) =>
                                     handleTimeChange("endTime", val.format12)
                                 }
@@ -143,7 +143,7 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                             <div className="w-20 flex">
                                 <button
                                     onClick={addHandler}
-                                    className="fas fa-plus h-8 w-8 flex-shrink-0 ml-3 bg-lightred text-white rounded-md"
+                                    className="fas fa-plus h-8 w-8 flex-shrink-0 ml-3 bg-red-400 text-white rounded-md"
                                 />
                                 {index !== 0 && (
                                     <button
@@ -154,7 +154,7 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                                 )
                                             )
                                         }
-                                        className="fas fa-times h-8 w-8 flex-shrink-0 ml-2 bg-lightred text-white rounded-md"
+                                        className="fas fa-times h-8 w-8 flex-shrink-0 ml-2 bg-red-400 text-white rounded-md"
                                     />
                                 )}
                             </div>

@@ -77,7 +77,7 @@ function PaymentMethodOverlayButton({
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl m-3 text-red font-semibold">
+                <div className="text-center text-3xl m-3 text-red-500 font-semibold">
                     {PaymentMethod}
                 </div>
                 <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
@@ -101,26 +101,26 @@ function PaymentMethodOverlayButton({
                         </div>
                         <button
                             onClick={() => setAmountString("")}
-                            className="fas fa-times-circle text-xl text-red p-2"
+                            className="fas fa-times-circle text-xl text-red-500 p-2"
                         />
                     </div>
                 </div>
                 <div className="grid grid-cols-3 gap-1 mb-3">
                     <button
                         onClick={handleExact}
-                        className="rounded-lg py-2 w-36 font-medium bg-lightred text-white"
+                        className="rounded-lg py-2 w-36 font-medium bg-red-400 text-white"
                     >
                         Exact
                     </button>
                     <button
                         onClick={() => quickEnter(10)}
-                        className="rounded-lg py-2 w-36 font-medium bg-lightred text-white"
+                        className="rounded-lg py-2 w-36 font-medium bg-red-400 text-white"
                     >
                         $10.00
                     </button>
                     <button
                         onClick={() => quickEnter(50)}
-                        className="rounded-lg py-2 w-36 font-medium bg-lightred text-white"
+                        className="rounded-lg py-2 w-36 font-medium bg-red-400 text-white"
                     >
                         $50.00
                     </button>
@@ -167,7 +167,7 @@ function PaymentMethodOverlayButton({
                 </div>
                 <button
                     onClick={() => setConfirmationIsOpen(true)}
-                    className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red text-white"
+                    className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red-500 text-white"
                 >
                     Continue
                 </button>
@@ -180,7 +180,7 @@ function PaymentMethodOverlayButton({
                         onClick={() => setConfirmationIsOpen(false)}
                         className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                     />
-                    <div className="text-center text-3xl m-3 text-red font-semibold">
+                    <div className="text-center text-3xl m-3 text-red-500 font-semibold">
                         {PaymentMethod}
                     </div>
                     <div className="flex gap-8">
@@ -207,7 +207,7 @@ function PaymentMethodOverlayButton({
                             setConfirmationIsOpen(false);
                             setIsOpen(false);
                         }}
-                        className="rounded-lg py-2 my-1 mx-2 px-8 font-medium bg-red text-white"
+                        className="rounded-lg py-2 my-1 mx-2 px-8 font-medium bg-red-500 text-white"
                     >
                         Complete Payment
                     </button>

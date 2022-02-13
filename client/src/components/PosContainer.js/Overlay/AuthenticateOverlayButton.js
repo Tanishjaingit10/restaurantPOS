@@ -46,7 +46,7 @@ function AuthenticateOverlayButton({
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="text-center text-3xl mb-10 text-red font-semibold">
+                <div className="text-center text-3xl mb-10 text-red-500 font-semibold">
                     {title}
                 </div>
                 <form onSubmit={(e)=>handleSubmit(e)}>
@@ -59,7 +59,7 @@ function AuthenticateOverlayButton({
                                 className="rounded-md border w-80 p-3"
                                 placeholder="Enter User ID"
                             />
-                            <div className="<h-3 w-3 text-sm fas fa-user text-red absolute right-4 top-1/2 transform -translate-y-1/2" />
+                            <div className="<h-3 w-3 text-sm fas fa-user text-red-500 absolute right-4 top-1/2 transform -translate-y-1/2" />
                         </div>
                         <div className="relative">
                             <input
@@ -69,11 +69,11 @@ function AuthenticateOverlayButton({
                                 className="rounded-md border w-80 p-3"
                                 placeholder="Password / Employee Code"
                             />
-                            <div className="<h-3 w-3 text-sm fas fa-key text-red absolute right-4 top-1/2 transform -translate-y-1/2" />
+                            <div className="<h-3 w-3 text-sm fas fa-key text-red-500 absolute right-4 top-1/2 transform -translate-y-1/2" />
                         </div>
                     </div>
                     <div className="flex justify-center mb-4">
-                        <button className="bg-red p-2 text-white font-semibold px-10 rounded-md">
+                        <button className="bg-red-500 p-2 text-white font-semibold px-10 rounded-md">
                             Continue
                         </button>
                     </div>

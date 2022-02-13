@@ -277,7 +277,7 @@ export default function Pos() {
                             <div
                                 className={`${
                                     categoryFilter === ""
-                                        ? "text-red border-red bg-opacity-90"
+                                        ? "text-red-500 border-red-500 bg-opacity-90"
                                         : "text-gray-600 border-black bg-opacity-80"
                                 } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
                             >
@@ -296,7 +296,7 @@ export default function Pos() {
                                 <div
                                     className={`${
                                         categoryFilter === item.category
-                                            ? "text-red border-red bg-opacity-90"
+                                            ? "text-red-500 border-red-500 bg-opacity-90"
                                             : "text-gray-600 border-black bg-opacity-80"
                                     } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
                                 >
@@ -322,7 +322,7 @@ export default function Pos() {
                                 <div
                                     className={`${
                                         categoryFilter === "uncategorized"
-                                            ? "text-red border-red bg-opacity-90"
+                                            ? "text-red-500 border-red-500 bg-opacity-90"
                                             : "text-gray-600 border-black bg-opacity-80"
                                     } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
                                 >
@@ -383,18 +383,18 @@ export default function Pos() {
                         <div
                             className={`border-2 font-bold mx-3 flex-1 p-2 ${
                                 orderType === "Dine In"
-                                    ? "text-white bg-red"
-                                    : "text-red bg-white"
-                            } rounded-md text-center border-red`}
+                                    ? "text-white bg-red-500"
+                                    : "text-red-500 bg-white"
+                            } rounded-md text-center border-red-500`}
                         >
                             Dine In
                         </div>
                         <div
                             className={`border-2 font-bold mx-3 flex-1 p-2 ${
                                 orderType === "Take Away"
-                                    ? "text-white bg-red"
-                                    : "text-red bg-white"
-                            } rounded-md text-center border-red`}
+                                    ? "text-white bg-red-500"
+                                    : "text-red-500 bg-white"
+                            } rounded-md text-center border-red-500`}
                         >
                             Take Away
                         </div>
@@ -402,7 +402,7 @@ export default function Pos() {
                     <div className="flex">
                         <Link
                             to="/tables"
-                            className="bg-red flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
+                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
                         >
                             <div className="h-4 w-4 fas fa-th-large" />
                             <div className="text-xs">{table || "Tables"}</div>
@@ -412,7 +412,7 @@ export default function Pos() {
                             setCustomer={setCustomer}
                             currentTable={table}
                             setCurrentTable={setTable}
-                            className="bg-red flex flex-col items-center justify-center text-white h-14 my-2 border-2 flex-1"
+                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 my-2 border-2 flex-1"
                         >
                             <div className="h-4 w-4 far fa-user" />
                             <div className="text-xs">Coustomer Information</div>
@@ -420,7 +420,7 @@ export default function Pos() {
                         <CommentsOverlayButton
                             comments={comments}
                             setComments={setComments}
-                            className="bg-red flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
+                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
                         >
                             <div className="h-4 w-4 far fa-sticky-note" />
                             <div className="text-xs">Comments</div>
@@ -537,7 +537,7 @@ export default function Pos() {
                             <div className="flex">
                                 <button
                                     onClick={handleSplit}
-                                    className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red"
+                                    className="h-10 mr-4 text-white items-center flex font-semibold rounded-md px-14 bg-red-500"
                                 >
                                     Split
                                 </button>
@@ -564,7 +564,7 @@ export default function Pos() {
                                 {`Total: $${total.toFixed(2)}`}
                             </div>
                         </div>
-                        <div className="h-14 flex items-center justify-between text-white bg-red">
+                        <div className="h-14 flex items-center justify-between text-white bg-red-500">
                             <button
                                 onClick={() => setPaymentMode("cash")}
                                 className="mx-4 flex items-center"
@@ -665,7 +665,7 @@ export default function Pos() {
                                     }
                                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                                 />
-                                <div className="text-center text-3xl m-3 text-red font-semibold">
+                                <div className="text-center text-3xl m-3 text-red-500 font-semibold">
                                     Payment Completed
                                 </div>
                                 <div className="flex gap-8">
@@ -681,7 +681,7 @@ export default function Pos() {
                                 <div className="flex">
                                     <PrintBillButton
                                         order_id={order_id}
-                                        className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                                        className="rounded-lg py-2 my-1 w-36 font-medium bg-red-500 text-white"
                                     >
                                         Print Receipt
                                     </PrintBillButton>
@@ -689,7 +689,7 @@ export default function Pos() {
                                         onClick={() => {
                                             setPaymentDoneOverlayIsOpen(false);
                                         }}
-                                        className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red text-white"
+                                        className="rounded-lg py-2 my-1 mx-2 w-36 font-medium bg-red-500 text-white"
                                     >
                                         Email Receipt
                                     </button>
@@ -697,7 +697,7 @@ export default function Pos() {
                                         onClick={() => {
                                             setPaymentDoneOverlayIsOpen(false);
                                         }}
-                                        className="rounded-lg py-2 my-1 w-36 font-medium bg-red text-white"
+                                        className="rounded-lg py-2 my-1 w-36 font-medium bg-red-500 text-white"
                                     >
                                         Text Receipt
                                     </button>
