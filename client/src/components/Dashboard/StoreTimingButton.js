@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import TimePicker from "react-gradient-timepicker";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
@@ -9,17 +11,44 @@ function StoreTimingButton() {
     const alwaysOpen = "Always open";
     const noHoursAvailable = "No hours available";
     const permanentlyClosed = "Permanently closed";
-    const selectedHours = "Open During Selected hours";
+    const openDuringselectedHours = "Open During Selected hours";
     const availabilityType = [
         alwaysOpen,
         noHoursAvailable,
         permanentlyClosed,
-        selectedHours,
+        openDuringselectedHours,
     ];
 
     const [isOpen, setIsOpen] = useState(false);
-    const [loading] = useState(false);
-    const [availability, setAvailability] = useState(alwaysOpen);
+    const [loading, setLoading] = useState(false);
+    const [availability, setAvailability] = useState();
+    const [selectedHours, setSelectedHours] = useState({});
+
+    const handleSubmit = (availability, selectedHours) => {
+        const dataToPost = {
+            timings: availability,
+        };
+        if (selectedHours) dataToPost.selectedHours = selectedHours;
+        console.log(selectedHours);
+        setLoading(true);
+        return axios
+            .post("/app/updateStoreInfo", dataToPost)
+            .then(() => {})
+            .catch((err) => {})
+            .finally(() => setLoading(false));
+    };
+
+    const handleChange = (avail) => {
+        setAvailability(avail);
+        handleSubmit(avail);
+    };
+
+    useEffect(() => {
+        axios.get("/app/getStoreInfo").then((res) => {
+            setAvailability(res.data.timings);
+            setSelectedHours(res.data.selectedHours);
+        });
+    }, []);
 
     return (
         <>
@@ -52,7 +81,7 @@ function StoreTimingButton() {
                     {availabilityType.map((avail) => (
                         <button
                             key={avail}
-                            onClick={() => setAvailability(avail)}
+                            onClick={() => handleChange(avail)}
                             className="text-lg font-semibold"
                         >
                             <span
@@ -63,18 +92,26 @@ function StoreTimingButton() {
                             {avail}
                         </button>
                     ))}
-                    {availability === selectedHours ? (
+                    {availability === openDuringselectedHours ? (
                         <div className="flex flex-col items-center gap-2">
                             {days.map((day) => (
                                 <div key={day.day}>
                                     <SingleDay
-                                        // finalAvailable={finalAvailable}
                                         day={day}
-                                        // setFinalAvailable={setFinalAvailable}
+                                        selectedHours={selectedHours}
+                                        setSelectedHours={setSelectedHours}
                                     />
                                 </div>
                             ))}
-                            <button className="px-8 py-1 mt-4 bg-red-500 text-white rounded-md">
+                            <button
+                                onClick={() =>
+                                    handleSubmit(availability, selectedHours)
+                                }
+                                className={`${
+                                    availability === openDuringselectedHours ||
+                                    "hidden"
+                                } px-8 py-1 mt-4 bg-red-500 text-white rounded-md`}
+                            >
                                 Done
                             </button>
                         </div>
@@ -89,25 +126,32 @@ function StoreTimingButton() {
 
 export default StoreTimingButton;
 
-function SingleDay({ day, finalAvailable, setFinalAvailable }) {
-    const [available, setAvailable] = useState([
-        {
-            day: day.day,
-            startTime: "",
-            endTime: "",
-            key: getNewId(),
-        },
-    ]);
+function SingleDay({ day, selectedHours, setSelectedHours }) {
+    const [isChecked, setIsChecked] = useState(
+        selectedHours[day.day]?.isChecked || false
+    );
+    const [hours, setHours] = useState(
+        selectedHours[day.day]?.hours || [
+            {
+                startTime: "",
+                endTime: "",
+                key: getNewId(),
+            },
+        ]
+    );
 
-    const handleTimeChange = (name, value) => {
-        setAvailable((prev) => ({ ...prev, [name]: value }));
+    const handleTimeChange = (name, value, key) => {
+        setHours((prev) => {
+            const item = prev.find((it) => it.key === key);
+            item[name] = value;
+            return [...prev];
+        });
     };
 
     const addHandler = () => {
-        setAvailable((prev) => [
+        setHours((prev) => [
             ...prev,
             {
-                day: day.day,
                 startTime: "",
                 endTime: "",
                 key: getNewId(),
@@ -115,12 +159,41 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
         ]);
     };
 
+    const handleRemove = (key) => {
+        setHours((prev) => prev.filter((it) => it.key !== key));
+    };
+
+    const handleCheckmark = (updated) => {
+        setIsChecked(updated);
+        setSelectedHours((prev) => ({
+            ...prev,
+            [day.day]: { ...prev[day.day], isChecked: updated },
+        }));
+    };
+
+    useEffect(() => {
+        setSelectedHours((prev) => ({
+            ...prev,
+            [day.day]: { ...prev[day.day], hours },
+        }));
+    }, [hours]);
+
     return (
         <div className="flex items-center">
             <div className="flex">
-                <div className="w-24 font-bold">{day.day}</div>
+                <button
+                    onClick={() => handleCheckmark(!isChecked)}
+                    className="w-32 flex justify-start items-center font-bold"
+                >
+                    <div
+                        className={`${
+                            isChecked ? "fas fa-check-square" : "far fa-square"
+                        } text-red-400 mr-3`}
+                    />
+                    {day.day}
+                </button>
                 <div className="flex flex-col gap-2">
-                    {available.map((avail, index) => (
+                    {hours.map((avail, index) => (
                         <div key={avail.key} className="flex">
                             <TimePicker
                                 placeholder={avail.startTime || "Opening"}
@@ -128,7 +201,11 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                     avail.startTime && "font-bold"
                                 } bg-red-400 text-white`}
                                 onSet={(val) =>
-                                    handleTimeChange("startTime", val.format12)
+                                    handleTimeChange(
+                                        "startTime",
+                                        val.format12,
+                                        avail.key
+                                    )
                                 }
                             />
                             <TimePicker
@@ -137,7 +214,11 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                     avail.endTime && "font-bold"
                                 } bg-red-400 text-white`}
                                 onSet={(val) =>
-                                    handleTimeChange("endTime", val.format12)
+                                    handleTimeChange(
+                                        "endTime",
+                                        val.format12,
+                                        avail.key
+                                    )
                                 }
                             />
                             <div className="w-20 flex">
@@ -145,15 +226,9 @@ function SingleDay({ day, finalAvailable, setFinalAvailable }) {
                                     onClick={addHandler}
                                     className="fas fa-plus h-8 w-8 flex-shrink-0 ml-3 bg-red-400 text-white rounded-md"
                                 />
-                                {index !== 0 && (
+                                {hours.length > 1 && (
                                     <button
-                                        onClick={() =>
-                                            setAvailable((prev) =>
-                                                prev.filter(
-                                                    (it) => it.key !== avail.key
-                                                )
-                                            )
-                                        }
+                                        onClick={() => handleRemove(avail.key)}
                                         className="fas fa-times h-8 w-8 flex-shrink-0 ml-2 bg-red-400 text-white rounded-md"
                                     />
                                 )}

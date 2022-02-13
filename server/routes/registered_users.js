@@ -13,6 +13,7 @@ const attendanceController = require('../controllers/attendanceController')
 const salesController = require('../controllers/salesController')
 const kotController = require('../controllers/KOTController')
 const paymentController = require('../controllers/paymentController');
+const storeInfoController = require('../controllers/storeInfoController');
 
 
 router.get('/attendance', attendanceController.get_attendance)
@@ -65,6 +66,9 @@ router.delete('/removeReservation/:id', reservationController.remove_reservation
 router.get('/getDashboardSales/:type/:startDate/:stopDate', salesController.getDashboardSales)
 router.get('/getCompletedOrders', salesController.getCompletedOrders)
 router.get('/getCompletedOrderByDate/:startDate/:stopDate', salesController.getCompletedOrderByDate)
+
+router.get('/getStoreInfo',storeInfoController.getStoreInfo)
+router.post('/updateStoreInfo',storeInfoController.updateStoreInfo)
 
 router.get('/table', tableController.all_table)
 router.post('/addTable', tableController.add_table)
