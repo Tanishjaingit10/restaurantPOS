@@ -81,4 +81,19 @@ router.post('/signin', userController.login)
 router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
 
+router.post('/teststripe', (req,res)=>{
+    data = {
+        object_id:req.body.data.object.id,
+        payment_method:req.body.data.object.payment_method,
+        payment_intent:req.body.data.object.payment_intent,
+        event_type:req.body.type
+    }
+    console.log(data)
+    // console.log(req.body.data.object.id+" => "+req.body.data.object.payment_method+" => "+req.body.type);
+    return res.json("ok")
+})
+router.get('/getPaymentStatus', (req,res)=>{
+    return res.json("ok")
+})
+
 module.exports = router;

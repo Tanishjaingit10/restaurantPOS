@@ -45,8 +45,10 @@ function StoreTimingButton() {
 
     useEffect(() => {
         axios.get("/app/getStoreInfo").then((res) => {
-            setAvailability(res.data.timings);
-            setSelectedHours(res.data.selectedHours);
+            if(res?.data?.timings)
+                setAvailability(res.data.timings);
+            if(res?.data?.selectedHours)
+                setSelectedHours(res.data.selectedHours);
         });
     }, []);
 
