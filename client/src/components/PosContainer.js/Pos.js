@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useContext, useEffect } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useState } from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
     nonVegIconImageBase64,
     UncategorizedBgImageBase64,
@@ -29,7 +29,7 @@ export default function Pos() {
     const percentage = "percentage";
     const fixed = "fixed";
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const { categories, foodItems } = useContext(CategoryContext);
     const notify = useContext(NotificationContext);
@@ -179,11 +179,7 @@ export default function Pos() {
     };
 
     const handleSplit = () => {
-        if (order_id)
-            history.push({
-                pathname: "/split",
-                state: order_id,
-            });
+        if (order_id) navigate("/split", { state: order_id });
         else notify("Please Generate a KOT first");
     };
 
@@ -201,7 +197,7 @@ export default function Pos() {
                     setPaymentDoneOverlayIsOpen(true);
                 })
                 .catch((err) =>
-                    notify(err?.response?.message || "Payment Failed")
+                    notify(err?.response?.data?.message || "Payment Failed")
                 )
                 .finally(() => setLoading(false));
         }

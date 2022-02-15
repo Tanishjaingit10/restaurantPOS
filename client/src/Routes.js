@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import React, { useContext } from "react";
+import { Routes, Route, Navigate, useLocation, Outlet } from "react-router-dom";
 import ViewAttendance from "./components/Attendance.js/ViewAttendance";
 import Customers from "./components/Customers";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -16,44 +16,35 @@ import Tables from "./components/Tables";
 import Takeaways from "./components/Takeaways";
 import Attendance from "./components/Attendance.js/Attendance";
 
-import { DefaultLayout } from './layouts/DefaultLayout';
+import { UserContext } from "./context/User";
+import { DefaultLayout } from "./layouts/DefaultLayout";
 
-function RouteWrapper({
-    component: Component, 
-    layout: Layout, 
-    ...rest
-}) {
+const Router = () => {
+    const { isAuthenticated } = useContext(UserContext);
+    const location = useLocation()
     return (
-        <Route {...rest} render={(props) =>
-            <Layout {...props}>
-                <Component {...props} />
-            </Layout>
-        } />
+        <Routes>
+            <Route element={isAuthenticated ? <Navigate to={location.state||'dashboard'} />:<Outlet/>} >
+                <Route path="/" element={<SignUp />} />
+                <Route path="/login" element={<Login />} />
+            </Route>
+            <Route element={isAuthenticated ? <DefaultLayout /> : <Navigate to='login' state={location.pathname} />} >
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/tables" element={<Tables />} />
+                <Route path="/pos" element={<Pos />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/kitchen" element={<Kitchen />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/sales" element={<Sales />} />
+                <Route path="/attendance" element={<Attendance />} />
+                <Route path="/viewAttendance" element={<ViewAttendance />} />
+                <Route path="/takeaways" element={<Takeaways />} />
+                <Route path="/reservations" element={<Reservations />} />
+                <Route path="/split" element={<Split />} />
+            </Route>
+        </Routes>
     );
-}
-
-const Routes = () => {
-  return (
-      <Router>
-          <Switch>
-                <Route exact path="/" component={SignUp} />
-                <Route exact path="/login" component={Login} />
-                <RouteWrapper layout={DefaultLayout} exact path="/dashboard" component={Dashboard} />
-                <RouteWrapper layout={DefaultLayout} exact path="/menu" component={Menu}/>
-                <RouteWrapper layout={DefaultLayout} exact path="/tables" component={Tables} />
-                <RouteWrapper layout={DefaultLayout} exact path="/pos" component={Pos} />
-                <RouteWrapper layout={DefaultLayout} exact path="/orders" component={Orders} />
-                <RouteWrapper layout={DefaultLayout} exact path="/kitchen" component={Kitchen} />
-                <RouteWrapper layout={DefaultLayout} exact path="/customers" component={Customers} />
-                <RouteWrapper layout={DefaultLayout} exact path="/sales" component={Sales} />
-                <RouteWrapper layout={DefaultLayout} exact path="/attendance" component={Attendance} />
-                <RouteWrapper layout={DefaultLayout} exact path="/viewAttendance" component={ViewAttendance} />
-                <RouteWrapper layout={DefaultLayout} exact path="/takeaways" component={Takeaways} />
-                <RouteWrapper layout={DefaultLayout} exact path="/reservations" component={Reservations} />
-                <RouteWrapper layout={DefaultLayout} exact path="/split" component={Split} />
-          </Switch>
-      </Router>
-  );
 };
 
-export default Routes;
+export default Router;

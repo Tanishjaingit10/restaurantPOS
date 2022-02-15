@@ -1,188 +1,162 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useContext } from "react";
-import { Link, useHistory } from "react-router-dom";
-import options from "../levels";
-import Logo from ".././assets/Images/logo.jpeg";
-import Popup from "./Popup";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Logo from ".././assets/Images/Logo.png";
 import chefLogin from ".././assets/Images/chefLogin.png";
-import { ThemeContext } from "../context/Theme";
-
-let signin = [
-  {
-      id:401,
-      title: "Invalid credentials"
-  },
-  {
-      id:402,
-      title: "Please fill all the details"
-  },
-  {
-      id:404,
-      title: "Login unsuccessful"
-  },
-  {
-      id: 500,
-      title: "Unable to Load Server"
-  }
-]
+import axios from "axios";
+import { NotificationContext } from "../context/Notification";
+import { useEffect } from "react";
+import { UserContext } from "../context/User";
 
 const Login = () => {
-  const history = useHistory();
-  const [email_id, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [position, setPosition] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-  const [msg, setMsg] = useState("");
-  const theme = useContext(ThemeContext);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [email_id, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [position, setPosition] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { isAuthenticated, setIsAuthenticated } = useContext(UserContext);
+    const notify = useContext(NotificationContext);
 
-  const loginUser = async (e) => {
-    e.preventDefault();
+    const loginUser = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        axios
+            .post("/app/signin", {
+                position,
+                email_id,
+                password,
+            })
+            .then((res) => {
+                if (res?.data?.token)
+                    localStorage.setItem("token", res.data.token);
+                setIsAuthenticated(true);
+                if (location.state) navigate(location.state);
+                else navigate("/dashboard");
+            })
+            .catch((err) => notify(err?.response?.data?.message || "Error"))
+            .finally(() => setLoading(false));
+    };
 
-    const res = await fetch("/app/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        position,
-        email_id,
-        password,
-      }),
-    });
+    useEffect(() => {
+        if (location?.state) notify("Login Required");
+        if (isAuthenticated)
+            location.state ? navigate(location.state) : navigate("/dashboard");
+    }, []);
 
-    setIsOpen(!isOpen);
-    if (res.status === 201) {
-      history.push("/dashboard");
-    } else {
-      let obj = signin.find((pop) => pop.id === res.status);
-      setMsg(obj.title);
-    }
-  };
-
-  return (
-    <div className="h-screen">
-      <div className="bg-white py-2 ">
-        <img className="mx-auto w-28 h-auto mb-4 " src={Logo} alt="" />
-      </div>
-      <div className="flex flex-row h-auto m-auto bg-white w-3/4 rounded-3xl shadow-2xl">
-        <img src={chefLogin} alt="" />
-        <form className="w-1/2 md:w-1/3 mx-auto py-10 font-bold font-roboto text-lg">
-          <div>
-            <div className="bg-white px-6 py-4 ">
-              <div className="w-full justify-center">
-                <h1
-                  style={{ color: theme.backgroundColor }}
-                  className="text-center text-2xl"
+    return (
+        <div className="h-screen">
+            <div className="bg-white py-2 ">
+                <img className="mx-auto w-28 h-auto mb-4 " src={Logo} alt="" />
+            </div>
+            <div className="flex flex-row h-auto m-auto bg-white w-3/4 rounded-3xl shadow-xl">
+                <img src={chefLogin} alt="" />
+                <form
+                    onSubmit={(e) => loginUser(e)}
+                    className="flex flex-col px-6 justify-center w-1/2 md:w-1/3 mx-auto py-10 font-bold font-roboto text-lg"
                 >
-                  Login
-                </h1>
-              </div>
-              <label className="text-left text-black mr-4 font-normal">
-                Enter as
-              </label>
-              <select
-                name="position"
-                className="p-2  border-2 w-full text-md rounded-lg text-white font-thin"
-                style={{ backgroundColor: theme.backgroundColor }}
-                onChange={(e) => setPosition(e.target.value)}
-                value={position}
-              >
-                <option value="none" selected="selected" hidden>
-                  Select Operator Type
-                </option>
-                {options.map((option) => (
-                  <option
-                    value={option.value}
-                    className="bg-gray-300 border-black border-2 p-2"
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                    <div className="w-full flex mb-4 justify-center text-2xl text-red-500">
+                        Login
+                    </div>
+                    <div className="flex flex-col gap-4 mb-6">
+                        <div className="w-full">
+                            <select
+                                name="position"
+                                className="p-3 w-full bg-red-500 text-md rounded-lg text-white font-thin"
+                                onChange={(e) => setPosition(e.target.value)}
+                                required
+                                value={position}
+                            >
+                                <option value="" hidden>
+                                    Select Operator Type
+                                </option>
+                                <option
+                                    value={"manager"}
+                                    className="border-black border-2 p-2"
+                                >
+                                    {"Manager"}
+                                </option>
+                                <option
+                                    value={"supermanager"}
+                                    className="border-black border-2 p-2"
+                                >
+                                    {"Supermanager"}
+                                </option>
+                            </select>
+                        </div>
+                        <div className="relative w-full">
+                            <input
+                                required
+                                name="email_id"
+                                placeholder="Enter User ID"
+                                type="email"
+                                value={email_id}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="rounded-md border-2 border-gray-200 w-full p-2 px-3"
+                            />
+                            <div className="w-3 text-sm fas fa-user text-red-500 absolute right-4 top-1/2 transform -translate-y-1/2" />
+                        </div>
+                        <div className="relative w-full">
+                            <input
+                                required
+                                name="password"
+                                placeholder="Password / Employee Code"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="rounded-md border-2 border-gray-200 w-full p-2 px-3"
+                            />
+                            <div className="w-3 text-sm fa-solid fa-key text-red-500 absolute right-4 top-1/2 transform -translate-y-1/2" />
+                        </div>
+                        <div className="flex flex-row justify-between">
+                            <button
+                                type="button"
+                                onClick={() => setRememberMe(!rememberMe)}
+                                className="text-base font-thin text-red-500"
+                            >
+                                <div
+                                    className={`${
+                                        rememberMe
+                                            ? "fas fa-check-square"
+                                            : "far fa-square"
+                                    } mr-2`}
+                                />
+                                Remember Me
+                            </button>
+                            <Link
+                                to=""
+                                type="button"
+                                className="text-base font-thin text-red-500"
+                            >
+                                Forgot ID / Password?
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="flex justify-center w-full mb-3">
+                        <button
+                            disabled={loading}
+                            className="bg-red-500 items-center flex justify-center w-1/2 h-10 rounded-xl text-white font-medium text-xl focus:outline-none"
+                            value="Login"
+                            type="submit"
+                        >
+                            {loading ? (
+                                <div className="border-2 border-t-transparent h-5 w-5 animate-spin rounded-full" />
+                            ) : (
+                                "Sign In"
+                            )}
+                        </button>
+                    </div>
+                    <p className="text-center text-base">
+                        {"New User? "}
+                        <Link to="/" className="underline text-blue-700">
+                            Sign Up
+                        </Link>
+                    </p>
+                </form>
             </div>
-            <div className="bg-white px-6 pt-4">
-              <label className="text-left font-normal">Enter User Id</label>
-              <input
-                name="email_id"
-                placeholder="Enter User ID"
-                type="email"
-                value={email_id}
-                onChange={(e) => setEmail(e.target.value)}
-                className={
-                  "w-full p-2 rounded-lg border-gray-200 border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
-                }
-              />
-            </div>
-            <div className="bg-white px-6 pb-4">
-              <label className=" text-left font-normal">Password</label>
-              <input
-                name="password"
-                placeholder="Password / Employee Code"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={
-                  "w-full p-2 rounded-lg border-gray-200 border-2 outline-none text-sm transition duration-150 ease-in-out mb-4 mt-2"
-                }
-              />
-            </div>
-            <div className="flex flex-row justify-between">
-              <div className="mx-6">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  name="remember"
-                  value="Remember Me"
-                />
-                <span
-                  style={{ color: theme.backgroundColor }}
-                  className="text-base font-thin"
-                >
-                  Remember Me
-                </span>
-              </div>
-              <Link
-                style={{ color: theme.backgroundColor }}
-                className="text-base font-thin"
-              >
-                Forgot ID / Password?
-              </Link>
-            </div>
-          </div>
-          <div className="w-1/2 my-6 m-auto">
-            <button
-              style={{ backgroundColor: theme.backgroundColor }}
-              className="text-center w-full m-auto py-3 rounded-xl text-white font-medium text-xl focus:outline-none"
-              value="Login"
-              onClick={loginUser}
-              type="submit"
-            >
-              Sign In
-            </button>
-          </div>
-
-          <p className="text-center">
-            New User ?
-            <Link to="/" className="underline">
-              Sign Up
-            </Link>
-          </p>
-        </form>
-      </div>
-      {isOpen && (
-        <Popup
-          content={
-            <>
-              <p className="pb-4 text-red-500 font-bold">{msg}</p>
-              <button className="bg-green px-10 py-2" onClick={loginUser}>
-                Try Again
-              </button>
-            </>
-          }
-          handleClose={loginUser}
-        />
-      )}
-    </div>
-  );
+        </div>
+    );
 };
 
 export default Login;

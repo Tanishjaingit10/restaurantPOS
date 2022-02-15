@@ -14,6 +14,7 @@ const salesController = require('../controllers/salesController')
 const kotController = require('../controllers/KOTController')
 const paymentController = require('../controllers/paymentController');
 const storeInfoController = require('../controllers/storeInfoController');
+const { AuthenticationMiddleware } = require('../middleware/Authentication');
 
 
 router.get('/attendance', attendanceController.get_attendance)
@@ -95,5 +96,7 @@ router.post('/teststripe', (req,res)=>{
 router.get('/getPaymentStatus', (req,res)=>{
     return res.json("ok")
 })
+
+router.get("/auth",AuthenticationMiddleware)
 
 module.exports = router;

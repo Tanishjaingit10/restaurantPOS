@@ -21,7 +21,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const TakeAwayOrders = () => {
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading] = useState(false);
     const [open, setOpen] = useState(false);
     const [pageNumber, setPageNumber] = useState(1);
     const [pageLimit, setPageLimit] = useState(10);
@@ -478,15 +478,12 @@ const TakeAwayOrders = () => {
                                                         <CustomButton
                                                             title={
                                                                 <Link
-                                                                    to={{
-                                                                        pathname:
-                                                                            "/pos",
-                                                                        state: {
-                                                                            orderId:
-                                                                                order.order_id,
-                                                                            prevPath:
-                                                                                location.pathname,
-                                                                        },
+                                                                    to="/pos"
+                                                                    state={{
+                                                                        orderId:
+                                                                            order.order_id,
+                                                                        prevPath:
+                                                                            location.pathname,
                                                                     }}
                                                                     className=""
                                                                 >
@@ -497,7 +494,7 @@ const TakeAwayOrders = () => {
                                                                 backgroundColor:
                                                                     theme.backgroundColor,
                                                             }}
-                                                            // onPress={() => { history.push('pos')}}
+                                                            // onPress={() => { navigate('pos')}}
                                                         />
                                                     </td>
                                                 </tr>

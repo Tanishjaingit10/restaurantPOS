@@ -5,7 +5,7 @@ import { ThemeContext } from "../../context/Theme";
 import Select from "react-select";
 import CustomButton from "../Common/CustomButton";
 import { FiRefreshCcw } from "react-icons/fi";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CustomTable from "../Common/CustomTable";
 import CustomPagination from "../Common/CustomPagination";
 import { DownloadTable, PrintTable } from "../Common/download_print";
@@ -25,7 +25,7 @@ const Attendance = () => {
     const printTable = useRef();
 
     const theme = useContext(ThemeContext);
-    const history = useHistory();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("/app/users")
@@ -118,7 +118,7 @@ const Attendance = () => {
                                     }}
                                     title="View Report"
                                     onPress={() => {
-                                        history.push("/viewattendance");
+                                        navigate("/viewattendance");
                                     }}
                                 />
                             </div>

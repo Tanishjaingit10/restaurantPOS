@@ -28,3 +28,9 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+@layer utilities {
+    .border-t-transparent{
+        border-top-color: transparent;
+    }
+}

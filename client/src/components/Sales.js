@@ -25,7 +25,6 @@ const Sales = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageLimit, setPageLimit] = useState(10);
     const [reload, setReload] = useState(false);
-    const [pageList, setPageList] = useState([]);
     const [componentLoading, setComponentLoading] = useState(false);
     const [filterOrderStartDate, setFilterOrderStartDate] = useState(
         new Date()
@@ -45,7 +44,6 @@ const Sales = () => {
     const printOrderDetails = useRef();
 
     useEffect(() => {
-        setPageList([]);
         fetch("/app/getCompletedOrders")
             .then((res) => res.json())
             .then((json) => {
