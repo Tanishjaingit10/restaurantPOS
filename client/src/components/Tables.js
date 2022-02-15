@@ -229,13 +229,14 @@ const Tables = () => {
                             navigate("reservations");
                         }}
                     />
-                    <CustomButton
-                        title="Take Away"
-                        customStyle={{ backgroundColor: "#f0fd59" }}
-                        onPress={() => {
+                    <button
+                        className="bg-yellow-500 text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
+                        onClick={() => {
                             navigate("/takeaways");
                         }}
-                    />
+                    >
+                        Take Away
+                    </button>
                     <CustomButton
                         title="- Delete Table"
                         customStyle={{ backgroundColor: theme.backgroundColor }}
@@ -243,11 +244,10 @@ const Tables = () => {
                             setShowDeleteTable(true);
                         }}
                     />
-                    <CustomButton
-                        title="+ Add Table"
-                        customStyle={{ backgroundColor: "#74fb4d" }}
+                    <button
+                        className="bg-green text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
                         onPress={() => openModal()}
-                    />
+                    >{"+ Add Table"}</button>
 
                     {/* Modal for Add Table  */}
 

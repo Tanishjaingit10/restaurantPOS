@@ -46,7 +46,7 @@ function SingleInput({ item, amountDue, setPartList }) {
                 onClick={() => setPaid(true)}
                 className={`${
                     paid ? "bg-red-200" : "bg-red-500"
-                } rounded-lg p-2 my-1 mx-2 w-40 font-medium bg-red-500 text-white`}
+                } rounded-lg p-2 my-1 mx-2 w-40 font-medium text-white`}
             >
                 Charge
             </PaymentMethodOverlayButton>
