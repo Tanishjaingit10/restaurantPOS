@@ -14,7 +14,10 @@ const salesController = require('../controllers/salesController')
 const kotController = require('../controllers/KOTController')
 const paymentController = require('../controllers/paymentController');
 const storeInfoController = require('../controllers/storeInfoController');
-const { AuthenticationMiddleware } = require('../middleware/Authentication');
+const FileController = require('../controllers/FileController');
+
+const { upload } = require('../middleware/GridFS');
+// const { AuthenticationMiddleware } = require('../middleware/Authentication');
 
 
 router.get('/attendance', attendanceController.get_attendance)
@@ -32,6 +35,12 @@ router.get('/customer/:id', customerController.get_customer)
 router.get('/getCustomerByDate/:startDate/:stopDate', customerController.getCustomerByDate)
 router.get('/getCustomerByValue/:value', customerController.getCustomerByValue)
 router.get('/getDashboardCustomer/:type/:startDate/:stopDate', customerController.getDashboardCustomer)
+
+router.get("/file/", FileController.all_files)
+router.post("/file/", upload.single("file"), FileController.upload_file);
+router.get("/file/:id", FileController.single_file)
+router.get("/file/image/:id", FileController.display_image)
+router.delete("/file/:id", FileController.delete_file)
 
 router.get('/items',itemController.all_items)
 router.post("/addItem", itemController.add_item);
@@ -82,21 +91,11 @@ router.post('/signin', userController.login)
 router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
 
-router.post('/teststripe', (req,res)=>{
-    data = {
-        object_id:req.body.data.object.id,
-        payment_method:req.body.data.object.payment_method,
-        payment_intent:req.body.data.object.payment_intent,
-        event_type:req.body.type
-    }
-    console.log(data)
-    // console.log(req.body.data.object.id+" => "+req.body.data.object.payment_method+" => "+req.body.type);
-    return res.json("ok")
-})
-router.get('/getPaymentStatus', (req,res)=>{
-    return res.json("ok")
-})
 
-router.get("/auth",AuthenticationMiddleware)
+const TestStripe = require('../Test/stripe');
+router.post('/teststripe', TestStripe.testStripe)
+router.get('/getPaymentStatus', TestStripe.getPaymentStatus)
+
+// router.get("/auth",AuthenticationMiddleware)
 
 module.exports = router;
