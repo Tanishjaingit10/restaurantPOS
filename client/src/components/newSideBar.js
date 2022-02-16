@@ -16,7 +16,6 @@ const SideBar = () => {
 	const [menuCollapse, setMenuCollapse] = useState(true)
   const theme = useContext(ThemeContext);
 	const location = useLocation();  
-	console.log(location.pathname)
 	
 	const menuIconClick = () => {
 			menuCollapse ? setMenuCollapse(false) : setMenuCollapse(true);

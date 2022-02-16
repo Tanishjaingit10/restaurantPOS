@@ -285,9 +285,12 @@ export default function Pos() {
                                 onClick={() => setCategoryFilter(item.category)}
                                 key={item._id}
                                 style={{
-                                    backgroundImage: `url(${item?.image})`,
+                                    backgroundImage: `${
+                                        item?.image &&
+                                        `url(/app/file/image/${item?.image})`
+                                    }`,
                                 }}
-                                className="rounded-md bg-center mb-3 w-full"
+                                className="bg-cover origin-center rounded-md bg-center mb-3 w-full"
                             >
                                 <div
                                     className={`${

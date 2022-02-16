@@ -6,7 +6,7 @@ import { Modal } from "../../Common/Modal";
 
 const allTime = "allTime";
 const custom = "custom";
-function AvailableButton({ state: parentState }) {
+function AvailableButton({ state: parentState, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
     const [availabilityType, setAvailabilityType] = useState(allTime);
     const [finalAvailable, setFinalAvailable] = useState([]);
@@ -25,11 +25,9 @@ function AvailableButton({ state: parentState }) {
 
     return (
         <>
-            <label htmlFor="Available">Available</label>
             <button
                 onClick={() => setIsOpen((prev) => !prev)}
-                id="Available"
-                className="p-3 flex items-center justify-between bg-red-400 text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
+                {...rest}
             >
                 {availabilityType === "allTime" ? "All Time" : "Custom"}
                 <span className="fas fa-chevron-down" />

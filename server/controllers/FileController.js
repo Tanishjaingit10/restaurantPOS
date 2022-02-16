@@ -35,12 +35,12 @@ const all_files = (req, res) => {
 };
 
 const upload_file = (req, res) => {
-    res.json(req.file);
+    res.json(req.file.id);
 };
 
 const single_file = (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id))
-        return res.status(401).json({ message: "Image Url Is Invalid" });
+        return res.status(400).json({ message: "Image Url Is Invalid" });
     gridfsBucket
         .find({ _id: ObjectId(req.params.id) })
         .next()
@@ -60,7 +60,7 @@ const single_file = (req, res) => {
 
 const display_image = (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id))
-        return res.status(401).json({ message: "Image Url Is Invalid" });
+        return res.status(400).json({ message: "Image Url Is Invalid" });
     gridfsBucket
         .find({ _id: ObjectId(req.params.id) })
         .next()
@@ -90,7 +90,7 @@ const display_image = (req, res) => {
 
 const delete_file = (req, res) => {
     if (!mongoose.isValidObjectId(req.params.id))
-        return res.status(401).json({ message: "Image Url Is Invalid" });
+        return res.status(400).json({ message: "Image Url Is Invalid" });
     gridfsBucket
         .find({ _id: ObjectId(req.params.id) })
         .next()

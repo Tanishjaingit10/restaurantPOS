@@ -79,9 +79,6 @@ const Menu = () => {
                             <button
                                 onClick={handleRefresh}
                                 className="leading-4 bg-red-500 mr-6 p-4 text-white rounded-md"
-                                style={{
-                                    backgroundColor: theme.backgroundColor,
-                                }}
                             >
                                 <div
                                     className={`fas fa-sync-alt${
@@ -133,9 +130,12 @@ const Menu = () => {
                                     <CategoryInfoButton
                                         category={item}
                                         style={{
-                                            backgroundImage: `url(${item?.image})`,
+                                            backgroundImage: `${
+                                                item?.image &&
+                                                `url(/app/file/image/${item?.image})`
+                                            }`,
                                         }}
-                                        className="rounded-md bg-center flex-1 mr-4"
+                                        className="rounded-md bg-cover bg-center flex-1 mr-4"
                                     >
                                         <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
                                             {item.category}
@@ -161,7 +161,7 @@ const Menu = () => {
                                             />
                                             <ItemInfoButton
                                                 item={item}
-                                                className=" text-center relative flex-1 rounded-md bg-yellow-100 p-8 my-2 text-xl shadow-md"
+                                                className="text-center relative flex-1 rounded-md bg-yellow-100 p-8 my-2 text-xl shadow-md"
                                             >
                                                 <img
                                                     className="absolute w-4 top-3 right-3"
@@ -185,14 +185,16 @@ const Menu = () => {
                     ) ? (
                         <div>
                             <div className="grid my-1 grid-cols-6">
-                                <div
-                                    style={{
-                                        backgroundImage: `url(${UncategorizedBgImageBase64})`,
-                                    }}
-                                    className="rounded-md bg-cover bg-center flex-1 mr-4"
-                                >
-                                    <div className="bg-white text-center bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
-                                        Uncategorized
+                                <div className="flex">
+                                    <div
+                                        style={{
+                                            backgroundImage: `url(${UncategorizedBgImageBase64})`,
+                                        }}
+                                        className="rounded-md bg-cover bg-center flex-1 mr-4"
+                                    >
+                                        <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
+                                            Uncategorized
+                                        </div>
                                     </div>
                                 </div>
                             </div>

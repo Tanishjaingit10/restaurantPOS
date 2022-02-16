@@ -31,11 +31,14 @@ const update_item = async (request, response, next) => {
     items_template_copy
         .findOneAndUpdate({ _id: itemId }, { $set: request.body })
         .then((data) => {
-            if (data === null) response.json({ message: "Item not found!" });
+            if (data === null)
+                response.status(404).json({ message: "Item not found!" });
             else response.json({ message: "Item updated successfully!" });
         })
         .catch((error) => {
-            response.json({ message: "Item could not be updated!" });
+            response
+                .status(500)
+                .json({ message: "Item could not be updated!" });
         });
 };
 

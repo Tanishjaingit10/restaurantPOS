@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getNewId } from "../../../Utils";
 import { Modal } from "../../Common/Modal";
 
-function VariantButton({ state: parentState }) {
+function VariantButton({ state: parentState, children, ...rest }) {
     const variantTemplate = {
         variant: "",
         description: "",
@@ -37,14 +37,8 @@ function VariantButton({ state: parentState }) {
 
     return (
         <>
-            <label htmlFor="itemVariant">Variant</label>
-            <button
-                onClick={() => setIsOpen((prev) => !prev)}
-                id="itemVariant"
-                className="p-3 flex items-center justify-between bg-red-400 text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out mb-4"
-            >
-                <span>Variant ({finalVariant.length})</span>
-                <span className="fas fa-chevron-down" />
+            <button onClick={() => setIsOpen((prev) => !prev)} {...rest}>
+                {children}
             </button>
 
             <Modal
@@ -123,7 +117,7 @@ function SingleVariant({ setFinalVariant, item }) {
         <div className="flex items-center justify-between">
             <input
                 type="text"
-                value={variant?.variant}
+                value={variant?.variant || ""}
                 onChange={(e) => handleVariantChange(e.target.value, "variant")}
                 placeholder="Enter Variant Name"
                 className="m-3 p-3 w-full text-gray-600 rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
@@ -131,14 +125,13 @@ function SingleVariant({ setFinalVariant, item }) {
             /
             <input
                 type="text"
-                value={variant?.price}
+                value={variant?.price || ""}
                 onChange={(e) => handleVariantChange(e.target.value, "price")}
                 placeholder="Variant Unit Price (00.00)"
                 className="m-3 p-3 w-full text-gray-600 rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
             />
             <button
                 onClick={handleDelete}
-                type="submit"
                 className="m-3 rounded-lg p-3 px-10 font-medium bg-red-500 text-white"
             >
                 Delete

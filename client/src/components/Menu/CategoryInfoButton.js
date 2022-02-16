@@ -66,8 +66,11 @@ function CategoryInfoButton({ category, children, ...rest }) {
                         </div>
                         <div>
                             <img
-                                className="border border-red-500 w-40 h-40"
-                                src={category.image}
+                                className="border object-contain border-red-500 w-40 h-40"
+                                src={
+                                    category.image &&
+                                    `/app/file/image/${category.image}`
+                                }
                                 alt=""
                             />
                         </div>

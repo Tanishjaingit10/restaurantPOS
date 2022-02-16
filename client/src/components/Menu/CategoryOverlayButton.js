@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
@@ -8,8 +8,8 @@ import { Modal } from "../Common/Modal";
 function CategoryOverlayButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const [image, setImage] = useState(null);
+    const [previewImage, setPreviewImage] = useState(null);
     const [imageName, setImageName] = useState("");
     const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
@@ -17,39 +17,57 @@ function CategoryOverlayButton({ item, children, ...rest }) {
     const { fetchCategories } = useContext(CategoryContext);
     const notify = useContext(NotificationContext);
 
-    useEffect(() => {
-        if (item) {
-            setImage(item.image);
-            setCategory(item.category);
-            setDescription(item.description);
-        }
-        // eslint-disable-next-line
-    }, []);
+    const resetStates = (item) => {
+        setImage(null);
+        setCategory(item?.category || "");
+        setDescription(item?.description || "");
+        setPreviewImage(null);
+        setImageName("");
+    };
+
+    const onModalOpen = () => {
+        if (item) resetStates(item);
+    };
 
     const handleImageUpload = (e) => {
         const img = e.target.files[0];
+        setImage(img);
         if (!img) {
             setImageName("");
-            setImage("");
+            setPreviewImage(null);
         } else {
             setImageName(img?.name);
             const reader = new FileReader();
             reader.readAsDataURL(img);
             reader.onload = () => {
                 if (reader.readyState === 2) {
-                    setImage(reader.result);
+                    setPreviewImage(reader.result);
                 }
             };
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         setLoading(true);
         const postData = {
             category,
             description,
-            image,
         };
+
+        if (image) {
+            const bodyFormData = new FormData();
+            bodyFormData.append("file", image);
+            const config = { headers: { Accept: "application/json" } };
+            try {
+                const res = await axios.post("/app/file", bodyFormData, config);
+                postData.image = res.data;
+            } catch (err) {
+                notify(
+                    err?.response?.data?.message || "Unable to upload image"
+                );
+            }
+        }
 
         (item
             ? axios.put(`/app/updateCategory/${item._id}`, postData)
@@ -57,10 +75,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
         )
             .then(() => {
                 notify(`Category ${item ? "Updated" : "Added"}: ${category}`);
-                setImage("");
-                setImageName("");
-                setCategory("");
-                setDescription("");
+                resetStates();
                 fetchCategories();
                 setIsOpen(false);
             })
@@ -74,14 +89,15 @@ function CategoryOverlayButton({ item, children, ...rest }) {
 
     return (
         <>
-            <button onClick={() => setIsOpen((prev) => !prev)} {...rest}>
+            <button onClick={() => setIsOpen(true)} {...rest}>
                 {children}
             </button>
 
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="w-5/12 p-10 flex flex-col items-center relative bg-white rounded-xl"
+                onAfterOpen={onModalOpen}
+                className="p-10 px-24 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && <SpinLoader />}
                 <button
@@ -91,7 +107,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                 <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
                     {item ? "Edit" : "Add"} Category
                 </div>
-                <div className="w-2/3">
+                <form onSubmit={handleSubmit} className="w-96">
                     <input
                         name="Category"
                         type="text"
@@ -111,15 +127,15 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                     />
                     <div className="flex justify-between mt-4">
                         <div className="text-gray-500 flex flex-col justify-between">
-                            <div className="m-2">
+                            <div className="my-2">
                                 Select Category Image
                                 <div className="text-lg font-medium">
                                     {imageName}
                                 </div>
                             </div>
-                            <div className="m-4">
+                            <div className="my-4">
                                 <label
-                                    className="rounded-lg px-6 p-3 font-medium bg-red-500 text-white"
+                                    className="rounded-lg cursor-pointer px-6 p-3 font-medium bg-red-500 text-white"
                                     htmlFor="image"
                                 >
                                     Choose&nbsp;File
@@ -128,28 +144,32 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                                     className="hidden"
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => handleImageUpload(e)}
+                                    onChange={handleImageUpload}
                                     id="image"
                                 />
                             </div>
                         </div>
                         <div>
                             <img
-                                className="border border-red-500 w-40 h-40"
-                                src={image}
+                                className="border object-contain border-red-500 w-40 h-40"
+                                src={
+                                    previewImage ||
+                                    (item?.image &&
+                                        `/app/file/image/${item.image}`)
+                                }
                                 alt=""
                             />
                         </div>
                     </div>
                     <div className="flex justify-center mt-6">
                         <button
-                            onClick={handleSubmit}
+                            type="submit"
                             className="rounded-lg p-3 w-40 font-medium m-4 bg-red-500 text-white"
                         >
                             Done
                         </button>
                     </div>
-                </div>
+                </form>
             </Modal>
         </>
     );

@@ -1,6 +1,6 @@
 const category_template_copy = require("../models/category");
 const add_category = async (request, response, next) => {
-    const { category, description, image } = request.body;
+    const { category } = request.body;
     if (!category) {
         return response
             .status(400)
@@ -35,20 +35,16 @@ const add_category = async (request, response, next) => {
 };
 const update_category = async (request, response, next) => {
     let itemId = request.params.id;
-    const { category, description, image } = request.body;
-    let updatedData = {
-        category: category,
-        description: description,
-        image: image,
-    };
+    const { category } = request.body;
     if (!category)
         return response
             .status(400)
             .json({ error: "Please fill out the required fields!" });
     category_template_copy
-        .findOneAndUpdate({ _id: itemId }, { $set: updatedData })
+        .findOneAndUpdate({ _id: itemId }, { $set: request.body })
         .then((data) => {
-            if (data === null) response.json({ message: "Item not found!" });
+            if (data === null)
+                response.status(404).json({ message: "Item not found!" });
             else
                 response
                     .status(200)
