@@ -38,6 +38,7 @@ const order_template = new mongoose.Schema({
     },
     payment: {
         type: {
+            paymentIntentId: String, // for stripe
             subTotal: Number,
             tax: Number,
             discount: Number,

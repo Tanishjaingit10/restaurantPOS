@@ -57,12 +57,16 @@ router.get('/orderForTable/:id', orderController.get_order)
 router.get('/orderByDate/:startDate/:stopDate', orderController.getOrderByDate)
 router.get('/orderByStatus/:status', orderController.getOrderByStatus)
 router.get('/orderById/:id', orderController.getOrderById)
+router.get('/orderIDByPaymentIntentId/:id', orderController.getOrderIdByPaymentIntentId)
 router.get('/getDashboardOrder/:type/:startDate/:stopDate', orderController.getDashboardOrder)
 router.get('/getTakeAwayOrders', orderController.getTakeAwayOrders)
 router.get('/getTakeAwayOrderByDate/:startDate/:stopDate', orderController.getTakeAwayOrderByDate)
 router.post('/makePayment/:id', orderController.make_payment)
+router.post('/orderOnline', orderController.order_online)
 
 router.post("/stripe", paymentController.stripe_payment);
+router.post('/stripeWebhook', paymentController.stripeWebhook)
+router.get('/getPaymentStatus/:id', paymentController.getPaymentStatus)
 
 router.get('/allReservations', reservationController.all_reservations)
 router.get('/getReservationsDate/:date', reservationController.get_reservation_by_date)
@@ -91,11 +95,6 @@ router.post('/signup', userController.add_user)
 router.post('/signin', userController.login)
 router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
-
-
-const TestStripe = require('../Test/stripe');
-router.post('/teststripe', TestStripe.testStripe)
-router.get('/getPaymentStatus', TestStripe.getPaymentStatus)
 
 // router.get("/auth",AuthenticationMiddleware)
 

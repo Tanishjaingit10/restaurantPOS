@@ -40,13 +40,10 @@ const get_table = async (request, response) => {
 
 const all_table = async (request, response) => {
     table_template_copy.find({}, (err, data) => {
-        if (!err)
-            response.send(data);
-        else
-            console.log(err);
-
+        if (!err) response.send(data);
+        else console.log(err);
     });
-}
+};
 const remove_table = async (request, response, next) => {
     let itemId = request.params.id;
     table_template_copy.findOneAndDelete({_id: itemId}).then(() => {
@@ -59,16 +56,9 @@ const remove_table = async (request, response, next) => {
 }
 
 const available_table = async (request, response) =>{
-    console.log(request)
-
     table_template_copy.find({status: 'Free'}, (err, data) => {
-        if (!err){
-            console.log(data.length, 'available_table')
-            response.status(200).send(data);
-        }
-        else
-            console.log(err);
-
+        if (!err) response.status(200).send(data);
+        else console.log(err);
     });
 }
 

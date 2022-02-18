@@ -1,6 +1,7 @@
 const order_template_copy = require('../models/order')
 const customer_template_copy = require('../models/customers')
 const table_template_copy = require('../models/tables')
+const kot_template_copy = require("../models/KOT");
 
 const add_order = async (request, response, next) => {
     const { customer, order, payment } = request.body;
@@ -312,6 +313,81 @@ const make_payment = (req,res) => {
     .catch(()=>res.status(500).json({message:"Payment Failed"}))
 }
 
+const getOrderIdByPaymentIntentId = (req,res) => {
+  const intentId = req.params.id
+  order_template_copy.findOne({"payment.paymentIntentId":intentId},{order_id:1,_id:0})
+  .then(data=>res.json(data?.order_id))
+  .catch(err=>res.status(500).json({message:"Unable to fetch data"}))
+}
+
+const order_online = (req, res) => {
+    const order = req.body;
+    const newOrder = order_template_copy(order);
+    newOrder
+        .save()
+        .then((data) => {
+            if (data?.payment?.table?.length && data?.payment?.status==="Pending") {
+                table_template_copy
+                    .findOneAndUpdate(
+                        { number: req?.body?.payment?.table },
+                        { status: "Unavailable", time: Date.now() }
+                    )
+                    .then(() => {});
+            }
+            customer_template_copy
+                .findOne({ contact: req.body?.customer?.contact })
+                .then((data) => {
+                    const customer = req.body?.customer;
+                    if (customer?.name && customer?.contact)
+                        if (data === null) {
+                            const new_customer = new customer_template_copy({
+                                name: customer?.name,
+                                contact: customer?.contact,
+                                email: customer?.email,
+                                date: new Date()
+                                    .toLocaleDateString("pt-br")
+                                    .split("/")
+                                    .reverse()
+                                    .join("-"),
+                                num_orders: 1,
+                                total_amount_spent: data?.payment?.total,
+                                time: new Date().toLocaleTimeString("en-US", {
+                                    hour12: false,
+                                }),
+                                order_type: data?.payment?.orderType,
+                                order_id: data?.order_id,
+                            });
+                            new_customer?.save().then(() => {});
+                        } else {
+                            data.name = customer.name;
+                            data.email = customer.email;
+                            data.num_orders++;
+                            data.total_amount_spent += req.body?.payment?.total;
+                            data.save().then(() => {});
+                        }
+                });
+                const newKOT = new kot_template_copy({
+                  ...order,
+                  tableNumber: order?.payment?.table,
+              });
+              newKOT.save().then(() => {});
+            res.json(data);
+        })
+        .catch((err) =>
+            res.status(500).json({ message: "Unable to save order" })
+        );
+};
+
+const generate_kot_of_order = (order) => {
+  newKot = new kot_template_copy(order);
+  newKot
+      .save()
+      .then((data) => res.json(data))
+      .catch((err) =>
+          res.status(500).json({ message: "Unable To Generate KOT!" })
+      );
+}
+
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, getDashboardOrder, getTakeAwayOrders, getTakeAwayOrderByDate,make_payment
+    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, getDashboardOrder, getTakeAwayOrders, getTakeAwayOrderByDate,make_payment,order_online,getOrderIdByPaymentIntentId,generate_kot_of_order
 }
