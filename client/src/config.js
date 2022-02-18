@@ -1,0 +1,1 @@
+export const TableUIUrl = process.env.REACT_APP_TABLE_UI_PUBLIC_URL

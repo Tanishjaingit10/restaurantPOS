@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Popup from "./Popup";
 import Loader from "./Loader";
 import { ThemeContext } from "../context/Theme";
@@ -12,13 +12,17 @@ import {
 } from "@material-ui/pickers";
 import { ThemeProvider } from "@material-ui/styles";
 import MomentUtils from "@date-io/moment";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiRefreshCcw } from "react-icons/fi";
 import { GrClose } from "react-icons/gr";
 import { MdOutlineDelete } from "react-icons/md";
 import Select from "react-select";
-import Modal from "react-modal";
+import { Modal } from "./Common/Modal";
 import { materialTheme } from "../styles/clockMaterialTheme";
+import QRCode from "react-qr-code";
+import { TableUIUrl } from "../config";
+import ReactToPdf from "react-to-pdf";
+import { useReactToPrint } from "react-to-print";
 
 const Tables = () => {
     const [componentLoading, setComponentLoading] = useState(false);
@@ -48,6 +52,10 @@ const Tables = () => {
     const [newTableAdded, setNewTableAdded] = useState(false);
     const [showDeleteTable, setShowDeleteTable] = useState(false);
     const [timeNow, setTimeNow] = useState(Date.now());
+    const [clickedTableId, setClickedTableId] = useState("");
+    const [qrCodeIsOpen, setQrCodeIsOpen] = useState(false);
+    const qrCodeRef = useRef(null);
+    const linkToTableUI = `${TableUIUrl}/${clickedTableId}`;
 
     useEffect(() => {
         setComponentLoading(true);
@@ -198,9 +206,19 @@ const Tables = () => {
         setOpen(!Open);
     };
 
+    const handleTableClick = (num) => {
+        setQrCodeIsOpen(true);
+        setClickedTableId(num);
+    };
+
     const selectCustomeStyle = {
         backgroundColor: theme.backgroundColor,
     };
+
+    const print = useReactToPrint({
+        content: () => qrCodeRef.current,
+        bodyClass: "h-screen w-screen flex items-center justify-center",
+    });
 
     return (
         <div className="">
@@ -247,7 +265,9 @@ const Tables = () => {
                     <button
                         className="bg-green text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
                         onPress={() => openModal()}
-                    >{"+ Add Table"}</button>
+                    >
+                        {"+ Add Table"}
+                    </button>
 
                     {/* Modal for Add Table  */}
 
@@ -676,15 +696,18 @@ const Tables = () => {
                                                 table.status !== "Free"
                                                     ? "text-white bg-red-400"
                                                     : "text-gray-500"
-                                            } py-5 m-5 mt-0 rounded border border-red-500`}
+                                            } m-5 mt-0 rounded border flex items-center justify-center border-red-500`}
                                         >
-                                            <Link
-                                                to="/pos"
-                                                state={table.number}
+                                            <button
+                                                onClick={() =>
+                                                    handleTableClick(table._id)
+                                                }
                                                 className="font-bold text-2xl p-8"
                                             >
-                                                {table.number}
-                                            </Link>
+                                                <div className="leading-3">
+                                                    {table.number}
+                                                </div>
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -786,6 +809,68 @@ const Tables = () => {
                     }}
                 />
             )}
+            <Modal
+                isOpen={qrCodeIsOpen}
+                controller={setQrCodeIsOpen}
+                className="flex flex-col items-center justify-center p-10 rounded-xl absolute bg-white"
+            >
+                <button
+                    onClick={() => setQrCodeIsOpen(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                />
+                <div className="text-center text-3xl mb-10 text-red-500 font-semibold">
+                    {`Table: ${
+                        displayTable?.find((t) => t._id === clickedTableId)
+                            ?.number
+                    }`}
+                </div>
+                <div className="flex gap-8 mb-10">
+                    <div ref={qrCodeRef}>
+                        <QRCode value={linkToTableUI} />
+                    </div>
+                    <div className="flex justify-end flex-col gap-6 text-white w-36">
+                        <ReactToPdf
+                            targetRef={qrCodeRef}
+                            filename={`QR_CODE_TABLE_${clickedTableId}.pdf`}
+                        >
+                            {({ toPdf }) => (
+                                <button
+                                    className="bg-red-500 p-2 rounded-lg font-semibold"
+                                    onClick={toPdf}
+                                >
+                                    Download
+                                </button>
+                            )}
+                        </ReactToPdf>
+                        <button
+                            onClick={print}
+                            className="bg-red-500 p-2 rounded-lg font-semibold"
+                        >
+                            Print
+                        </button>
+                        <button
+                            onClick={() =>
+                                navigate("/pos", {
+                                    state: displayTable.find(
+                                        (t) => t._id === clickedTableId
+                                    ).number,
+                                })
+                            }
+                            className="bg-red-500 p-2 rounded-lg font-semibold"
+                        >
+                            View Table
+                        </button>
+                    </div>
+                </div>
+                <a
+                    className="text-lg font-medium text-blue-800 underline"
+                    target="_blank"
+                    href={linkToTableUI}
+                    rel="noreferrer"
+                >
+                    {linkToTableUI}
+                </a>
+            </Modal>
         </div>
     );
 };
