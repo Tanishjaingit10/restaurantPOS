@@ -389,7 +389,10 @@ const Orders = () => {
                                     ) : (
                                         orders.map((order) => {
                                             return (
-                                                <tr className="font-medium ">
+                                                <tr
+                                                    key={order._id}
+                                                    className="font-medium "
+                                                >
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {new Date(
@@ -502,7 +505,10 @@ const Orders = () => {
                                     ) : ordersToShow.length > 0 ? (
                                         ordersToShow.map((order) => {
                                             return (
-                                                <tr className="font-medium ">
+                                                <tr
+                                                    key={order._id}
+                                                    className="font-medium "
+                                                >
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {new Date(

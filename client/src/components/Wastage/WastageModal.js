@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 import { getNewId } from "../../Utils";
 import { Modal } from "../Common/Modal";
 import SpinLoader from "../SpinLoader";
@@ -47,20 +49,44 @@ export const WastageModal = ({ isOpen, setIsOpen }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        const data = {
+        const selectedFoodItems = foodItems.filter((it) =>
+            selectedItems.some((i) => i.foodItem === it.foodItem)
+        );
+
+        const dataToPost = {
             order_id,
             foodItemType,
-            selectedItems,
             amountType,
+            foodItems: selectedFoodItems,
             amount,
             wastageBy,
             description,
         };
-        setLoading(false);
-        console.log(data);
+
+        if (image) {
+            const bodyFormData = new FormData();
+            bodyFormData.append("file", image);
+            const config = { headers: { Accept: "application/json" } };
+            try {
+                const res = await axios.post("/app/file", bodyFormData, config);
+                dataToPost.image = res.data;
+            } catch (err) {
+                notify(
+                    err?.response?.data?.message || "Unable to upload image"
+                );
+            }
+        }
+
+        axios
+            .post("/app/logWastage", dataToPost)
+            .then((res) => setLogWastageIsOpen(false))
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable to log wasgage")
+            )
+            .finally(() => setLoading(false));
     };
 
     const handleAdd = () => {
@@ -100,15 +126,11 @@ export const WastageModal = ({ isOpen, setIsOpen }) => {
         if (foodItems.length)
             setSelectedItems([
                 {
-                    foodItem: foodItems[0]?.foodItem || "",
+                    foodItem: "",
                     key: getNewId(),
                 },
             ]);
     }, [foodItems]);
-
-    useEffect(() => {
-        if (orders?.length) setOrder_id(orders[0].order_id);
-    }, [orders]);
 
     return (
         <>
@@ -118,12 +140,19 @@ export const WastageModal = ({ isOpen, setIsOpen }) => {
                 className="bg-white flex flex-col text-red-500 rounded-xl w-64 z-50 absolute p-8 gap-6"
             >
                 <button
-                    onClick={() => setLogWastageIsOpen(true)}
+                    onClick={() => {
+                        setLogWastageIsOpen(true);
+                        setIsOpen(false);
+                    }}
                     className="text-left font-medium"
                 >
                     Log Wastage
                 </button>
-                <Link to="/wastage" className="font-medium">
+                <Link
+                    onClick={() => setIsOpen(false)}
+                    to="/wastage"
+                    className="font-medium"
+                >
                     Wastage History
                 </Link>
             </Modal>
@@ -166,7 +195,7 @@ export const WastageModal = ({ isOpen, setIsOpen }) => {
                     <div className="flex justify-between">
                         <div className="text-gray-500 flex flex-col justify-between">
                             <div className="my-2">
-                                Select Category Image
+                                Select waste image
                                 <div className="text-lg font-medium">
                                     {imageName}
                                 </div>
@@ -206,6 +235,7 @@ export const WastageModal = ({ isOpen, setIsOpen }) => {
                                     type="button"
                                     onClick={() => setFoodItemType(op)}
                                     className="flex items-center"
+                                    placeholder="Enter food item name"
                                 >
                                     <span
                                         className={`far fa-${
