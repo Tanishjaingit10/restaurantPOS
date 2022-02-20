@@ -15,6 +15,7 @@ function PrintBillButton({ children, order_id, className }) {
 
     const print = useReactToPrint({
         content: () => componentToPrint.current,
+        bodyClass: "h-screen w-screen flex items-center justify-center",
     });
 
     const printTheBill = () => {
