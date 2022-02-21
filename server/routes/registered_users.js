@@ -98,7 +98,8 @@ router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
 
 router.get('/allWasteOrders', wasteFoodController.all_orders_having_waste)
-router.get('/wasteOfOrder/:order_id', wasteFoodController.waste_by_order_id)
+router.get('/wasteOrdersByDate/:startDate/:stopDate', wasteFoodController.waste_orders_by_date)
+router.get('/wasteForOrder/:order_id', wasteFoodController.waste_by_order_id)
 router.post('/logWastage', wasteFoodController.log_wastage)
 
 // router.get("/auth",AuthenticationMiddleware)

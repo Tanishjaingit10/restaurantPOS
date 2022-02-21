@@ -28,7 +28,7 @@ const log_wastage = (req, res) => {
 const waste_by_order_id = (req, res) => {
     const order_id = req.params.order_id;
     waste_food_template_copy
-        .find({ order_id })
+        .findOne({ order_id })
         .then((data) => {
             if (data === null)
                 return res.status(404).json({ message: "No wastage found" });
@@ -39,4 +39,38 @@ const waste_by_order_id = (req, res) => {
         );
 };
 
-module.exports = { all_orders_having_waste, log_wastage, waste_by_order_id };
+const waste_orders_by_date = async (req, res) => {
+    const start = req.params.startDate;
+    const end = req.params.stopDate;
+    waste_food_template_copy
+        .find({}, { order_id: 1, _id: 0 })
+        .then((data) => {
+            if (data === null) return res.json([]);
+            orders = data.map((or) => or.order_id);
+            return order_template_copy
+                .find({ order_id: { $in: orders } })
+                .then((data) => {
+                    if (data === null) return res.json([]);
+                    const list = [];
+                    data.forEach((item) => {
+                        if (item.time) {
+                            const time = item.time
+                                .toLocaleDateString("pt-br")
+                                .split("/")
+                                .reverse()
+                                .join("-");
+                            if (start <= time && time <= end) list.push(item);
+                        }
+                    });
+                    return res.json(list);
+                });
+        })
+        .catch((err) => res.status(500).json(err));
+};
+
+module.exports = {
+    all_orders_having_waste,
+    log_wastage,
+    waste_by_order_id,
+    waste_orders_by_date,
+};

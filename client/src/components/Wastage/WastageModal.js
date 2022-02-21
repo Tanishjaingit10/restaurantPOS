@@ -94,7 +94,7 @@ export const WastageModal = ({ isOpen, setIsOpen }) => {
             setSelectedItems((prev) => [
                 ...prev,
                 {
-                    foodItem: foodItems[0]?.foodItem || "",
+                    foodItem: "",
                     key: getNewId(),
                 },
             ]);

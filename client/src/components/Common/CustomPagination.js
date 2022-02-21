@@ -33,11 +33,13 @@ const CustomPagination = ({ pageNumber, setPageNumber, length, pageLimit }) => {
                         Previous
                     </button>
                     {pageList.map((num) => (
-                        <NumberButton
-                            number={num}
-                            active={pageNumber === num}
-                            setPageNumber={setPageNumber}
-                        />
+                        <div key={num}>
+                            <NumberButton
+                                number={num}
+                                active={pageNumber === num}
+                                setPageNumber={setPageNumber}
+                            />
+                        </div>
                     ))}
                     {pageList[pageList.length - 1] !== numberOfPages && (
                         <>
