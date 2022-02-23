@@ -38,6 +38,8 @@ const Orders = () => {
     const [showComments, setShowComments] = useState(false);
     const [orderDetails, setOrderDetails] = useState({});
     const [ordersToShow, setOrdersToShow] = useState([]);
+    const [includeDineIn, setIncludeDineIn] = useState(true);
+    const [includeTakeAway, setIncludeTakeAway] = useState(true);
     const theme = useContext(ThemeContext);
     const printTable = useRef();
     const printOrderDetails = useRef();
@@ -122,16 +124,26 @@ const Orders = () => {
             .finally(() => setLoading(false));
     };
 
+    const filteredByOrderType = () => {
+        return orders.filter(
+            (or) =>
+                (includeDineIn && or.payment.orderType === "Dine In") ||
+                (includeTakeAway && or.payment.orderType === "Take Away")
+        );
+    };
+
     useEffect(() => {
         setPageNumber(1);
         setPageLimit(10);
-        setOrdersToShow(orders.slice(0, pageLimit));
-    }, [orders]);
+        setOrdersToShow(filteredByOrderType(orders).slice(0, pageLimit));
+    }, [orders, includeDineIn, includeTakeAway]);
 
     useEffect(() => {
         const start = (pageNumber - 1) * pageLimit;
-        setOrdersToShow(orders.slice(start, start + pageLimit));
-    }, [pageNumber, pageLimit]);
+        setOrdersToShow(
+            filteredByOrderType(orders).slice(start, start + pageLimit)
+        );
+    }, [pageNumber, pageLimit, includeDineIn, includeTakeAway]);
 
     const options = [
         { value: 1, label: "1" },
@@ -260,51 +272,89 @@ const Orders = () => {
                                 </div>
                                 <div className="my-4">
                                     <div className="flex flex-row items-center justify-end">
-                                        <div
-                                            onChange={(event) => {
-                                                getOrderByStatus(
-                                                    event.target.value
-                                                );
-                                            }}
-                                        >
-                                            <input
-                                                type="radio"
-                                                value="Processing"
-                                                name="orderStatus"
-                                                className="ml-5 mr-3"
-                                            />
-                                            <span className="text-red-500">
-                                                Pending
-                                            </span>
-                                            <input
-                                                type="radio"
-                                                value="Completed"
-                                                name="orderStatus"
-                                                className="ml-5 mr-3"
-                                            />
-                                            <span className="text-green">
-                                                Completed
-                                            </span>
-                                            <input
-                                                type="radio"
-                                                value="Cancelled"
-                                                name="orderStatus"
-                                                className="ml-5 mr-3"
-                                            />
-                                            <span className="text-yellow">
-                                                Cancelled
-                                            </span>
-                                            <input
-                                                type="radio"
-                                                value="allOrders"
-                                                name="orderStatus"
-                                                className="ml-5 mr-3"
-                                                defaultChecked
-                                            />
+                                        <div className="flex flex-col items-center gap-2">
+                                            <div
+                                                onChange={(event) => {
+                                                    getOrderByStatus(
+                                                        event.target.value
+                                                    );
+                                                }}
+                                            >
+                                                <input
+                                                    type="radio"
+                                                    value="Processing"
+                                                    name="orderStatus"
+                                                    className="ml-5 mr-3"
+                                                />
+                                                <span className="text-red-500">
+                                                    Pending
+                                                </span>
+                                                <input
+                                                    type="radio"
+                                                    value="Completed"
+                                                    name="orderStatus"
+                                                    className="ml-5 mr-3"
+                                                />
+                                                <span className="text-green">
+                                                    Completed
+                                                </span>
+                                                <input
+                                                    type="radio"
+                                                    value="Cancelled"
+                                                    name="orderStatus"
+                                                    className="ml-5 mr-3"
+                                                />
+                                                <span className="text-yellow">
+                                                    Cancelled
+                                                </span>
+                                                <input
+                                                    type="radio"
+                                                    value="allOrders"
+                                                    name="orderStatus"
+                                                    className="ml-5 mr-3"
+                                                    defaultChecked
+                                                />
+                                                <span className="text-red-500 mr-5">
+                                                    All Orders
+                                                </span>
+                                            </div>
+                                            <div className="flex text-red-500 justify-center items-center">
+                                                <button
+                                                    onClick={() =>
+                                                        setIncludeDineIn(
+                                                            (e) => !e
+                                                        )
+                                                    }
+                                                    className="mx-2 font-semibold"
+                                                >
+                                                    <span
+                                                        className={`${
+                                                            includeDineIn
+                                                                ? "fas fa-check-square"
+                                                                : "far fa-square"
+                                                        } mr-2`}
+                                                    />
+                                                    Dine In
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        setIncludeTakeAway(
+                                                            (e) => !e
+                                                        )
+                                                    }
+                                                    className="mx-2 font-semibold"
+                                                >
+                                                    <span
+                                                        className={`${
+                                                            includeTakeAway
+                                                                ? "fas fa-check-square"
+                                                                : "far fa-square"
+                                                        } mr-2`}
+                                                    />
+                                                    Take Away
+                                                </button>
+                                            </div>
                                         </div>
-                                        <span className="text-red-500 mr-5">
-                                            All Orders
-                                        </span>
                                         <div className="flex flex-row items-center justify-end">
                                             <div
                                                 style={{
@@ -606,7 +656,7 @@ const Orders = () => {
                             <CustomPagination
                                 pageNumber={pageNumber}
                                 setPageNumber={setPageNumber}
-                                length={orders.length}
+                                length={filteredByOrderType(orders).length}
                                 pageLimit={pageLimit}
                             />
                         </div>

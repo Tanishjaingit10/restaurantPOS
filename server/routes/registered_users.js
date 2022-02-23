@@ -87,6 +87,7 @@ router.post('/updateStoreInfo',storeInfoController.updateStoreInfo)
 
 router.get('/table', tableController.all_table)
 router.get('/getAvailableTable', tableController.available_table)
+router.get('/vacateTable/:id', tableController.vacate_table)
 router.post('/addTable', tableController.add_table)
 router.delete('/removeTable/:id', tableController.remove_table)
 

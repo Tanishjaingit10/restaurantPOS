@@ -1,42 +1,66 @@
-const table_template_copy = require('../models/tables')
+const table_template_copy = require("../models/tables");
 
-const add_table =async (request, response, next)=>{
-    const{number,capacity,location,image,status}=request.body;
-    if(!number||!capacity)
-    {
-
-        return response.status(422).json({error:"Please fill out the required fields!"})
+const add_table = async (request, response, next) => {
+    const { number, capacity, location, image, status } = request.body;
+    if (!number || !capacity) {
+        return response
+            .status(422)
+            .json({ error: "Please fill out the required fields!" });
     }
-    await table_template_copy.findOne({number:number}).then((tableExist)=>{
-        if(tableExist){
-            return response.status(402).json({error:"Item Already Exists!"})
+    await table_template_copy.findOne({ number: number }).then((tableExist) => {
+        if (tableExist) {
+            return response.status(402).json({ error: "Item Already Exists!" });
         }
-        const table = new table_template_copy({number,capacity,location,image,status})
-        table.save().then(()=>{
-            response.status(200).json({message: "Item added successfully!"})
-        })
-        .catch(error =>{
-            
-            response.status(401).json({error: "Item could not be added!"})
-        })
-
+        const table = new table_template_copy({
+            number,
+            capacity,
+            location,
+            image,
+            status,
+        });
+        table
+            .save()
+            .then(() => {
+                response
+                    .status(200)
+                    .json({ message: "Item added successfully!" });
+            })
+            .catch((error) => {
+                response
+                    .status(401)
+                    .json({ error: "Item could not be added!" });
+            });
     });
-}
+};
+
+const vacate_table = async (req, res) => {
+    tableId = req?.params?.id;
+    table_template_copy
+        .findOne({ _id: tableId })
+        .then((data) => {
+            data.status = "Free";
+            return data.save();
+        })
+        .then(() => res.json({ message: "Table is now vacant" }))
+        .catch((err) =>
+            res.status(500).json({ message: "Unable to vacate table" })
+        );
+};
 
 const get_table = async (request, response) => {
-    table_template_copy.findOne({ category: request.params.id }, (err, data) => {
-        if (!err) {
-            if (data === null)
-                response.json({ message: 'Item not found!' })
-            else response.send(data);
+    table_template_copy.findOne(
+        { category: request.params.id },
+        (err, data) => {
+            if (!err) {
+                if (data === null)
+                    response.json({ message: "Item not found!" });
+                else response.send(data);
+            } else {
+                response.json({ message: "Item could not be shown!" });
+            }
         }
-        else
-        {
-            response.json({ message: 'Item could not be shown!' })
-        }
-
-    });
-}
+    );
+};
 
 const all_table = async (request, response) => {
     table_template_copy.find({}, (err, data) => {
@@ -46,24 +70,28 @@ const all_table = async (request, response) => {
 };
 const remove_table = async (request, response, next) => {
     let itemId = request.params.id;
-    table_template_copy.findOneAndDelete({_id: itemId}).then(() => {
-        response.json({ message: 'Table removed successfully!' })
-    })
-        .catch(error => {
-            response.json({ message: 'Table could not be removed!' })
+    table_template_copy
+        .findOneAndDelete({ _id: itemId })
+        .then(() => {
+            response.json({ message: "Table removed successfully!" });
         })
+        .catch((error) => {
+            response.json({ message: "Table could not be removed!" });
+        });
+};
 
-}
-
-const available_table = async (request, response) =>{
-    table_template_copy.find({status: 'Free'}, (err, data) => {
+const available_table = async (request, response) => {
+    table_template_copy.find({ status: "Free" }, (err, data) => {
         if (!err) response.status(200).send(data);
         else console.log(err);
     });
-}
+};
 
 module.exports = {
-    add_table, get_table, all_table, remove_table, available_table
-}
-
-
+    add_table,
+    get_table,
+    all_table,
+    remove_table,
+    available_table,
+    vacate_table,
+};

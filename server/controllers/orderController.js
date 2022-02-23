@@ -71,7 +71,7 @@ const get_order = async (request, response, next)=>{
         }
         else
         {
-            response.json({ message: 'Item could not be shown!' })
+            response.status(500).json({ message: 'Item could not be shown!' })
         }
 
     });
@@ -301,13 +301,6 @@ const make_payment = (req,res) => {
         return res.json({message:"Payment Already Completed"})
       data.payment.status = "Completed"
       data.save().then(()=>{})
-      table_template_copy.findOne({number:data?.payment?.table})
-        .then(data=>{
-          if(data){
-            data.status = "Free"
-            data.save().then(()=>{})
-          }
-        })
       res.json("ok")
     })
     .catch(()=>res.status(500).json({message:"Payment Failed"}))
@@ -326,7 +319,7 @@ const order_online = (req, res) => {
     newOrder
         .save()
         .then((data) => {
-            if (data?.payment?.table?.length && data?.payment?.status==="Pending") {
+            if (data?.payment?.table?.length) {
                 table_template_copy
                     .findOneAndUpdate(
                         { number: req?.body?.payment?.table },

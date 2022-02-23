@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const autoIncrement = require("mongoose-sequence")(mongoose);
 
-const Processing = "Processing";
 const order_template = new mongoose.Schema({
     order_id: {
         type: Number,
@@ -45,9 +44,18 @@ const order_template = new mongoose.Schema({
             total: Number,
             tip: Number,
             mode: String,
-            status: String, // Pending // Completed // Cancelled //
-            orderType: String, // Dine In // Take Away //
-            orderStatus: String, // Processing // ReadyToServe // Completed // Cancelled //
+            status: {
+                type: String, // Pending // Completed // Cancelled //
+                default: "Pending",
+            },
+            orderType: {
+                type: String, // Dine In // Take Away //
+                default: "Take Away",
+            },
+            orderStatus: {
+                type: String, // Processing // ReadyToServe // Completed // Cancelled //
+                default: "Processing",
+            },
             table: String,
         },
     },

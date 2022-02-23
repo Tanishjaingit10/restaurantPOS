@@ -231,7 +231,7 @@ export default function Pos() {
                 mode: paymentMode,
                 orderType,
                 orderStatus: "Processing",
-                table,
+                table: orderType === "Dine In" ? table : null,
             },
             comments,
         };
@@ -379,16 +379,20 @@ export default function Pos() {
                 </div>
                 <div className="col-span-2 flex flex-col h-full">
                     <div className="p-4 flex px-10">
-                        <div
-                            className={`border-2 font-bold mx-3 flex-1 p-2 ${
-                                orderType === "Dine In"
-                                    ? "text-white bg-red-500"
-                                    : "text-red-500 bg-white"
-                            } rounded-md text-center border-red-500`}
-                        >
-                            Dine In
-                        </div>
-                        <div
+                        {table && (
+                            <button
+                                onClick={() => setOrderType("Dine In")}
+                                className={`border-2 font-bold mx-3 flex-1 p-2 ${
+                                    orderType === "Dine In"
+                                        ? "text-white bg-red-500"
+                                        : "text-red-500 bg-white"
+                                } rounded-md text-center border-red-500`}
+                            >
+                                Dine In
+                            </button>
+                        )}
+                        <button
+                            onClick={() => setOrderType("Take Away")}
                             className={`border-2 font-bold mx-3 flex-1 p-2 ${
                                 orderType === "Take Away"
                                     ? "text-white bg-red-500"
@@ -396,22 +400,26 @@ export default function Pos() {
                             } rounded-md text-center border-red-500`}
                         >
                             Take Away
-                        </div>
+                        </button>
                     </div>
                     <div className="flex">
-                        <Link
-                            to="/tables"
-                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
-                        >
-                            <div className="h-4 w-4 fas fa-th-large" />
-                            <div className="text-xs">{table || "Tables"}</div>
-                        </Link>
+                        {orderType === "Dine In" && (
+                            <Link
+                                to="/tables"
+                                className="bg-red-500 flex flex-col items-center justify-center text-white h-14 m-2 mr-0 border-2 flex-1"
+                            >
+                                <div className="h-4 w-4 fas fa-th-large" />
+                                <div className="text-xs">
+                                    {table || "Tables"}
+                                </div>
+                            </Link>
+                        )}
                         <CustomerInfoOverlayButton
                             customer={customer}
                             setCustomer={setCustomer}
                             currentTable={table}
                             setCurrentTable={setTable}
-                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 my-2 border-2 flex-1"
+                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 ml-2 my-2 border-2 flex-1"
                         >
                             <div className="h-4 w-4 far fa-user" />
                             <div className="text-xs">Coustomer Information</div>

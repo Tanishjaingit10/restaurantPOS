@@ -121,7 +121,7 @@ const stripeWebhook = async (req, res) => {
                     })
                     .then((data) => {
                         if (data !== null) {
-                            data.status = "Completed";
+                            data.payment.status = "Completed";
                             data.save().then(() => {});
                             const newKOT = new kot_template_copy({
                                 ...data.toJSON(),

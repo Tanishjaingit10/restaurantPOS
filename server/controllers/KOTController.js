@@ -40,17 +40,17 @@ const generate_kot = (req, res) => {
                     message:
                         "This order is already paid. Please generate a new order",
                 });
-            table_template_copy
-                .findOneAndUpdate(
-                    { number: req?.body?.payment?.table },
-                    { status: "Unavailable", time: Date.now() }
-                )
-                .then(() => {});
             if (data === null) {
                 if (!req.body?.order?.length)
                     return res
                         .status(400)
                         .json({ message: "Please Provide Food Items" });
+                table_template_copy
+                    .findOneAndUpdate(
+                        { number: req?.body?.payment?.table },
+                        { status: "Unavailable", time: Date.now() }
+                    )
+                    .then(() => {});
                 const newOrder = new order_template_copy(req.body);
                 newOrder.save().then((data) => {
                     if (
@@ -90,6 +90,12 @@ const generate_kot = (req, res) => {
                 const oldOrderInfo = data.toJSON();
                 const newOrderInfo = req.body;
                 const newKotOrders = [];
+                table_template_copy
+                    .findOneAndUpdate(
+                        { number: req?.body?.payment?.table },
+                        { status: "Unavailable" }
+                    )
+                    .then(() => {});
                 kot_template_copy
                     .find({ order_id: oldOrderInfo.order_id })
                     .then((obj) => {
@@ -262,9 +268,11 @@ const kot_order_status = async (request, response) => {
                                     order_template_copy
                                         .findOne({ order_id: kot.order_id })
                                         .then((order) => {
-                                            order.payment.orderStatus =
-                                                Completed;
-                                            order.save();
+                                            if (order) {
+                                                order.payment.orderStatus =
+                                                    Completed;
+                                                order.save();
+                                            }
                                         });
                                 }
                             });

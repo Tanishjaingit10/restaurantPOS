@@ -23,6 +23,9 @@ import QRCode from "react-qr-code";
 import { TableUIUrl } from "../config";
 import ReactToPdf from "react-to-pdf";
 import { useReactToPrint } from "react-to-print";
+import SpinLoader from "./SpinLoader";
+import axios from "axios";
+import { NotificationContext } from "../context/Notification";
 
 const Tables = () => {
     const [componentLoading, setComponentLoading] = useState(false);
@@ -54,8 +57,10 @@ const Tables = () => {
     const [timeNow, setTimeNow] = useState(Date.now());
     const [clickedTableId, setClickedTableId] = useState("");
     const [qrCodeIsOpen, setQrCodeIsOpen] = useState(false);
+    const [qrModalLoading, setQrModalLoading] = useState(false);
+    const notify = useContext(NotificationContext);
     const qrCodeRef = useRef(null);
-    const linkToTableUI = `${TableUIUrl}/${clickedTableId}`;
+    const linkToTableUI = `${TableUIUrl}/${clickedTableId || ""}`;
 
     useEffect(() => {
         setComponentLoading(true);
@@ -220,6 +225,37 @@ const Tables = () => {
         bodyClass: "h-screen w-screen flex items-center justify-center",
     });
 
+    const handleVacateTable = () => {
+        setQrModalLoading(true);
+        axios
+            .get(
+                `/app/orderForTable/${
+                    displayTable.find((t) => t._id === clickedTableId)?.number
+                }`
+            )
+            .then((res) => {
+                notify("Please complete the payment first");
+            })
+            .catch((err) => {
+                if (err?.response?.data?.message === "Item not found!") {
+                    return axios
+                        .get(`/app/vacateTable/${clickedTableId}`)
+                        .then((res) => {
+                            setReload(!reload);
+                            setQrCodeIsOpen(false);
+                        })
+                        .catch((err) =>
+                            notify(
+                                err?.response?.data?.message ||
+                                    "Error.. Try Again"
+                            )
+                        )
+                        .finally(setLoading(false));
+                } else
+                    notify(err?.response?.data?.message || "Error.. Try Again");
+            })
+            .finally(() => setQrModalLoading(false));
+    };
     return (
         <div className="">
             {componentLoading ? <Loader /> : null}
@@ -249,9 +285,7 @@ const Tables = () => {
                     />
                     <button
                         className="bg-yellow-500 text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
-                        onClick={() => {
-                            navigate("/takeaways");
-                        }}
+                        onClick={() => handleTableClick()}
                     >
                         Take Away
                     </button>
@@ -264,7 +298,7 @@ const Tables = () => {
                     />
                     <button
                         className="bg-green text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
-                        onPress={() => openModal()}
+                        onClick={() => openModal()}
                     >
                         {"+ Add Table"}
                     </button>
@@ -814,15 +848,19 @@ const Tables = () => {
                 controller={setQrCodeIsOpen}
                 className="flex flex-col items-center justify-center p-10 rounded-xl absolute bg-white"
             >
+                {qrModalLoading && <SpinLoader />}
                 <button
                     onClick={() => setQrCodeIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
                 <div className="text-center text-3xl mb-10 text-red-500 font-semibold">
-                    {`Table: ${
-                        displayTable?.find((t) => t._id === clickedTableId)
-                            ?.number
-                    }`}
+                    {clickedTableId
+                        ? `Table: ${
+                              displayTable?.find(
+                                  (t) => t._id === clickedTableId
+                              )?.number
+                          }`
+                        : "Take Away"}
                 </div>
                 <div className="flex gap-8 mb-10">
                     <div ref={qrCodeRef}>
@@ -848,17 +886,35 @@ const Tables = () => {
                         >
                             Print
                         </button>
+                        {!clickedTableId && (
+                            <button
+                                onClick={() => navigate("/orders")}
+                                className="bg-yellow-500 p-2 rounded-lg font-semibold"
+                            >
+                                View Orders Report
+                            </button>
+                        )}
+                        {clickedTableId &&
+                            displayTable.find((t) => t._id === clickedTableId)
+                                ?.status !== "Free" && (
+                                <button
+                                    onClick={handleVacateTable}
+                                    className="bg-yellow-500 p-2 rounded-lg font-semibold"
+                                >
+                                    Vacate Table
+                                </button>
+                            )}
                         <button
                             onClick={() =>
                                 navigate("/pos", {
                                     state: displayTable.find(
                                         (t) => t._id === clickedTableId
-                                    ).number,
+                                    )?.number,
                                 })
                             }
-                            className="bg-red-500 p-2 rounded-lg font-semibold"
+                            className="bg-green p-2 rounded-lg font-semibold"
                         >
-                            View Table
+                            {clickedTableId ? "View Table" : "Take Order"}
                         </button>
                     </div>
                 </div>
