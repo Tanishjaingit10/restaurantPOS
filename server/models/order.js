@@ -59,6 +59,10 @@ const order_template = new mongoose.Schema({
             table: String,
         },
     },
+    pickupTime: {
+        type: Date,
+        default: Date.now,
+    },
     comments: String,
     time: {
         type: Date,

@@ -54,6 +54,9 @@ export default function Pos() {
     const [tip, setTip] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [discountType, setDiscountType] = useState(fixed);
+    const [pickupTime, setPickupTime] = useState(
+        new Date(Date.now()).toJSON().substring(0, 16)
+    );
     const [paymentDoneOverlayIsOpen, setPaymentDoneOverlayIsOpen] =
         useState(false);
     const [customer, setCustomer] = useState({
@@ -134,6 +137,9 @@ export default function Pos() {
         setOrder_id(order.order_id);
         setTip(order?.payment?.tip || 0);
         setDiscount(order?.payment?.discount || 0);
+        setPickupTime(
+            order?.pickupTime || new Date(Date.now()).toJSON().substring(0, 16)
+        );
     };
 
     useEffect(() => {
@@ -233,6 +239,7 @@ export default function Pos() {
                 orderStatus: "Processing",
                 table: orderType === "Dine In" ? table : null,
             },
+            pickupTime,
             comments,
         };
         if (order_id) dataToPost["order_id"] = order_id;
@@ -415,6 +422,9 @@ export default function Pos() {
                             </Link>
                         )}
                         <CustomerInfoOverlayButton
+                            orderType={orderType}
+                            pickupTime={pickupTime}
+                            setPickupTime={setPickupTime}
                             customer={customer}
                             setCustomer={setCustomer}
                             currentTable={table}

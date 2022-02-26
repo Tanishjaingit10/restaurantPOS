@@ -60,7 +60,7 @@ const Tables = () => {
     const [qrModalLoading, setQrModalLoading] = useState(false);
     const notify = useContext(NotificationContext);
     const qrCodeRef = useRef(null);
-    const linkToTableUI = `${TableUIUrl}/${clickedTableId || ""}`;
+    const linkToTableUI = `${TableUIUrl}/${clickedTableId || "TakeAway"}`;
 
     useEffect(() => {
         setComponentLoading(true);
@@ -914,7 +914,11 @@ const Tables = () => {
                             }
                             className="bg-green p-2 rounded-lg font-semibold"
                         >
-                            {clickedTableId ? "View Table" : "Take Order"}
+                            {clickedTableId &&
+                            displayTable.find((t) => t._id === clickedTableId)
+                                ?.status !== "Free"
+                                ? "View Table"
+                                : "Take Order"}
                         </button>
                     </div>
                 </div>

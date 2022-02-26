@@ -12,12 +12,18 @@ function CustomerInfoOverlayButton({
     currentTable,
     setCurrentTable,
     setCustomer,
+    orderType,
+    pickupTime,
+    setPickupTime,
     ...rest
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [tables, setTables] = useState([]);
     const [table, setTable] = useState();
+    const [tempPickupTime, setTempPickupTime] = useState(
+        pickupTime || new Date(Date.now()).toJSON().substring(0, 16)
+    );
 
     const notify = useContext(NotificationContext);
 
@@ -35,9 +41,8 @@ function CustomerInfoOverlayButton({
     }, []);
 
     useEffect(() => {
-        setTable(currentTable)
+        setTable(currentTable);
     }, [tables]);
-    
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -46,7 +51,8 @@ function CustomerInfoOverlayButton({
             email: e.target.email.value,
             contact: e.target.contact.value,
         });
-        setCurrentTable(e.target.table.value);
+        if (e?.target?.table?.value) setCurrentTable(e.target.table.value);
+        if (tempPickupTime) setPickupTime(tempPickupTime);
         setIsOpen(false);
     };
 
@@ -95,32 +101,48 @@ function CustomerInfoOverlayButton({
                             placeholder="Email address"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
-                        <label htmlFor="table">Table Number</label>
-                        <select
-                            id="table"
-                            name="table"
-                            className="border items-center px-4 flex text-white bg-red-400 w-80 rounded-md h-12"
-                            onChange={(e) => setTable(e.target.value)}
-                            value={table}
-                        >
-                            {/* <option
-                                value={currentTable}
-                                className="bg-red-400"
-                            >
-                                Table: {currentTable}
-                            </option> */}
-                            {tables
-                                .filter((table) => table.status === "Free")
-                                .map((table) => (
-                                    <option
-                                        key={table._id}
-                                        value={table.number}
-                                        className="bg-red-400"
-                                    >
-                                        Table: {table.number}
-                                    </option>
-                                ))}
-                        </select>
+                        {orderType === "Dine In" ? (
+                            <>
+                                <label htmlFor="table">Table Number</label>
+                                <select
+                                    id="table"
+                                    name="table"
+                                    className="border items-center px-4 flex text-white bg-red-400 w-80 rounded-md h-12"
+                                    onChange={(e) => setTable(e.target.value)}
+                                    value={table}
+                                >
+                                    {tables
+                                        .filter(
+                                            (table) => table.status === "Free"
+                                        )
+                                        .map((table) => (
+                                            <option
+                                                key={table._id}
+                                                value={table.number}
+                                                className="bg-red-400"
+                                            >
+                                                Table: {table.number}
+                                            </option>
+                                        ))}
+                                </select>
+                            </>
+                        ) : (
+                            <>
+                                <label htmlFor="pickupTime">
+                                    Pickup Time (DD-MM-YYYY HH:MM)
+                                </label>
+                                <input
+                                    required
+                                    id="pickupTime"
+                                    type="datetime-local"
+                                    value={tempPickupTime}
+                                    onChange={(e) =>
+                                        setTempPickupTime(e.target.value)
+                                    }
+                                    className="border items-center px-4 flex text-white bg-red-400 w-80 rounded-md h-12"
+                                />
+                            </>
+                        )}
                     </div>
                     <div className="flex justify-center mb-4">
                         <button
