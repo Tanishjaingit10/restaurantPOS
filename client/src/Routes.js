@@ -15,7 +15,6 @@ import Split from "./components/Split";
 import Tables from "./components/Tables";
 import Takeaways from "./components/Takeaways";
 import Attendance from "./components/Attendance.js/Attendance";
-import Wastage from "./components/Wastage";
 
 import { UserContext } from "./context/User";
 import { DefaultLayout } from "./layouts/DefaultLayout";
@@ -43,7 +42,6 @@ const Router = () => {
                 <Route path="/takeaways" element={<Takeaways />} />
                 <Route path="/reservations" element={<Reservations />} />
                 <Route path="/split" element={<Split />} />
-                <Route path="/wastage" element={<Wastage />} />
             </Route>
         </Routes>
     );

@@ -15,7 +15,6 @@ const kotController = require('../controllers/KOTController')
 const paymentController = require('../controllers/paymentController');
 const storeInfoController = require('../controllers/storeInfoController');
 const FileController = require('../controllers/FileController');
-const wasteFoodController = require('../controllers/wasteFoodController');
 
 const { upload } = require('../middleware/GridFS');
 // const { AuthenticationMiddleware } = require('../middleware/Authentication');
@@ -97,11 +96,6 @@ router.post('/signup', userController.add_user)
 router.post('/signin', userController.login)
 router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
-
-router.get('/allWasteOrders', wasteFoodController.all_orders_having_waste)
-router.get('/wasteOrdersByDate/:startDate/:stopDate', wasteFoodController.waste_orders_by_date)
-router.get('/wasteForOrder/:order_id', wasteFoodController.waste_by_order_id)
-router.post('/logWastage', wasteFoodController.log_wastage)
 
 // router.get("/auth",AuthenticationMiddleware)
 

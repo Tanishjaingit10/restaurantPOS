@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ProSidebar, SidebarHeader, SidebarContent, Menu, MenuItem } from 'react-pro-sidebar';
-import { FiLogOut, FiTrash } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { AiOutlineEye } from 'react-icons/ai';
 import { BsLayers } from 'react-icons/bs';
@@ -10,12 +10,10 @@ import { FaConciergeBell, FaHome, FaArrowLeft } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import '../styles/SideBar.css';
-import { WastageModal } from "./Wastage/WastageModal";
 
 const SideBar = () => {
 	const [menuCollapse, setMenuCollapse] = useState(true)
 	const location = useLocation();  
-	const [wastageIsOpen, setWastageIsOpen] = useState(false)
 	
 	const menuIconClick = () => {
 		menuCollapse ? setMenuCollapse(false) : setMenuCollapse(true);
@@ -43,12 +41,10 @@ const SideBar = () => {
 					<MenuItem active={location.pathname === '/kitchen' ? true: false} icon={<FaConciergeBell color="white" />}><Link to="/kitchen">Kitchen Dashboard</Link></MenuItem>
 					<MenuItem active={location.pathname === '/menu' ? true: false} icon={<BiFoodMenu color="white" />}><Link to="/menu">Menu</Link></MenuItem>
 					<MenuItem active={location.pathname === '/attendance' ? true: false} icon={<IoIosPeople color="white" />}><Link to="/attendance">Attendance</Link></MenuItem>
-					<MenuItem active={location.pathname === '/wastage' ? true: false} onClick={()=>setWastageIsOpen(true)} icon={<FiTrash color="white"/>}>Wastage</MenuItem>
 					<MenuItem active={location.pathname === '/logout' ? true: false} icon={<FiLogOut color="white" />}>Log Out</MenuItem>
 				</Menu>
 			</SidebarContent>
 		</ProSidebar>
-		<WastageModal isOpen={wastageIsOpen} setIsOpen={setWastageIsOpen}/>
 	</div>
 	)
 }
