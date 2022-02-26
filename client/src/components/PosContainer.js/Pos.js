@@ -217,7 +217,7 @@ export default function Pos() {
                 discount: item.discount,
                 quantity: item.quantity,
                 subtotal: subTotal,
-                timeToCook:
+                time:
                     parseInt(item.time.split(":")[0]) * 3600 +
                     parseInt(item.time.split(":")[1]) * 60 +
                     parseInt(item.time.split(":")[2]),

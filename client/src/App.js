@@ -3,7 +3,6 @@ import "./App.css";
 import { OrderProvider } from "./context/Cart";
 import Router from "./Routes";
 import { UserProvider } from "./context/User";
-import { PaymentProvider } from "./context/Payment";
 import { CustomerProvider } from "./context/Customer";
 import { CategoryProvider } from "./context/Category";
 import { CustomersProvider } from "./context/Customers";
@@ -20,13 +19,11 @@ function App() {
                         <OrdersProvider>
                             <CustomerProvider>
                                 <OrderProvider>
-                                    <PaymentProvider>
-                                        <ThemeProvider>
-                                            <NotificationProvider>
-                                                <Router />
-                                            </NotificationProvider>
-                                        </ThemeProvider>
-                                    </PaymentProvider>
+                                    <ThemeProvider>
+                                        <NotificationProvider>
+                                            <Router />
+                                        </NotificationProvider>
+                                    </ThemeProvider>
                                 </OrderProvider>
                             </CustomerProvider>
                         </OrdersProvider>

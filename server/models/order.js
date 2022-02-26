@@ -30,7 +30,7 @@ const order_template = new mongoose.Schema({
                 price: Number,
                 discount: Number,
                 subtotal: Number,
-                timeToCook: Number,
+                time: Number,
                 quantity: Number,
             },
         ],

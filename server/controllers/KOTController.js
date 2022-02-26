@@ -42,9 +42,9 @@ const generate_kot = (req, res) => {
                 });
             if (data === null) {
                 if (!req.body?.order?.length)
-                    return res
-                        .status(400)
-                        .json({ message: "Please Provide Food Items" });
+                    return res.status(400).json({
+                        message: "Please Provide Food Items",
+                    });
                 table_template_copy
                     .findOneAndUpdate(
                         { number: req?.body?.payment?.table },

@@ -1,8 +1,6 @@
 const stripe = require("stripe")(process.env.STRIPE_PAYMENT_SECRET_KEY);
 const payment_intent_template = require("../models/paymentIntent");
 const order_template_copy = require("../models/order");
-const customer_template_copy = require("../models/customers");
-const table_template_copy = require("../models/tables");
 const kot_template_copy = require("../models/KOT");
 
 const stripe_payment = async (req, res) => {
@@ -27,65 +25,17 @@ const stripe_payment = async (req, res) => {
                 .catch((err) =>
                     res.status(500).json({ message: "Unable to process." })
                 );
-            if (req?.body?.order?.payment)
-                req.body.order.payment.paymentIntentId = intent.id;
-            const newOrder = order_template_copy(req?.body?.order);
-            newOrder
-                .save()
-                .then((data) => {
-                    if (
-                        data?.payment?.table?.length &&
-                        data?.payment?.status === "Pending"
-                    ) {
-                        table_template_copy
-                            .findOneAndUpdate(
-                                { number: req?.body?.payment?.table },
-                                { status: "Unavailable", time: Date.now() }
-                            )
-                            .then(() => {});
-                    }
-                    customer_template_copy
-                        .findOne({ contact: data?.customer?.contact })
-                        .then((data) => {
-                            const customer = data?.customer;
-                            if (customer?.name && customer?.contact)
-                                if (data === null) {
-                                    const new_customer =
-                                        new customer_template_copy({
-                                            name: customer.name,
-                                            contact: customer.contact,
-                                            email: customer.email,
-                                            date: new Date()
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-"),
-                                            num_orders: 1,
-                                            total_amount_spent:
-                                                data?.payment?.total,
-                                            time: new Date().toLocaleTimeString(
-                                                "en-US",
-                                                {
-                                                    hour12: false,
-                                                }
-                                            ),
-                                            order_type:
-                                                data?.payment?.orderType,
-                                            order_id: data?.order_id,
-                                        });
-                                    new_customer?.save().then(() => {});
-                                } else {
-                                    data.name = customer.name;
-                                    data.email = customer.email;
-                                    data.num_orders++;
-                                    data.total_amount_spent +=
-                                        req.body?.payment?.total;
-                                    data.save().then(() => {});
-                                }
-                        });
-                    res.json({ order: data, intent });
-                })
-                .catch((err) => console.log("error", err));
+            order_template_copy
+                .findOneAndUpdate(
+                    {
+                        order_id: req.body?.order?.order_id,
+                    },
+                    { "payment.paymentIntentId": intent.id }
+                )
+                .then(() => res.json(intent))
+                .catch(() =>
+                    res.status(500).json({ message: "Payment Failed" })
+                );
         } else return res.status(500).json({ message: "Payment Failed" });
     } catch (e) {
         res.status(500).json({ message: e.message });

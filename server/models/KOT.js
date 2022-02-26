@@ -32,7 +32,7 @@ const kot_template = new mongoose.Schema({
                     type: String,
                     default: Processing, // Processing // ReadyToServe //
                 },
-                timeToCook: Number,
+                time: Number,
                 quantity: Number,
                 deleted: {
                     type: [

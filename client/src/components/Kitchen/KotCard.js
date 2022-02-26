@@ -39,7 +39,7 @@ function KotCard({ item, setKots }) {
                 Math.max(
                     max,
                     itemsStatus[item._id] === Processing
-                        ? item.timeToCook || 0
+                        ? item.time || 0
                         : 0
                 ),
             0
