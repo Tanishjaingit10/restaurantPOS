@@ -280,7 +280,7 @@ const Tables = () => {
                         title="Actions"
                         customStyle={{ backgroundColor: theme.backgroundColor }}
                         onPress={() => {
-                            navigate("reservations");
+                            navigate("/reservations");
                         }}
                     />
                     <button
