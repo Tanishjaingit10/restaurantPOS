@@ -214,7 +214,7 @@ export default function Pos() {
         let dataToPost = {
             customer,
             order: selectedItems.map((item) => ({
-                _id: item.key,
+                _id: item._id,
                 foodItem: item.foodItem,
                 orderedVariant: item.finalVariant.filter(
                     (variant) => variant.isSelected
