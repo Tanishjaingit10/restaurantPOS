@@ -9,6 +9,11 @@ const cors = require("cors");
 const DB = process.env.DATABASE;
 const PORT = 4000;
 
+// Prevents app crash
+process.on("uncaughtException", (err) => {
+    console.error(err.stack);
+});
+
 mongoose
     .connect(DB)
     .then(() => console.log("Connected to Database"))
@@ -17,6 +22,11 @@ mongoose
 app.use(express.json());
 app.use(cors());
 app.use("/app", DatabaseStatus, routesUrls);
+
+const ErrorHandler = (err, req, res, next) => {
+    res.status(500).json({ message: "Server Error", stack: err.stack });
+};
+app.use(ErrorHandler);
 
 app.listen(PORT, () =>
     console.log(`Server running at http://localhost:${PORT}`)

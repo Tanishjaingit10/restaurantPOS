@@ -56,7 +56,7 @@ function AvailableButton({ state: parentState, ...rest }) {
                             />
                         </div>
                         <div className="ml-4">
-                            {days.map((day) => (
+                            {days?.map((day) => (
                                 <div key={day.day}>
                                     <SingleDay
                                         availType={availabilityType}
@@ -105,7 +105,7 @@ function SingleDay({ day, finalAvailable, setFinalAvailable, availType }) {
 
     useEffect(() => {
         for (let avail of finalAvailable)
-            if (avail.day === day.day) setAvailable(avail);
+            if (avail?.day === day?.day) setAvailable(avail);
     }, []);
 
     const handleTimeChange = (name, value) => {
@@ -115,8 +115,8 @@ function SingleDay({ day, finalAvailable, setFinalAvailable, availType }) {
     useEffect(() => {
         setFinalAvailable((prev) => {
             let found = 0;
-            for (let i = 0; i < prev.length; i++)
-                if (prev[i].day === available.day) {
+            for (let i = 0; i < prev?.length; i++)
+                if (prev[i].day === available?.day) {
                     prev[i] = available;
                     found = 1;
                 }
@@ -130,34 +130,34 @@ function SingleDay({ day, finalAvailable, setFinalAvailable, availType }) {
             <button
                 disabled={availType === allTime}
                 onClick={() =>
-                    setAvailable((e) => ({ ...e, checked: !e.checked }))
+                    setAvailable((e) => ({ ...e, checked: !e?.checked }))
                 }
                 className="w-40 font-bold text-left relative text-gray-500"
             >
                 {availType === custom && (
                     <div
                         className={`${
-                            available.checked
+                            available?.checked
                                 ? "fas fa-check-square"
                                 : "far fa-square"
                         } text-red-400 absolute left-0 top-1/2 transform -translate-y-1/2`}
                     />
                 )}
-                <div className="ml-8">{day.day}</div>
+                <div className="ml-8">{day?.day}</div>
             </button>
             <TimePicker
-                placeholder={available.startTime || "Start Time"}
+                placeholder={available?.startTime || "Start Time"}
                 className={`rounded p-2 w-52 ml-6 text-center placeholder-white ${
-                    available.startTime && "font-bold"
+                    available?.startTime && "font-bold"
                 } bg-red-400 text-white`}
-                onSet={(val) => handleTimeChange("startTime", val.format12)}
+                onSet={(val) => handleTimeChange("startTime", val?.format12)}
             />
             <TimePicker
-                placeholder={available.endTime || "End Time"}
+                placeholder={available?.endTime || "End Time"}
                 className={`rounded p-2 w-52 ml-6 text-center placeholder-white ${
                     available.endTime && "font-bold"
                 } bg-red-400 text-white`}
-                onSet={(val) => handleTimeChange("endTime", val.format12)}
+                onSet={(val) => handleTimeChange("endTime", val?.format12)}
             />
         </div>
     );

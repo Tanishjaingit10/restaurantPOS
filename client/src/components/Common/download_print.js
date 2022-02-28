@@ -19,7 +19,6 @@ const DownloadTable = ({fileName, tableId}) => {
 
 const PrintTable = ({printTableRef, children, onPress, setOnPrint}) => {
   const theme = useContext(ThemeContext);
-  console.log(printTableRef);
   return (
   <ReactToPrint
     trigger={() => <button
@@ -46,7 +45,6 @@ const DownloadOrderDetail = ({fileName, orderDetailref}) => {
 
 const PrintOrderDetail = ({printOrderDetailRef}) => {
   const theme = useContext(ThemeContext);
-  console.log(printOrderDetailRef);
   return (
   <ReactToPrint
     trigger={() => <button

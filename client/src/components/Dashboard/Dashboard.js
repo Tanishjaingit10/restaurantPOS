@@ -223,7 +223,6 @@ const Dashboard = () => {
         )
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 if (json !== "undefined") {
                     var orderData = {
                         labels: labels,
@@ -236,7 +235,6 @@ const Dashboard = () => {
                             backgroundColor: backgroundColor[i],
                         });
                     }
-                    console.log(orderData);
                     setOrders(orderData);
                     setOrderLoad(false);
                 }
@@ -253,7 +251,6 @@ const Dashboard = () => {
         )
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 if (json !== "undefined") {
                     var salesData = {
                         labels: labels,
@@ -266,7 +263,6 @@ const Dashboard = () => {
                             backgroundColor: backgroundColor[i],
                         });
                     }
-                    console.log(salesData);
                     setSales(salesData);
                     setSaleLoad(false);
                 }
@@ -822,7 +818,6 @@ const Dashboard = () => {
                 </div>
 
                 <div className="" style={{ width: "48%" }}>
-                    {console.log(reservationReload)}
                     <CustomChart
                         title="Reservations"
                         icon={<FaUser color="white" size={25} />}

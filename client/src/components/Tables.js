@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
 import Popup from "./Popup";
 import Loader from "./Loader";
@@ -37,7 +38,7 @@ const Tables = () => {
     const [showModal, setShowModal] = useState(false);
     const [availableTables, setAvailableTables] = useState([]);
     const [allTables, setAllTables] = useState([]);
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date(Date.now()));
     const [startTime, setStartTime] = useState(new Date());
     const [endTime, setEndTime] = useState(new Date());
     const [newReservationSuccess, setNewReservationSuccess] = useState(false);
@@ -68,7 +69,6 @@ const Tables = () => {
         fetch(`/app/table`)
             .then((res) => res.json())
             .then((json) => {
-                console.log(json);
                 setDisplayTable(json);
                 var tables = [];
                 for (var i = 0; i < json.length; i++) {
@@ -94,7 +94,6 @@ const Tables = () => {
 
     const submitNewReservation = () => {
         setComponentLoading(true);
-        console.log("Saving new reservation", newReservation);
         fetch(`/app/addReservation`, {
             method: "POST",
             headers: {
@@ -103,7 +102,6 @@ const Tables = () => {
             body: JSON.stringify(newReservation),
         })
             .then((res) => {
-                console.log(res);
                 if (res.status === 200) {
                     setNewReservationSuccess(true);
                 }
@@ -130,7 +128,6 @@ const Tables = () => {
             }),
         })
             .then((res) => {
-                console.log(res);
                 if (res.status === 200) {
                 }
                 setComponentLoading(false);
@@ -142,32 +139,35 @@ const Tables = () => {
                 setComponentLoading(false);
             });
     };
+    
+    useEffect(() => {
+        getReservationByTime(
+            newReservation?.date,
+            newReservation?.startTime,
+            newReservation?.endTime
+        );
+    }, [newReservation,allTables]);
 
     const getReservationByTime = (date, startTime, endTime) => {
         setComponentLoading(true);
-        console.log("getReservationByTime", date, startTime, endTime);
         fetch(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
             .then((res) => res.json())
             .then((json) => {
-                console.log(json, "result");
                 var tableList = [];
                 var reservedTable = [];
                 for (var i = 0; i < json.length; i++) {
                     if (json[i].table !== undefined)
                         reservedTable.push(json[i].table);
                 }
-                console.log(reservedTable, "reservedTable");
-                var availableTables = allTables.filter(function (obj) {
+                var availableTables = allTables?.filter(function (obj) {
                     return reservedTable.indexOf(obj) === -1;
                 });
-                console.log(availableTables, "available table");
-                for (let i = 0; i < availableTables.length; i++) {
+                for (let i = 0; i < availableTables?.length; i++) {
                     tableList.push({
                         label: availableTables[i],
                         value: availableTables[i],
                     });
                 }
-                console.log(tableList, "table list");
                 setAvailableTables(tableList);
                 setComponentLoading(false);
             })
@@ -418,7 +418,7 @@ const Tables = () => {
                                     <div className="mb-4">
                                         <label
                                             className="block text-gray-700 text-sm font-bold mb-2"
-                                            for="fullName"
+                                            htmlFor="fullName"
                                         >
                                             Enter Customer Name
                                         </label>
@@ -441,7 +441,7 @@ const Tables = () => {
                                     <div className="mb-4">
                                         <label
                                             className="block text-gray-700 text-sm font-bold mb-2"
-                                            for="fullName"
+                                            htmlFor="fullName"
                                         >
                                             Enter Email Id
                                         </label>
@@ -464,7 +464,7 @@ const Tables = () => {
                                     <div className="mb-4">
                                         <label
                                             className="block text-gray-700 text-sm font-bold mb-2"
-                                            for="fullName"
+                                            htmlFor="fullName"
                                         >
                                             Enter Phone Number
                                         </label>

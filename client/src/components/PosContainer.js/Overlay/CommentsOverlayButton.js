@@ -12,7 +12,7 @@ function CommentsOverlayButton({
 
     const handleSubmit = (e)=>{
         e.preventDefault()
-        setComments(e.target.comment.value)
+        setComments(e.target?.comment?.value)
         setIsOpen(false)
     }
 

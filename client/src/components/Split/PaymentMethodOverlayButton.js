@@ -85,7 +85,7 @@ function PaymentMethodOverlayButton({
                     <div className="text-3xl">
                         $
                         {Math.max(
-                            amountDue + item.amount - enteredAmount,
+                            amountDue + item?.amount - enteredAmount,
                             0
                         ).toFixed(2)}
                     </div>
@@ -150,7 +150,7 @@ function PaymentMethodOverlayButton({
                             setAmountString((prev) =>
                                 prev === ""
                                     ? prev
-                                    : prev.slice(0, prev.length - 1)
+                                    : prev.slice(0, prev?.length - 1)
                             )
                         }
                         className="rounded-lg py-2 w-36 font-medium flex justify-center items-center bg-gray-200"
@@ -187,7 +187,7 @@ function PaymentMethodOverlayButton({
                         <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
                             <div className="text-xl">Amount Tendered</div>
                             <div className="text-3xl">
-                                ${enteredAmount.toFixed(2)}
+                                ${enteredAmount?.toFixed(2)}
                             </div>
                         </div>
                         <div className="flex mb-8 flex-col items-center font-bold text-gray-600 m-4 gap-2">
@@ -195,9 +195,9 @@ function PaymentMethodOverlayButton({
                             <div className="text-3xl">
                                 $
                                 {Math.max(
-                                    amountDue + item.amount - enteredAmount,
+                                    amountDue + item?.amount - enteredAmount,
                                     0
-                                ).toFixed(2)}
+                                )?.toFixed(2)}
                             </div>
                         </div>
                     </div>

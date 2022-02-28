@@ -72,7 +72,6 @@ const AllReservations = () => {
 
     const getReservationByTime = (date, startTime, endTime) => {
         setComponentLoading(true);
-        console.log("getReservationByTime", date, startTime, endTime);
         fetch(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
             .then((res) => res.json())
             .then((json) => {
@@ -478,9 +477,6 @@ const AllReservations = () => {
                                                                     setEditReservation(
                                                                         reservation
                                                                     );
-                                                                    console.log(
-                                                                        reservation
-                                                                    );
                                                                 }}
                                                             />
                                                             <CustomButton
@@ -676,9 +672,6 @@ const AllReservations = () => {
                                                                         setEditReservation(
                                                                             reservation
                                                                         );
-                                                                        console.log(
-                                                                            reservation
-                                                                        );
                                                                     }}
                                                                 />
                                                                 <CustomButton
@@ -816,7 +809,7 @@ const AllReservations = () => {
                                     <div className="mb-5">
                                         <label
                                             className="block text-gray-700 text-sm font-bold mb-2"
-                                            for="fullName"
+                                            htmlFor="fullName"
                                         >
                                             Enter Customer Name
                                         </label>
@@ -842,7 +835,7 @@ const AllReservations = () => {
                                     <div className="mb-5">
                                         <label
                                             className="block text-gray-700 text-sm font-bold mb-2"
-                                            for="fullName"
+                                            htmlFor="fullName"
                                         >
                                             Enter Email Id
                                         </label>
@@ -868,7 +861,7 @@ const AllReservations = () => {
                                     <div className="mb-5">
                                         <label
                                             className="block text-gray-700 text-sm font-bold mb-2"
-                                            for="fullName"
+                                            htmlFor="fullName"
                                         >
                                             Enter Phone Number
                                         </label>

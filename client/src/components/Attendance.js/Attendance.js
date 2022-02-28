@@ -33,12 +33,12 @@ const Attendance = () => {
             .then((json) => {
                 if (json !== "undefined") {
                     var dict = {};
-                    for (var i = 0; i < json.length; i++) {
+                    for (var i = 0; i < json?.length; i++) {
                         dict[json[i]["_id"]] = json[i];
                     }
                     setUsers(dict);
                     fetch("/app/attendance")
-                        .then((res) => res.json())
+                        .then((res) => res?.json())
                         .then((json) => {
                             setLoading(false);
                             if (json !== "undefined") setAttendance(json);
@@ -47,14 +47,15 @@ const Attendance = () => {
                         .finally(() => setComponentLoading(false));
                 }
             })
-            .catch((err) => console.error(err));
+            .catch((err) => console.error(err))
+            .finally(() => setLoading(false));
     }, [reload]);
 
     const updateAttendance = (attendance) => {
         setComponentLoading(true);
         var updatedData = {};
-        updatedData["date"] = attendance.date;
-        updatedData["userId"] = attendance.user_id;
+        updatedData["date"] = attendance?.date;
+        updatedData["userId"] = attendance?.user_id;
         if (attendance.status === "Shift Not Started") {
             updatedData["status"] = "Clocked In";
             updatedData["checkInTime"] = new Date().toLocaleTimeString(
@@ -64,13 +65,13 @@ const Attendance = () => {
             updatedData["checkOutTime"] = "N/A";
         } else if (attendance.status === "Clocked In") {
             updatedData["status"] = "Shift Completed";
-            updatedData["checkInTime"] = attendance.checkInTime;
+            updatedData["checkInTime"] = attendance?.checkInTime;
             updatedData["checkOutTime"] = new Date().toLocaleTimeString(
                 "en-US",
                 { hour12: false }
             );
         }
-        fetch(`/app/updateAttendance/${attendance._id}`, {
+        fetch(`/app/updateAttendance/${attendance?._id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -92,7 +93,7 @@ const Attendance = () => {
     useEffect(() => {
         setPageNumber(1);
         setPageLimit(10);
-        setAttendanceToShow(attendance.slice(0, pageLimit));
+        setAttendanceToShow(attendance?.slice(0, pageLimit));
     }, [attendance]);
 
     useEffect(() => {
@@ -137,7 +138,7 @@ const Attendance = () => {
                                         defaultValue={options[0]}
                                         options={options}
                                         onChange={(value) =>
-                                            setPageLimit(value.value)
+                                            setPageLimit(value?.value)
                                         }
                                     />
                                 </div>
@@ -150,7 +151,7 @@ const Attendance = () => {
                                     <div
                                         style={{
                                             backgroundColor:
-                                                theme.backgroundColor,
+                                                theme?.backgroundColor,
                                         }}
                                         className="text-white py-2 px-2 rounded-md mx-2 shadow-md"
                                     >
@@ -219,7 +220,7 @@ const Attendance = () => {
                                     {loading ? (
                                         <Loader />
                                     ) : (
-                                        attendance.map((attendance, idx) => {
+                                        attendance?.map((attendance, idx) => {
                                             return (
                                                 <tr className="">
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
@@ -443,7 +444,7 @@ const Attendance = () => {
                         <CustomPagination
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            length={attendance.length}
+                            length={attendance?.length}
                             pageLimit={pageLimit}
                         />
                     </div>
@@ -454,7 +455,7 @@ const Attendance = () => {
                     content={
                         <>
                             <p className="pb-4 font-bold text-red-500">
-                                {currAttendance.status === "Clocked In"
+                                {currAttendance?.status === "Clocked In"
                                     ? "Clock Out"
                                     : "Clock In"}
                             </p>

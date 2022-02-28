@@ -15,8 +15,6 @@ const ClockInOut = () => {
         name = e.target.name;
         value = e.target.value;
         setUser({ ...user, [name]: value });
-        console.log(name);
-        console.log(value);
     };
     const onHome = (e) => {
         navigate("/dashboard");
@@ -26,8 +24,6 @@ const ClockInOut = () => {
             await fetch(`/app/user/${user.email_id}`)
                 .then((res) => res.json())
                 .then((json) => {
-                    console.log(json);
-                    console.log(json.fullName);
                     finalUser = json;
                     if (json.attendance.status === "Clocked In")
                         buttonValue = "Clock Out";
@@ -53,7 +49,6 @@ const ClockInOut = () => {
         });
 
         if (res.status === 201) {
-            console.log(finalUser);
             finalUser.attendance = {
                 status:
                     buttonValue === "Clock In" ? "Clocked In" : "Clocked Out",
@@ -67,7 +62,6 @@ const ClockInOut = () => {
                         : new Date().toLocaleTimeString(),
                 date: new Date().toISOString().split("T")[0],
             };
-            console.log(finalUser.attendance);
             setMsg("Successful!");
             setIsOpen(!isOpen);
             await fetch(`/app/updateUser/${user.email_id}`, {

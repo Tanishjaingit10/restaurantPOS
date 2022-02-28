@@ -9,27 +9,27 @@ function ChooseVariantOverlayButton({
     ...rest
 }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [variants, setVariants] = useState(deepClone(item.finalVariant));
+    const [variants, setVariants] = useState(deepClone(item?.finalVariant));
 
     const handleSubmit = () => {
         setSelectedItems((prev) => {
             let temp = [];
-            let quantity = item.key ? 0 : 1;
-            let newKey = item.key;
-            const initialFinalVariant = JSON.stringify(item.finalVariant);
+            let quantity = item?.key ? 0 : 1;
+            let newKey = item?.key;
+            const initialFinalVariant = JSON.stringify(item?.finalVariant);
             const newFinalVariant = JSON.stringify(variants);
             prev.forEach((element) => {
-                if (element._id === item._id) {
+                if (element?._id === item?._id) {
                     const elementFinalVarinat = JSON.stringify(
-                        element.finalVariant
+                        element?.finalVariant
                     );
                     if (
                         elementFinalVarinat === newFinalVariant ||
                         elementFinalVarinat === initialFinalVariant
                     ) {
                         quantity += element.quantity || 0;
-                        if (!newKey || element.key === newKey) {
-                            newKey = element.key;
+                        if (!newKey || element?.key === newKey) {
+                            newKey = element?.key;
                             temp.push(deepClone(element));
                         }
                     } else temp.push(element);
@@ -45,7 +45,7 @@ function ChooseVariantOverlayButton({
                 for (let i = 0; i < temp.length; i++)
                     if (temp[i].key === newKey) temp[i] = addedItem;
             } else temp.push(addedItem);
-            if (item.key) {
+            if (item?.key) {
                 item = addedItem;
             }
             return deepClone(temp);
@@ -58,7 +58,7 @@ function ChooseVariantOverlayButton({
         <>
             <button
                 onClick={() =>
-                    variants.length
+                    variants?.length
                         ? setIsOpen((prev) => !prev)
                         : handleSubmit()
                 }
@@ -81,7 +81,7 @@ function ChooseVariantOverlayButton({
                 </div>
                 <div className="mb-10">
                     {variants.map((item) => (
-                        <div key={item._id}>
+                        <div key={item?._id}>
                             <SingleVariant
                                 item={item}
                                 setVariants={setVariants}
@@ -111,7 +111,7 @@ function SingleVariant({ item, setVariants }) {
 
     useEffect(() => {
         setVariants((prev) => {
-            for (let i = 0; i < prev.length; i++)
+            for (let i = 0; i < prev?.length; i++)
                 if (prev[i]._id === variant._id) prev[i] = variant;
             return prev;
         });

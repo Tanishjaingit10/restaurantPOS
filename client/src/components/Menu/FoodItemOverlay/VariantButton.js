@@ -54,7 +54,7 @@ function VariantButton({ state: parentState, children, ...rest }) {
                     Variant
                 </div>
                 <div className="w-full">
-                    {finalVariant.map((item) => (
+                    {finalVariant?.map((item) => (
                         <span key={item.key}>
                             <SingleVariant
                                 item={item}
@@ -93,7 +93,7 @@ function SingleVariant({ setFinalVariant, item }) {
     };
 
     const handleDelete = () => {
-        setFinalVariant((prev) => prev.filter((e) => e.key !== item.key));
+        setFinalVariant((prev) => prev?.filter((e) => e?.key !== item?.key));
     };
 
     useEffect(() => {
@@ -103,8 +103,8 @@ function SingleVariant({ setFinalVariant, item }) {
 
     useEffect(() => {
         setFinalVariant((prev) => {
-            for (let i = 0; i < prev.length; i++) {
-                if (prev[i].key === variant?.key) {
+            for (let i = 0; i < prev?.length; i++) {
+                if (prev[i]?.key === variant?.key) {
                     prev[i] = variant;
                 }
             }

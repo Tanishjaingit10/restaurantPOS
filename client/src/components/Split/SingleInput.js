@@ -3,15 +3,15 @@ import React, { useEffect, useState } from "react";
 import PaymentMethodOverlayButton from "./PaymentMethodOverlayButton";
 
 function SingleInput({ item, amountDue, setPartList }) {
-    const [amount, setAmount] = useState(item.amount);
-    const [paid, setPaid] = useState(item.paid);
-    const [method, setMethod] = useState(item.method);
+    const [amount, setAmount] = useState(item?.amount);
+    const [paid, setPaid] = useState(item?.paid);
+    const [method, setMethod] = useState(item?.method);
 
-    useEffect(() => setAmount(item.amount), [item.amount]);
-    useEffect(() => setPaid(item.paid), [item.paid]);
+    useEffect(() => setAmount(item?.amount), [item?.amount]);
+    useEffect(() => setPaid(item?.paid), [item?.paid]);
     useEffect(() => {
         setPartList((prev) => {
-            const temp = prev.find((it) => it.key === item.key);
+            const temp = prev?.find((it) => it?.key === item?.key);
             temp.amount = amount;
             temp.paid = paid;
             temp.method = method;

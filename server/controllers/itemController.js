@@ -14,11 +14,11 @@ const get_item = async (request, response) => {
         }
     );
 };
-const all_items = async (request, response) => {
-    items_template_copy.find({}, (err, data) => {
-        if (!err) response.send(data);
-        else console.log(err);
-    });
+const all_items = (request, response, next) => {
+    items_template_copy
+        .find({})
+        .then((data) => response.json(data))
+        .catch(next);
 };
 
 const update_item = async (request, response, next) => {

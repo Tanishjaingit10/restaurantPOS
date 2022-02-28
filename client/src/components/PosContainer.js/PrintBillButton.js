@@ -69,19 +69,19 @@ function PrintBillButton({ children, order_id, className }) {
                 </div>
                 <div className="flex justify-between text-sm w-full mb-3">
                     <div className="flex flex-col items-start">
-                        <div>Order ID: {order.order_id}</div>
+                        <div>Order ID: {order?.order_id}</div>
                         <div>
                             {order?.payment?.table
-                                ? `Table: ${order.payment.table}`
+                                ? `Table: ${order?.payment?.table}`
                                 : "Take Away"}
                         </div>
                     </div>
                     <div className="flex flex-col items-end">
                         <div>
-                            Date: {new Date(order.time).toLocaleDateString()}
+                            Date: {new Date(order?.time).toLocaleDateString()}
                         </div>
                         <div>
-                            Time: {new Date(order.time).toLocaleTimeString()}
+                            Time: {new Date(order?.time).toLocaleTimeString()}
                         </div>
                     </div>
                 </div>
@@ -96,20 +96,20 @@ function PrintBillButton({ children, order_id, className }) {
                         <th className="font-normal text-right">TOTAL</th>
                     </tr>
                     {order?.order?.map((item) => (
-                        <tr key={item._id} className="text-sm grid grid-cols-6">
+                        <tr key={item?._id} className="text-sm grid grid-cols-6">
                             <td className="col-span-3 text-left">
-                                {item.foodItem.toUpperCase()}
+                                {item?.foodItem.toUpperCase()}
                             </td>
                             <td className="text-center">
-                                {item.quantity || 0}
+                                {item?.quantity || 0}
                             </td>
                             <td className="text-right">
                                 {(
-                                    item.price - (item.discount || 0) || 0
+                                    item?.price - (item?.discount || 0) || 0
                                 ).toFixed(2)}
                             </td>
                             <td className="text-right">
-                                {(item.subtotal || 0).toFixed(2)}
+                                {(item?.subtotal || 0).toFixed(2)}
                             </td>
                         </tr>
                     ))}

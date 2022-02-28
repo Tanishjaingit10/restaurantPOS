@@ -29,7 +29,7 @@ const Menu = () => {
         setLoading(true);
         fetchCategories()
             .then(() => fetchItems())
-            .then(() => setLoading(false));
+            .finally(() => setLoading(false));
         // eslint-disable-next-line
     }, []);
 

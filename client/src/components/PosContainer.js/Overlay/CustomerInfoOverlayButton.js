@@ -32,7 +32,7 @@ function CustomerInfoOverlayButton({
         axios
             .get("/app/table")
             .then((res) => {
-                setTables(res.data);
+                if (res?.data) setTables(res.data);
             })
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable to fetch tables")
@@ -47,11 +47,11 @@ function CustomerInfoOverlayButton({
     const handleSubmit = (e) => {
         e.preventDefault();
         setCustomer({
-            name: e.target.name.value,
-            email: e.target.email.value,
-            contact: e.target.contact.value,
+            name: e.target?.name?.value,
+            email: e.target?.email?.value,
+            contact: e.target?.contact?.value,
         });
-        if (e?.target?.table?.value) setCurrentTable(e.target.table.value);
+        if (e?.target?.table?.value) setCurrentTable(e.target?.table?.value);
         if (tempPickupTime) setPickupTime(tempPickupTime);
         setIsOpen(false);
     };
@@ -81,7 +81,7 @@ function CustomerInfoOverlayButton({
                         <input
                             type="text"
                             id="name"
-                            defaultValue={customer.name}
+                            defaultValue={customer?.name}
                             placeholder="Customer Name"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
@@ -89,7 +89,7 @@ function CustomerInfoOverlayButton({
                         <input
                             type="tel"
                             id="contact"
-                            defaultValue={customer.contact}
+                            defaultValue={customer?.contact}
                             placeholder="Contact Number"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
@@ -97,7 +97,7 @@ function CustomerInfoOverlayButton({
                         <input
                             type="email"
                             id="email"
-                            defaultValue={customer.email}
+                            defaultValue={customer?.email}
                             placeholder="Email address"
                             className="border mb-1 items-center px-4 flex border-gray-300 w-80 rounded-md h-12"
                         />
@@ -113,15 +113,15 @@ function CustomerInfoOverlayButton({
                                 >
                                     {tables
                                         .filter(
-                                            (table) => table.status === "Free"
+                                            (table) => table?.status === "Free"
                                         )
                                         .map((table) => (
                                             <option
-                                                key={table._id}
-                                                value={table.number}
+                                                key={table?._id}
+                                                value={table?.number}
                                                 className="bg-red-400"
                                             >
-                                                Table: {table.number}
+                                                Table: {table?.number}
                                             </option>
                                         ))}
                                 </select>
@@ -137,7 +137,7 @@ function CustomerInfoOverlayButton({
                                     type="datetime-local"
                                     value={tempPickupTime}
                                     onChange={(e) =>
-                                        setTempPickupTime(e.target.value)
+                                        setTempPickupTime(e.target?.value)
                                     }
                                     className="border items-center px-4 flex text-white bg-red-400 w-80 rounded-md h-12"
                                 />

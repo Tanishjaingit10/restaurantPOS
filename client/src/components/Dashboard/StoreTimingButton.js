@@ -29,7 +29,6 @@ function StoreTimingButton() {
             timings: availability,
         };
         if (selectedHours) dataToPost.selectedHours = selectedHours;
-        console.log(selectedHours);
         setLoading(true);
         return axios
             .post("/app/updateStoreInfo", dataToPost)
@@ -96,8 +95,8 @@ function StoreTimingButton() {
                     ))}
                     {availability === openDuringselectedHours ? (
                         <div className="flex flex-col items-center gap-2">
-                            {days.map((day) => (
-                                <div key={day.day}>
+                            {days?.map((day) => (
+                                <div key={day?.day}>
                                     <SingleDay
                                         day={day}
                                         selectedHours={selectedHours}
@@ -144,7 +143,7 @@ function SingleDay({ day, selectedHours, setSelectedHours }) {
 
     const handleTimeChange = (name, value, key) => {
         setHours((prev) => {
-            const item = prev.find((it) => it.key === key);
+            const item = prev.find((it) => it?.key === key);
             item[name] = value;
             return [...prev];
         });
@@ -162,7 +161,7 @@ function SingleDay({ day, selectedHours, setSelectedHours }) {
     };
 
     const handleRemove = (key) => {
-        setHours((prev) => prev.filter((it) => it.key !== key));
+        setHours((prev) => prev?.filter((it) => it?.key !== key));
     };
 
     const handleCheckmark = (updated) => {
@@ -192,28 +191,28 @@ function SingleDay({ day, selectedHours, setSelectedHours }) {
                             isChecked ? "fas fa-check-square" : "far fa-square"
                         } text-red-400 mr-3`}
                     />
-                    {day.day}
+                    {day?.day}
                 </button>
                 <div className="flex flex-col gap-2">
                     {hours.map((avail, index) => (
-                        <div key={avail.key} className="flex">
+                        <div key={avail?.key} className="flex">
                             <TimePicker
                                 placeholder={avail.startTime || "Opening"}
                                 className={`rounded p-1 w-32 ml-6 text-center placeholder-white ${
-                                    avail.startTime && "font-bold"
+                                    avail?.startTime && "font-bold"
                                 } bg-red-400 text-white`}
                                 onSet={(val) =>
                                     handleTimeChange(
                                         "startTime",
-                                        val.format12,
-                                        avail.key
+                                        val?.format12,
+                                        avail?.key
                                     )
                                 }
                             />
                             <TimePicker
                                 placeholder={avail.endTime || "Closing"}
                                 className={`rounded p-1 w-32 ml-6 text-center placeholder-white ${
-                                    avail.endTime && "font-bold"
+                                    avail?.endTime && "font-bold"
                                 } bg-red-400 text-white`}
                                 onSet={(val) =>
                                     handleTimeChange(
@@ -228,9 +227,9 @@ function SingleDay({ day, selectedHours, setSelectedHours }) {
                                     onClick={addHandler}
                                     className="fas fa-plus h-8 w-8 flex-shrink-0 ml-3 bg-red-400 text-white rounded-md"
                                 />
-                                {hours.length > 1 && (
+                                {hours?.length > 1 && (
                                     <button
-                                        onClick={() => handleRemove(avail.key)}
+                                        onClick={() => handleRemove(avail?.key)}
                                         className="fas fa-times h-8 w-8 flex-shrink-0 ml-2 bg-red-400 text-white rounded-md"
                                     />
                                 )}

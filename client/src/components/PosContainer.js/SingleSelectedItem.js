@@ -6,13 +6,13 @@ function SingleSelectedItem({ item, setSelectedItems }) {
     const [quantity, setQuantity] = useState(item.quantity);
 
     useEffect(()=>{
-        if(item.quantity!==0)
-        setQuantity(item.quantity)
-    },[item.quantity])
+        if(item?.quantity!==0)
+        setQuantity(item?.quantity)
+    },[item?.quantity])
 
     useEffect(() => {
         setSelectedItems((prev) => {
-            prev = prev.map((itm) => {
+            prev = prev?.map((itm) => {
                 if (itm === item) itm.quantity = quantity || 0;
                 return itm;
             });
@@ -24,10 +24,10 @@ function SingleSelectedItem({ item, setSelectedItems }) {
         (item.finalVariant.reduce(
             (sum, variant) =>
                 sum +
-                (variant.isSelected ? variant.price * variant.quantity : 0),
+                (variant?.isSelected ? variant?.price * variant?.quantity : 0),
             0
         ) +
-            item.price-(item.discount||0)) *
+            item?.price-(item?.discount||0)) *
         quantity;
 
     return (
@@ -46,11 +46,11 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                     setSelectedItems={setSelectedItems}
                     className="flex my-2 flex-col justify-center"
                 >
-                    <div className="flex-1">{item.foodItem}</div>
+                    <div className="flex-1">{item?.foodItem}</div>
                     <div className="flex-1 text-xxs text-blue-800 font-bold">
                         {item.finalVariant.map((variant) => {
-                            if (variant.isSelected && variant.quantity)
-                                return `${variant.quantity}x With ${variant.variant} ($${variant.price})`;
+                            if (variant?.isSelected && variant?.quantity)
+                                return `${variant?.quantity}x With ${variant?.variant} ($${variant?.price})`;
                             return "";
                         })}
                     </div>

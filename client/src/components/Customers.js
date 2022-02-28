@@ -575,7 +575,6 @@ const Customers = () => {
                                         >
                                             Action
                                         </th>
-                                        {console.log(customers)}
                                     </tr>
                                     {loading ? (
                                         <Loader />

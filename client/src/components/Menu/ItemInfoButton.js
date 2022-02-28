@@ -16,9 +16,9 @@ function ItemInfoButton({ item, children, ...rest }) {
     const handleDelete = () => {
         setLoading(true);
         axios
-            .delete(`/app/removeItem/${item._id}`)
+            .delete(`/app/removeItem/${item?._id}`)
             .then(async () => {
-                notify(`Item Deleted: ${item.foodItem}`);
+                notify(`Item Deleted: ${item?.foodItem}`);
                 setIsOpen(false);
                 fetchItems();
             })
@@ -45,7 +45,7 @@ function ItemInfoButton({ item, children, ...rest }) {
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
                 <div className="text-center text-3xl mb-6 text-red-500 font-semibold">
-                    Food Item - {item.foodItem}
+                    Food Item - {item?.foodItem}
                 </div>
                 <div className="w-full h-full flex flex-col justify-between">
                     <div className="grid grid-cols-3 w-full">
@@ -54,44 +54,44 @@ function ItemInfoButton({ item, children, ...rest }) {
                                 <div className="text-gray-500 text-sm">
                                     Item Name
                                 </div>
-                                <div className="text-lg">{item.foodItem}</div>
+                                <div className="text-lg">{item?.foodItem}</div>
                             </div>
                             <div className="mb-4">
                                 <div className="text-gray-500 text-sm">
                                     Item Description
                                 </div>
                                 <div className="text-lg">
-                                    {item.description}
+                                    {item?.description}
                                 </div>
                             </div>
                             <div className="mb-4">
                                 <div className="text-gray-500 text-sm">
                                     Time To Cook (ETA)
                                 </div>
-                                <div className="text-lg">{item.time}</div>
+                                <div className="text-lg">{item?.time}</div>
                             </div>
                             <div className="mb-4">
                                 <div className="text-gray-500 text-sm">
                                     Available
                                 </div>
                                 <div className="">
-                                    {item.availabilityType === "allTime"
+                                    {item?.availabilityType === "allTime"
                                         ? "All Time"
-                                        : item.finalAvailable
+                                        : item?.finalAvailable
                                               .filter(
                                                   (day) =>
-                                                      day.startTime &&
-                                                      day.endTime
+                                                      day?.startTime &&
+                                                      day?.endTime
                                               )
                                               .map((day) => (
                                                   <div
-                                                      key={day.day}
+                                                      key={day?.day}
                                                       className="flex"
                                                   >
                                                       <div className="w-28">
-                                                          {day.day}
+                                                          {day?.day}
                                                       </div>
-                                                      {` | ${day.startTime} - ${day.endTime}`}
+                                                      {` | ${day?.startTime} - ${day?.endTime}`}
                                                   </div>
                                               ))}
                                 </div>
@@ -102,15 +102,15 @@ function ItemInfoButton({ item, children, ...rest }) {
                                 <div className="text-gray-500 text-sm">
                                     Discount
                                 </div>
-                                <div className="text-lg">{item.discount}</div>
+                                <div className="text-lg">{item?.discount}</div>
                             </div>
                             <div className="mb-4">
                                 <div className="text-gray-500 text-sm">
                                     Variant
                                 </div>
                                 {item.finalVariant.map((variant) => (
-                                    <div className="text-lg" key={variant._id}>
-                                        {variant.variant} / ${variant.price}
+                                    <div className="text-lg" key={variant?._id}>
+                                        {variant?.variant} / ${variant?.price}
                                     </div>
                                 ))}
                             </div>
@@ -118,14 +118,14 @@ function ItemInfoButton({ item, children, ...rest }) {
                                 <div className="text-gray-500 text-sm">
                                     Item Unit Price
                                 </div>
-                                <div className="text-lg">${item.price}</div>
+                                <div className="text-lg">${item?.price}</div>
                             </div>
                             <div className="mb-4">
                                 <div className="text-gray-500 text-sm">
                                     Category
                                 </div>
                                 <div className="text-lg">
-                                    {item.category || "Uncategorized"}
+                                    {item?.category || "Uncategorized"}
                                 </div>
                             </div>
                             <div className="mb-4">
@@ -134,14 +134,14 @@ function ItemInfoButton({ item, children, ...rest }) {
                                 </div>
                                 <div className="text-lg flex items-center">
                                     <div>
-                                        {item.foodType === "veg"
+                                        {item?.foodType === "veg"
                                             ? "Veg"
                                             : "Non - Veg"}
                                     </div>
                                     <img
                                         className="w-4 object-scale-down ml-6"
                                         src={
-                                            item.foodType === "veg"
+                                            item?.foodType === "veg"
                                                 ? vegIconImageBase64
                                                 : nonVegIconImageBase64
                                         }

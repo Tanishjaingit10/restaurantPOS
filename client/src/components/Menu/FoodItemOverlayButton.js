@@ -61,7 +61,7 @@ function FoodItemOverlayButton({ item, children, className }) {
     };
 
     const handleImageUpload = (e) => {
-        const img = e.target.files[0];
+        const img = e.target?.files[0];
         setImage(img);
         if (!img) {
             setImageName("");
@@ -71,8 +71,8 @@ function FoodItemOverlayButton({ item, children, className }) {
             const reader = new FileReader();
             reader.readAsDataURL(img);
             reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setPreviewImage(reader.result);
+                if (reader?.readyState === 2) {
+                    setPreviewImage(reader?.result);
                 }
             };
         }
@@ -259,11 +259,11 @@ function FoodItemOverlayButton({ item, children, className }) {
                                     <option value="">Uncategorized</option>
                                     {categories.map((option) => (
                                         <option
-                                            value={option.value}
+                                            value={option?.value}
                                             className="bg-red-400"
-                                            key={option._id}
+                                            key={option?._id}
                                         >
-                                            {option.category}
+                                            {option?.category}
                                         </option>
                                     ))}
                                 </select>

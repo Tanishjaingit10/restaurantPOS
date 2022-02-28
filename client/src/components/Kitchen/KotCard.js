@@ -11,7 +11,7 @@ const Completed = "Completed";
 function KotCard({ item, setKots }) {
     const getAllItemsStatus = () =>
         item.order.reduce(
-            (obj, item) => ({ ...obj, [item._id]: item.itemStatus }),
+            (obj, item) => ({ ...obj, [item._id]: item?.itemStatus }),
             {}
         );
 
@@ -21,16 +21,16 @@ function KotCard({ item, setKots }) {
     const [elapsedTime, setElapsedTime] = useState(0);
     const [estimatedTime, setEstimatedTime] = useState();
     const [timeTakenToComplete, setTimeTakenToComplete] = useState(
-        item.timeTakenToComplete
+        item?.timeTakenToComplete
     );
     const [loading, setLoading] = useState(false);
-    const card_id = item._id;
+    const card_id = item?._id;
     const late = elapsedTime > estimatedTime;
 
-    useEffect(() => setStatus(item.status), [item.status]);
+    useEffect(() => setStatus(item?.status), [item?.status]);
     useEffect(
-        () => setTimeTakenToComplete(item.timeTakenToComplete),
-        [item.timeTakenToComplete]
+        () => setTimeTakenToComplete(item?.timeTakenToComplete),
+        [item?.timeTakenToComplete]
     );
 
     const calcEstimatedTime = (itemsStatus) => {
@@ -39,7 +39,7 @@ function KotCard({ item, setKots }) {
                 Math.max(
                     max,
                     itemsStatus[item._id] === Processing
-                        ? item.time || 0
+                        ? item?.time || 0
                         : 0
                 ),
             0
@@ -50,7 +50,7 @@ function KotCard({ item, setKots }) {
 
     const calcElapsedTime = () => {
         const elapsedTime = Math.floor(
-            (Date.now() - new Date(item.time).getTime()) / 1000
+            (Date.now() - new Date(item?.time).getTime()) / 1000
         );
         setElapsedTime(elapsedTime);
     };
@@ -76,7 +76,7 @@ function KotCard({ item, setKots }) {
                 if (newStatus === ReadyToServe)
                     setTimeTakenToComplete(elapsedTime);
                 else if (newStatus === Completed)
-                    setKots((prev) => prev.filter((it) => it._id !== card_id));
+                    setKots((prev) => prev?.filter((it) => it?._id !== card_id));
             })
             .catch((err) => notify(err?.response?.data?.message || "Error!!"))
             .finally(() => setLoading(false));
@@ -87,7 +87,7 @@ function KotCard({ item, setKots }) {
             className={`${
                 late && status === Processing && "border-red-500 text-white"
             } border-2 relative h-72 w-56 bg-white m-9 shadow flex flex-col`}
-            key={item._id}
+            key={item?._id}
         >
             {loading && <SpinLoader />}
             <div className="h-14 flex">
@@ -101,10 +101,10 @@ function KotCard({ item, setKots }) {
                     } w-1/2 border border-white h-full flex flex-col items-center justify-center`}
                 >
                     <div className="text-xs leading-3">
-                        {item.tableNumber ? "Table" : "Take Away"}
+                        {item?.tableNumber ? "Table" : "Take Away"}
                     </div>
                     <div className="leading-4 font-semibold">
-                        {item.tableNumber}
+                        {item?.tableNumber}
                     </div>
                 </div>
                 <button
@@ -135,7 +135,7 @@ function KotCard({ item, setKots }) {
                 >
                     <div className="text-xs">K.O.T</div>
                     <div className="leading-4 text-sm font-medium">
-                        {item.kotNumber}
+                        {item?.kotNumber}
                     </div>
                 </div>
                 <div
@@ -187,7 +187,7 @@ function KotCard({ item, setKots }) {
             </div>
             <div className="overflow-auto flex-1">
                 <div>
-                    {item.order.map((item) => (
+                    {item?.order?.map((item) => (
                         <div
                             key={item._id}
                             className={`${

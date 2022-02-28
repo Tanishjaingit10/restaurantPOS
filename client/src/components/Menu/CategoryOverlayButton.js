@@ -30,7 +30,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
     };
 
     const handleImageUpload = (e) => {
-        const img = e.target.files[0];
+        const img = e.target?.files[0];
         setImage(img);
         if (!img) {
             setImageName("");
@@ -80,7 +80,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                 setIsOpen(false);
             })
             .catch((err) => {
-                if (err.response.status === 413)
+                if (err?.response?.status === 413)
                     notify("Error! Image size too large");
                 else notify(err?.response?.data?.message || "Error!!");
             })
@@ -155,7 +155,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                                 src={
                                     previewImage ||
                                     (item?.image &&
-                                        `/app/file/image/${item.image}`)
+                                        `/app/file/image/${item?.image}`)
                                 }
                                 alt=""
                             />

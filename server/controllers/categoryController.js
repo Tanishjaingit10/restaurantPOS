@@ -27,7 +27,8 @@ const add_category = async (request, response, next) => {
                         .status(500)
                         .json({ message: "Item could not be added!" });
                 });
-        });
+        })
+        .catch(next);
 };
 const update_category = async (request, response, next) => {
     let itemId = request.params.id;
@@ -64,7 +65,7 @@ const get_category = async (request, response) => {
                 response.json({ message: "Item could not be shown!" });
             }
         }
-    );
+    )
 };
 const all_category = async (request, response) => {
     category_template_copy.find({}, (err, data) => {

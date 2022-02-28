@@ -67,17 +67,17 @@ export default function Pos() {
     const subTotal = selectedItems.reduce(
         (sum, item) =>
             sum +
-            ((item.price || 0) -
-                (item.discount || 0) +
-                item.finalVariant.reduce(
+            ((item?.price || 0) -
+                (item?.discount || 0) +
+                item?.finalVariant.reduce(
                     (sum, variant) =>
                         sum +
-                        (variant.isSelected
-                            ? variant.price * variant.quantity
+                        (variant?.isSelected
+                            ? variant?.price * variant?.quantity
                             : 0),
                     0
                 )) *
-                item.quantity,
+                item?.quantity,
         0
     );
     const total =
@@ -90,18 +90,18 @@ export default function Pos() {
         setCategoryFilteredItem(() => {
             if (!categoryFilter) return foodItems;
             if (categoryFilter === "uncategorized")
-                return foodItems.filter(
-                    (e) => !categories.some((x) => e.category === x.category)
+                return foodItems?.filter(
+                    (e) => !categories.some((x) => e?.category === x?.category)
                 );
-            return foodItems.filter((item) => item.category === categoryFilter);
+            return foodItems?.filter((item) => item?.category === categoryFilter);
         });
     };
 
     const searchFoodItem = () => {
         if (!searchQuery) return setFilteredFoodItem(categoryFilteredItem);
         let result = [];
-        categoryFilteredItem.forEach((item) => {
-            if (item.foodItem.toLowerCase().includes(searchQuery.toLowerCase()))
+        categoryFilteredItem?.forEach((item) => {
+            if (item?.foodItem?.toLowerCase().includes(searchQuery.toLowerCase()))
                 result.push(item);
         });
         setFilteredFoodItem(result);
@@ -111,20 +111,20 @@ export default function Pos() {
 
     const loadOrder = (order) => {
         let temp = [];
-        order.order.forEach((item) => {
+        order?.order?.forEach((item) => {
             foodItems.forEach((it) => {
-                if (it.foodItem === item.foodItem) {
+                if (it?.foodItem === item?.foodItem) {
                     let itm = {
                         ...it,
                         ...item,
-                        _id: it._id,
-                        key: item._id,
+                        _id: it?._id,
+                        key: item?._id,
                     };
                     itm = deepClone(itm);
                     itm.finalVariant.forEach((va) => {
                         itm.orderedVariant.forEach((v) => {
-                            if (va._id === v._id) va.isSelected = true;
-                            va.quantity = v.quantity;
+                            if (va?._id === v?._id) va.isSelected = true;
+                            va.quantity = v?.quantity;
                         });
                     });
                     temp.push(itm);
@@ -132,9 +132,9 @@ export default function Pos() {
             });
         });
         setSelectedItems(temp);
-        setCustomer(order.customer);
-        setComments(order.comments);
-        setOrder_id(order.order_id);
+        setCustomer(order?.customer);
+        setComments(order?.comments);
+        setOrder_id(order?.order_id);
         setTip(order?.payment?.tip || 0);
         setDiscount(order?.payment?.discount || 0);
         setPickupTime(
@@ -146,7 +146,7 @@ export default function Pos() {
         if (location.state && location.state.prevPath === "/takeaways") {
             setOrderType("Take Away");
             setLoading(true);
-            fetch(`/app/orderById/${location.state.orderId}`)
+            fetch(`/app/orderById/${location?.state?.orderId}`)
                 .then((res) => res.json())
                 .then((json) => {
                     loadOrder(json[0]);
@@ -155,13 +155,13 @@ export default function Pos() {
                 .catch((err) => {
                     setLoading(false);
                 });
-        } else if (location.state) {
-            setTable(location.state);
+        } else if (location?.state) {
+            setTable(location?.state);
             setOrderType("Dine In");
             setLoading(true);
             axios
-                .get(`/app/orderForTable/${location.state}`)
-                .then((res) => loadOrder(res.data))
+                .get(`/app/orderForTable/${location?.state}`)
+                .then((res) => loadOrder(res?.data))
                 .catch(() => {})
                 .finally(() => setLoading(false));
         }
@@ -199,7 +199,7 @@ export default function Pos() {
                     mode: chargeNoPayment ? "ChargeNoPayment" : paymentMode,
                 })
                 .then((res) => {
-                    if (res.data?.message) notify(res.data.message);
+                    if (res.data?.message) notify(res?.data?.message);
                     setPaymentDoneOverlayIsOpen(true);
                 })
                 .catch((err) =>
@@ -214,14 +214,14 @@ export default function Pos() {
         let dataToPost = {
             customer,
             order: selectedItems.map((item) => ({
-                _id: item._id,
-                foodItem: item.foodItem,
-                orderedVariant: item.finalVariant.filter(
-                    (variant) => variant.isSelected
+                _id: item?._id,
+                foodItem: item?.foodItem,
+                orderedVariant: item?.finalVariant?.filter(
+                    (variant) => variant?.isSelected
                 ),
-                price: item.price,
-                discount: item.discount,
-                quantity: item.quantity,
+                price: item?.price,
+                discount: item?.discount,
+                quantity: item?.quantity,
                 subtotal: subTotal,
                 time:
                     parseInt(item.time.split(":")[0]) * 3600 +
@@ -250,11 +250,11 @@ export default function Pos() {
                     `Order ${order_id ? "Updated" : "Receieved"}`,
                     `${
                         res?.data?.order_id && !order_id
-                            ? `Order Id: ${res.data.order_id}`
+                            ? `Order Id: ${res?.data?.order_id}`
                             : ""
                     }`,
                 ]);
-                loadOrder(res.data);
+                loadOrder(res?.data);
             })
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable To Generate KOT")
@@ -289,8 +289,8 @@ export default function Pos() {
                         </button>
                         {categories.map((item) => (
                             <button
-                                onClick={() => setCategoryFilter(item.category)}
-                                key={item._id}
+                                onClick={() => setCategoryFilter(item?.category)}
+                                key={item?._id}
                                 style={{
                                     backgroundImage: `${
                                         item?.image &&
@@ -301,19 +301,19 @@ export default function Pos() {
                             >
                                 <div
                                     className={`${
-                                        categoryFilter === item.category
+                                        categoryFilter === item?.category
                                             ? "text-red-500 border-red-500 bg-opacity-90"
                                             : "text-gray-600 border-black bg-opacity-80"
                                     } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
                                 >
-                                    {item.category}
+                                    {item?.category}
                                 </div>
                             </button>
                         ))}
                         {foodItems.some(
                             (e) =>
                                 !categories.some(
-                                    (x) => e.category === x.category
+                                    (x) => e?.category === x?.category
                                 )
                         ) && (
                             <button
@@ -358,7 +358,7 @@ export default function Pos() {
                     {filteredFoodItem.length ? (
                         <div className="grid grid-cols-2 flex-auto auto-rows-min h-0 overflow-auto p-4">
                             {filteredFoodItem.map((item) => (
-                                <div key={item._id} className="flex">
+                                <div key={item?._id} className="flex">
                                     <ChooseVariantOverlayButton
                                         item={item}
                                         className="text-center font-semibold flex-1 relative rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
@@ -373,7 +373,7 @@ export default function Pos() {
                                             }
                                             alt=""
                                         />
-                                        {item.foodItem}
+                                        {item?.foodItem}
                                     </ChooseVariantOverlayButton>
                                 </div>
                             ))}
@@ -443,10 +443,10 @@ export default function Pos() {
                             <div className="text-xs">Comments</div>
                         </CommentsOverlayButton>
                     </div>
-                    {selectedItems.length ? (
+                    {selectedItems?.length ? (
                         <div className="flex-auto h-0 border-t-2 mx-4 overflow-y-auto">
-                            {selectedItems.map((item) => (
-                                <div key={item.key}>
+                            {selectedItems?.map((item) => (
+                                <div key={item?.key}>
                                     <SingleSelectedItem
                                         setSelectedItems={setSelectedItems}
                                         item={item}
@@ -485,7 +485,7 @@ export default function Pos() {
                                         Sub Total
                                     </div>
                                     <div className="text-2xl text-right font-bold">
-                                        {`$${subTotal.toFixed(2)}`}
+                                        {`$${subTotal?.toFixed(2)}`}
                                     </div>
                                 </div>
                                 <div
@@ -578,7 +578,7 @@ export default function Pos() {
                                 </AuthenticateOverlayButton>
                             </div>
                             <div className="text-2xl text-right font-bold">
-                                {`Total: $${total.toFixed(2)}`}
+                                {`Total: $${total?.toFixed(2)}`}
                             </div>
                         </div>
                         <div className="h-14 flex items-center justify-between text-white bg-red-500">
@@ -691,7 +691,7 @@ export default function Pos() {
                                             Amount Charged
                                         </div>
                                         <div className="text-3xl">
-                                            ${total.toFixed(2)}
+                                            ${total?.toFixed(2)}
                                         </div>
                                     </div>
                                 </div>
