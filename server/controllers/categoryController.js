@@ -15,11 +15,7 @@ const add_category = async (request, response, next) => {
                     .status(409)
                     .json({ message: "Item Already Exists!" });
             }
-            const cat = new category_template_copy({
-                category,
-                description,
-                image,
-            });
+            const cat = new category_template_copy(request.body);
             cat.save()
                 .then(() => {
                     response
