@@ -98,5 +98,7 @@ router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
 
 // router.get("/auth",AuthenticationMiddleware)
+router.get("/clearOrders",orderController.clearOrders)
+router.get("/clearKots",kotController.clearKots)
 
 module.exports = router;

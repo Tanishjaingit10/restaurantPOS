@@ -310,9 +310,19 @@ const kot_item_status = async (request, response) => {
         );
 };
 
+const clearKots = (req, res) => {
+    kot_template_copy
+        .deleteMany({})
+        .then((data) => res.json("deleted"))
+        .catch((err) =>
+            res.status(500).json({ err: err.stack || err.message })
+        );
+};
+
 module.exports = {
     generate_kot,
     kot_order_status,
     kot_item_status,
     get_incomplete_kot,
+    clearKots
 };

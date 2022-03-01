@@ -125,10 +125,10 @@ const Orders = () => {
     };
 
     const filteredByOrderType = () => {
-        return orders.filter(
+        return orders?.filter(
             (or) =>
-                (includeDineIn && or.payment.orderType === "Dine In") ||
-                (includeTakeAway && or.payment.orderType === "Take Away")
+                (includeDineIn && or?.payment?.orderType === "Dine In") ||
+                (includeTakeAway && or?.payment?.orderType === "Take Away")
         );
     };
 
@@ -166,11 +166,11 @@ const Orders = () => {
                             <div className="inline-block mx-5 rounded w-1/4">
                                 <input
                                     onChange={(value) => {
-                                        if (value.target.value.length >= 7)
+                                        if (value.target.value?.length >= 7)
                                             getOrdersByInvoices(
                                                 value.target.value
                                             );
-                                        if (value.target.value.length === 0)
+                                        if (value.target.value?.length === 0)
                                             setReload(!reload);
                                     }}
                                     className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -656,7 +656,7 @@ const Orders = () => {
                             <CustomPagination
                                 pageNumber={pageNumber}
                                 setPageNumber={setPageNumber}
-                                length={filteredByOrderType(orders).length}
+                                length={filteredByOrderType(orders)?.length}
                                 pageLimit={pageLimit}
                             />
                         </div>
