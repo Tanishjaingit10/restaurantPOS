@@ -92,11 +92,7 @@ const get_order = async (request, response, next)=>{
                 response.status(404).json({ message: 'Item not found!', data:null })
             else response.send(data);
         }
-        else
-        {
-            response.status(500).json({ message: 'Item could not be shown!' })
-        }
-
+        else response.status(500).json({ message: 'Item could not be shown!' })
     });
 }
 

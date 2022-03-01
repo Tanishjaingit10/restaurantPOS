@@ -10,7 +10,7 @@ export const Modal = ({ children, isOpen, controller, ...rest }) => {
             shouldCloseOnOverlayClick={true}
             onRequestClose={() => controller(false)}
             overlayClassName={
-                "fixed z-40 top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black bg-opacity-20 backdrop-blur-xs backdrop-filter"
+                "fixed overflow-y-auto z-40 top-0 right-0 left-0 bottom-0 flex items-center justify-center bg-black bg-opacity-20 backdrop-blur-xs backdrop-filter"
             }
             {...rest}
         >

@@ -8,10 +8,12 @@ export const getNewId = uuid;
 axios.interceptors.response.use(
     (res) => res,
     (err) => {
-        console.log(
-            "** Server Error **",
-            err?.response?.data,
-            err?.response?.data?.stack
-        );
+        if (err?.response?.data?.stack)
+            console.log(
+                "** Server Error **",
+                err?.response?.data,
+                err?.response?.data?.stack
+            );
+        return Promise.reject(err);
     }
 );

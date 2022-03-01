@@ -139,14 +139,14 @@ const Tables = () => {
                 setComponentLoading(false);
             });
     };
-    
+
     useEffect(() => {
         getReservationByTime(
             newReservation?.date,
             newReservation?.startTime,
             newReservation?.endTime
         );
-    }, [newReservation,allTables]);
+    }, [newReservation, allTables]);
 
     const getReservationByTime = (date, startTime, endTime) => {
         setComponentLoading(true);
@@ -233,9 +233,7 @@ const Tables = () => {
                     displayTable.find((t) => t._id === clickedTableId)?.number
                 }`
             )
-            .then((res) => {
-                notify("Please complete the payment first");
-            })
+            .then((res) => notify("Please complete the payment first"))
             .catch((err) => {
                 if (err?.response?.data?.message === "Item not found!") {
                     return axios

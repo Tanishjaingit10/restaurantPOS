@@ -31,6 +31,8 @@ function FoodItemOverlayButton({ item, children, className }) {
     const [foodType, setFoodType] = useState(nonVeg);
     const [finalVariant, setFinalVariant] = useState([]);
     const [finalAvailable, setFinalAvailable] = useState([]);
+    const [minutes, setMinutes] = useState(0);
+    const [seconds, setSeconds] = useState(0);
 
     const { fetchItems, categories } = useContext(CategoryContext);
     const notify = useContext(NotificationContext);
@@ -51,6 +53,18 @@ function FoodItemOverlayButton({ item, children, className }) {
         setPreviewImage(null);
         setImageName("");
     };
+
+    useEffect(() => {
+        if (time) setMinutes(parseInt(time.split(":")[1]));
+        setSeconds(parseInt(time.split(":")[2]));
+    }, [time]);
+    useEffect(() => {
+        setTime(
+            `00:${(minutes || 0).toString().padStart(2, "0")}:${(seconds || 0)
+                .toString()
+                .padStart(2, "0")}`
+        );
+    }, [minutes, seconds]);
 
     useEffect(() => {
         if (item) resetStates(item);
@@ -175,19 +189,43 @@ function FoodItemOverlayButton({ item, children, className }) {
                                 />
                             </div>
                             <div>
-                                <label htmlFor="time">
-                                    Time To Cook ( HH : MM : SS )
-                                </label>
-                                <input
-                                    id="time"
-                                    name="time"
-                                    type="time"
-                                    step="1"
-                                    value={time}
-                                    onChange={(e) => setTime(e.target.value)}
-                                    placeholder="Time To Cook (HH/MM/SS)"
-                                    className=" p-3 w-full text-gray-600 rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
-                                />
+                                <label htmlFor="time">Time To Cook (minutes : seconds)</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="number"
+                                        value={minutes}
+                                        required
+                                        onBlur={(e) =>
+                                            setMinutes(
+                                                Math.min(59, minutes) || ""
+                                            )
+                                        }
+                                        onChange={(e) =>
+                                            setMinutes(
+                                                parseFloat(e.target.value)
+                                            )
+                                        }
+                                        placeholder="minutes"
+                                        className="flex-1 p-3 w-full text-gray-600 rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
+                                    />
+                                    <input
+                                        type="number"
+                                        value={seconds}
+                                        required
+                                        onBlur={(e) =>
+                                            setSeconds(
+                                                Math.min(59, seconds) || ""
+                                            )
+                                        }
+                                        onChange={(e) =>
+                                            setSeconds(
+                                                parseFloat(e.target.value)
+                                            )
+                                        }
+                                        placeholder="seconds"
+                                        className="flex-1 p-3 w-full text-gray-600 rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
+                                    />
+                                </div>
                             </div>
                             <div>
                                 <label htmlFor="Available">Available</label>
@@ -242,7 +280,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                                     className="p-3 flex items-center justify-between bg-red-400 text-white w-full rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
                                     state={{ finalVariant, setFinalVariant }}
                                 >
-                                    <span>Variant ({finalVariant.length})</span>
+                                    <span>Variant ({finalVariant?.length})</span>
                                     <span className="fas fa-chevron-down" />
                                 </VariantButton>
                             </div>

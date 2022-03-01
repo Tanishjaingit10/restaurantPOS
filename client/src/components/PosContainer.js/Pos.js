@@ -93,7 +93,9 @@ export default function Pos() {
                 return foodItems?.filter(
                     (e) => !categories.some((x) => e?.category === x?.category)
                 );
-            return foodItems?.filter((item) => item?.category === categoryFilter);
+            return foodItems?.filter(
+                (item) => item?.category === categoryFilter
+            );
         });
     };
 
@@ -101,7 +103,11 @@ export default function Pos() {
         if (!searchQuery) return setFilteredFoodItem(categoryFilteredItem);
         let result = [];
         categoryFilteredItem?.forEach((item) => {
-            if (item?.foodItem?.toLowerCase().includes(searchQuery.toLowerCase()))
+            if (
+                item?.foodItem
+                    ?.toLowerCase()
+                    .includes(searchQuery.toLowerCase())
+            )
                 result.push(item);
         });
         setFilteredFoodItem(result);
@@ -223,10 +229,11 @@ export default function Pos() {
                 discount: item?.discount,
                 quantity: item?.quantity,
                 subtotal: subTotal,
-                time:
-                    parseInt(item.time.split(":")[0]) * 3600 +
-                    parseInt(item.time.split(":")[1]) * 60 +
-                    parseInt(item.time.split(":")[2]),
+                time: item.time?.length
+                    ? parseInt(item.time.split(":")[0]) * 3600 +
+                      parseInt(item.time.split(":")[1]) * 60 +
+                      parseInt(item.time.split(":")[2])
+                    : item?.time || 0,
             })),
             payment: {
                 subTotal,
@@ -289,7 +296,9 @@ export default function Pos() {
                         </button>
                         {categories.map((item) => (
                             <button
-                                onClick={() => setCategoryFilter(item?.category)}
+                                onClick={() =>
+                                    setCategoryFilter(item?.category)
+                                }
                                 key={item?._id}
                                 style={{
                                     backgroundImage: `${
@@ -673,6 +682,7 @@ export default function Pos() {
                             </button>
                             <Modal
                                 isOpen={paymentDoneOverlayIsOpen}
+                                onAfterClose={()=>navigate("/tables")}
                                 controller={setPaymentDoneOverlayIsOpen}
                                 className="py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
                             >

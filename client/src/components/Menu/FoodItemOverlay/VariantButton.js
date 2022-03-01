@@ -44,7 +44,7 @@ function VariantButton({ state: parentState, children, ...rest }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="w-7/12 p-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="w-7/12 max-h-screen overflow-y-scroll p-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 <button
                     onClick={() => setIsOpen(false)}
@@ -65,7 +65,6 @@ function VariantButton({ state: parentState, children, ...rest }) {
                     <div className="flex justify-center">
                         <button
                             onClick={handleAddVariant}
-                            type="submit"
                             className="m-3 rounded-lg p-3 px-10 font-medium bg-green text-white"
                         >
                             + Add Variant
@@ -117,6 +116,7 @@ function SingleVariant({ setFinalVariant, item }) {
         <div className="flex items-center justify-between">
             <input
                 type="text"
+                required
                 value={variant?.variant || ""}
                 onChange={(e) => handleVariantChange(e.target.value, "variant")}
                 placeholder="Enter Variant Name"
@@ -125,12 +125,14 @@ function SingleVariant({ setFinalVariant, item }) {
             /
             <input
                 type="text"
+                required
                 value={variant?.price || ""}
                 onChange={(e) => handleVariantChange(e.target.value, "price")}
                 placeholder="Variant Unit Price (00.00)"
                 className="m-3 p-3 w-full text-gray-600 rounded-md border-gray-300 border outline-none transition duration-150 ease-in-out"
             />
             <button
+                type="button"
                 onClick={handleDelete}
                 className="m-3 rounded-lg p-3 px-10 font-medium bg-red-500 text-white"
             >
