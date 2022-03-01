@@ -70,7 +70,7 @@ function ChooseVariantOverlayButton({
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="px-10 py-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="max-h-screen overflow-y-auto px-10 py-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 <button
                     onClick={() => setIsOpen(false)}

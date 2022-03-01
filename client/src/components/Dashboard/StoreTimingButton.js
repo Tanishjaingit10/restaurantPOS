@@ -68,7 +68,7 @@ function StoreTimingButton() {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="p-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="max-h-screen overflow-y-auto p-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && <SpinLoader />}
                 <button

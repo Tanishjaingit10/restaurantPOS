@@ -507,6 +507,7 @@ const order_online = async (req, res) => {
                                 time: Date.now(),
                                 _id: new ObjectId(),
                                 order: newKotOrders,
+                                comments: req.body?.comments || null,
                                 tableNumber: oldOrderInfo.payment.table,
                             });
                             newKOT.save().then(() => {});

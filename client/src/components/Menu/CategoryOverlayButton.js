@@ -97,7 +97,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                 isOpen={isOpen}
                 controller={setIsOpen}
                 onAfterOpen={onModalOpen}
-                className="p-10 px-24 flex flex-col items-center relative bg-white rounded-xl"
+                className="max-h-screen overflow-y-auto p-10 px-24 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && <SpinLoader />}
                 <button

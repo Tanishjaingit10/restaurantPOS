@@ -35,7 +35,7 @@ function ItemInfoButton({ item, children, ...rest }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="p-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="max-h-screen overflow-y-auto p-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && (
                     <SpinLoader className="absolute left-1/2 top-1/2" />

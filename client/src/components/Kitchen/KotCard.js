@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
+import { Modal } from "../Common/Modal";
 
 const ReadyToServe = "ReadyToServe";
 const Processing = "Processing";
@@ -24,6 +25,7 @@ function KotCard({ item, setKots }) {
         item?.timeTakenToComplete
     );
     const [loading, setLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const card_id = item?._id;
     const late = elapsedTime > estimatedTime;
 
@@ -38,9 +40,7 @@ function KotCard({ item, setKots }) {
             (max, item) =>
                 Math.max(
                     max,
-                    itemsStatus[item._id] === Processing
-                        ? item?.time || 0
-                        : 0
+                    itemsStatus[item._id] === Processing ? item?.time || 0 : 0
                 ),
             0
         );
@@ -76,7 +76,9 @@ function KotCard({ item, setKots }) {
                 if (newStatus === ReadyToServe)
                     setTimeTakenToComplete(elapsedTime);
                 else if (newStatus === Completed)
-                    setKots((prev) => prev?.filter((it) => it?._id !== card_id));
+                    setKots((prev) =>
+                        prev?.filter((it) => it?._id !== card_id)
+                    );
             })
             .catch((err) => notify(err?.response?.data?.message || "Error!!"))
             .finally(() => setLoading(false));
@@ -130,7 +132,9 @@ function KotCard({ item, setKots }) {
             <div className="flex h-10">
                 <div
                     className={`${
-                        status === Processing && late ? "bg-red-500" : "bg-gray-200"
+                        status === Processing && late
+                            ? "bg-red-500"
+                            : "bg-gray-200"
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
                 >
                     <div className="text-xs">K.O.T</div>
@@ -159,7 +163,9 @@ function KotCard({ item, setKots }) {
                 </div>
                 <div
                     className={`${
-                        status === Processing && late ? "bg-red-500" : "bg-gray-200"
+                        status === Processing && late
+                            ? "bg-red-500"
+                            : "bg-gray-200"
                     } flex-1 flex flex-col items-center justify-center border-2 border-white`}
                 >
                     <div className="text-xxs">
@@ -206,6 +212,26 @@ function KotCard({ item, setKots }) {
                     ))}
                 </div>
             </div>
+
+            {(item?.comments?.length || false) && item.comments.length !== 0 && (
+                <button
+                    onClick={() => setIsOpen(true)}
+                    className="p-1 w-full border-t flex items-center justify-center text-gray-400 font-medium"
+                >
+                    View Comments
+                </button>
+            )}
+            <Modal
+                isOpen={isOpen}
+                controller={setIsOpen}
+                className="max-h-screen overflow-y-auto rounded-xl relative py-10 px-20 text-lg bg-white"
+            >
+                <button
+                    onClick={() => setIsOpen(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                />
+                {item?.comments}
+            </Modal>
         </div>
     );
 }
@@ -266,28 +292,37 @@ function SingleItem({
                     </div>
                 ))}
             {item.quantity !== 0 && (
-                <div className="h-6 flex justify-between">
-                    <div className="ml-2 text-xs flex items-center">
-                        <div className="mr-2">{item.quantity}</div>
-                        <div>{item.foodItem}</div>
+                <>
+                    <div className="h- flex justify-between">
+                        <div className="ml-2 text-xs flex items-center">
+                            <div className="mr-2">{item.quantity}</div>
+                            {item.foodItem}
+                        </div>
+                        <button
+                            onClick={() =>
+                                toggleStatus(
+                                    status === Processing
+                                        ? ReadyToServe
+                                        : Processing
+                                )
+                            }
+                            className={`fas fa-toggle-on ${
+                                status === ReadyToServe
+                                    ? "text-green"
+                                    : "rotate-180"
+                            } ${
+                                KotStatus === ReadyToServe && "hidden"
+                            } transform text-sm text-gray-400 mr-2`}
+                        />
                     </div>
-                    <button
-                        onClick={() =>
-                            toggleStatus(
-                                status === Processing
-                                    ? ReadyToServe
-                                    : Processing
-                            )
-                        }
-                        className={`fas fa-toggle-on ${
-                            status === ReadyToServe
-                                ? "text-green"
-                                : "rotate-180"
-                        } ${
-                            KotStatus === ReadyToServe && "hidden"
-                        } transform text-sm text-gray-400 mr-2`}
-                    />
-                </div>
+                    {item?.orderedVariant?.map((it) => (
+                        <div
+                            key={it?._id}
+                            className="text-xxs ml-6"
+                            style={{ fontSize: "0.6rem" }}
+                        >{`${it.quantity}x ${it.variant}`}</div>
+                    ))}
+                </>
             )}
         </>
     );

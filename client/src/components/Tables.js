@@ -15,7 +15,6 @@ import { ThemeProvider } from "@material-ui/styles";
 import MomentUtils from "@date-io/moment";
 import { useNavigate } from "react-router-dom";
 import { FiRefreshCcw } from "react-icons/fi";
-import { GrClose } from "react-icons/gr";
 import { MdOutlineDelete } from "react-icons/md";
 import Select from "react-select";
 import { Modal } from "./Common/Modal";
@@ -186,19 +185,6 @@ const Tables = () => {
     }
 
     const theme = useContext(ThemeContext);
-    const customStyles = {
-        content: {
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            width: "450px",
-            height: "100%",
-        },
-    };
-
     const deleteTable = async () => {
         await fetch(`/app/removeTable/${deleteTableId}`, {
             method: "DELETE",
@@ -306,29 +292,31 @@ const Tables = () => {
                     <Modal
                         isOpen={modalIsOpen}
                         onRequestClose={closeModal}
-                        style={customStyles}
                         contentLabel="Example Modal"
+                        className="max-h-screen overflow-y-auto bg-white py-12 px-20 rounded-xl relative w-1/2 lg:w-1/3"
                     >
+                        <button
+                            onClick={closeModal}
+                            className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                        />
                         <h2
                             style={{ color: theme.backgroundColor }}
-                            className="text-2xl font-bold text-center mb-4"
+                            className="text-2xl font-bold text-center mb-8"
                         >
                             Add New Table
                         </h2>
                         <form>
                             <select
                                 name="position"
-                                className="p-4 border-2 w-full text-md rounded-lg text-white font-thin mb-4"
-                                style={{
-                                    backgroundColor: theme.backgroundColor,
-                                }}
+                                className="font-medium p-4 border-2 w-full text-md rounded-lg text-white mb-4 bg-red-500"
+                                style={{ cursor: "pointer" }}
                                 onChange={(e) => setPosition(e.target.value)}
                                 value={position}
                             >
-                                <option className="bg-gray-300 border-black border-2 p-2">
+                                <option className=" border-black border-2 p-2">
                                     Mark Table By Name
                                 </option>
-                                <option className="bg-gray-300 border-black border-2 p-2">
+                                <option className=" border-black border-2 p-2">
                                     Mark Table By Number
                                 </option>
                             </select>
@@ -339,7 +327,7 @@ const Tables = () => {
                                 value={tableName}
                                 onChange={(e) => setTableName(e.target.value)}
                                 className={
-                                    "shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-3"
+                                    "font-medium shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-3"
                                 }
                             />
                             <input
@@ -349,12 +337,12 @@ const Tables = () => {
                                 value={maxCapacity}
                                 onChange={(e) => setMaxCapacity(e.target.value)}
                                 className={
-                                    "shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-3"
+                                    "font-medium shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline my-3"
                                 }
                             />
                             <div className="flex w-full mt-5 justify-center">
                                 <CustomButton
-                                    title="done"
+                                    title="Done"
                                     customStyle={{
                                         backgroundColor: theme.backgroundColor,
                                     }}
@@ -375,270 +363,214 @@ const Tables = () => {
                     onPress={() => setShowModal(true)}
                 />
             </div>
-            {showModal ? (
-                <div
-                    className="fixed z-10 inset-0 overflow-y-auto"
-                    aria-labelledby="modal-title"
-                    role="dialog"
-                    aria-modal="true"
-                >
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                        <div
-                            className="fixed inset-0 bg-opacity-25 transition-opacity"
-                            aria-hidden="true"
-                        ></div>
-                        <span
-                            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                            aria-hidden="true"
+            <Modal
+                isOpen={showModal}
+                controller={setShowModal}
+                className="relative bg-white max-h-screen overflow-y-auto w-1/2 lg:w-1/3 rounded-xl"
+            >
+                <button
+                    onClick={() => setIsOpen(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                />
+                <div className="pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div className="w-full flex items-center justify-center">
+                        <h3
+                            className="text-3xl font-bold"
+                            style={{
+                                color: theme.backgroundColor,
+                            }}
                         >
-                            &#8203;
-                        </span>
-                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="">
-                                    <div className="w-full flex justify-end">
-                                        <GrClose
-                                            onClick={() => setShowModal(false)}
-                                        />
-                                    </div>
-                                    <div className="w-full flex items-center justify-center">
-                                        <h3
-                                            className="text-3xl font-bold"
-                                            style={{
-                                                color: theme.backgroundColor,
-                                            }}
-                                        >
-                                            Reserve Table
-                                        </h3>
-                                    </div>
-                                </div>
-                                <form className="bg-white rounded px-8 pt-6 pb-8 mb-4 w-full">
-                                    <div className="mb-4">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="fullName"
-                                        >
-                                            Enter Customer Name
-                                        </label>
-                                        <input
-                                            onChange={(value) =>
-                                                setNewReservation(
-                                                    (newReservation) => ({
-                                                        ...newReservation,
-                                                        fullName:
-                                                            value.target.value,
-                                                    })
-                                                )
-                                            }
-                                            className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Customer Name"
-                                        />
-                                    </div>
-                                    <div className="mb-4">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="fullName"
-                                        >
-                                            Enter Email Id
-                                        </label>
-                                        <input
-                                            onChange={(value) =>
-                                                setNewReservation(
-                                                    (newReservation) => ({
-                                                        ...newReservation,
-                                                        email_id:
-                                                            value.target.value,
-                                                    })
-                                                )
-                                            }
-                                            className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Email Id"
-                                        />
-                                    </div>
-                                    <div className="mb-4">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="fullName"
-                                        >
-                                            Enter Phone Number
-                                        </label>
-                                        <input
-                                            onChange={(value) =>
-                                                setNewReservation(
-                                                    (newReservation) => ({
-                                                        ...newReservation,
-                                                        contact:
-                                                            value.target.value,
-                                                    })
-                                                )
-                                            }
-                                            className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Phone Number"
-                                        />
-                                    </div>
-                                    <div className="my-5 w-full">
-                                        <MuiPickersUtilsProvider
-                                            utils={DateFnsUtils}
-                                        >
-                                            <ThemeProvider
-                                                theme={materialTheme}
-                                            >
-                                                <DatePicker
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                    }}
-                                                    label="Date"
-                                                    value={startDate}
-                                                    onChange={(date) => {
-                                                        setStartDate(date);
-                                                        setNewReservation(
-                                                            (
-                                                                newReservation
-                                                            ) => ({
-                                                                ...newReservation,
-                                                                date: date
-                                                                    .toISOString()
-                                                                    .split(
-                                                                        "T"
-                                                                    )[0],
-                                                            })
-                                                        );
-                                                        getReservationByTime(
-                                                            date
-                                                                .toISOString()
-                                                                .split("T")[0],
-                                                            newReservation.startTime,
-                                                            newReservation.endTime
-                                                        );
-                                                    }}
-                                                />
-                                            </ThemeProvider>
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div className="my-5 w-full">
-                                        <MuiPickersUtilsProvider
-                                            utils={MomentUtils}
-                                        >
-                                            <ThemeProvider
-                                                theme={materialTheme}
-                                            >
-                                                <TimePicker
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                    }}
-                                                    clearable
-                                                    ampm={false}
-                                                    label="Start Time"
-                                                    value={startTime}
-                                                    onChange={(value) => {
-                                                        setStartTime(value);
-                                                        setNewReservation(
-                                                            (
-                                                                newReservation
-                                                            ) => ({
-                                                                ...newReservation,
-                                                                startTime:
-                                                                    value.format(
-                                                                        "HH:mm:ss"
-                                                                    ),
-                                                            })
-                                                        );
-                                                        getReservationByTime(
-                                                            newReservation.date,
-                                                            value.format(
-                                                                "HH:mm:ss"
-                                                            ),
-                                                            newReservation.endTime
-                                                        );
-                                                    }}
-                                                />
-                                            </ThemeProvider>
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div className="my-5 w-full">
-                                        <MuiPickersUtilsProvider
-                                            utils={MomentUtils}
-                                        >
-                                            <ThemeProvider
-                                                theme={materialTheme}
-                                            >
-                                                <TimePicker
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                    }}
-                                                    onChange={(value) => {
-                                                        setEndTime(value);
-                                                        setNewReservation(
-                                                            (
-                                                                newReservation
-                                                            ) => ({
-                                                                ...newReservation,
-                                                                endTime:
-                                                                    value.format(
-                                                                        "HH:mm:ss"
-                                                                    ),
-                                                            })
-                                                        );
-                                                        getReservationByTime(
-                                                            newReservation.date,
-                                                            newReservation.startTime,
-                                                            value.format(
-                                                                "HH:mm:ss"
-                                                            )
-                                                        );
-                                                    }}
-                                                    value={endTime}
-                                                    clearable
-                                                    ampm={false}
-                                                    label="End Time"
-                                                />
-                                            </ThemeProvider>
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div
-                                        style={{ width: "100%" }}
-                                        className="inline-block rounded"
-                                    >
-                                        <Select
-                                            styles={selectCustomeStyle}
-                                            defaultValue={availableTables[0]}
-                                            options={availableTables}
-                                            maxMenuHeight={130}
-                                            onChange={(value) =>
-                                                setNewReservation(
-                                                    (newReservation) => ({
-                                                        ...newReservation,
-                                                        table: value.value,
-                                                    })
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div className="flex justify-center mt-8">
-                                        <CustomButton
-                                            title="Done"
-                                            customStyle={{
-                                                backgroundColor:
-                                                    theme.backgroundColor,
-                                            }}
-                                            onPress={() => {
-                                                submitNewReservation();
-                                                setShowModal(false);
-                                            }}
-                                        />
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+                            Reserve Table
+                        </h3>
                     </div>
+                    <form className="rounded px-8 pt-6 pb-8 mb-4 w-full">
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 text-sm font-bold mb-2"
+                                htmlFor="fullName"
+                            >
+                                Enter Customer Name
+                            </label>
+                            <input
+                                onChange={(value) =>
+                                    setNewReservation((newReservation) => ({
+                                        ...newReservation,
+                                        fullName: value.target.value,
+                                    }))
+                                }
+                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="fullName"
+                                type="text"
+                                placeholder="Enter Customer Name"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 text-sm font-bold mb-2"
+                                htmlFor="fullName"
+                            >
+                                Enter Email Id
+                            </label>
+                            <input
+                                onChange={(value) =>
+                                    setNewReservation((newReservation) => ({
+                                        ...newReservation,
+                                        email_id: value.target.value,
+                                    }))
+                                }
+                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="fullName"
+                                type="text"
+                                placeholder="Enter Email Id"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label
+                                className="block text-gray-700 text-sm font-bold mb-2"
+                                htmlFor="fullName"
+                            >
+                                Enter Phone Number
+                            </label>
+                            <input
+                                onChange={(value) =>
+                                    setNewReservation((newReservation) => ({
+                                        ...newReservation,
+                                        contact: value.target.value,
+                                    }))
+                                }
+                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="fullName"
+                                type="text"
+                                placeholder="Enter Phone Number"
+                            />
+                        </div>
+                        <div className="my-5 w-full">
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                <ThemeProvider theme={materialTheme}>
+                                    <DatePicker
+                                        InputProps={{
+                                            disableUnderline: true,
+                                        }}
+                                        label="Date"
+                                        value={startDate}
+                                        onChange={(date) => {
+                                            setStartDate(date);
+                                            setNewReservation(
+                                                (newReservation) => ({
+                                                    ...newReservation,
+                                                    date: date
+                                                        .toISOString()
+                                                        .split("T")[0],
+                                                })
+                                            );
+                                            getReservationByTime(
+                                                date
+                                                    .toISOString()
+                                                    .split("T")[0],
+                                                newReservation.startTime,
+                                                newReservation.endTime
+                                            );
+                                        }}
+                                    />
+                                </ThemeProvider>
+                            </MuiPickersUtilsProvider>
+                        </div>
+                        <div className="my-5 w-full">
+                            <MuiPickersUtilsProvider utils={MomentUtils}>
+                                <ThemeProvider theme={materialTheme}>
+                                    <TimePicker
+                                        InputProps={{
+                                            disableUnderline: true,
+                                        }}
+                                        clearable
+                                        ampm={false}
+                                        label="Start Time"
+                                        value={startTime}
+                                        onChange={(value) => {
+                                            setStartTime(value);
+                                            setNewReservation(
+                                                (newReservation) => ({
+                                                    ...newReservation,
+                                                    startTime:
+                                                        value.format(
+                                                            "HH:mm:ss"
+                                                        ),
+                                                })
+                                            );
+                                            getReservationByTime(
+                                                newReservation.date,
+                                                value.format("HH:mm:ss"),
+                                                newReservation.endTime
+                                            );
+                                        }}
+                                    />
+                                </ThemeProvider>
+                            </MuiPickersUtilsProvider>
+                        </div>
+                        <div className="my-5 w-full">
+                            <MuiPickersUtilsProvider utils={MomentUtils}>
+                                <ThemeProvider theme={materialTheme}>
+                                    <TimePicker
+                                        InputProps={{
+                                            disableUnderline: true,
+                                        }}
+                                        onChange={(value) => {
+                                            setEndTime(value);
+                                            setNewReservation(
+                                                (newReservation) => ({
+                                                    ...newReservation,
+                                                    endTime:
+                                                        value.format(
+                                                            "HH:mm:ss"
+                                                        ),
+                                                })
+                                            );
+                                            getReservationByTime(
+                                                newReservation.date,
+                                                newReservation.startTime,
+                                                value.format("HH:mm:ss")
+                                            );
+                                        }}
+                                        value={endTime}
+                                        clearable
+                                        ampm={false}
+                                        label="End Time"
+                                    />
+                                </ThemeProvider>
+                            </MuiPickersUtilsProvider>
+                        </div>
+                        <div
+                            style={{ width: "100%" }}
+                            className="inline-block rounded"
+                        >
+                            <Select
+                                styles={selectCustomeStyle}
+                                defaultValue={availableTables[0]}
+                                options={availableTables}
+                                maxMenuHeight={130}
+                                onChange={(value) =>
+                                    setNewReservation((newReservation) => ({
+                                        ...newReservation,
+                                        table: value.value,
+                                    }))
+                                }
+                            />
+                        </div>
+                        <div className="flex justify-center mt-8">
+                            <CustomButton
+                                title="Done"
+                                customStyle={{
+                                    backgroundColor: theme.backgroundColor,
+                                }}
+                                onPress={() => {
+                                    submitNewReservation();
+                                    setShowModal(false);
+                                }}
+                            />
+                        </div>
+                    </form>
                 </div>
-            ) : null}
+            </Modal>
             <div className="flex flex-col">
                 <h2 className="my-5 ml-11 font-semibold text-gray-600 text-lg">
                     Hall Way
@@ -844,7 +776,7 @@ const Tables = () => {
             <Modal
                 isOpen={qrCodeIsOpen}
                 controller={setQrCodeIsOpen}
-                className="flex flex-col items-center justify-center p-10 rounded-xl absolute bg-white"
+                className="max-h-screen overflow-y-auto flex flex-col items-center justify-center p-10 rounded-xl absolute bg-white"
             >
                 {qrModalLoading && <SpinLoader />}
                 <button

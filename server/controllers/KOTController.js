@@ -211,6 +211,7 @@ const generate_kot = (req, res) => {
                                 time: Date.now(),
                                 _id: new ObjectId(),
                                 order: newKotOrders,
+                                comments: req.body?.comments || null,
                                 tableNumber: oldOrderInfo.payment.table,
                             });
                             newKOT.save().then(() => {});
@@ -324,5 +325,5 @@ module.exports = {
     kot_order_status,
     kot_item_status,
     get_incomplete_kot,
-    clearKots
+    clearKots,
 };
