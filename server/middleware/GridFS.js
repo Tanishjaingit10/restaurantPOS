@@ -2,8 +2,9 @@ const path = require("path");
 const crypto = require("crypto");
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
+const config = require("../config");
 
-const DB = process.env.DATABASE;
+const DB = config.DATABASE;
 
 // Create storage engine
 const storage = new GridFsStorage({

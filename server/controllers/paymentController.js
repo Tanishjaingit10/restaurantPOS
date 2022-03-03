@@ -1,4 +1,5 @@
-const stripe = require("stripe")(process.env.STRIPE_PAYMENT_SECRET_KEY);
+const config = require("../config");
+const stripe = require("stripe")(config.STRIPE_PAYMENT_SECRET_KEY);
 const payment_intent_template = require("../models/paymentIntent");
 const order_template_copy = require("../models/order");
 const kot_template_copy = require("../models/KOT");

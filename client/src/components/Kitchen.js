@@ -8,11 +8,12 @@ import KotCard from "./Kitchen/KotCard";
 import { fetchKot_worker } from "../workers/fetchKot";
 import Add_tone from "../assets/notificationTones/KOTCardAdded.wav";
 import Remove_tone from "../assets/notificationTones/KOTCardRemoved.wav";
+import { BackendUrl } from "../config";
 
 const Kitchen = () => {
     const cardAdd_tone = new Audio(Add_tone);
     const cardRemove_tone = new Audio(Remove_tone);
-    const IncompleteKot_URL = "/app/getIncompleteKot";
+    const IncompleteKot_URL = `${BackendUrl}/app/getIncompleteKot`;
     const theme = useContext(ThemeContext);
     const [kots, setKots] = useState([]);
     const [loading, setLoading] = useState(false);

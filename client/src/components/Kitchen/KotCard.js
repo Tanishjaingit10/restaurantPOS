@@ -216,7 +216,13 @@ function KotCard({ item, setKots }) {
             {(item?.comments?.length || false) && item.comments.length !== 0 && (
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="p-1 w-full border-t flex items-center justify-center text-gray-400 font-medium"
+                    className={`${
+                        status === Processing
+                            ? late
+                                ? "bg-red-500"
+                                : "bg-yellow-300"
+                            : "bg-green text-white"
+                    } p-1 border-t flex items-center justify-center font-medium m-0.5`}
                 >
                     View Comments
                 </button>

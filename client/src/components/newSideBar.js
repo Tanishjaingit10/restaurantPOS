@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { ProSidebar, SidebarHeader, SidebarContent, Menu, MenuItem } from 'react-pro-sidebar';
 import { FiLogOut } from "react-icons/fi";
 import { GiHamburgerMenu } from 'react-icons/gi';
@@ -7,17 +7,26 @@ import { BsLayers } from 'react-icons/bs';
 import { BiFoodMenu } from 'react-icons/bi';
 import { IoIosPeople } from 'react-icons/io';
 import { FaConciergeBell, FaHome, FaArrowLeft } from 'react-icons/fa';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import '../styles/SideBar.css';
+import { UserContext } from "../context/User";
 
 const SideBar = () => {
 	const [menuCollapse, setMenuCollapse] = useState(true)
 	const location = useLocation();  
+	const navigate = useNavigate();
+    const { setIsAuthenticated } = useContext(UserContext);
 	
 	const menuIconClick = () => {
 		menuCollapse ? setMenuCollapse(false) : setMenuCollapse(true);
 	};
+
+	const handleLogout = () => {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        navigate("/login", { replace: true });
+    };
 	
 	return (
 	<div id="sidebar">
@@ -41,7 +50,7 @@ const SideBar = () => {
 					<MenuItem active={location.pathname === '/kitchen' ? true: false} icon={<FaConciergeBell color="white" />}><Link to="/kitchen">Kitchen Dashboard</Link></MenuItem>
 					<MenuItem active={location.pathname === '/menu' ? true: false} icon={<BiFoodMenu color="white" />}><Link to="/menu">Menu</Link></MenuItem>
 					<MenuItem active={location.pathname === '/attendance' ? true: false} icon={<IoIosPeople color="white" />}><Link to="/attendance">Attendance</Link></MenuItem>
-					<MenuItem active={location.pathname === '/logout' ? true: false} icon={<FiLogOut color="white" />}>Log Out</MenuItem>
+					<MenuItem onClick={handleLogout} active={location.pathname === '/logout' ? true: false} icon={<FiLogOut color="white" />}>Log Out</MenuItem>
 				</Menu>
 			</SidebarContent>
 		</ProSidebar>

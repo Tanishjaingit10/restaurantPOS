@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
+import axios from "axios";
 import Loader from "./Loader";
 import Popup from "./Popup";
 import { ThemeContext } from "../context/Theme";
@@ -45,25 +46,27 @@ const Orders = () => {
     const printOrderDetails = useRef();
 
     useEffect(() => {
-        fetch("/app/orders")
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
-                    setOrders(json);
+        axios
+            .get("/app/orders")
+            .then((res) => {
+                if (res.data) {
+                    setOrders(res.data);
                     setComponentLoading(false);
 
                     var completedOrders = 0;
                     var pendingOrders = 0;
                     var cancelledOrders = 0;
-                    for (let i = 0; i < json.length; i++) {
-                        if (json[i].payment.orderStatus === "Completed")
+                    for (let i = 0; i < res.data.length; i++) {
+                        if (res.data[i].payment.orderStatus === "Completed")
                             completedOrders += 1;
                         else if (
-                            json[i].payment.orderStatus === "Processing" ||
-                            json[i].payment.orderStatus === "ReadyToServe"
+                            res.data[i].payment.orderStatus === "Processing" ||
+                            res.data[i].payment.orderStatus === "ReadyToServe"
                         )
                             pendingOrders += 1;
-                        else if (json[i].payment.orderStatus === "Cancelled")
+                        else if (
+                            res.data[i].payment.orderStatus === "Cancelled"
+                        )
                             cancelledOrders += 1;
                     }
                     setCompletedOrders(completedOrders);
@@ -77,10 +80,10 @@ const Orders = () => {
 
     const getOrdersByInvoices = (invoices) => {
         setComponentLoading(true);
-        fetch(`/app/orderById/${invoices}`)
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") setOrders(json);
+        axios
+            .get(`/app/orderById/${invoices}`)
+            .then((res) => {
+                if (res.data) setOrders(res.data);
             })
             .catch((err) => console.log("error: ", err))
             .finally(() => setComponentLoading(false));
@@ -89,24 +92,22 @@ const Orders = () => {
     const getOrderByStatus = (status) => {
         setLoading(true);
         if (status === "Processing") {
-            fetch(`/app/orderByStatus/Processing`)
-                .then((res) => res.json())
-                .then((json) => {
-                    if (json !== "undefined") setOrders(json);
+            axios
+                .get(`/app/orderByStatus/Processing`)
+                .then((res) => {
+                    if (res.data) setOrders(res.data);
                 })
-                .then(() => fetch(`/app/orderByStatus/ReadyToServe`))
-                .then((res) => res.json())
-                .then((json) => {
-                    if (json !== "undefined")
-                        setOrders((prev) => [...prev, ...json]);
+                .then(() => axios.get(`/app/orderByStatus/ReadyToServe`))
+                .then((res) => {
+                    if (res.data) setOrders((prev) => [...prev, ...res.data]);
                 })
                 .catch((err) => console.log("error: ", err))
                 .finally(() => setLoading(false));
         } else if (status !== "allOrders") {
-            fetch(`/app/orderByStatus/${status}`)
-                .then((res) => res.json())
-                .then((json) => {
-                    if (json !== "undefined") setOrders(json);
+            axios
+                .get(`/app/orderByStatus/${status}`)
+                .then((res) => {
+                    if (res.data) setOrders(res.data);
                 })
                 .catch((err) => console.log("error: ", err))
                 .finally(() => setLoading(false));
@@ -115,10 +116,10 @@ const Orders = () => {
 
     const getOrderByDate = (startDate, endDate) => {
         setLoading(true);
-        fetch(`/app/orderByDate/${startDate}/${endDate}`)
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") setOrders(json);
+        axios
+            .get(`/app/orderByDate/${startDate}/${endDate}`)
+            .then((res) => {
+                if (res.data) setOrders(res.data);
             })
             .catch((err) => console.log("eror: ", err))
             .finally(() => setLoading(false));
@@ -437,7 +438,7 @@ const Orders = () => {
                                     {loading ? (
                                         <Loader />
                                     ) : (
-                                        orders.map((order) => {
+                                        orders?.map((order) => {
                                             return (
                                                 <tr
                                                     key={order._id}

@@ -1,12 +1,11 @@
 const express = require("express");
-const dotenv = require("dotenv");
 const app = express();
 const mongoose = require("mongoose");
-dotenv.config({ path: "./config.env" });
 const routesUrls = require("./routes/registered_users");
 const { DatabaseStatus } = require("./middleware/DatabaseState");
 const cors = require("cors");
-const DB = process.env.DATABASE;
+const config = require("./config");
+const DB = config.DATABASE;
 const PORT = 4000;
 
 // Prevents app crash

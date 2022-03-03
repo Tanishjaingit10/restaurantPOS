@@ -370,8 +370,15 @@ export default function Pos() {
                                 <div key={item?._id} className="flex">
                                     <ChooseVariantOverlayButton
                                         item={item}
-                                        className="text-center font-semibold flex-1 relative rounded-md bg-yellow-100 p-8 m-2 text-xl shadow-md"
+                                        className="text-center font-semibold bg-cover bg-center flex-1 relative rounded-md m-2 text-xl shadow-md"
                                         setSelectedItems={setSelectedItems}
+                                        style={
+                                            item?.image
+                                                ? {
+                                                      backgroundImage: `url(/app/file/image/${item.image})`,
+                                                  }
+                                                : {}
+                                        }
                                     >
                                         <img
                                             className="absolute w-4 top-3 right-3"
@@ -382,7 +389,15 @@ export default function Pos() {
                                             }
                                             alt=""
                                         />
-                                        {item?.foodItem}
+                                        <div
+                                            className={`${
+                                                item.image
+                                                    ? "bg-opacity-80 bg-yellow-50"
+                                                    : "bg-yellow-100"
+                                            } h-full items-center justify-center flex p-8`}
+                                        >
+                                            {item?.foodItem}
+                                        </div>
                                     </ChooseVariantOverlayButton>
                                 </div>
                             ))}
@@ -682,7 +697,7 @@ export default function Pos() {
                             </button>
                             <Modal
                                 isOpen={paymentDoneOverlayIsOpen}
-                                onAfterClose={()=>navigate("/tables")}
+                                onAfterClose={() => navigate("/tables")}
                                 controller={setPaymentDoneOverlayIsOpen}
                                 className="max-h-screen overflow-y-auto py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
                             >

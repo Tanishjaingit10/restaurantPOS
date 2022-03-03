@@ -161,7 +161,14 @@ const Menu = () => {
                                             />
                                             <ItemInfoButton
                                                 item={item}
-                                                className="text-center relative flex-1 rounded-md bg-yellow-100 p-8 my-2 text-xl shadow-md"
+                                                className="text-center relative flex-1 bg-cover bg-center rounded-md my-2 text-xl shadow-md"
+                                                style={
+                                                    item?.image
+                                                        ? {
+                                                              backgroundImage: `url(/app/file/image/${item.image})`,
+                                                          }
+                                                        : {}
+                                                }
                                             >
                                                 <img
                                                     className="absolute w-4 top-3 right-3"
@@ -172,7 +179,15 @@ const Menu = () => {
                                                     }
                                                     alt=""
                                                 />
-                                                {item.foodItem}
+                                                <div
+                                                    className={`${
+                                                        item.image
+                                                            ? "bg-opacity-80 bg-yellow-50"
+                                                            : "bg-yellow-100"
+                                                    } h-full items-center justify-center flex p-8`}
+                                                >
+                                                    {item?.foodItem}
+                                                </div>
                                             </ItemInfoButton>
                                         </div>
                                     ))}
