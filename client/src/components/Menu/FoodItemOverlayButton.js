@@ -194,7 +194,6 @@ function FoodItemOverlayButton({ item, children, className }) {
                                     <input
                                         type="number"
                                         value={minutes}
-                                        required
                                         onBlur={(e) =>
                                             setMinutes(
                                                 Math.min(59, minutes) || ""
@@ -211,7 +210,6 @@ function FoodItemOverlayButton({ item, children, className }) {
                                     <input
                                         type="number"
                                         value={seconds}
-                                        required
                                         onBlur={(e) =>
                                             setSeconds(
                                                 Math.min(59, seconds) || ""
