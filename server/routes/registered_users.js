@@ -4,8 +4,9 @@ const router = express.Router()
 
 const userController = require('../controllers/userController')
 const itemController = require('../controllers/itemController');
-const categoryController= require('../controllers/categoryController')
+const categoryController = require('../controllers/categoryController')
 const tableController = require('../controllers/tableController')
+const tableLocationController = require('../controllers/tableLocationController')
 const orderController = require('../controllers/orderController')
 const customerController = require('../controllers/customerController')
 const reservationController = require('../controllers/reservationController')
@@ -42,15 +43,15 @@ router.get("/file/:id", FileController.single_file)
 router.get("/file/image/:id", FileController.display_image)
 router.delete("/file/:id", FileController.delete_file)
 
-router.get('/items',itemController.all_items)
+router.get('/items', itemController.all_items)
 router.post("/addItem", itemController.add_item);
 router.put('/updateItem/:id', itemController.update_item)
 router.delete('/removeItem/:id', itemController.remove_item)
 
-router.get('/getIncompleteKot',kotController.get_incomplete_kot)
-router.post('/generateKot',kotController.generate_kot)
-router.post('/kotStatus/:id',kotController.kot_order_status)
-router.post('/kotItemStatus/:id',kotController.kot_item_status)
+router.get('/getIncompleteKot', kotController.get_incomplete_kot)
+router.post('/generateKot', kotController.generate_kot)
+router.post('/kotStatus/:id', kotController.kot_order_status)
+router.post('/kotItemStatus/:id', kotController.kot_item_status)
 
 router.get('/orders', orderController.all_order)
 router.get('/orderForTable/:id', orderController.get_order)
@@ -81,14 +82,20 @@ router.get('/getDashboardSales/:type/:startDate/:stopDate', salesController.getD
 router.get('/getCompletedOrders', salesController.getCompletedOrders)
 router.get('/getCompletedOrderByDate/:startDate/:stopDate', salesController.getCompletedOrderByDate)
 
-router.get('/getStoreInfo',storeInfoController.getStoreInfo)
-router.post('/updateStoreInfo',storeInfoController.updateStoreInfo)
+router.get('/getStoreInfo', storeInfoController.getStoreInfo)
+router.post('/updateStoreInfo', storeInfoController.updateStoreInfo)
 
 router.get('/table', tableController.all_table)
 router.get('/getAvailableTable', tableController.available_table)
 router.get('/vacateTable/:id', tableController.vacate_table)
 router.post('/addTable', tableController.add_table)
 router.delete('/removeTable/:id', tableController.remove_table)
+
+router.get('/tableLocation', tableLocationController.all_table_location)
+router.get('/tableLocation/:location', tableLocationController.get_table_location)
+router.post('/tableLocation', tableLocationController.add_table_location)
+router.post('/tableLocation/:location', tableLocationController.update_table_location)
+router.delete('/tableLocation/:location', tableLocationController.remove_table_location)
 
 router.get('/users', userController.show_users)
 router.get('/user/:id', userController.get_user)
@@ -98,7 +105,9 @@ router.post('/attendence', userController.attendence)
 router.put('/updateUser/:id', userController.update_user)
 
 // router.get("/auth",AuthenticationMiddleware)
-router.get("/clearOrders",orderController.clearOrders)
-router.get("/clearKots",kotController.clearKots)
+router.get("/test/clearOrders", orderController.clearOrders);
+router.get("/test/clearKots", kotController.clearKots);
+router.get("/test/clearReservations", reservationController.clearReservations);
+router.get("/test/clearTables", tableController.clearTables);
 
 module.exports = router;

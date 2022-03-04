@@ -539,11 +539,29 @@ const generate_kot_of_order = (order) => {
       );
 }
 
-const clearOrders = (req,res) => {
-  order_template_copy.deleteMany({}).then(data=>res.json("deleted"))
-  .catch(err=>res.status(500).json({err:err.stack||err.message}))
-}
+const clearOrders = (req, res) => {
+    order_template_copy
+        .deleteMany({})
+        .then((data) => res.json("deleted"))
+        .catch((err) =>
+            res.status(500).json({ err: err.stack || err.message })
+        );
+};
 
 module.exports = {
-    add_order, all_order, update_order, get_order, getOrderByDate, getOrderByStatus, getOrderById, getDashboardOrder, getTakeAwayOrders, getTakeAwayOrderByDate,make_payment,order_online,getOrderIdByPaymentIntentId,generate_kot_of_order,clearOrders
-}
+    add_order,
+    all_order,
+    update_order,
+    get_order,
+    getOrderByDate,
+    getOrderByStatus,
+    getOrderById,
+    getDashboardOrder,
+    getTakeAwayOrders,
+    getTakeAwayOrderByDate,
+    make_payment,
+    order_online,
+    getOrderIdByPaymentIntentId,
+    generate_kot_of_order,
+    clearOrders,
+};

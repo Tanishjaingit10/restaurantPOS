@@ -11,7 +11,6 @@ import CategoryOverlayButton from "./Menu/CategoryOverlayButton";
 import axios from "axios";
 import {
     nonVegIconImageBase64,
-    UncategorizedBgImageBase64,
     vegIconImageBase64,
 } from "../constants";
 
@@ -129,12 +128,6 @@ const Menu = () => {
                                     />
                                     <CategoryInfoButton
                                         category={item}
-                                        style={{
-                                            backgroundImage: `${
-                                                item?.image &&
-                                                `url(/app/file/image/${item?.image})`
-                                            }`,
-                                        }}
                                         className="rounded-md bg-cover bg-center flex-1 mr-4"
                                     >
                                         <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
@@ -202,9 +195,6 @@ const Menu = () => {
                             <div className="grid my-1 grid-cols-6">
                                 <div className="flex">
                                     <div
-                                        style={{
-                                            backgroundImage: `url(${UncategorizedBgImageBase64})`,
-                                        }}
                                         className="rounded-md bg-cover bg-center flex-1 mr-4"
                                     >
                                         <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">

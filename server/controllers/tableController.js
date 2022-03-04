@@ -20,17 +20,9 @@ const add_table = async (request, response, next) => {
         });
         table
             .save()
-            .then(() => {
-                response
-                    .status(200)
-                    .json({ message: "Item added successfully!" });
-            })
-            .catch((error) => {
-                response
-                    .status(401)
-                    .json({ error: "Item could not be added!" });
-            });
-    });
+            .then(() => response.json({ message: "Item added successfully!" }))
+            .catch((error) => response.status(401).json({ error: "Item could not be added!" }));
+    })
 };
 
 const vacate_table = async (req, res) => {
@@ -87,6 +79,15 @@ const available_table = async (request, response) => {
     });
 };
 
+const clearTables = (req, res) => {
+    table_template_copy
+        .deleteMany({})
+        .then((data) => res.json("deleted"))
+        .catch((err) =>
+            res.status(500).json({ err: err.stack || err.message })
+        );
+};
+
 module.exports = {
     add_table,
     get_table,
@@ -94,4 +95,5 @@ module.exports = {
     remove_table,
     available_table,
     vacate_table,
+    clearTables,
 };

@@ -163,6 +163,23 @@ const getDashboardReservation = async (request, response) => {
   });
 }
 
+const clearReservations = (req, res) => {
+    reservation_template_copy
+        .deleteMany({})
+        .then((data) => res.json("deleted"))
+        .catch((err) =>
+            res.status(500).json({ err: err.stack || err.message })
+        );
+};
+
 module.exports = {
-    add_reservation, update_reservation, all_reservations, remove_reservation, get_reservation_by_date, get_reservation_by_table, get_reservation_by_time, getDashboardReservation
-}
+    add_reservation,
+    update_reservation,
+    all_reservations,
+    remove_reservation,
+    get_reservation_by_date,
+    get_reservation_by_table,
+    get_reservation_by_time,
+    getDashboardReservation,
+    clearReservations,
+};

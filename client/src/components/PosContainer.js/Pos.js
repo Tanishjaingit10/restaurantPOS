@@ -5,11 +5,7 @@ import React, { useContext, useEffect } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import {
-    nonVegIconImageBase64,
-    UncategorizedBgImageBase64,
-    vegIconImageBase64,
-} from "../../constants";
+import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
 import { deepClone } from "../../Utils";
@@ -279,9 +275,6 @@ export default function Pos() {
                     <div className="col-span-1 h-full flex flex-col items-center pr-4 pl-2 overflow-auto">
                         <button
                             onClick={() => setCategoryFilter("")}
-                            style={{
-                                backgroundImage: `url(${UncategorizedBgImageBase64})`,
-                            }}
                             className="rounded-md text-gray-600 bg-cover bg-center mb-3 w-full"
                         >
                             <div
@@ -300,12 +293,6 @@ export default function Pos() {
                                     setCategoryFilter(item?.category)
                                 }
                                 key={item?._id}
-                                style={{
-                                    backgroundImage: `${
-                                        item?.image &&
-                                        `url(/app/file/image/${item?.image})`
-                                    }`,
-                                }}
                                 className="bg-cover origin-center rounded-md bg-center mb-3 w-full"
                             >
                                 <div
@@ -329,9 +316,6 @@ export default function Pos() {
                                 onClick={() =>
                                     setCategoryFilter("uncategorized")
                                 }
-                                style={{
-                                    backgroundImage: `url(${UncategorizedBgImageBase64})`,
-                                }}
                                 className="rounded-md bg-cover bg-center mb-2 w-full"
                             >
                                 <div
