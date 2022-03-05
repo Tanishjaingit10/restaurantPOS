@@ -9,7 +9,9 @@ const add_table = async (request, response, next) => {
     }
     await table_template_copy.findOne({ number: number }).then((tableExist) => {
         if (tableExist) {
-            return response.status(402).json({ error: "Item Already Exists!" });
+            return response
+                .status(402)
+                .json({ message: "Table Already Exists!" });
         }
         const table = new table_template_copy({
             number,
@@ -21,8 +23,12 @@ const add_table = async (request, response, next) => {
         table
             .save()
             .then(() => response.json({ message: "Item added successfully!" }))
-            .catch((error) => response.status(401).json({ error: "Item could not be added!" }));
-    })
+            .catch((error) =>
+                response
+                    .status(401)
+                    .json({ message: "Item could not be added!" })
+            );
+    });
 };
 
 const vacate_table = async (req, res) => {

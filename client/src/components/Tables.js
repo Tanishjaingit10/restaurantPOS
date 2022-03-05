@@ -133,12 +133,16 @@ const Tables = () => {
                 status: "Free",
             })
             .then((res) => {
+                notify("Table Added");
                 setComponentLoading(false);
                 setNewTableAdded(true);
                 setReload(!reload);
             })
             .catch((err) => {
-                console.log(err);
+                console.log(err.response);
+                notify(
+                    err?.response?.data?.message || "Unable to add Table"
+                );
                 setComponentLoading(false);
             });
     };
