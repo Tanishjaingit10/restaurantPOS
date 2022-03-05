@@ -7,6 +7,7 @@ const Popup = (props) => {
             <div className="box text-center py-20">
                 <GrClose
                     onClick={props.handleClose}
+                    className="cursor-pointer"
                     style={{
                         marginTop: -60,
                         marginLeft: "90%",

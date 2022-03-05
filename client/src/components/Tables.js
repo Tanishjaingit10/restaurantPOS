@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
-import Popup from "./Popup";
 import Loader from "./Loader";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "./Common/CustomButton";
@@ -31,7 +30,6 @@ const Tables = () => {
     const [componentLoading, setComponentLoading] = useState(false);
     const [displayTable, setDisplayTable] = useState([]);
     const [confirmDeleteTable, setConfirmDeleteTable] = useState(false);
-    const [Open, setOpen] = useState(false);
     const [deleteTableId, setDeleteTableId] = useState();
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
@@ -40,7 +38,6 @@ const Tables = () => {
     const [startDate, setStartDate] = useState(new Date(Date.now()));
     const [startTime, setStartTime] = useState(new Date());
     const [endTime, setEndTime] = useState(new Date());
-    const [newReservationSuccess, setNewReservationSuccess] = useState(false);
     const [newReservation, setNewReservation] = useState({
         startTime: new Date().toISOString().split("T")[1].split(".")[0],
         endTime: new Date().toISOString().split("T")[1].split(".")[0],
@@ -54,7 +51,6 @@ const Tables = () => {
     const [locationIsOpen, setLocationIsOpen] = React.useState(false);
     const navigate = useNavigate();
     const [reload, setReload] = useState(false);
-    const [newTableAdded, setNewTableAdded] = useState(false);
     const [showDeleteTable, setShowDeleteTable] = useState(false);
     const [showDeleteTableLocation, setShowDeleteTableLocation] =
         useState(false);
@@ -71,6 +67,7 @@ const Tables = () => {
     useEffect(() => {
         setComponentLoading(true);
         setShowDeleteTable(false);
+        setShowDeleteTableLocation(false)
         axios
             .get(`/app/table`)
             .then((res) => {
@@ -113,11 +110,12 @@ const Tables = () => {
         axios
             .post(`/app/addReservation`, newReservation)
             .then((res) => {
-                setNewReservationSuccess(true);
+                notify("Table reservation created!");
                 setComponentLoading(false);
                 setReload(!reload);
             })
             .catch((err) => {
+                notify(err?.response?.data?.message || "Unable to create reservation");
                 console.log(err);
                 setComponentLoading(false);
             });
@@ -135,14 +133,11 @@ const Tables = () => {
             .then((res) => {
                 notify("Table Added");
                 setComponentLoading(false);
-                setNewTableAdded(true);
                 setReload(!reload);
             })
             .catch((err) => {
                 console.log(err.response);
-                notify(
-                    err?.response?.data?.message || "Unable to add Table"
-                );
+                notify(err?.response?.data?.message || "Unable to add Table");
                 setComponentLoading(false);
             });
     };
@@ -228,7 +223,6 @@ const Tables = () => {
             )
             .finally(() => {
                 setReload(!reload);
-                setOpen(!Open);
             });
     };
 
@@ -697,9 +691,9 @@ const Tables = () => {
             ) : (
                 <div className="flex flex-col">
                     {locations.map((loc) => (
-                        <div key={loc._id}>
+                        <div key={loc._id} className="relative">
                             {showDeleteTableLocation ? (
-                                <div className="-mb-10 -ml-1 text-red-500">
+                                <div className="text-red-500 cursor-pointer absolute top-8 -left-1">
                                     <MdOutlineDelete
                                         onClick={() =>
                                             handleDeleteLocation(
@@ -723,33 +717,32 @@ const Tables = () => {
                                         )
                                         .map((table) => {
                                             return (
-                                                <div key={table._id}>
-                                                    {showDeleteTable ? (
-                                                        <div className="-mb-10 -ml-1">
-                                                            <MdOutlineDelete
-                                                                onClick={() => {
-                                                                    if (
-                                                                        table.status ===
-                                                                        "Free"
-                                                                    ) {
-                                                                        setConfirmDeleteTable(
-                                                                            true
-                                                                        );
-                                                                        setDeleteTableId(
-                                                                            table._id
-                                                                        );
-                                                                    }
-                                                                }}
-                                                                color={
-                                                                    table.status !==
+                                                <div key={table._id} className="relative">
+                                                    {showDeleteTable && (
+                                                        <MdOutlineDelete
+                                                            onClick={() => {
+                                                                if (
+                                                                    table.status ===
                                                                     "Free"
-                                                                        ? "#faaf9a"
-                                                                        : theme.backgroundColor
+                                                                ) {
+                                                                    setConfirmDeleteTable(
+                                                                        true
+                                                                    );
+                                                                    setDeleteTableId(
+                                                                        table._id
+                                                                    );
                                                                 }
-                                                                size={25}
-                                                            />
-                                                        </div>
-                                                    ) : null}
+                                                            }}
+                                                            className="absolute top-5 -left-1"
+                                                            color={
+                                                                table.status !==
+                                                                "Free"
+                                                                    ? "#faaf9a"
+                                                                    : theme.backgroundColor
+                                                            }
+                                                            size={25}
+                                                        />
+                                                    )}
                                                     <div className="mx-5 text-red-500 flex h-6 items-center justify-center">
                                                         {table.status !==
                                                             "Free" && (
@@ -855,9 +848,9 @@ const Tables = () => {
                                         )
                                         .map((table) => {
                                             return (
-                                                <div key={table._id}>
+                                                <div key={table._id} className="relative">
                                                     {showDeleteTable ? (
-                                                        <div className="-mb-10 -ml-1">
+                                                        <div className="absolute top-5 -left-1">
                                                             <MdOutlineDelete
                                                                 onClick={() => {
                                                                     if (
@@ -966,98 +959,29 @@ const Tables = () => {
                     )}
                 </div>
             )}
-            {confirmDeleteTable && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green">
-                                Please confirm to delete the table
-                            </p>
-                            <button
-                                className="mt-10 px-10 py-2 rounded text-white"
-                                style={{
-                                    backgroundColor: theme.backgroundColor,
-                                }}
-                                onClick={deleteTable}
-                            >
-                                Confirm
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
+            <Modal
+                isOpen={confirmDeleteTable}
+                controller={setConfirmDeleteTable}
+                className="max-h-screen overflow-y-auto flex flex-col items-center justify-center p-20 rounded-xl absolute bg-white"
+            >
+                <button
+                    onClick={() => setConfirmDeleteTable(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                />
+                <p className="text-lg">Please confirm to delete the table.</p>
+                <button
+                    className="mt-12 px-10 py-2 rounded text-white"
+                    style={{
+                        backgroundColor: theme.backgroundColor,
+                    }}
+                    onClick={() => {
+                        deleteTable();
                         setConfirmDeleteTable(false);
                     }}
-                />
-            )}
-            {Open && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green">
-                                Deleted Successfully
-                            </p>
-                            <button
-                                className="mt-10 px-10 py-2 rounded"
-                                style={{
-                                    backgroundColor: theme.backgroundColor,
-                                }}
-                                onClick={() => {
-                                    setOpen(!Open);
-                                }}
-                            >
-                                Okay
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
-                        setOpen(!Open);
-                    }}
-                />
-            )}
-            {newTableAdded && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green text-xl">
-                                Table added successfully!
-                            </p>
-                            <button
-                                className="mt-10 bg-primary px-10 py-2 shadow-lg"
-                                onClick={() => setNewTableAdded(!newTableAdded)}
-                            >
-                                Okay
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
-                        setNewTableAdded(!newTableAdded);
-                    }}
-                />
-            )}
-            {newReservationSuccess && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green text-xl">
-                                Table reservation created!
-                            </p>
-                            <button
-                                className="mt-10 bg-primary px-10 py-2 shadow-lg"
-                                onClick={() =>
-                                    setNewReservationSuccess(
-                                        !newReservationSuccess
-                                    )
-                                }
-                            >
-                                Okay
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
-                        setNewReservationSuccess(!newReservationSuccess);
-                    }}
-                />
-            )}
+                >
+                    Confirm
+                </button>
+            </Modal>
             <Modal
                 isOpen={qrCodeIsOpen}
                 controller={setQrCodeIsOpen}
