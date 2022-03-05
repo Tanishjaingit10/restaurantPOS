@@ -34,7 +34,7 @@ function DiscountOverlayButton({
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="max-h-screen overflow-y-auto px-14 py-10 flex flex-col items-center relative bg-white rounded-xl"
+                className="animate-scaleUp max-h-screen overflow-y-auto px-14 py-10 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && <SpinLoader />}
                 <button

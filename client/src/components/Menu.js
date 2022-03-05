@@ -34,6 +34,8 @@ const Menu = () => {
 
     const handleRefresh = async () => {
         setRefreshLoading(true);
+        setDeleteCategory(false)
+        setDeleteFoodItem(false)
         fetchCategories()
             .then(() => fetchItems())
             .then(() => notify("Menu Updated"))

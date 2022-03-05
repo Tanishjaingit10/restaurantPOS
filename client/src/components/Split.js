@@ -245,7 +245,7 @@ function Split() {
                     <Modal
                         isOpen={paymentDoneOverlayIsOpen}
                         controller={setPaymentDoneOverlayIsOpen}
-                        className="py-8 max-h-screen overflow-y-auto px-12 flex flex-col items-center relative bg-white rounded-xl"
+                        className="animate-scaleUp py-8 max-h-screen overflow-y-auto px-12 flex flex-col items-center relative bg-white rounded-xl"
                     >
                         <button
                             onClick={() => setPaymentDoneOverlayIsOpen(false)}

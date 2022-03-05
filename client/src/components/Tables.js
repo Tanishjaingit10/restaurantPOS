@@ -346,7 +346,7 @@ const Tables = () => {
                         isOpen={modalIsOpen}
                         onRequestClose={closeModal}
                         contentLabel="Example Modal"
-                        className="max-h-screen overflow-y-auto bg-white py-12 px-20 rounded-xl relative w-1/2 lg:w-1/3"
+                        className="animate-scaleUp max-h-screen overflow-y-auto bg-white py-12 px-20 rounded-xl relative w-1/2 lg:w-1/3"
                     >
                         <button
                             onClick={closeModal}
@@ -430,7 +430,7 @@ const Tables = () => {
                         isOpen={locationIsOpen}
                         onRequestClose={closeLocationModal}
                         contentLabel="Example Modal"
-                        className="max-h-screen overflow-y-auto bg-white py-12 px-20 rounded-xl relative w-1/2 lg:w-1/3"
+                        className="animate-scaleUp max-h-screen overflow-y-auto bg-white py-12 px-20 rounded-xl relative w-1/2 lg:w-1/3"
                     >
                         <button
                             onClick={closeLocationModal}
@@ -481,7 +481,7 @@ const Tables = () => {
             <Modal
                 isOpen={showModal}
                 controller={setShowModal}
-                className="relative bg-white max-h-screen overflow-y-auto w-1/2 lg:w-1/3 rounded-xl"
+                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto w-1/2 lg:w-1/3 rounded-xl"
             >
                 <button
                     onClick={() => setIsOpen(false)}
@@ -962,7 +962,7 @@ const Tables = () => {
             <Modal
                 isOpen={confirmDeleteTable}
                 controller={setConfirmDeleteTable}
-                className="max-h-screen overflow-y-auto flex flex-col items-center justify-center p-20 rounded-xl absolute bg-white"
+                className="animate-scaleUp max-h-screen overflow-y-auto flex flex-col items-center justify-center p-20 rounded-xl absolute bg-white"
             >
                 <button
                     onClick={() => setConfirmDeleteTable(false)}
@@ -985,7 +985,7 @@ const Tables = () => {
             <Modal
                 isOpen={qrCodeIsOpen}
                 controller={setQrCodeIsOpen}
-                className="max-h-screen overflow-y-auto flex flex-col items-center justify-center p-10 rounded-xl absolute bg-white"
+                className="animate-scaleUp max-h-screen overflow-y-auto flex flex-col items-center justify-center p-10 rounded-xl absolute bg-white"
             >
                 {qrModalLoading && <SpinLoader />}
                 <button

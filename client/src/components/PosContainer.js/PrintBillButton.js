@@ -53,7 +53,7 @@ function PrintBillButton({ children, order_id, className }) {
                 isOpen={isOpen}
                 controller={setIsOpen}
                 contentRef={(el) => (componentToPrint.current = el)}
-                className="max-h-screen overflow-y-auto p-2 flex flex-col w-96 items-center relative bg-white"
+                className="animate-scaleUp max-h-screen overflow-y-auto p-2 flex flex-col w-96 items-center relative bg-white"
             >
                 <div className="text-2xl my-2">RESTAURANT</div>
                 <div className="border-2 border-dotted h-0 w-full border-gray-700" />

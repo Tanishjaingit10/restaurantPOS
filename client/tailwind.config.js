@@ -22,10 +22,19 @@ module.exports = {
                     "0%": { transform: "translateX(100%)" },
                     "100%": { transform: "translateX(0%)" },
                 },
+                up: {
+                    "0%": { transform: "translateY(150%)" },
+                    "100%": { transform: "translateY(0%)" },
+                },
+                scaleUp: {
+                    "0%": { transform: "scale(0.98)" },
+                    "100%": { transform: "scale(1)" },
+                }
             },
             animation: {
                 fade: "fade 1s ease",
                 left: "left 0.25s ease",
+                scaleUp: "scaleUp 0.1s ease",
             },
             backdropBlur: {
                 xs: "2px",

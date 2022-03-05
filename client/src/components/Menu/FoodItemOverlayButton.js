@@ -147,7 +147,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                 isOpen={isOpen}
                 controller={setIsOpen}
                 onAfterOpen={onModalOpen}
-                className="max-h-screen overflow-y-auto p-4 flex flex-col items-center relative bg-white rounded-xl"
+                className="animate-scaleUp max-h-screen overflow-y-auto p-4 flex flex-col items-center relative bg-white rounded-xl"
             >
                 {loading && <SpinLoader />}
                 <button

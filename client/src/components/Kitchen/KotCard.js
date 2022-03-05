@@ -230,7 +230,7 @@ function KotCard({ item, setKots }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="max-h-screen overflow-y-auto rounded-xl relative py-10 px-20 text-lg bg-white"
+                className="animate-scaleUp max-h-screen overflow-y-auto rounded-xl relative py-10 px-20 text-lg bg-white"
             >
                 <button
                     onClick={() => setIsOpen(false)}

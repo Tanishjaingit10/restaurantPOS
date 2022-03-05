@@ -71,7 +71,7 @@ function PaymentMethodOverlayButton({
                 isOpen={isOpen}
                 controller={setIsOpen}
                 onAfterOpen={onModalOpen}
-                className="max-h-screen overflow-y-auto py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
+                className="animate-scaleUp max-h-screen overflow-y-auto py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
             >
                 <button
                     onClick={() => setIsOpen(false)}
@@ -174,7 +174,7 @@ function PaymentMethodOverlayButton({
                 <Modal
                     isOpen={confirmationIsOpen}
                     controller={setConfirmationIsOpen}
-                    className="max-h-screen overflow-y-auto py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
+                    className="animate-scaleUp max-h-screen overflow-y-auto py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
                 >
                     <button
                         onClick={() => setConfirmationIsOpen(false)}
