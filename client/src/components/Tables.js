@@ -65,13 +65,14 @@ const Tables = () => {
     const notify = useContext(NotificationContext);
     const qrCodeRef = useRef(null);
     const linkToTableUI = `${TableUIUrl}/${clickedTableId || "TakeAway"}`;
-    const [locations, setLocations] = useState([])
-    const [selectedLocation, setSelectedLocation] = useState("")
+    const [locations, setLocations] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState("");
 
     useEffect(() => {
         setComponentLoading(true);
         setShowDeleteTable(false);
-        axios.get(`/app/table`)
+        axios
+            .get(`/app/table`)
             .then((res) => {
                 setDisplayTable(res.data);
                 var tables = [];
@@ -87,10 +88,17 @@ const Tables = () => {
                 setLoading(false);
                 setComponentLoading(false);
             });
-        axios.get('/app/tableLocation')
-            .then(res => {
-                if (res?.data) setLocations(res.data)
-            }).catch(err => notify(err?.response?.data?.message || "Unable to fetch table locations"))
+        axios
+            .get("/app/tableLocation")
+            .then((res) => {
+                if (res?.data) setLocations(res.data);
+            })
+            .catch((err) =>
+                notify(
+                    err?.response?.data?.message ||
+                        "Unable to fetch table locations"
+                )
+            );
     }, [reload]);
 
     useEffect(() => {
@@ -102,7 +110,8 @@ const Tables = () => {
 
     const submitNewReservation = () => {
         setComponentLoading(true);
-        axios.post(`/app/addReservation`, newReservation)
+        axios
+            .post(`/app/addReservation`, newReservation)
             .then((res) => {
                 setNewReservationSuccess(true);
                 setComponentLoading(false);
@@ -116,12 +125,13 @@ const Tables = () => {
 
     const addTable = () => {
         setComponentLoading(true);
-        axios.post(`/app/addTable`, {
-            number: tableName,
-            capacity: maxCapacity,
-            location: selectedLocation,
-            status: "Free",
-        })
+        axios
+            .post(`/app/addTable`, {
+                number: tableName,
+                capacity: maxCapacity,
+                location: selectedLocation,
+                status: "Free",
+            })
             .then((res) => {
                 setComponentLoading(false);
                 setNewTableAdded(true);
@@ -141,11 +151,13 @@ const Tables = () => {
             })
             .then((res) => {
                 setReload(!reload);
-                notify("Location Added")
-                setLocationIsOpen(false)
-                setTableLocation("")
+                notify("Location Added");
+                setLocationIsOpen(false);
+                setTableLocation("");
             })
-            .catch((err) => notify(err?.response?.data?.message || "Unable to add location"))
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable to add location")
+            )
             .finally((err) => setComponentLoading(false));
     };
 
@@ -159,7 +171,8 @@ const Tables = () => {
 
     const getReservationByTime = (date, startTime, endTime) => {
         setComponentLoading(true);
-        axios.get(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
+        axios
+            .get(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
             .then((res) => {
                 var tableList = [];
                 var reservedTable = [];
@@ -203,25 +216,33 @@ const Tables = () => {
 
     const theme = useContext(ThemeContext);
     const deleteTable = async () => {
-        axios.delete(`/app/removeTable/${deleteTableId}`)
+        axios
+            .delete(`/app/removeTable/${deleteTableId}`)
             .then((res) => notify("Table Deleted"))
-            .catch(err => notify(err?.response?.data?.message || "Unable to delete table"))
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable to delete table")
+            )
             .finally(() => {
                 setReload(!reload);
                 setOpen(!Open);
-            })
+            });
     };
 
     const handleDeleteLocation = (loc) => {
-        setComponentLoading(true)
-        axios.delete(`/app/tableLocation/${loc}`)
+        setComponentLoading(true);
+        axios
+            .delete(`/app/tableLocation/${loc}`)
             .then(() => {
-                setReload(e => !e);
+                setReload((e) => !e);
                 notify("Location deleted");
             })
-            .catch(err => notify(err?.response?.data?.message || "Unable to delete location"))
-            .finally(() => setComponentLoading(false))
-    }
+            .catch((err) =>
+                notify(
+                    err?.response?.data?.message || "Unable to delete location"
+                )
+            )
+            .finally(() => setComponentLoading(false));
+    };
 
     const handleTableClick = (num) => {
         setQrCodeIsOpen(true);
@@ -241,7 +262,8 @@ const Tables = () => {
         setQrModalLoading(true);
         axios
             .get(
-                `/app/orderForTable/${displayTable.find((t) => t._id === clickedTableId)?.number
+                `/app/orderForTable/${
+                    displayTable.find((t) => t._id === clickedTableId)?.number
                 }`
             )
             .then((res) => notify("Please complete the payment first"))
@@ -256,7 +278,7 @@ const Tables = () => {
                         .catch((err) =>
                             notify(
                                 err?.response?.data?.message ||
-                                "Error.. Try Again"
+                                    "Error.. Try Again"
                             )
                         )
                         .finally(setLoading(false));
@@ -377,15 +399,20 @@ const Tables = () => {
                                 name="position"
                                 className="font-medium p-4 border-2 w-full text-md rounded-lg text-white my-3 bg-red-500"
                                 style={{ cursor: "pointer" }}
-                                onChange={(e) => setSelectedLocation(e.target.value)}
+                                onChange={(e) =>
+                                    setSelectedLocation(e.target.value)
+                                }
                                 value={selectedLocation}
                             >
                                 <option hidden> Select Table Location </option>
-                                {locations.map(loc =>
-                                    <option key={loc._id} value={loc.table_location}>
+                                {locations.map((loc) => (
+                                    <option
+                                        key={loc._id}
+                                        value={loc.table_location}
+                                    >
                                         {loc.table_location}
                                     </option>
-                                )}
+                                ))}
                             </select>
                             <div className="flex w-full mt-5 justify-center">
                                 <CustomButton
@@ -661,25 +688,36 @@ const Tables = () => {
                     </form>
                 </div>
             </Modal>
-            {loading ? <Loader /> :
+            {loading ? (
+                <Loader />
+            ) : (
                 <div className="flex flex-col">
-                    {
-                        locations.map(loc =>
-                            <div key={loc._id}>
-                                {showDeleteTableLocation ? (
-                                    <div className="-mb-10 -ml-1 text-red-500">
-                                        <MdOutlineDelete
-                                            onClick={() => handleDeleteLocation(loc.table_location)}
-                                            size={25}
-                                        />
-                                    </div>
-                                ) : null}
-                                <h2 className="mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
-                                    {loc.table_location}
-                                </h2>
-                                <div className="flex flex-wrapw-full justify-evenly">
-                                    <div className="flex flex-row w-full flex-wrap">
-                                        {displayTable.filter(table => table.location === loc.table_location).map(table => {
+                    {locations.map((loc) => (
+                        <div key={loc._id}>
+                            {showDeleteTableLocation ? (
+                                <div className="-mb-10 -ml-1 text-red-500">
+                                    <MdOutlineDelete
+                                        onClick={() =>
+                                            handleDeleteLocation(
+                                                loc.table_location
+                                            )
+                                        }
+                                        size={25}
+                                    />
+                                </div>
+                            ) : null}
+                            <h2 className="mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
+                                {loc.table_location}
+                            </h2>
+                            <div className="flex flex-wrapw-full justify-evenly">
+                                <div className="flex flex-row w-full flex-wrap">
+                                    {displayTable
+                                        .filter(
+                                            (table) =>
+                                                table.location ===
+                                                loc.table_location
+                                        )
+                                        .map((table) => {
                                             return (
                                                 <div key={table._id}>
                                                     {showDeleteTable ? (
@@ -699,7 +737,8 @@ const Tables = () => {
                                                                     }
                                                                 }}
                                                                 color={
-                                                                    table.status !== "Free"
+                                                                    table.status !==
+                                                                    "Free"
                                                                         ? "#faaf9a"
                                                                         : theme.backgroundColor
                                                                 }
@@ -708,7 +747,8 @@ const Tables = () => {
                                                         </div>
                                                     ) : null}
                                                     <div className="mx-5 text-red-500 flex h-6 items-center justify-center">
-                                                        {table.status !== "Free" && (
+                                                        {table.status !==
+                                                            "Free" && (
                                                             <>
                                                                 <i className="far fa-clock mr-1" />
                                                                 <div className="font-semibold">
@@ -722,7 +762,7 @@ const Tables = () => {
                                                                                 new Date(
                                                                                     table.time
                                                                                 ).valueOf()) /
-                                                                            3600000
+                                                                                3600000
                                                                         )
                                                                             .toString()
                                                                             .padStart(
@@ -735,10 +775,13 @@ const Tables = () => {
                                                                                 table.time
                                                                             ).valueOf()) /
                                                                             60000) %
-                                                                        60
+                                                                            60
                                                                     )
                                                                         .toString()
-                                                                        .padStart(2, "0")}
+                                                                        .padStart(
+                                                                            2,
+                                                                            "0"
+                                                                        )}
                                                                     :
                                                                     {Math.floor(
                                                                         ((timeNow -
@@ -746,23 +789,30 @@ const Tables = () => {
                                                                                 table.time
                                                                             ).valueOf()) /
                                                                             1000) %
-                                                                        60
+                                                                            60
                                                                     )
                                                                         .toString()
-                                                                        .padStart(2, "0")}
+                                                                        .padStart(
+                                                                            2,
+                                                                            "0"
+                                                                        )}
                                                                 </div>
                                                             </>
                                                         )}
                                                     </div>
                                                     <div
-                                                        className={`${table.status !== "Free"
-                                                            ? "text-white bg-red-400"
-                                                            : "text-gray-500"
-                                                            } m-5 mt-0 rounded border flex items-center justify-center border-red-500`}
+                                                        className={`${
+                                                            table.status !==
+                                                            "Free"
+                                                                ? "text-white bg-red-400"
+                                                                : "text-gray-500"
+                                                        } m-5 mt-0 rounded border flex items-center justify-center border-red-500`}
                                                     >
                                                         <button
                                                             onClick={() =>
-                                                                handleTableClick(table._id)
+                                                                handleTableClick(
+                                                                    table._id
+                                                                )
                                                             }
                                                             className="font-bold text-2xl p-8"
                                                         >
@@ -774,12 +824,144 @@ const Tables = () => {
                                                 </div>
                                             );
                                         })}
-                                    </div>
                                 </div>
                             </div>
-                        )}
+                        </div>
+                    ))}
+                    {displayTable.some(
+                        (table) =>
+                            !locations.some(
+                                (loc) => loc.table_location === table.location
+                            )
+                    ) && (
+                        <div>
+                            <h2 className="mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
+                                No Location
+                            </h2>
+                            <div className="flex flex-wrapw-full justify-evenly">
+                                <div className="flex flex-row w-full flex-wrap">
+                                    {displayTable
+                                        .filter(
+                                            (table) =>
+                                                !locations.some(
+                                                    (l) =>
+                                                        table.location ===
+                                                        l.table_location
+                                                )
+                                        )
+                                        .map((table) => {
+                                            return (
+                                                <div key={table._id}>
+                                                    {showDeleteTable ? (
+                                                        <div className="-mb-10 -ml-1">
+                                                            <MdOutlineDelete
+                                                                onClick={() => {
+                                                                    if (
+                                                                        table.status ===
+                                                                        "Free"
+                                                                    ) {
+                                                                        setConfirmDeleteTable(
+                                                                            true
+                                                                        );
+                                                                        setDeleteTableId(
+                                                                            table._id
+                                                                        );
+                                                                    }
+                                                                }}
+                                                                color={
+                                                                    table.status !==
+                                                                    "Free"
+                                                                        ? "#faaf9a"
+                                                                        : theme.backgroundColor
+                                                                }
+                                                                size={25}
+                                                            />
+                                                        </div>
+                                                    ) : null}
+                                                    <div className="mx-5 text-red-500 flex h-6 items-center justify-center">
+                                                        {table.status !==
+                                                            "Free" && (
+                                                            <>
+                                                                <i className="far fa-clock mr-1" />
+                                                                <div className="font-semibold">
+                                                                    {timeNow -
+                                                                        new Date(
+                                                                            table.time
+                                                                        ).valueOf() >
+                                                                        3600000 &&
+                                                                        `${Math.floor(
+                                                                            (timeNow -
+                                                                                new Date(
+                                                                                    table.time
+                                                                                ).valueOf()) /
+                                                                                3600000
+                                                                        )
+                                                                            .toString()
+                                                                            .padStart(
+                                                                                2,
+                                                                                "0"
+                                                                            )}:`}
+                                                                    {Math.floor(
+                                                                        ((timeNow -
+                                                                            new Date(
+                                                                                table.time
+                                                                            ).valueOf()) /
+                                                                            60000) %
+                                                                            60
+                                                                    )
+                                                                        .toString()
+                                                                        .padStart(
+                                                                            2,
+                                                                            "0"
+                                                                        )}
+                                                                    :
+                                                                    {Math.floor(
+                                                                        ((timeNow -
+                                                                            new Date(
+                                                                                table.time
+                                                                            ).valueOf()) /
+                                                                            1000) %
+                                                                            60
+                                                                    )
+                                                                        .toString()
+                                                                        .padStart(
+                                                                            2,
+                                                                            "0"
+                                                                        )}
+                                                                </div>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                    <div
+                                                        className={`${
+                                                            table.status !==
+                                                            "Free"
+                                                                ? "text-white bg-red-400"
+                                                                : "text-gray-500"
+                                                        } m-5 mt-0 rounded border flex items-center justify-center border-red-500`}
+                                                    >
+                                                        <button
+                                                            onClick={() =>
+                                                                handleTableClick(
+                                                                    table._id
+                                                                )
+                                                            }
+                                                            className="font-bold text-2xl p-8"
+                                                        >
+                                                            <div className="leading-3">
+                                                                {table.number}
+                                                            </div>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            }
+            )}
             {confirmDeleteTable && (
                 <Popup
                     content={
@@ -884,10 +1066,11 @@ const Tables = () => {
                 />
                 <div className="text-center text-3xl mb-10 text-red-500 font-semibold">
                     {clickedTableId
-                        ? `Table: ${displayTable?.find(
-                            (t) => t._id === clickedTableId
-                        )?.number
-                        }`
+                        ? `Table: ${
+                              displayTable?.find(
+                                  (t) => t._id === clickedTableId
+                              )?.number
+                          }`
                         : "Take Away"}
                 </div>
                 <div className="flex gap-8 mb-10">
@@ -943,8 +1126,8 @@ const Tables = () => {
                             className="bg-green p-2 rounded-lg font-semibold"
                         >
                             {clickedTableId &&
-                                displayTable.find((t) => t._id === clickedTableId)
-                                    ?.status !== "Free"
+                            displayTable.find((t) => t._id === clickedTableId)
+                                ?.status !== "Free"
                                 ? "View Table"
                                 : "Take Order"}
                         </button>

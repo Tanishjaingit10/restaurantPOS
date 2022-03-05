@@ -10,6 +10,7 @@ const table_template = new mongoose.Schema({
     },
     location:{
         type:String,
+        default:""
     },
     image:{
         type:String,
