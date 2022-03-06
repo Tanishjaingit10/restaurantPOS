@@ -22,9 +22,10 @@ const food_item_template = new mongoose.Schema({
                 day: String,
                 startTime: String,
                 endTime: String,
-                checked: Boolean
+                checked: Boolean,
             },
         ],
+        default: [],
     },
     finalVariant: {
         type: [
@@ -34,6 +35,7 @@ const food_item_template = new mongoose.Schema({
                 price: Number,
             },
         ],
+        default: [],
     },
     foodItem: {
         type: String,

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { NotificationContext } from "../context/Notification";
 import { getNewId } from "../Utils";
 import { Modal } from "./Common/Modal";
@@ -19,6 +19,7 @@ function Split() {
     const [amountDue, setAmountDue] = useState(0);
     const [paymentDoneOverlayIsOpen, setPaymentDoneOverlayIsOpen] =
         useState(false);
+    const navigate = useNavigate()
 
     useEffect(() => {
         setLoading(true);
@@ -245,6 +246,7 @@ function Split() {
                     <Modal
                         isOpen={paymentDoneOverlayIsOpen}
                         controller={setPaymentDoneOverlayIsOpen}
+                        onAfterClose={()=>navigate("/tables")}
                         className="animate-scaleUp py-8 max-h-screen overflow-y-auto px-12 flex flex-col items-center relative bg-white rounded-xl"
                     >
                         <button

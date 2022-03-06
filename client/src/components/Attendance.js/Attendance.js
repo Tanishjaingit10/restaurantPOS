@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
+import axios from "axios";
 import Loader from "../Loader";
 import { ThemeContext } from "../../context/Theme";
 import Select from "react-select";
@@ -28,20 +29,18 @@ const Attendance = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("/app/users")
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
+        axios("/app/users")
+            .then((res) => {
+                if (res?.data) {
                     var dict = {};
-                    for (var i = 0; i < json?.length; i++) {
-                        dict[json[i]["_id"]] = json[i];
-                    }
+                    for (var i = 0; i < res.data?.length; i++)
+                        dict[res.data[i]["_id"]] = res.data[i];
                     setUsers(dict);
-                    fetch("/app/attendance")
-                        .then((res) => res?.json())
-                        .then((json) => {
+                    axios
+                        .get("/app/attendance")
+                        .then((res) => {
                             setLoading(false);
-                            if (json !== "undefined") setAttendance(json);
+                            if (res?.data) setAttendance(res.data);
                         })
                         .catch((err) => console.error(err))
                         .finally(() => setComponentLoading(false));
@@ -56,7 +55,7 @@ const Attendance = () => {
         var updatedData = {};
         updatedData["date"] = attendance?.date;
         updatedData["userId"] = attendance?.user_id;
-        if (attendance.status === "Shift Not Started") {
+        if (attendance?.status === "Shift Not Started") {
             updatedData["status"] = "Clocked In";
             updatedData["checkInTime"] = new Date().toLocaleTimeString(
                 "en-US",
@@ -71,13 +70,8 @@ const Attendance = () => {
                 { hour12: false }
             );
         }
-        fetch(`/app/updateAttendance/${attendance?._id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updatedData),
-        })
+        axios
+            .put(`/app/updateAttendance/${attendance?._id}`, updatedData)
             .then((res) => setReload(!reload))
             .catch((err) => console.log(err))
             .finally(() => setComponentLoading(false));
@@ -98,7 +92,7 @@ const Attendance = () => {
 
     useEffect(() => {
         const start = (pageNumber - 1) * pageLimit;
-        setAttendanceToShow(attendance.slice(start, start + pageLimit));
+        setAttendanceToShow(attendance?.slice(start, start + pageLimit));
     }, [pageNumber, pageLimit]);
 
     return (
@@ -166,11 +160,6 @@ const Attendance = () => {
                                         </i>
                                     </div>
                                     <PrintTable printTableRef={printTable} />
-
-                                    {/* <CustomButton
-									title="Print"
-									customStyle={{ backgroundColor: theme.backgroundColor }}
-								/> */}
                                     <DownloadTable
                                         fileName="Atendance"
                                         tableId="DownloadTable"
@@ -239,7 +228,7 @@ const Attendance = () => {
                                                                     attendance[
                                                                         "user_id"
                                                                     ]
-                                                                ].fullName
+                                                                ]?.fullName
                                                             }
                                                         </div>
                                                     </th>
@@ -250,13 +239,13 @@ const Attendance = () => {
                                                                     attendance[
                                                                         "user_id"
                                                                     ]
-                                                                ].email_id
+                                                                ]?.email_id
                                                             }
                                                         </div>
                                                     </th>
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
-                                                            {attendance.date}
+                                                            {attendance?.date}
                                                         </div>
                                                     </th>
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
@@ -266,7 +255,7 @@ const Attendance = () => {
                                                                 color: theme.backgroundColor,
                                                             }}
                                                         >
-                                                            {attendance.status}
+                                                            {attendance?.status}
                                                         </div>
                                                     </th>
                                                     <th className="px-1 py-2 whitespace-nowrap border border-gray-400 text-center">
@@ -280,7 +269,7 @@ const Attendance = () => {
                                                                     width: 150,
                                                                 }}
                                                                 title={
-                                                                    attendance.status ===
+                                                                    attendance?.status ===
                                                                     "Clocked In"
                                                                         ? "Clock Out"
                                                                         : "Clock In"
@@ -336,8 +325,8 @@ const Attendance = () => {
                                     </tr>
                                     {loading ? (
                                         <Loader />
-                                    ) : attendanceToShow.length > 0 ? (
-                                        attendanceToShow.map(
+                                    ) : attendanceToShow?.length > 0 ? (
+                                        attendanceToShow?.map(
                                             (attendance, idx) => {
                                                 return (
                                                     <tr className="">
@@ -357,7 +346,7 @@ const Attendance = () => {
                                                                         attendance[
                                                                             "user_id"
                                                                         ]
-                                                                    ].fullName
+                                                                    ]?.fullName
                                                                 }
                                                             </h5>
                                                         </th>
@@ -368,14 +357,14 @@ const Attendance = () => {
                                                                         attendance[
                                                                             "user_id"
                                                                         ]
-                                                                    ].email_id
+                                                                    ]?.email_id
                                                                 }
                                                             </h5>
                                                         </th>
                                                         <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                             <h5 className="text-base text-gray-500 font-semibold">
                                                                 {
-                                                                    attendance.date
+                                                                    attendance?.date
                                                                 }
                                                             </h5>
                                                         </th>
@@ -387,12 +376,12 @@ const Attendance = () => {
                                                                 }}
                                                             >
                                                                 {
-                                                                    attendance.status
+                                                                    attendance?.status
                                                                 }
                                                             </h5>
                                                         </th>
                                                         <th className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                            {attendance.status !==
+                                                            {attendance?.status !==
                                                             "Shift Completed" ? (
                                                                 <CustomButton
                                                                     customStyle={{
@@ -402,7 +391,7 @@ const Attendance = () => {
                                                                         width: 150,
                                                                     }}
                                                                     title={
-                                                                        attendance.status ===
+                                                                        attendance?.status ===
                                                                         "Clocked In"
                                                                             ? "Clock Out"
                                                                             : "Clock In"

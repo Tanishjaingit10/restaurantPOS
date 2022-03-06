@@ -5,9 +5,9 @@ const CustomButton = (props) => {
     <button
       style={props.customStyle}
       className="text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
-      onClick={props.onPress}
+      onClick={props?.onPress}
     >
-      {props.title}
+      {props?.title}
     </button>
   );
 };

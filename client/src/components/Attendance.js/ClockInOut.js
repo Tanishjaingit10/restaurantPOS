@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Popup from "../Popup";
@@ -19,15 +20,13 @@ const ClockInOut = () => {
     const onHome = (e) => {
         navigate("/dashboard");
     };
-    const loadUser = async () => {
+    const loadUser = () => {
         if (user.email_id) {
-            await fetch(`/app/user/${user.email_id}`)
-                .then((res) => res.json())
-                .then((json) => {
-                    finalUser = json;
-                    if (json.attendance.status === "Clocked In")
-                        buttonValue = "Clock Out";
-                });
+            axios.get(`/app/user/${user.email_id}`).then((res) => {
+                finalUser = res.data;
+                if (res?.data?.attendance?.status === "Clocked In")
+                    buttonValue = "Clock Out";
+            });
         }
     };
     useEffect(() => {
@@ -37,47 +36,37 @@ const ClockInOut = () => {
     const enterUser = async (e) => {
         e.preventDefault();
 
-        const res = await fetch("/app/attendance", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+        axios
+            .post("/app/attendance", {
                 email_id: user.email_id,
                 password: user.password,
-            }),
-        });
-
-        if (res.status === 201) {
-            finalUser.attendance = {
-                status:
-                    buttonValue === "Clock In" ? "Clocked In" : "Clocked Out",
-                checkinTime:
-                    buttonValue === "Clock In"
-                        ? new Date().toLocaleTimeString()
-                        : finalUser.attendance.checkinTime,
-                checkoutTime:
-                    buttonValue === "Clock In"
-                        ? "N/A"
-                        : new Date().toLocaleTimeString(),
-                date: new Date().toISOString().split("T")[0],
-            };
-            setMsg("Successful!");
-            setIsOpen(!isOpen);
-            await fetch(`/app/updateUser/${user.email_id}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
+            })
+            .then(() => {
+                finalUser.attendance = {
+                    status:
+                        buttonValue === "Clock In"
+                            ? "Clocked In"
+                            : "Clocked Out",
+                    checkinTime:
+                        buttonValue === "Clock In"
+                            ? new Date().toLocaleTimeString()
+                            : finalUser.attendance.checkinTime,
+                    checkoutTime:
+                        buttonValue === "Clock In"
+                            ? "N/A"
+                            : new Date().toLocaleTimeString(),
+                    date: new Date().toISOString().split("T")[0],
+                };
+                setMsg("Successful!");
+                setIsOpen(!isOpen);
+                return axios.put(`/app/updateUser/${user.email_id}`, {
                     finalUser,
-                }),
+                });
+            })
+            .catch((err) => {
+                setIsError(!isError);
+                setMsg("Invalid Credentials!");
             });
-        } else {
-            // let obj = signin.find((pop) => pop.id === res.status);
-            setIsError(!isError);
-            setMsg("Invalid Credentials!");
-        }
     };
 
     return (

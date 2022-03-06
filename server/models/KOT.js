@@ -27,6 +27,7 @@ const kot_template = new mongoose.Schema({
                             quantity: Number,
                         },
                     ],
+                    default: [],
                 },
                 itemStatus: {
                     type: String,
@@ -44,6 +45,7 @@ const kot_template = new mongoose.Schema({
                 },
             },
         ],
+        default: [],
     },
     tableNumber: Number,
     timeTakenToComplete: {

@@ -1,39 +1,40 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const customer_template = new mongoose.Schema({
-
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: true,
     },
-    contact:{
-        type:String,
+    contact: {
+        type: String,
+        default: "",
         // required:true
     },
-    email:{
-        type:String,
+    email: {
+        type: String,
+        default:""
     },
-    date:{
+    date: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
-    num_orders:{
-      type: Number,
-      default: 0
+    num_orders: {
+        type: Number,
+        default: 0,
     },
-    total_amount_spent:{
-      type: Number,
-      default: 0
+    total_amount_spent: {
+        type: Number,
+        default: 0,
     },
     time: {
-      type: String
+        type: String,
     },
-    order_type:{
-      type: String,
+    order_type: {
+        type: String,
     },
     order_id: {
-      type: String
-    }
-})
+        type: String,
+    },
+});
 
-module.exports = mongoose.model('customers', customer_template)
+module.exports = mongoose.model("customers", customer_template);

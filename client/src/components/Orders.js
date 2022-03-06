@@ -459,14 +459,14 @@ const Orders = () => {
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
-                                                            {order.order_id}
+                                                            {order?.order_id}
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {
-                                                                order.payment
-                                                                    .orderType
+                                                                order?.payment
+                                                                    ?.orderType
                                                             }
                                                         </div>
                                                     </td>
@@ -474,16 +474,16 @@ const Orders = () => {
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
                                                             {
-                                                                order.payment
-                                                                    .total
+                                                                order?.payment
+                                                                    ?.total
                                                             }
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {
-                                                                order.payment
-                                                                    .orderStatus
+                                                                order?.payment
+                                                                    ?.orderStatus
                                                             }
                                                         </div>
                                                     </td>
@@ -553,8 +553,8 @@ const Orders = () => {
 
                                     {loading ? (
                                         <Loader />
-                                    ) : ordersToShow.length > 0 ? (
-                                        ordersToShow.map((order) => {
+                                    ) : ordersToShow?.length > 0 ? (
+                                        ordersToShow?.map((order) => {
                                             return (
                                                 <tr
                                                     key={order._id}
@@ -581,8 +581,8 @@ const Orders = () => {
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {
-                                                                order.payment
-                                                                    .orderType
+                                                                order?.payment
+                                                                    ?.orderType
                                                             }
                                                         </div>
                                                     </td>
@@ -590,16 +590,16 @@ const Orders = () => {
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
                                                             {
-                                                                order.payment
-                                                                    .total
+                                                                order?.payment
+                                                                    ?.total
                                                             }
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {
-                                                                order.payment
-                                                                    .orderStatus
+                                                                order?.payment
+                                                                    ?.orderStatus
                                                             }
                                                         </div>
                                                     </td>
@@ -833,8 +833,8 @@ const Orders = () => {
                                 Comments
                             </p>
                             <p className="text-gray-500 mb-16">
-                                {orderDetails.comments
-                                    ? orderDetails.comments
+                                {orderDetails?.comments
+                                    ? orderDetails?.comments
                                     : "No comments from customer"}
                             </p>
                             <button

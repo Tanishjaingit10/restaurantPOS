@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
+import axios from "axios";
 import Loader from "../Loader";
 import { ThemeContext } from "../../context/Theme";
 import Select from "react-select";
@@ -35,19 +36,18 @@ const ViewAttendance = () => {
     const printTable = useRef();
 
     useEffect(() => {
-        fetch("/app/users")
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
+        axios
+            .get("/app/users")
+            .then((res) => {
+                if (res?.data) {
                     var dict = {};
-                    for (var i = 0; i < json.length; i++) {
-                        dict[json[i]["_id"]] = json[i];
-                    }
+                    for (var i = 0; i < res.data.length; i++)
+                        dict[res.data[i]["_id"]] = res.data[i];
                     setUsers(dict);
-                    fetch("/app/attendance")
-                        .then((res) => res.json())
-                        .then((json) => {
-                            if (json !== "undefined") setAttendance(json);
+                    return axios
+                        .get("/app/attendance")
+                        .then((res) => {
+                            if (res?.data) setAttendance(res.data);
                         })
                         .catch((err) => console.error(err))
                         .finally(() => {
@@ -56,7 +56,11 @@ const ViewAttendance = () => {
                         });
                 }
             })
-            .catch((err) => console.error(err));
+            .catch((err) => console.error(err))
+            .finally(() => {
+                setLoading(false);
+                setComponentLoading(false);
+            });
     }, [reload]);
 
     const options = [
@@ -68,10 +72,10 @@ const ViewAttendance = () => {
 
     const getAttendanceByDate = (startDate, endDate) => {
         setLoading(true);
-        fetch(`/app/getAttendanceByDate/${startDate}/${endDate}`)
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") setAttendance(json);
+        axios
+            .get(`/app/getAttendanceByDate/${startDate}/${endDate}`)
+            .then((res) => {
+                if (res?.data) setAttendance(res?.data);
             })
             .catch((err) => console.log("1", err))
             .finally(() => setLoading(false));
@@ -80,12 +84,12 @@ const ViewAttendance = () => {
     useEffect(() => {
         setPageNumber(1);
         setPageLimit(10);
-        setAttendanceToShow(attendance.slice(0, pageLimit));
+        setAttendanceToShow(attendance?.slice(0, pageLimit));
     }, [attendance]);
 
     useEffect(() => {
         const start = (pageNumber - 1) * pageLimit;
-        setAttendanceToShow(attendance.slice(start, start + pageLimit));
+        setAttendanceToShow(attendance?.slice(start, start + pageLimit));
     }, [pageNumber, pageLimit]);
 
     return (
@@ -207,11 +211,6 @@ const ViewAttendance = () => {
                                             <PrintTable
                                                 printTableRef={printTable}
                                             />
-
-                                            {/* <CustomButton
-											title="Print"
-											customStyle={{ backgroundColor: theme.backgroundColor }}
-										/> */}
                                             <DownloadTable
                                                 fileName="Attendance Report"
                                                 tableId="DownloadTable"
@@ -268,7 +267,7 @@ const ViewAttendance = () => {
                                     {loading ? (
                                         <Loader />
                                     ) : (
-                                        attendance.map((attendance, idx) => {
+                                        attendance?.map((attendance, idx) => {
                                             return (
                                                 <tr className="font-medium ">
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
@@ -304,20 +303,20 @@ const ViewAttendance = () => {
                                                     </th>
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
-                                                            {attendance.date}
+                                                            {attendance?.date}
                                                         </div>
                                                     </th>
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {
-                                                                attendance.checkInTime
+                                                                attendance?.checkInTime
                                                             }
                                                         </div>
                                                     </th>
                                                     <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             {
-                                                                attendance.checkOutTime
+                                                                attendance?.checkOutTime
                                                             }
                                                         </div>
                                                     </th>
@@ -369,8 +368,8 @@ const ViewAttendance = () => {
                                     </tr>
                                     {loading ? (
                                         <Loader />
-                                    ) : attendanceToShow.length > 0 ? (
-                                        attendanceToShow.map(
+                                    ) : attendanceToShow?.length > 0 ? (
+                                        attendanceToShow?.map(
                                             (attendance, idx) => {
                                                 return (
                                                     <tr className="font-medium ">
@@ -408,21 +407,21 @@ const ViewAttendance = () => {
                                                         <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                             <div className="text-base text-gray-500 font-semibold">
                                                                 {
-                                                                    attendance.date
+                                                                    attendance?.date
                                                                 }
                                                             </div>
                                                         </th>
                                                         <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                             <div className="text-base text-gray-500 font-semibold">
                                                                 {
-                                                                    attendance.checkInTime
+                                                                    attendance?.checkInTime
                                                                 }
                                                             </div>
                                                         </th>
                                                         <th className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                             <div className="text-base text-gray-500 font-semibold">
                                                                 {
-                                                                    attendance.checkOutTime
+                                                                    attendance?.checkOutTime
                                                                 }
                                                             </div>
                                                         </th>
@@ -452,7 +451,7 @@ const ViewAttendance = () => {
                         <CustomPagination
                             pageNumber={pageNumber}
                             setPageNumber={setPageNumber}
-                            length={attendance.length}
+                            length={attendance?.length}
                             pageLimit={pageLimit}
                         />
                     </div>

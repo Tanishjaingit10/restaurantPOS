@@ -79,7 +79,7 @@ function StoreTimingButton() {
                     Store Timing
                 </div>
                 <div className="flex flex-col text-red-500 items-start gap-4 mr-12">
-                    {availabilityType.map((avail) => (
+                    {availabilityType?.map((avail) => (
                         <button
                             key={avail}
                             onClick={() => handleChange(avail)}
@@ -210,7 +210,7 @@ function SingleDay({ day, selectedHours, setSelectedHours }) {
                                 }
                             />
                             <TimePicker
-                                placeholder={avail.endTime || "Closing"}
+                                placeholder={avail?.endTime || "Closing"}
                                 className={`rounded p-1 w-32 ml-6 text-center placeholder-white ${
                                     avail?.endTime && "font-bold"
                                 } bg-red-400 text-white`}

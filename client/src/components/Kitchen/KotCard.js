@@ -17,7 +17,7 @@ function KotCard({ item, setKots }) {
         );
 
     const notify = useContext(NotificationContext);
-    const [status, setStatus] = useState(item.status);
+    const [status, setStatus] = useState(item?.status);
     const [itemsStatus, setItemsStatus] = useState(getAllItemsStatus());
     const [elapsedTime, setElapsedTime] = useState(0);
     const [estimatedTime, setEstimatedTime] = useState();
@@ -36,7 +36,7 @@ function KotCard({ item, setKots }) {
     );
 
     const calcEstimatedTime = (itemsStatus) => {
-        const est = item.order.reduce(
+        const est = item?.order?.reduce(
             (max, item) =>
                 Math.max(
                     max,
@@ -195,7 +195,7 @@ function KotCard({ item, setKots }) {
                 <div>
                     {item?.order?.map((item) => (
                         <div
-                            key={item._id}
+                            key={item?._id}
                             className={`${
                                 status === Processing && late && "text-red-500"
                             } border-b-2`}
@@ -287,7 +287,7 @@ function SingleItem({
     }
     return (
         <>
-            {deleteHistory.length !== 0 &&
+            {deleteHistory?.length !== 0 &&
                 deleteHistory.map((num, index) => (
                     <div
                         key={index}
@@ -297,12 +297,12 @@ function SingleItem({
                         <div>{item.foodItem}</div>
                     </div>
                 ))}
-            {item.quantity !== 0 && (
+            {item?.quantity !== 0 && (
                 <>
                     <div className="h- flex justify-between">
                         <div className="ml-2 text-xs flex items-center">
-                            <div className="mr-2">{item.quantity}</div>
-                            {item.foodItem}
+                            <div className="mr-2">{item?.quantity}</div>
+                            {item?.foodItem}
                         </div>
                         <button
                             onClick={() =>
@@ -326,7 +326,7 @@ function SingleItem({
                             key={it?._id}
                             className="text-xxs ml-6"
                             style={{ fontSize: "0.6rem" }}
-                        >{`${it.quantity}x ${it.variant}`}</div>
+                        >{`${it?.quantity}x ${it?.variant}`}</div>
                     ))}
                 </>
             )}

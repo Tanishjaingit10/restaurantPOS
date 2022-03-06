@@ -22,6 +22,7 @@ import Loading from "../../assets/Images/loading.gif";
 import { ThemeContext } from "../../context/Theme";
 import StoreTimingButton from "./StoreTimingButton";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 ChartJS.register(
     CategoryScale,
@@ -115,11 +116,6 @@ const Dashboard = () => {
                     width: "100%",
                 },
             },
-            // MuiInputLabel: {
-            //   root: {
-            //     display: 'none',
-            //   }
-            // },
             MuiPickersToolbar: {
                 root: {
                     width: "100%",
@@ -218,20 +214,20 @@ const Dashboard = () => {
     };
 
     const FetchOrders = (type) => {
-        fetch(
-            `/app/getDashboardOrder/${type}/${startOrdersDate}/${stopOrdersDate}`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
+        axios
+            .get(
+                `/app/getDashboardOrder/${type}/${startOrdersDate}/${stopOrdersDate}`
+            )
+            .then((res) => {
+                if (res?.data) {
                     var orderData = {
                         labels: labels,
                         datasets: [],
                     };
-                    for (var i = 0; i < json.length; i++) {
+                    for (var i = 0; i < res.data?.length; i++) {
                         orderData["datasets"].push({
-                            label: json[i].label,
-                            data: json[i].data,
+                            label: res.data[i]?.label,
+                            data: res.data[i]?.data,
                             backgroundColor: backgroundColor[i],
                         });
                     }
@@ -246,20 +242,20 @@ const Dashboard = () => {
     };
 
     const FetchSales = (type) => {
-        fetch(
-            `/app/getDashboardSales/${type}/${startSalesDate}/${stopSalesDate}`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
+        axios
+            .get(
+                `/app/getDashboardSales/${type}/${startSalesDate}/${stopSalesDate}`
+            )
+            .then((res) => {
+                if (res?.data) {
                     var salesData = {
                         labels: labels,
                         datasets: [],
                     };
-                    for (var i = 0; i < json.length; i++) {
+                    for (var i = 0; i < res.data?.length; i++) {
                         salesData["datasets"].push({
-                            label: json[i].label,
-                            data: json[i].data,
+                            label: res.data[i]?.label,
+                            data: res.data[i]?.data,
                             backgroundColor: backgroundColor[i],
                         });
                     }
@@ -274,39 +270,39 @@ const Dashboard = () => {
     };
 
     const FetchReservations = (type) => {
-        fetch(
-            `/app/getDashboardReservation/${type}/${startReservationsDate}/${stopReservationsDate}`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
+        axios
+            .get(
+                `/app/getDashboardReservation/${type}/${startReservationsDate}/${stopReservationsDate}`
+            )
+            .then((res) => {
+                if (res?.data) {
                     var reservationData = {
                         labels: labels,
                         datasets: [],
                     };
-                    for (var i = 0; i < json.length; i++) {
+                    for (var i = 0; i < res?.data?.length; i++) {
                         if (
                             type === "Dine In" &&
-                            json[i]["label"] === "Dine In"
+                            res.data[i]["label"] === "Dine In"
                         ) {
-                            reservationData["datasets"].push({
-                                label: json[i].label,
-                                data: json[i].data,
+                            reservationData["datasets"]?.push({
+                                label: res.data[i].label,
+                                data: res.data[i].data,
                                 backgroundColor: backgroundColor[i],
                             });
                         } else if (
                             type === "Take Away" &&
-                            json[i]["label"] === "Take Away"
+                            res.data[i]["label"] === "Take Away"
                         ) {
                             reservationData["datasets"].push({
-                                label: json[i].label,
-                                data: json[i].data,
+                                label: res.data[i]?.label,
+                                data: res.data[i]?.data,
                                 backgroundColor: backgroundColor[i],
                             });
                         } else if (type === "Total") {
                             reservationData["datasets"].push({
-                                label: json[i].label,
-                                data: json[i].data,
+                                label: res?.data[i]?.label,
+                                data: res?.data[i]?.data,
                                 backgroundColor: backgroundColor[i],
                             });
                         }
@@ -322,39 +318,39 @@ const Dashboard = () => {
     };
 
     const FetchCustomers = (type) => {
-        fetch(
-            `/app/getDashboardCustomer/${type}/${startCustomersDate}/${stopCustomersDate}`
-        )
-            .then((res) => res.json())
-            .then((json) => {
-                if (json !== "undefined") {
+        axios
+            .get(
+                `/app/getDashboardCustomer/${type}/${startCustomersDate}/${stopCustomersDate}`
+            )
+            .then((res) => {
+                if (res?.data) {
                     var customerData = {
                         labels: labels,
                         datasets: [],
                     };
-                    for (var i = 0; i < json.length; i++) {
+                    for (var i = 0; i < res.data?.length; i++) {
                         if (
                             type === "Dine In" &&
-                            json[i]["label"] === "Dine In"
+                            res.data[i]["label"] === "Dine In"
                         ) {
                             customerData["datasets"].push({
-                                label: json[i].label,
-                                data: json[i].data,
+                                label: res.data[i]?.label,
+                                data: res.data[i]?.data,
                                 backgroundColor: backgroundColor[i],
                             });
                         } else if (
                             type === "Take Away" &&
-                            json[i]["label"] === "Take Away"
+                            res.data[i]["label"] === "Take Away"
                         ) {
                             customerData["datasets"].push({
-                                label: json[i].label,
-                                data: json[i].data,
+                                label: res.data[i]?.label,
+                                data: res.data[i]?.data,
                                 backgroundColor: backgroundColor[i],
                             });
                         } else if (type === "Total") {
                             customerData["datasets"].push({
-                                label: json[i].label,
-                                data: json[i].data,
+                                label: res.data[i]?.label,
+                                data: res.data[i]?.data,
                                 backgroundColor: backgroundColor[i],
                             });
                         }

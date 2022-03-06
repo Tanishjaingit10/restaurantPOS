@@ -397,7 +397,7 @@ const order_online = async (req, res) => {
                     .then((obj) => {
                         const oldKotList = obj.map((it) => it.toJSON());
                         oldKotList.sort((kot1, kot2) => kot2.time - kot1.time);
-                        newOrderInfo.order.forEach((newOrder) => {
+                        newOrderInfo?.order?.forEach((newOrder) => {
                             const oldOrder = oldOrderInfo.order.find(
                                 (it) => it._id.toString() === newOrder._id
                             );
