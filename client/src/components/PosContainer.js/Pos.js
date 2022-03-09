@@ -68,7 +68,7 @@ export default function Pos() {
                 item?.finalVariant.reduce(
                     (sum, variant) =>
                         sum +
-                        (variant?.isSelected
+                        (variant?.quantity
                             ? variant?.price * variant?.quantity
                             : 0),
                     0
@@ -125,8 +125,7 @@ export default function Pos() {
                     itm = deepClone(itm);
                     itm.finalVariant.forEach((va) => {
                         itm.orderedVariant.forEach((v) => {
-                            if (va?._id === v?._id) va.isSelected = true;
-                            va.quantity = v?.quantity;
+                            if (va?._id === v?._id) va.quantity = v?.quantity;
                         });
                     });
                     temp.push(itm);
@@ -219,7 +218,7 @@ export default function Pos() {
                 _id: item?._id,
                 foodItem: item?.foodItem,
                 orderedVariant: item?.finalVariant?.filter(
-                    (variant) => variant?.isSelected
+                    (variant) => variant?.quantity
                 ),
                 price: item?.price,
                 discount: item?.discount,
@@ -425,7 +424,7 @@ export default function Pos() {
                             >
                                 <div className="h-4 w-4 fas fa-th-large" />
                                 <div className="text-xs">
-                                    {table || "Tables"}
+                                    {"Table: " + table || "Tables"}
                                 </div>
                             </Link>
                         )}
@@ -440,7 +439,7 @@ export default function Pos() {
                             className="bg-red-500 flex flex-col items-center justify-center text-white h-14 ml-2 my-2 border-2 flex-1"
                         >
                             <div className="h-4 w-4 far fa-user" />
-                            <div className="text-xs">Coustomer Information</div>
+                            <div className="text-xs">Customer Information</div>
                         </CustomerInfoOverlayButton>
                         <CommentsOverlayButton
                             comments={comments}

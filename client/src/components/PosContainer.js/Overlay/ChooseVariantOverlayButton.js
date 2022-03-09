@@ -107,7 +107,6 @@ export default ChooseVariantOverlayButton;
 function SingleVariant({ item, setVariants }) {
     const [variant, setVariant] = useState(item);
     const [quantity, setQuantity] = useState(item.quantity || 0);
-    const [isSelected, setIsSelected] = useState(item.isSelected || false);
 
     useEffect(() => {
         setVariants((prev) => {
@@ -121,27 +120,29 @@ function SingleVariant({ item, setVariants }) {
     useEffect(() => {
         setVariant((prev) => ({
             ...prev,
-            isSelected: quantity && isSelected ? true : false,
-            quantity: (isSelected && quantity) || 0,
+            quantity: quantity || 0,
         }));
-    }, [isSelected, quantity]);
+    }, [quantity]);
 
     const handleCheckmark = () => {
-        setIsSelected((e) => !e);
+        setQuantity((prev) => (prev ? 0 : 1));
     };
 
     return (
         <div className="flex font-semibold text-red-500 m-2">
-            <div className="w-64 font-semibold pl-4 flex items-center">
-                <button onClick={handleCheckmark} className="flex items-center">
-                    <div
-                        className={`${
-                            isSelected ? "fas fa-check-square" : "far fa-square"
-                        } mr-4`}
-                    />
-                    {`${variant.variant} / $${variant.price}`}
-                </button>
-            </div>
+            <button
+                onClick={handleCheckmark}
+                className="w-64 font-semibold pl-4 flex items-center"
+            >
+                <div
+                    className={`${
+                        variant.quantity
+                            ? "fas fa-check-square"
+                            : "far fa-square"
+                    } mr-4`}
+                />
+                {`${variant.variant} / $${variant.price}`}
+            </button>
             <div className="flex">
                 <div className="border-gray-300 p-1 flex items-center justify-center">
                     <button
@@ -161,7 +162,11 @@ function SingleVariant({ item, setVariants }) {
                         className="fas fa-plus rounded border h-8 w-8 flex items-center justify-center text-gray-500 border-gray-300 shadow-sm text-xxs"
                     />
                 </div>
-                <div className="flex w-32 items-center justify-end pr-4">
+                <div
+                    className={`${
+                        variant.quantity ? "font-semibold" : "font-normal"
+                    } flex w-32 items-center justify-end pr-4`}
+                >
                     {`$${(variant.price * quantity || 0).toFixed(2)}`}
                 </div>
             </div>
