@@ -104,270 +104,261 @@ const Customers = () => {
         <div>
             {componentLoading ? <Loader /> : null}
             <div className="flex flex-col w-full">
-                <div className="my-2 overflow-x-auto">
-                    <div className="py-2 align-middle inline-block min-w-full px-5">
-                        <div className="py-4 inline-block w-full">
-                            <div className="inline-block w-1/2">
-                                <h1 className="text-lg inline-block font-bold text-gray-600">
-                                    Actions
-                                </h1>
-                                <div className="inline-block mx-5 rounded relative w-2/3">
-                                    <input
-                                        onChange={(value) => {
-                                            if (value.target.value.length > 0)
-                                                getCustomerByValue(
-                                                    value.target.value
-                                                );
-                                            if (value.target.value.length === 0)
-                                                setReload(!reload);
-                                        }}
-                                        className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        placeholder="Search for customer name/ phone/ email."
-                                    />
-                                    <GoSearch
-                                        size={25}
-                                        className="absolute inline-block mt-4 -ml-8"
-                                        color="#a5a5a5d1"
-                                    />
-                                </div>
+                <div className="overflow-x-auto">
+                    <div className="flex h-24 bg-white items-center justify-between border-b-2 border-gray-300 px-6">
+                        <div className="w-1/2 flex items-center justify-between">
+                            <p className="text-2xl text-gray-500 font-bold">
+                                Customers
+                            </p>
+                            <div className="w-96 mx-5 rounded relative">
+                                <input
+                                    onChange={(value) => {
+                                        if (value.target.value.length > 0)
+                                            getCustomerByValue(
+                                                value.target.value
+                                            );
+                                        if (value.target.value.length === 0)
+                                            setReload(!reload);
+                                    }}
+                                    className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    placeholder="Search for customer name/ phone/ email."
+                                />
+                                <GoSearch
+                                    size={25}
+                                    className="absolute inline-block mt-4 -ml-8"
+                                    color="#a5a5a5d1"
+                                />
                             </div>
-                            <div className="inline-block w-1/2">
-                                <div className="flex flex-row items-center justify-end">
-                                    <CustomButton
-                                        title="Select Date"
-                                        customStyle={{
-                                            backgroundColor:
-                                                theme.backgroundColor,
-                                        }}
-                                        onPress={() => {
-                                            setSelectOrderFilter(true);
-                                        }}
-                                    />
-                                    {selectOrderFilter ? (
-                                        <div
-                                            className="fixed z-10 inset-0 overflow-y-auto"
-                                            aria-labelledby="modal-title"
-                                            role="dialog"
-                                            aria-modal="true"
-                                        >
-                                            <div className="flex items-end justify-center min-h-screen pt-4 px-8 pb-20 text-center sm:block sm:p-0">
-                                                <div
-                                                    className="fixed inset-0 bg-opacity-75 transition-opacity"
-                                                    aria-hidden="true"
-                                                    style={{
-                                                        backgroundColor:
-                                                            "rgb(226 226 226 / 20%)",
-                                                    }}
-                                                ></div>
-                                                <span
-                                                    className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                                                    aria-hidden="true"
-                                                >
-                                                    &#8203;
-                                                </span>
-                                                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                                        <div className="">
-                                                            <div className="w-full flex justify-end">
-                                                                <GrClose
-                                                                    onClick={() =>
-                                                                        setSelectOrderFilter(
-                                                                            false
-                                                                        )
-                                                                    }
-                                                                />
-                                                            </div>
-                                                            <div className="w-full flex items-center justify-center"></div>
+                        </div>
+                        <div className="inline-block w-1/2">
+                            <div className="flex flex-row items-center justify-end">
+                                <button
+                                    onClick={() => setSelectOrderFilter(true)}
+                                    className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                                >
+                                    Select Date
+                                </button>
+                                {selectOrderFilter ? (
+                                    <div
+                                        className="fixed z-10 inset-0 overflow-y-auto"
+                                        aria-labelledby="modal-title"
+                                        role="dialog"
+                                        aria-modal="true"
+                                    >
+                                        <div className="flex items-end justify-center min-h-screen pt-4 px-8 pb-20 text-center sm:block sm:p-0">
+                                            <div
+                                                className="fixed inset-0 bg-opacity-75 transition-opacity"
+                                                aria-hidden="true"
+                                                style={{
+                                                    backgroundColor:
+                                                        "rgb(226 226 226 / 20%)",
+                                                }}
+                                            ></div>
+                                            <span
+                                                className="hidden sm:inline-block sm:align-middle sm:h-screen"
+                                                aria-hidden="true"
+                                            >
+                                                &#8203;
+                                            </span>
+                                            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                    <div className="">
+                                                        <div className="w-full flex justify-end">
+                                                            <GrClose
+                                                                onClick={() =>
+                                                                    setSelectOrderFilter(
+                                                                        false
+                                                                    )
+                                                                }
+                                                            />
                                                         </div>
-                                                        <div className="p-5">
-                                                            <div className="my-5 w-full">
-                                                                <MuiPickersUtilsProvider
-                                                                    utils={
-                                                                        MomentUtils
+                                                        <div className="w-full flex items-center justify-center"></div>
+                                                    </div>
+                                                    <div className="p-5">
+                                                        <div className="my-5 w-full">
+                                                            <MuiPickersUtilsProvider
+                                                                utils={
+                                                                    MomentUtils
+                                                                }
+                                                            >
+                                                                <ThemeProvider
+                                                                    theme={
+                                                                        materialTheme
                                                                     }
                                                                 >
-                                                                    <ThemeProvider
-                                                                        theme={
-                                                                            materialTheme
+                                                                    <DatePicker
+                                                                        InputProps={{
+                                                                            disableUnderline: true,
+                                                                        }}
+                                                                        label="Start Date"
+                                                                        value={
+                                                                            filterOrderStartDate
                                                                         }
-                                                                    >
-                                                                        <DatePicker
-                                                                            InputProps={{
-                                                                                disableUnderline: true,
-                                                                            }}
-                                                                            label="Start Date"
-                                                                            value={
-                                                                                filterOrderStartDate
-                                                                            }
-                                                                            onChange={(
-                                                                                date
-                                                                            ) => {
-                                                                                setFilterOrderStartDate(
-                                                                                    new Date(
-                                                                                        date
+                                                                        onChange={(
+                                                                            date
+                                                                        ) => {
+                                                                            setFilterOrderStartDate(
+                                                                                new Date(
+                                                                                    date
+                                                                                )
+                                                                                    .toLocaleDateString(
+                                                                                        "pt-br"
                                                                                     )
-                                                                                        .toLocaleDateString(
-                                                                                            "pt-br"
-                                                                                        )
-                                                                                        .split(
-                                                                                            "/"
-                                                                                        )
-                                                                                        .reverse()
-                                                                                        .join(
-                                                                                            "-"
-                                                                                        )
-                                                                                );
-                                                                                getDayCustomers(
-                                                                                    new Date(
-                                                                                        date
+                                                                                    .split(
+                                                                                        "/"
                                                                                     )
-                                                                                        .toLocaleDateString(
-                                                                                            "pt-br"
-                                                                                        )
-                                                                                        .split(
-                                                                                            "/"
-                                                                                        )
-                                                                                        .reverse()
-                                                                                        .join(
-                                                                                            "-"
-                                                                                        ),
-                                                                                    new Date(
-                                                                                        filterOrderStopDate
+                                                                                    .reverse()
+                                                                                    .join(
+                                                                                        "-"
                                                                                     )
-                                                                                        .toLocaleDateString(
-                                                                                            "pt-br"
-                                                                                        )
-                                                                                        .split(
-                                                                                            "/"
-                                                                                        )
-                                                                                        .reverse()
-                                                                                        .join(
-                                                                                            "-"
-                                                                                        )
-                                                                                );
-                                                                            }}
-                                                                        />
-                                                                    </ThemeProvider>
-                                                                </MuiPickersUtilsProvider>
-                                                            </div>
-                                                            <div className="my-5 w-full">
-                                                                <MuiPickersUtilsProvider
-                                                                    utils={
-                                                                        MomentUtils
+                                                                            );
+                                                                            getDayCustomers(
+                                                                                new Date(
+                                                                                    date
+                                                                                )
+                                                                                    .toLocaleDateString(
+                                                                                        "pt-br"
+                                                                                    )
+                                                                                    .split(
+                                                                                        "/"
+                                                                                    )
+                                                                                    .reverse()
+                                                                                    .join(
+                                                                                        "-"
+                                                                                    ),
+                                                                                new Date(
+                                                                                    filterOrderStopDate
+                                                                                )
+                                                                                    .toLocaleDateString(
+                                                                                        "pt-br"
+                                                                                    )
+                                                                                    .split(
+                                                                                        "/"
+                                                                                    )
+                                                                                    .reverse()
+                                                                                    .join(
+                                                                                        "-"
+                                                                                    )
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </ThemeProvider>
+                                                            </MuiPickersUtilsProvider>
+                                                        </div>
+                                                        <div className="my-5 w-full">
+                                                            <MuiPickersUtilsProvider
+                                                                utils={
+                                                                    MomentUtils
+                                                                }
+                                                            >
+                                                                <ThemeProvider
+                                                                    theme={
+                                                                        materialTheme
                                                                     }
                                                                 >
-                                                                    <ThemeProvider
-                                                                        theme={
-                                                                            materialTheme
+                                                                    <DatePicker
+                                                                        InputProps={{
+                                                                            disableUnderline: true,
+                                                                        }}
+                                                                        label="End Date"
+                                                                        value={
+                                                                            filterOrderStopDate
                                                                         }
-                                                                    >
-                                                                        <DatePicker
-                                                                            InputProps={{
-                                                                                disableUnderline: true,
-                                                                            }}
-                                                                            label="End Date"
-                                                                            value={
-                                                                                filterOrderStopDate
-                                                                            }
-                                                                            onChange={(
-                                                                                date
-                                                                            ) => {
-                                                                                setFilterOrderStopDate(
-                                                                                    new Date(
-                                                                                        date
+                                                                        onChange={(
+                                                                            date
+                                                                        ) => {
+                                                                            setFilterOrderStopDate(
+                                                                                new Date(
+                                                                                    date
+                                                                                )
+                                                                                    .toLocaleDateString(
+                                                                                        "pt-br"
                                                                                     )
-                                                                                        .toLocaleDateString(
-                                                                                            "pt-br"
-                                                                                        )
-                                                                                        .split(
-                                                                                            "/"
-                                                                                        )
-                                                                                        .reverse()
-                                                                                        .join(
-                                                                                            "-"
-                                                                                        )
-                                                                                );
-                                                                                getDayCustomers(
-                                                                                    filterOrderStartDate,
-                                                                                    new Date(
-                                                                                        date
+                                                                                    .split(
+                                                                                        "/"
                                                                                     )
-                                                                                        .toLocaleDateString(
-                                                                                            "pt-br"
-                                                                                        )
-                                                                                        .split(
-                                                                                            "/"
-                                                                                        )
-                                                                                        .reverse()
-                                                                                        .join(
-                                                                                            "-"
-                                                                                        )
-                                                                                );
-                                                                            }}
-                                                                        />
-                                                                    </ThemeProvider>
-                                                                </MuiPickersUtilsProvider>
-                                                            </div>
+                                                                                    .reverse()
+                                                                                    .join(
+                                                                                        "-"
+                                                                                    )
+                                                                            );
+                                                                            getDayCustomers(
+                                                                                filterOrderStartDate,
+                                                                                new Date(
+                                                                                    date
+                                                                                )
+                                                                                    .toLocaleDateString(
+                                                                                        "pt-br"
+                                                                                    )
+                                                                                    .split(
+                                                                                        "/"
+                                                                                    )
+                                                                                    .reverse()
+                                                                                    .join(
+                                                                                        "-"
+                                                                                    )
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </ThemeProvider>
+                                                            </MuiPickersUtilsProvider>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    ) : null}
-                                    <CustomButton
-                                        title="Yesterday"
-                                        customStyle={{
-                                            backgroundColor:
-                                                theme.backgroundColor,
-                                        }}
-                                        onPress={() => {
-                                            getDayCustomers(
-                                                new Date(
-                                                    new Date().setDate(
-                                                        new Date().getDate() - 1
-                                                    )
+                                    </div>
+                                ) : null}
+                                <button
+                                    onClick={() =>
+                                        getDayCustomers(
+                                            new Date(
+                                                new Date().setDate(
+                                                    new Date().getDate() - 1
                                                 )
-                                                    .toLocaleDateString("pt-br")
-                                                    .split("/")
-                                                    .reverse()
-                                                    .join("-"),
-                                                new Date(
-                                                    new Date().setDate(
-                                                        new Date().getDate() - 1
-                                                    )
+                                            )
+                                                .toLocaleDateString("pt-br")
+                                                .split("/")
+                                                .reverse()
+                                                .join("-"),
+                                            new Date(
+                                                new Date().setDate(
+                                                    new Date().getDate() - 1
                                                 )
-                                                    .toLocaleDateString("pt-br")
-                                                    .split("/")
-                                                    .reverse()
-                                                    .join("-")
-                                            );
-                                        }}
-                                    />
-                                    <CustomButton
-                                        title="Today"
-                                        customStyle={{
-                                            backgroundColor:
-                                                theme.backgroundColor,
-                                        }}
-                                        onPress={() => {
-                                            getDayCustomers(
-                                                new Date()
-                                                    .toLocaleDateString("pt-br")
-                                                    .split("/")
-                                                    .reverse()
-                                                    .join("-"),
-                                                new Date()
-                                                    .toLocaleDateString("pt-br")
-                                                    .split("/")
-                                                    .reverse()
-                                                    .join("-")
-                                            );
-                                        }}
-                                    />
-                                </div>
+                                            )
+                                                .toLocaleDateString("pt-br")
+                                                .split("/")
+                                                .reverse()
+                                                .join("-")
+                                        )
+                                    }
+                                    className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                                >
+                                    Yesterday
+                                </button>
+                                <button
+                                    onClick={() =>
+                                        getDayCustomers(
+                                            new Date()
+                                                .toLocaleDateString("pt-br")
+                                                .split("/")
+                                                .reverse()
+                                                .join("-"),
+                                            new Date()
+                                                .toLocaleDateString("pt-br")
+                                                .split("/")
+                                                .reverse()
+                                                .join("-")
+                                        )
+                                    }
+                                    className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                                >
+                                    Today
+                                </button>
                             </div>
                         </div>
-                        <hr />
+                    </div>
+                    <div className="align-middle inline-block min-w-full px-5">
                         <div className="shadow overflow-hidden border-t border-gray-200 sm:rounded-lg mt-8">
                             <div className="inline-block w-1/2 my-4">
                                 <h1 className="text-lg inline-block ml-8">
@@ -509,9 +500,9 @@ const Customers = () => {
                                                         </td>
                                                         <td className="px-1 py-3 whitespace-nowrap border border-gray-400 text-center">
                                                             <div className="text-base text-gray-500 font-semibold">
-                                                                {
-                                                                    customer.total_amount_spent
-                                                                }
+                                                                {customer.total_amount_spent?.toFixed(
+                                                                    2
+                                                                )}
                                                             </div>
                                                         </td>
                                                         <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">

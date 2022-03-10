@@ -103,7 +103,7 @@ const order_template = new mongoose.Schema({
                 type: String, // Processing // ReadyToServe // Completed // Cancelled //
                 default: "Processing",
             },
-            table: String
+            table: String,
         },
         default: {},
     },
@@ -113,7 +113,11 @@ const order_template = new mongoose.Schema({
     },
     comments: {
         type: String,
-        default: ""
+        default: "",
+    },
+    session: {
+        type: String,
+        default: null,
     },
     time: {
         type: Date,

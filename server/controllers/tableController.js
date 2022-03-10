@@ -37,6 +37,7 @@ const vacate_table = async (req, res) => {
         .findOne({ _id: tableId })
         .then((data) => {
             data.status = "Free";
+            data.session = null;
             return data.save();
         })
         .then(() => res.json({ message: "Table is now vacant" }))
@@ -86,6 +87,16 @@ const available_table = async (request, response) => {
     });
 };
 
+const single_table = (req, res) => {
+    const number = req.params.number;
+    table_template_copy
+        .findOne({ number })
+        .then((data) => res.json(data))
+        .catch((err) =>
+            res.status(500).json({ message: "Unable to get table" })
+        );
+};
+
 const clearTables = (req, res) => {
     table_template_copy
         .deleteMany({})
@@ -103,4 +114,5 @@ module.exports = {
     available_table,
     vacate_table,
     clearTables,
+    single_table,
 };

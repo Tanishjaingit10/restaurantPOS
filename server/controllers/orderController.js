@@ -387,11 +387,16 @@ const order_online = async (req, res) => {
                 const newOrderInfo = req.body;
                 const newKotOrders = [];
                 table_template_copy
-                    .findOneAndUpdate(
-                        { number: req?.body?.payment?.table },
-                        { status: "Unavailable" }
-                    )
-                    .then(() => {});
+                    .findOne({ number: req?.body?.payment?.table })
+                    .then((data) => {
+                        data.status = "Unavailable";
+                        if (!data.session) data.time = Date.now();
+                        data.session = req?.body?.session;
+                        data.save()
+                            .then(() => {})
+                            .catch((err) => console.log(err));
+                    })
+                    .catch((err) => console.log(err));
                 kot_template_copy
                     .find({ order_id: oldOrderInfo.order_id })
                     .then((obj) => {
@@ -539,6 +544,13 @@ const generate_kot_of_order = (order) => {
       );
 }
 
+const getOrderBySessionId = (req,res) => {
+  const session = req.params.id
+  order_template_copy.find({session})
+  .then(data=>res.json(data))
+  .catch(err=>res.status.json({message:"Unable to get order"}))
+}
+
 const clearOrders = (req, res) => {
     order_template_copy
         .deleteMany({})
@@ -563,5 +575,6 @@ module.exports = {
     order_online,
     getOrderIdByPaymentIntentId,
     generate_kot_of_order,
+    getOrderBySessionId,
     clearOrders,
 };

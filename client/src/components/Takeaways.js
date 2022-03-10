@@ -324,10 +324,9 @@ const TakeAwayOrders = () => {
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
-                                                            {
-                                                                order.payment
-                                                                    .total
-                                                            }
+                                                            {order?.payment?.total?.toFixed(
+                                                                2
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
@@ -445,10 +444,9 @@ const TakeAwayOrders = () => {
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
-                                                            {
-                                                                order.payment
-                                                                    .total
-                                                            }
+                                                            {order?.payment?.total?.toFixed(
+                                                                2
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">

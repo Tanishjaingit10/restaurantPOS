@@ -46,11 +46,16 @@ const generate_kot = (req, res) => {
                         message: "Please Provide Food Items",
                     });
                 table_template_copy
-                    .findOneAndUpdate(
-                        { number: req?.body?.payment?.table },
-                        { status: "Unavailable", time: Date.now() }
-                    )
-                    .then(() => {});
+                    .findOne({ number: req?.body?.payment?.table })
+                    .then((data) => {
+                        data.status = "Unavailable";
+                        if (!data.session) data.time = Date.now();
+                        data.session = req?.body?.session;
+                        data.save()
+                            .then(() => {})
+                            .catch((err) => console.log(err));
+                    })
+                    .catch((err) => console.log(err));
                 const newOrder = new order_template_copy(req.body);
                 newOrder.save().then((data) => {
                     if (

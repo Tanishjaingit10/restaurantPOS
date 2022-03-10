@@ -126,97 +126,84 @@ const Sales = () => {
         <div>
             {componentLoading ? <Loader /> : null}
             <div className="flex flex-col w-full">
-                <div className="my-2 overflow-x-auto">
-                    <div className="py-2 align-middle inline-block min-w-full px-5">
-                        <div className="flex items-center justify-between my-5">
-                            <h2 className="font-bold text-2xl text-gray-600">
-                                Sales Report
-                            </h2>
-                            <div className="inline-block mx-5 rounded w-1/4">
-                                <input
-                                    onChange={(value) => {
-                                        if (value.target.value.length >= 7)
-                                            getOrdersByInvoices(
-                                                value.target.value
-                                            );
-                                        if (value.target.value.length === 0)
-                                            setReload(!reload);
-                                    }}
-                                    className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Search for sale: order id"
-                                />
-                                <GoSearch
-                                    size={25}
-                                    className="absolute inline-block mt-4 -ml-8"
-                                    color="#a5a5a5d1"
-                                />
-                            </div>
-                            <div className="flex flex-row items-center">
-                                <CustomButton
-                                    title="Select Food Item"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                />
-                                <CustomButton
-                                    title="Select Date Range"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                    onPress={() => {
-                                        setSelectOrderFilter(true);
-                                    }}
-                                />
-                                <CustomButton
-                                    title="Yesterday Orders"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                    onPress={() => {
-                                        getOrderByDate(
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-"),
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-")
-                                        );
-                                    }}
-                                />
-                                <CustomButton
-                                    title="Today Orders"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                    onPress={() => {
-                                        getOrderByDate(
-                                            new Date()
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-"),
-                                            new Date()
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-")
-                                        );
-                                    }}
-                                />
-                            </div>
+                <div className="overflow-x-auto">
+                    <div className="flex h-24 bg-white items-center justify-between border-b-2 border-gray-300">
+                        <p className="text-2xl text-gray-500 ml-6 font-bold">
+                            Sales Report
+                        </p>
+                        <div className="inline-block mx-5 rounded w-1/4">
+                            <input
+                                onChange={(value) => {
+                                    if (value.target.value.length >= 7)
+                                        getOrdersByInvoices(value.target.value);
+                                    if (value.target.value.length === 0)
+                                        setReload(!reload);
+                                }}
+                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Search for sale: order id"
+                            />
+                            <GoSearch
+                                size={25}
+                                className="absolute inline-block mt-4 -ml-8"
+                                color="#a5a5a5d1"
+                            />
                         </div>
+                        <div className="flex flex-row items-center">
+                            <button
+                                onClick={() => setSelectOrderFilter(true)}
+                                className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                            >
+                                Select Date Range
+                            </button>
+                            <button
+                                onClick={() =>
+                                    getOrderByDate(
+                                        new Date(
+                                            new Date().setDate(
+                                                new Date().getDate() - 1
+                                            )
+                                        )
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-"),
+                                        new Date(
+                                            new Date().setDate(
+                                                new Date().getDate() - 1
+                                            )
+                                        )
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-")
+                                    )
+                                }
+                                className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                            >
+                                Yesterday Orders
+                            </button>
+                            <button
+                                onClick={() =>
+                                    getOrderByDate(
+                                        new Date()
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-"),
+                                        new Date()
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-")
+                                    )
+                                }
+                                className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                            >
+                                Today Orders
+                            </button>
+                        </div>
+                    </div>
+                    <div className="py-2 align-middle inline-block min-w-full px-5">
                         <div className="flex flex-col h-full shadow border-t border-gray-200 sm:rounded-lg mt-8">
                             <div className="flex flex-row justify-between">
                                 <div className="my-4">
@@ -359,10 +346,9 @@ const Sales = () => {
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
-                                                            {
-                                                                order.payment
-                                                                    .total
-                                                            }
+                                                            {order?.payment?.total?.toFixed(
+                                                                2
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
@@ -465,10 +451,9 @@ const Sales = () => {
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
-                                                            {
-                                                                order.payment
-                                                                    .total
-                                                            }
+                                                            {order?.payment?.total?.toFixed(
+                                                                2
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
@@ -524,7 +509,7 @@ const Sales = () => {
                                         backgroundColor: theme.backgroundColor,
                                     }}
                                 >
-                                    Total: ${totalSales}
+                                    Total: ${totalSales?.toFixed(2)}
                                 </h5>
                             </div>
                         </div>

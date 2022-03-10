@@ -180,9 +180,6 @@ const Orders = () => {
                             />
                         </div>
                         <div className="flex flex-row items-center">
-                            <button className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4">
-                                Select Food Item
-                            </button>
                             <button
                                 onClick={() => setSelectOrderFilter(true)}
                                 className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
@@ -454,7 +451,10 @@ const Orders = () => {
                                                 </td>
                                                 <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                     <div className="text-base text-gray-500 font-semibold">
-                                                        ${order?.payment?.total}
+                                                        $
+                                                        {order?.payment?.total?.toFixed(
+                                                            2
+                                                        )}
                                                     </div>
                                                 </td>
                                                 <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
@@ -564,10 +564,9 @@ const Orders = () => {
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                         <div className="text-base text-gray-500 font-semibold">
                                                             $
-                                                            {
-                                                                order?.payment
-                                                                    ?.total
-                                                            }
+                                                            {order?.payment?.total?.toFixed(
+                                                                2
+                                                            )}
                                                         </div>
                                                     </td>
                                                     <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">

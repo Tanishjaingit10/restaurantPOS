@@ -59,7 +59,7 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                 </ChooseVariantOverlayButton>
             </div>
             <div className="flex-1 flex">
-                <div className="border-r border-l border-gray-300 p-1 flex items-center justify-center">
+                <div className="border-r border-l border-gray-300 p-1 flex items-center w-32 justify-center">
                     <button
                         disabled={quantity === 0}
                         onClick={() => setQuantity((e) => Math.max(e - 1, 1))}
@@ -80,7 +80,16 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                     />
                 </div>
                 <div className="flex items-center justify-center flex-1">
-                    ${(itemPrice || 0).toFixed(2)}
+                    $
+                    {(
+                        itemPrice +
+                            item?.finalVariant?.reduce(
+                                (sum, v) =>
+                                    sum +
+                                    (v.quantity ? v.price * v.quantity : 0),
+                                0
+                            ) || 0
+                    ).toFixed(2)}
                 </div>
             </div>
         </div>

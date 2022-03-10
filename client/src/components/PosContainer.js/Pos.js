@@ -8,7 +8,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
-import { deepClone } from "../../Utils";
+import { deepClone, getNewId } from "../../Utils";
 import SpinLoader from "../SpinLoader";
 import AuthenticateOverlayButton from "./Overlay/AuthenticateOverlayButton";
 import ChooseVariantOverlayButton from "./Overlay/ChooseVariantOverlayButton";
@@ -17,6 +17,7 @@ import CustomerInfoOverlayButton from "./Overlay/CustomerInfoOverlayButton";
 import DiscountOverlayButton from "./Overlay/DiscountOverlayButton";
 import GSTOverlayButton from "./Overlay/GSTOverlayButton";
 import SingleSelectedItem from "./SingleSelectedItem";
+import SinglePaidItem from "./SinglePaidItem";
 import TipOverlayButton from "./Overlay/TipOverlayButton";
 import { Modal } from "../Common/Modal";
 import PrintBillButton from "./PrintBillButton";
@@ -50,6 +51,8 @@ export default function Pos() {
     const [tip, setTip] = useState(0);
     const [discount, setDiscount] = useState(0);
     const [discountType, setDiscountType] = useState(fixed);
+    const [session, setSession] = useState("");
+    const [sessionOrders, setSessionOrders] = useState([]);
     const [pickupTime, setPickupTime] = useState(
         new Date(Date.now()).toJSON().substring(0, 16)
     );
@@ -161,6 +164,22 @@ export default function Pos() {
             setOrderType("Dine In");
             setLoading(true);
             axios
+                .get(`/app/table/${location?.state}`)
+                .then((res) => {
+                    setSession(res.data?.session || getNewId());
+                    if (res.data?.session)
+                        axios
+                            .get(`/app/orderBySession/${res.data.session}`)
+                            .then((res) => {
+                                setSessionOrders(res.data);
+                                if (res.data?.length) {
+                                    setCustomer(res.data[0]?.customer);
+                                }
+                            })
+                            .catch(() => {});
+                })
+                .catch(() => {});
+            axios
                 .get(`/app/orderForTable/${location?.state}`)
                 .then((res) => loadOrder(res?.data))
                 .catch(() => {})
@@ -211,6 +230,14 @@ export default function Pos() {
     };
 
     const generateKOT = () => {
+        if (!customer?.contact) {
+            notify("Please provide customer contact details");
+            return;
+        }
+        if (!customer?.name) {
+            notify("Please provide customer name");
+            return;
+        }
         setLoading(true);
         let dataToPost = {
             customer,
@@ -245,6 +272,7 @@ export default function Pos() {
             comments,
         };
         if (order_id) dataToPost.order_id = order_id;
+        if (session) dataToPost.session = session;
         axios
             .post("/app/generatekot", dataToPost)
             .then((res) => {
@@ -437,8 +465,19 @@ export default function Pos() {
                             <div className="text-xs">Comments</div>
                         </CommentsOverlayButton>
                     </div>
-                    {selectedItems?.length ? (
-                        <div className="flex-auto h-0 border-t-2 mx-4 overflow-y-auto">
+                    {selectedItems?.length || sessionOrders?.length ? (
+                        <div className="flex-auto h-0 border-t-2 mx-4 overflow-y-auto pb-8">
+                            {sessionOrders
+                                .filter(
+                                    (or) => or.payment.status === "Completed"
+                                )
+                                .map((or) =>
+                                    or.order.map((item) => (
+                                        <div>
+                                            <SinglePaidItem item={item} />
+                                        </div>
+                                    ))
+                                )}
                             {selectedItems?.map((item) => (
                                 <div key={item?.key}>
                                     <SingleSelectedItem
@@ -462,15 +501,15 @@ export default function Pos() {
                         </div>
                     )}
                     <div className="mt-auto relative flex-shrink-0">
-                        <div className="absolute transform -translate-y-full w-full top-0">
+                        <div className="absolute transform -translate-y-full w-full top-0 flex flex-col items-center">
                             <button
                                 onClick={() => setSeeBillDetails((e) => !e)}
                                 className={`fas fa-caret-${
                                     seeBillDetails ? "down" : "up"
-                                } mx-auto flex items-center justify-center px-7 text-white`}
+                                } mx-auto flex items-center justify-center px-7 text-white absolute -top-4 h-4 w-16`}
                                 style={{ backgroundColor: "#c4c4c4" }}
                             />
-                            <div hidden={!seeBillDetails} className="border-">
+                            <div hidden={!seeBillDetails} className="w-full">
                                 <div
                                     className="h-14 flex items-center px-4 justify-between"
                                     style={{ backgroundColor: "#c4c4c4" }}
