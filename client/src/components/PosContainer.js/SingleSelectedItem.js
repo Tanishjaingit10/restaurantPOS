@@ -23,7 +23,7 @@ function SingleSelectedItem({ item, setSelectedItems }) {
         (item.finalVariant.reduce(
             (sum, variant) =>
                 sum +
-                (variant?.isSelected ? variant?.price * variant?.quantity : 0),
+                (variant?.quantity ? variant?.price * variant?.quantity : 0),
             0
         ) +
             item?.price -
@@ -80,16 +80,7 @@ function SingleSelectedItem({ item, setSelectedItems }) {
                     />
                 </div>
                 <div className="flex items-center justify-center flex-1">
-                    $
-                    {(
-                        itemPrice +
-                            item?.finalVariant?.reduce(
-                                (sum, v) =>
-                                    sum +
-                                    (v.quantity ? v.price * v.quantity : 0),
-                                0
-                            ) || 0
-                    ).toFixed(2)}
+                    ${itemPrice.toFixed(2)}
                 </div>
             </div>
         </div>

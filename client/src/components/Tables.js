@@ -16,14 +16,18 @@ import { MdOutlineDelete } from "react-icons/md";
 import { Modal } from "./Common/Modal";
 import { materialTheme } from "../styles/clockMaterialTheme";
 import QRCode from "react-qr-code";
-import { TableUIUrl } from "../config";
+import { BackendUrl, TableUIUrl } from "../config";
 import ReactToPdf from "react-to-pdf";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
 import { NotificationContext } from "../context/Notification";
 import { formatDate } from "../Utils";
+import { fetchTables_worker } from "../workers/fetchTables";
+import { fetchTableLocations_worker } from "../workers/fetchTableLocations";
 
 const Tables = () => {
+    const Tables_URL = `${BackendUrl}/app/table`;
+    const TableLocations_URL = `${BackendUrl}/app/tableLocation`;
     const [displayTable, setDisplayTable] = useState([]);
     const [confirmDeleteTable, setConfirmDeleteTable] = useState(false);
     const [deleteTableId, setDeleteTableId] = useState();
@@ -90,6 +94,27 @@ const Tables = () => {
             )
             .finally(() => setLoading(false));
     }, [reload]);
+
+    fetchTables_worker.onmessage = (message) => {
+        if (message?.data?.success) {
+            setDisplayTable(message.data?.data);
+            setAllTables(message.data?.data?.map((t) => t.number));
+        }
+    };
+
+    fetchTableLocations_worker.onmessage = (message) => {
+        if (message?.data?.success) {
+            if (message.data?.data) setLocations(message.data?.data);
+        }
+    };
+
+    useEffect(() => {
+        const fetchTablesInterval = setInterval(() => {
+            fetchTables_worker.postMessage(Tables_URL);
+            fetchTableLocations_worker.postMessage(TableLocations_URL);
+        }, 3000);
+        return () => clearInterval(fetchTablesInterval);
+    }, []);
 
     useEffect(() => {
         const interval = setInterval(() => {
