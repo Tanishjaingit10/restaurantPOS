@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
 import axios from "axios";
-import Loader from "./Loader";
 import Popup from "./Popup";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "./Common/CustomButton";
@@ -18,6 +17,7 @@ import CustomTable from "./Common/CustomTable";
 import CustomPagination from "./Common/CustomPagination";
 import { DownloadTable, PrintTable } from "./Common/download_print";
 import OrderDetailComponent from "./Common/orderDetail";
+import SpinLoader from "./SpinLoader";
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -26,7 +26,6 @@ const Orders = () => {
     const [pageNumber, setPageNumber] = useState(1);
     const [pageLimit, setPageLimit] = useState(10);
     const [reload, setReload] = useState(false);
-    const [componentLoading, setComponentLoading] = useState(false);
     const [filterOrderStartDate, setFilterOrderStartDate] = useState(
         new Date()
     );
@@ -51,7 +50,7 @@ const Orders = () => {
             .then((res) => {
                 if (res.data) {
                     setOrders(res.data);
-                    setComponentLoading(false);
+                    setLoading(false);
 
                     var completedOrders = 0;
                     var pendingOrders = 0;
@@ -79,14 +78,14 @@ const Orders = () => {
     }, [reload]);
 
     const getOrdersByInvoices = (invoices) => {
-        setComponentLoading(true);
+        setLoading(true);
         axios
             .get(`/app/orderById/${invoices}`)
             .then((res) => {
                 if (res.data) setOrders(res.data);
             })
             .catch((err) => console.log("error: ", err))
-            .finally(() => setComponentLoading(false));
+            .finally(() => setLoading(false));
     };
 
     const getOrderByStatus = (status) => {
@@ -156,99 +155,89 @@ const Orders = () => {
 
     return (
         <div>
-            {componentLoading ? <Loader /> : null}
+            {loading && <SpinLoader className="fixed top-1/2 right-1/2" />}
             <div className="flex flex-col w-full">
-                <div className="my-2 overflow-x-auto">
-                    <div className="py-2 align-middle inline-block min-w-full px-5">
-                        <div className="flex items-center justify-between my-5">
-                            <h2 className="font-bold text-2xl text-gray-600">
-                                Orders Report
-                            </h2>
-                            <div className="inline-block mx-5 rounded w-1/4">
-                                <input
-                                    onChange={(value) => {
-                                        if (value.target.value?.length >= 7)
-                                            getOrdersByInvoices(
-                                                value.target.value
-                                            );
-                                        if (value.target.value?.length === 0)
-                                            setReload(!reload);
-                                    }}
-                                    className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                    placeholder="Search for sale: order id"
-                                />
-                                <GoSearch
-                                    size={25}
-                                    className="absolute inline-block mt-4 -ml-8"
-                                    color="#a5a5a5d1"
-                                />
-                            </div>
-                            <div className="flex flex-row items-center">
-                                <CustomButton
-                                    title="Select Food Item"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                />
-                                <CustomButton
-                                    title="Select Date Range"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                    onPress={() => {
-                                        setSelectOrderFilter(true);
-                                    }}
-                                />
-                                <CustomButton
-                                    title="Yesterday Orders"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                    onPress={() => {
-                                        getOrderByDate(
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-"),
-                                            new Date(
-                                                new Date().setDate(
-                                                    new Date().getDate() - 1
-                                                )
-                                            )
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-")
-                                        );
-                                    }}
-                                />
-                                <CustomButton
-                                    title="Today Orders"
-                                    customStyle={{
-                                        backgroundColor: theme.backgroundColor,
-                                    }}
-                                    onPress={() => {
-                                        getOrderByDate(
-                                            new Date()
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-"),
-                                            new Date()
-                                                .toLocaleDateString("pt-br")
-                                                .split("/")
-                                                .reverse()
-                                                .join("-")
-                                        );
-                                    }}
-                                />
-                            </div>
+                <div className="overflow-x-auto">
+                    <div className="flex h-24 bg-white items-center justify-between border-b-2 border-gray-300">
+                        <p className="text-2xl text-gray-500 ml-6 font-bold">
+                            Orders Report
+                        </p>
+                        <div className="inline-block mx-5 rounded w-1/4">
+                            <input
+                                onChange={(value) => {
+                                    if (value.target.value?.length >= 7)
+                                        getOrdersByInvoices(value.target.value);
+                                    if (value.target.value?.length === 0)
+                                        setReload(!reload);
+                                }}
+                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Search for sale: order id"
+                            />
+                            <GoSearch
+                                size={25}
+                                className="absolute inline-block mt-4 -ml-8"
+                                color="#a5a5a5d1"
+                            />
                         </div>
+                        <div className="flex flex-row items-center">
+                            <button className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4">
+                                Select Food Item
+                            </button>
+                            <button
+                                onClick={() => setSelectOrderFilter(true)}
+                                className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                            >
+                                Select Date Range
+                            </button>
+                            <button
+                                onClick={() => {
+                                    getOrderByDate(
+                                        new Date(
+                                            new Date().setDate(
+                                                new Date().getDate() - 1
+                                            )
+                                        )
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-"),
+                                        new Date(
+                                            new Date().setDate(
+                                                new Date().getDate() - 1
+                                            )
+                                        )
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-")
+                                    );
+                                }}
+                                className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                            >
+                                Yesterday Orders
+                            </button>
+                            <button
+                                onClick={() => {
+                                    getOrderByDate(
+                                        new Date()
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-"),
+                                        new Date()
+                                            .toLocaleDateString("pt-br")
+                                            .split("/")
+                                            .reverse()
+                                            .join("-")
+                                    );
+                                }}
+                                className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                            >
+                                Today Orders
+                            </button>
+                        </div>
+                    </div>
+                    <div className="align-middle inline-block min-w-full px-5">
                         <div className="flex flex-col h-full shadow border-t border-gray-200 sm:rounded-lg mt-8">
                             <div className="flex flex-row justify-between">
                                 <div className="my-4">
@@ -367,9 +356,7 @@ const Orders = () => {
                                                 <i
                                                     onClick={() => {
                                                         setReload(!reload);
-                                                        setComponentLoading(
-                                                            true
-                                                        );
+                                                        setLoading(true);
                                                     }}
                                                     style={{
                                                         cursor: "pointer",
@@ -435,79 +422,69 @@ const Orders = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {loading ? (
-                                        <Loader />
-                                    ) : (
-                                        orders?.map((order) => {
-                                            return (
-                                                <tr
-                                                    key={order._id}
-                                                    className="font-medium "
-                                                >
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {new Date(
-                                                                order.time
+                                    {orders?.map((order) => {
+                                        return (
+                                            <tr
+                                                key={order._id}
+                                                className="font-medium "
+                                            >
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {new Date(order.time)
+                                                            .toLocaleDateString(
+                                                                "pt-br"
                                                             )
-                                                                .toLocaleDateString(
-                                                                    "pt-br"
-                                                                )
-                                                                .split("/")
-                                                                .reverse()
-                                                                .join("-")}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {order?.order_id}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                order?.payment
-                                                                    ?.orderType
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            $
-                                                            {
-                                                                order?.payment
-                                                                    ?.total
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                order?.payment
-                                                                    ?.orderStatus
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <CustomButton
-                                                            title="View Order"
-                                                            customStyle={{
-                                                                backgroundColor:
-                                                                    theme.backgroundColor,
-                                                            }}
-                                                            onPress={() => {
-                                                                setShowOrderDetails(
-                                                                    true
-                                                                );
-                                                                setOrderDetails(
-                                                                    order
-                                                                );
-                                                            }}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })
-                                    )}
+                                                            .split("/")
+                                                            .reverse()
+                                                            .join("-")}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {order?.order_id}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {
+                                                            order?.payment
+                                                                ?.orderType
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        ${order?.payment?.total}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {
+                                                            order?.payment
+                                                                ?.orderStatus
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <CustomButton
+                                                        title="View Order"
+                                                        customStyle={{
+                                                            backgroundColor:
+                                                                theme.backgroundColor,
+                                                        }}
+                                                        onPress={() => {
+                                                            setShowOrderDetails(
+                                                                true
+                                                            );
+                                                            setOrderDetails(
+                                                                order
+                                                            );
+                                                        }}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                             <div ref={printTable}>
@@ -551,9 +528,7 @@ const Orders = () => {
                                         </th>
                                     </tr>
 
-                                    {loading ? (
-                                        <Loader />
-                                    ) : ordersToShow?.length > 0 ? (
+                                    {ordersToShow?.length > 0 ? (
                                         ordersToShow?.map((order) => {
                                             return (
                                                 <tr

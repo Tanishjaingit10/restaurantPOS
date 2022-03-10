@@ -66,6 +66,7 @@ const all_table = async (request, response) => {
         else console.log(err);
     });
 };
+
 const remove_table = async (request, response, next) => {
     let itemId = request.params.id;
     table_template_copy

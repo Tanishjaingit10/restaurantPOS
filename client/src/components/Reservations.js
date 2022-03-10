@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
-import Loader from "./Loader";
-import Popup from "./Popup";
+import axios from "axios";
+import SpinLoader from "./SpinLoader";
 import CustomButton from "./Common/CustomButton";
 import { ThemeContext } from "../context/Theme";
 import DateFnsUtils from "@date-io/date-fns";
@@ -12,8 +12,6 @@ import {
     MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { ThemeProvider } from "@material-ui/styles";
-import MomentUtils from "@date-io/moment";
-import { GrClose } from "react-icons/gr";
 import { GoSearch } from "react-icons/go";
 import Select from "react-select";
 import { FiRefreshCcw } from "react-icons/fi";
@@ -21,10 +19,12 @@ import { materialTheme } from "../styles/clockMaterialTheme";
 import CustomTable from "./Common/CustomTable";
 import CustomPagination from "./Common/CustomPagination";
 import { DownloadTable, PrintTable } from "./Common/download_print";
+import { Modal } from "./Common/Modal";
+import { formatDate, timeToDate } from "../Utils";
+import { NotificationContext } from "../context/Notification";
 
 const AllReservations = () => {
     const [allReservations, setAllReservations] = useState([]);
-    const [editReservation, setEditReservation] = useState({});
     const [editReservationModal, setEditReservationModal] = useState(false);
     const [editReservSuccess, setEditReservationSuccess] = useState(false);
     const [warnDeleteReserve, setWarnDeleteReserve] = useState(false);
@@ -32,109 +32,138 @@ const AllReservations = () => {
     const [availableTables, setAvailableTables] = useState([]);
     const [allTables, setAllTables] = useState([]);
     const [showDate, setShowDate] = useState(false);
-    const [startDate, setStartDate] = useState(new Date());
-    const [startTime, setStartTime] = useState(new Date());
-    const [endTime, setEndTime] = useState(new Date());
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedStartTime, setSelectedStartTime] = useState(new Date());
+    const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+    const date = formatDate(selectedDate).split(" ")[0];
+    const startTime = formatDate(selectedStartTime).split(" ")[1];
+    const endTime = formatDate(selectedEndTime).split(" ")[1];
+    const [fullName, setFullName] = useState("");
+    const [email_id, setEmail_id] = useState("");
+    const [contact, setContact] = useState("");
+    const [table, setTable] = useState("");
+    const [itemId, setItemId] = useState(null);
+
     const [loading, setLoading] = useState(true);
     const [pageNumber, setPageNumber] = useState(1);
     const [pageLimit, setPageLimit] = useState(10);
     const [reload, setReload] = useState(false);
-    const [componentLoading, setComponentLoading] = useState(false);
     const [onPrint, setOnPrint] = useState("");
     const [reservationsToShow, setReservationsToShow] = useState([]);
     const theme = useContext(ThemeContext);
+    const notify = useContext(NotificationContext);
+    const [dateFilter, setDateFilter] = useState(null);
 
     const printTable = useRef();
 
-    var currDate = new Date();
+    const setReservationStates = (reservation) => {
+        setSelectedDate(new Date(reservation?.date));
+        setSelectedStartTime(timeToDate(reservation?.start_time));
+        setSelectedEndTime(timeToDate(reservation?.end_time));
+        setFullName(reservation?.fullName);
+        setEmail_id(reservation?.email_id);
+        setContact(reservation?.contact);
+        setTable(reservation?.table);
+        setItemId(reservation?._id);
+    };
 
     useEffect(() => {
-        fetch("/app/allReservations")
-            .then((res) => res.json())
-            .then((json) => setAllReservations(json))
-            .catch((err) => console.log(err))
+        axios
+            .get("/app/allReservations")
+            .then((res) => setAllReservations(res.data))
+            .catch((err) =>
+                notify(
+                    err?.response?.data?.message ||
+                        "Unable to fetch reservations"
+                )
+            )
             .finally(() => {
-                setComponentLoading(false);
                 setLoading(false);
             });
-        fetch(`/app/table`)
-            .then((res) => res.json())
-            .then((json) => {
+        axios
+            .get(`/app/table`)
+            .then((res) => {
                 var tables = [];
-                for (var i = 0; i < json.length; i++) {
-                    tables.push(json[i].number);
+                for (var i = 0; i < res.data?.length; i++) {
+                    tables.push(res.data[i].number);
                 }
                 setAllTables(tables);
             })
-            .catch((err) => console.log(err))
+            .catch((err) =>
+                notify(err?.response?.data?.message || "Unable to fetch tables")
+            )
             .finally(() => setLoading(false));
     }, [reload]);
 
-    const getReservationByTime = (date, startTime, endTime) => {
-        setComponentLoading(true);
-        fetch(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
-            .then((res) => res.json())
-            .then((json) => {
-                let tableList = [];
-                let reservedTable = [];
-                for (let i = 0; i < json.length; i++)
-                    if (json[i].table !== undefined)
-                        reservedTable.push(json[i].table);
-                let availableTables = allTables.filter(
-                    (obj) => reservedTable.indexOf(obj) === -1
-                );
-                for (let i = 0; i < availableTables.length; i++) {
-                    tableList.push({
-                        label: availableTables[i],
-                        value: availableTables[i],
-                    });
-                }
-                setAvailableTables(tableList);
-            })
+    const getReservationByTime = (date, startTime, endTime, itemId) => {
+        setLoading(true);
+        axios
+            .get(
+                `/app/getReservationByTime/${date}/${startTime}/${endTime}/${itemId}`
+            )
+            .then((res) =>
+                setAvailableTables(
+                    allTables.filter(
+                        (t) => !res.data?.some((tab) => tab.table === t)
+                    )
+                )
+            )
             .catch((err) => console.log(err))
-            .finally(() => setComponentLoading(false));
+            .finally(() => setLoading(false));
     };
 
     const getReservationByTable = (table) => {
-        fetch(`/app/getReservationByTable/${table}`)
-            .then((res) => res.json())
-            .then((json) => setAllReservations(json))
+        axios
+            .get(`/app/getReservationByTable/${table}`)
+            .then((res) => setAllReservations(res.data))
             .catch((err) => console.log(err));
     };
 
     const getDayReservations = (date) => {
         setLoading(true);
-        fetch(`/app/getReservationsDate/${date}`)
-            .then((res) => res.json())
-            .then((json) => setAllReservations(json))
+        axios
+            .get(`/app/getReservationsDate/${date}`)
+            .then((res) => setAllReservations(res.data))
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
     };
 
     const deleteReservations = (reservationId) => {
-        fetch(`app/removeReservation/${reservationId}`, { method: "DELETE" })
-            .then((res) => res.json())
-            .then((json) => {
+        axios
+            .delete(`app/removeReservation/${reservationId}`)
+            .then(() => {
                 setDeleteReservSuccess(true);
                 setReload(!reload);
             })
             .catch((err) => console.log(err));
     };
 
-    const editReservations = () => {
-        fetch(`/app/editReservation/${editReservation._id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(editReservation),
-        })
+    const submitEditReservation = (e) => {
+        e.preventDefault();
+        const dataToPost = {
+            _id: itemId,
+            fullName,
+            email_id,
+            contact,
+            table,
+            startTime,
+            endTime,
+            date,
+        };
+        axios
+            .put(`/app/editReservation/${itemId}`, dataToPost)
             .then((res) => {
-                if (res.status === 200) setEditReservationSuccess(true);
+                setEditReservationSuccess(true);
                 setReload(!reload);
+                setEditReservationModal(false);
             })
             .catch((err) => console.log(err));
     };
+
+    useEffect(() => {
+        getReservationByTime(date, startTime, endTime, itemId);
+    }, [selectedDate, selectedStartTime, selectedEndTime]);
 
     useEffect(() => {
         setPageNumber(1);
@@ -155,150 +184,104 @@ const AllReservations = () => {
         { value: 200, label: "200" },
     ];
 
-    const selectCustomeStyle = {
-        backgroundColor: theme.backgroundColor,
-    };
-
     return (
         <div>
-            {componentLoading ? <Loader /> : null}
+            {loading && <SpinLoader className="fixed top-1/2 right-1/2" />}
             <div className="flex flex-col w-full">
-                <div className="my-2 overflow-x-auto">
-                    <div className="py-2 align-middle inline-block min-w-full px-5">
-                        <div className="py-4 inline-block w-full">
-                            <div className="inline-block w-1/2">
-                                <h1 className="text-lg inline-block font-bold text-gray-600">
-                                    Actions
-                                </h1>
-                                <div className="inline-block mx-5 rounded relative w-2/3">
-                                    <input
-                                        onChange={(value) => {
-                                            getReservationByTable(
-                                                value.target.value
-                                            );
-                                        }}
-                                        className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                        placeholder="Search for table no."
-                                    />
-                                    <GoSearch
-                                        size={25}
-                                        className="absolute inline-block mt-4 -ml-8"
-                                        color="#a5a5a5d1"
-                                    />
-                                </div>
-                            </div>
-                            <div className="inline-block w-1/2">
-                                <div className="flex flex-row items-center justify-end">
-                                    <CustomButton
-                                        title="Select Date"
-                                        customStyle={{
-                                            backgroundColor:
-                                                theme.backgroundColor,
-                                        }}
-                                        onPress={() => {
-                                            setShowDate(true);
-                                        }}
-                                    />
-                                    {showDate ? (
-                                        <div
-                                            className="fixed z-10 inset-0 overflow-y-auto"
-                                            aria-labelledby="modal-title"
-                                            role="dialog"
-                                            aria-modal="true"
-                                        >
-                                            <div className="flex items-end justify-center min-h-screen pt-4 px-8 pb-20 text-center sm:block sm:p-0">
-                                                <div
-                                                    className="fixed inset-0 bg-opacity-75 transition-opacity"
-                                                    aria-hidden="true"
-                                                ></div>
-                                                <span
-                                                    className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                                                    aria-hidden="true"
-                                                >
-                                                    &#8203;
-                                                </span>
-                                                <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                                    <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                                        <div className="">
-                                                            <div className="w-full flex justify-end mb-5">
-                                                                <GrClose
-                                                                    onClick={() =>
-                                                                        setShowDate(
-                                                                            false
-                                                                        )
-                                                                    }
-                                                                />
-                                                            </div>
-                                                            <MuiPickersUtilsProvider
-                                                                utils={
-                                                                    DateFnsUtils
-                                                                }
-                                                            >
-                                                                <ThemeProvider
-                                                                    theme={
-                                                                        materialTheme
-                                                                    }
-                                                                >
-                                                                    <DatePicker
-                                                                        InputProps={{
-                                                                            disableUnderline: true,
-                                                                        }}
-                                                                        variant="static"
-                                                                        label="Date"
-                                                                        value={
-                                                                            startDate
-                                                                        }
-                                                                        onChange={(
-                                                                            date
-                                                                        ) => {
-                                                                            getDayReservations(
-                                                                                date
-                                                                                    .toISOString()
-                                                                                    .split(
-                                                                                        "T"
-                                                                                    )[0]
-                                                                            );
-                                                                            setShowDate(
-                                                                                false
-                                                                            );
-                                                                        }}
-                                                                    />
-                                                                </ThemeProvider>
-                                                            </MuiPickersUtilsProvider>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ) : null}
-                                    <CustomButton
-                                        title="Tomorrow"
-                                        customStyle={{
-                                            backgroundColor:
-                                                theme.backgroundColor,
-                                        }}
-                                        onPress={() => {
-                                            getDayReservations(new Date());
-                                        }}
-                                    />
-                                    <CustomButton
-                                        title="Today"
-                                        customStyle={{
-                                            backgroundColor:
-                                                theme.backgroundColor,
-                                        }}
-                                        onPress={() => {
-                                            getDayReservations(
-                                                new Date()
-                                                    .toISOString()
-                                                    .split("T")[0]
-                                            );
-                                        }}
-                                    />
-                                </div>
+                <div className="overflow-x-auto">
+                    <div className="flex h-24 bg-white items-center justify-between border-b-2 border-gray-300">
+                        <div className="flex items-center flex-1 justify-between">
+                            <p className="text-2xl text-gray-500 ml-6 font-bold">
+                                Reservations
+                            </p>
+                            <div className="rounded relative">
+                                <input
+                                    onChange={(value) => {
+                                        getReservationByTable(
+                                            value.target.value
+                                        );
+                                    }}
+                                    className="mx-auto w-96 border-gray-300 appearance-none border rounded-md py-4 px-3 text-gray-700 leading-tight"
+                                    placeholder="Search for table no."
+                                />
+                                <GoSearch
+                                    size={25}
+                                    className="absolute inline-block mt-4 -ml-8"
+                                    color="#a5a5a5d1"
+                                />
                             </div>
                         </div>
-                        <hr />
+                        <div className="inline-block w-1/2">
+                            <div className="flex flex-row items-center justify-end">
+                                <button
+                                    onClick={() => setShowDate(true)}
+                                    className="font-medium leading-4 bg-red-500 mr-6 p-4 px-8 text-white rounded-md"
+                                >
+                                    Select Date
+                                </button>
+                                <Modal
+                                    isOpen={showDate}
+                                    controller={setShowDate}
+                                    className="animate-scaleUp max-h-screen overflow-y-auto bg-white rounded-xl relative shadow-md"
+                                >
+                                    <button
+                                        onClick={() => setShowDate(false)}
+                                        className="z-10 fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg text-white"
+                                    />
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                    >
+                                        <ThemeProvider theme={materialTheme}>
+                                            <DatePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                variant="static"
+                                                label="Date"
+                                                value={dateFilter}
+                                                onChange={(date) => {
+                                                    setDateFilter(date);
+                                                    getDayReservations(
+                                                        date
+                                                            .toISOString()
+                                                            .split("T")[0]
+                                                    );
+                                                    setShowDate(false);
+                                                }}
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </Modal>
+                                <button
+                                    onClick={() => {
+                                        getDayReservations(
+                                            new Date(
+                                                Date.now() + 24 * 60 * 60 * 1000
+                                            )
+                                                .toISOString()
+                                                .split("T")[0]
+                                        );
+                                    }}
+                                    className="font-medium leading-4 bg-red-500 mr-6 p-4 px-8 text-white rounded-md"
+                                >
+                                    Tomorrow
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        getDayReservations(
+                                            new Date()
+                                                .toISOString()
+                                                .split("T")[0]
+                                        );
+                                    }}
+                                    className="font-medium leading-4 bg-red-500 mr-6 p-4 px-8 text-white rounded-md"
+                                >
+                                    Today
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="align-middle inline-block min-w-full px-5">
                         <div className="shadow overflow-hidden border-t border-gray-200 sm:rounded-lg mt-8">
                             <div className="inline-block w-1/2 my-4">
                                 <h1 className="text-lg inline-block ml-8">
@@ -332,7 +315,7 @@ const AllReservations = () => {
                                         <i
                                             onClick={() => {
                                                 setReload(!reload);
-                                                setComponentLoading(true);
+                                                setLoading(true);
                                             }}
                                             style={{ cursor: "pointer" }}
                                         >
@@ -340,11 +323,6 @@ const AllReservations = () => {
                                         </i>
                                     </div>
                                     <PrintTable printTableRef={printTable} />
-                                    {/* <CustomButton
-									title="Printt"
-									customStyle={{ backgroundColor: theme.backgroundColor }}
-									onPress={() => printOrder()}
-								/> */}
                                     <DownloadTable
                                         fileName="Reservations"
                                         tableId="DownloadTable"
@@ -406,143 +384,87 @@ const AllReservations = () => {
                                             Action
                                         </th>
                                     </tr>
-                                    {loading ? (
-                                        <Loader />
-                                    ) : (
-                                        allReservations.map((reservation) => {
-                                            return (
-                                                <tr>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                reservation.date.split(
-                                                                    "T"
-                                                                )[0]
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                reservation.start_time
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                reservation.end_time
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {reservation.table}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                reservation.fullName
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                reservation.contact
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            {
-                                                                reservation.email_id
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                        <div className="text-base text-gray-500 font-semibold">
-                                                            <CustomButton
-                                                                customStyle={{
-                                                                    backgroundColor:
-                                                                        theme.backgroundColor,
-                                                                    fontSize: 14,
-                                                                }}
-                                                                title="Cancel"
-                                                                onPress={() => {
-                                                                    setWarnDeleteReserve(
-                                                                        true
-                                                                    );
-                                                                    setEditReservation(
-                                                                        reservation
-                                                                    );
-                                                                }}
-                                                            />
-                                                            <CustomButton
-                                                                customStyle={{
-                                                                    backgroundColor:
-                                                                        theme.backgroundColor,
-                                                                    fontSize: 14,
-                                                                }}
-                                                                title="Edit"
-                                                                onPress={() => {
-                                                                    getReservationByTime(
-                                                                        reservation.date,
-                                                                        reservation.start_time,
-                                                                        reservation.end_time
-                                                                    );
-                                                                    setEditReservationModal(
-                                                                        true
-                                                                    );
-                                                                    setEditReservation(
-                                                                        reservation
-                                                                    );
-                                                                    setStartDate(
-                                                                        new Date(
-                                                                            reservation.date
-                                                                        )
-                                                                    );
-                                                                    setStartTime(
-                                                                        new Date(
-                                                                            currDate.getFullYear(),
-                                                                            currDate.getMonth(),
-                                                                            currDate.getDate(),
-                                                                            reservation.start_time.split(
-                                                                                ":"
-                                                                            )[0],
-                                                                            reservation.start_time.split(
-                                                                                ":"
-                                                                            )[1],
-                                                                            reservation.start_time.split(
-                                                                                ":"
-                                                                            )[2]
-                                                                        )
-                                                                    );
-                                                                    setEndTime(
-                                                                        new Date(
-                                                                            currDate.getFullYear(),
-                                                                            currDate.getMonth(),
-                                                                            currDate.getDate(),
-                                                                            reservation.start_time.split(
-                                                                                ":"
-                                                                            )[0],
-                                                                            allReservations[0].start_time.split(
-                                                                                ":"
-                                                                            )[1],
-                                                                            reservation.start_time.split(
-                                                                                ":"
-                                                                            )[2]
-                                                                        )
-                                                                    );
-                                                                }}
-                                                            />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })
-                                    )}
+                                    {allReservations?.map((reservation) => {
+                                        return (
+                                            <tr key={reservation._id}>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {
+                                                            reservation.date.split(
+                                                                "T"
+                                                            )[0]
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {reservation.start_time}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {reservation.end_time}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {reservation.table}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {reservation.fullName}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {reservation.contact}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        {reservation.email_id}
+                                                    </div>
+                                                </td>
+                                                <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                    <div className="text-base text-gray-500 font-semibold">
+                                                        <CustomButton
+                                                            customStyle={{
+                                                                backgroundColor:
+                                                                    theme.backgroundColor,
+                                                                fontSize: 14,
+                                                            }}
+                                                            title="Cancel"
+                                                            onPress={() => {
+                                                                setWarnDeleteReserve(
+                                                                    true
+                                                                );
+                                                                setItemId(
+                                                                    reservation._id
+                                                                );
+                                                            }}
+                                                        />
+                                                        <CustomButton
+                                                            customStyle={{
+                                                                backgroundColor:
+                                                                    theme.backgroundColor,
+                                                                fontSize: 14,
+                                                            }}
+                                                            title="Edit"
+                                                            onPress={() => {
+                                                                setEditReservationModal(
+                                                                    true
+                                                                );
+                                                                setReservationStates(
+                                                                    reservation
+                                                                );
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </CustomTable>
                             </div>
                             <div ref={printTable}>
@@ -598,13 +520,11 @@ const AllReservations = () => {
                                             Action
                                         </th>
                                     </tr>
-                                    {loading ? (
-                                        <Loader />
-                                    ) : reservationsToShow.length > 0 ? (
+                                    {reservationsToShow.length > 0 ? (
                                         reservationsToShow.map(
                                             (reservation) => {
                                                 return (
-                                                    <tr>
+                                                    <tr key={reservation._id}>
                                                         <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
                                                             <div className="text-base text-gray-500 font-semibold">
                                                                 {
@@ -669,8 +589,8 @@ const AllReservations = () => {
                                                                         setWarnDeleteReserve(
                                                                             true
                                                                         );
-                                                                        setEditReservation(
-                                                                            reservation
+                                                                        setItemId(
+                                                                            reservation._id
                                                                         );
                                                                     }}
                                                                 />
@@ -682,53 +602,11 @@ const AllReservations = () => {
                                                                     }}
                                                                     title="Edit"
                                                                     onPress={() => {
-                                                                        getReservationByTime(
-                                                                            reservation.date,
-                                                                            reservation.start_time,
-                                                                            reservation.end_time
-                                                                        );
                                                                         setEditReservationModal(
                                                                             true
                                                                         );
-                                                                        setEditReservation(
+                                                                        setReservationStates(
                                                                             reservation
-                                                                        );
-                                                                        setStartDate(
-                                                                            new Date(
-                                                                                reservation.date
-                                                                            )
-                                                                        );
-                                                                        setStartTime(
-                                                                            new Date(
-                                                                                currDate.getFullYear(),
-                                                                                currDate.getMonth(),
-                                                                                currDate.getDate(),
-                                                                                reservation.start_time.split(
-                                                                                    ":"
-                                                                                )[0],
-                                                                                reservation.start_time.split(
-                                                                                    ":"
-                                                                                )[1],
-                                                                                reservation.start_time.split(
-                                                                                    ":"
-                                                                                )[2]
-                                                                            )
-                                                                        );
-                                                                        setEndTime(
-                                                                            new Date(
-                                                                                currDate.getFullYear(),
-                                                                                currDate.getMonth(),
-                                                                                currDate.getDate(),
-                                                                                reservation.start_time.split(
-                                                                                    ":"
-                                                                                )[0],
-                                                                                allReservations[0].start_time.split(
-                                                                                    ":"
-                                                                                )[1],
-                                                                                reservation.start_time.split(
-                                                                                    ":"
-                                                                                )[2]
-                                                                            )
                                                                         );
                                                                     }}
                                                                 />
@@ -740,7 +618,7 @@ const AllReservations = () => {
                                         )
                                     ) : (
                                         <tr>
-                                            <td colspan="8">
+                                            <td colSpan="8">
                                                 <div className="flex justify-center w-100 my-5">
                                                     <h5
                                                         className="text-xl font-semibold"
@@ -766,352 +644,253 @@ const AllReservations = () => {
                     </div>
                 </div>
             </div>
-            {editReservationModal ? (
-                <div
-                    className="fixed z-10 inset-0 overflow-y-auto"
-                    aria-labelledby="modal-title"
-                    role="dialog"
-                    aria-modal="true"
-                >
-                    <div className="flex items-end justify-center min-h-screen pt-4 px-8 pb-20 text-center sm:block sm:p-0">
-                        <div
-                            className="fixed inset-0 bg-opacity-75 transition-opacity"
-                            aria-hidden="true"
-                        ></div>
-                        <span
-                            className="hidden sm:inline-block sm:align-middle sm:h-screen"
-                            aria-hidden="true"
+            <Modal
+                isOpen={editReservationModal}
+                controller={setEditReservationModal}
+                onAfterOpen={() =>
+                    getReservationByTime(date, startTime, endTime, itemId)
+                }
+                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto rounded-xl pt-4"
+                style={{ content: { maxHeight: "95vh" } }}
+            >
+                <button
+                    onClick={() => setEditReservationModal(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
+                />
+                <div className="pt-5">
+                    <div className="w-full flex items-center justify-center">
+                        <h3
+                            className="text-3xl font-semibold"
+                            style={{
+                                color: theme.backgroundColor,
+                            }}
                         >
-                            &#8203;
-                        </span>
-                        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                <div className="">
-                                    <div className="w-full flex justify-end">
-                                        <GrClose
-                                            onClick={() =>
-                                                setEditReservationModal(false)
-                                            }
-                                        />
-                                    </div>
-                                    <div className="w-full flex items-center justify-center">
-                                        <h3
-                                            className="text-3xl font-bold"
-                                            style={{
-                                                color: theme.backgroundColor,
-                                            }}
-                                        >
-                                            Reschedule Reservation
-                                        </h3>
-                                    </div>
-                                </div>
-                                <form className="bg-white px-8 pt-6 pb-8 mb-5 w-5/6 m-auto">
-                                    <div className="mb-5">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="fullName"
-                                        >
-                                            Enter Customer Name
-                                        </label>
-                                        <input
-                                            defaultValue={
-                                                editReservation.fullName
-                                            }
-                                            onChange={(value) => {
-                                                setEditReservation(
-                                                    (editReservation) => ({
-                                                        ...editReservation,
-                                                        fullName:
-                                                            value.target.value,
-                                                    })
-                                                );
-                                            }}
-                                            className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Customer Name"
-                                        />
-                                    </div>
-                                    <div className="mb-5">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="fullName"
-                                        >
-                                            Enter Email Id
-                                        </label>
-                                        <input
-                                            defaultValue={
-                                                editReservation.email_id
-                                            }
-                                            onChange={(value) =>
-                                                setEditReservation(
-                                                    (editReservation) => ({
-                                                        ...editReservation,
-                                                        email_id:
-                                                            value.target.value,
-                                                    })
-                                                )
-                                            }
-                                            className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Email Id"
-                                        />
-                                    </div>
-                                    <div className="mb-5">
-                                        <label
-                                            className="block text-gray-700 text-sm font-bold mb-2"
-                                            htmlFor="fullName"
-                                        >
-                                            Enter Phone Number
-                                        </label>
-                                        <input
-                                            defaultValue={
-                                                editReservation.contact
-                                            }
-                                            onChange={(value) =>
-                                                setEditReservation(
-                                                    (editReservation) => ({
-                                                        ...editReservation,
-                                                        contact:
-                                                            value.target.value,
-                                                    })
-                                                )
-                                            }
-                                            className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            id="fullName"
-                                            type="text"
-                                            placeholder="Enter Phone Number"
-                                        />
-                                    </div>
-                                    <div className="my-5 w-full">
-                                        <MuiPickersUtilsProvider
-                                            utils={DateFnsUtils}
-                                        >
-                                            <ThemeProvider
-                                                theme={materialTheme}
-                                            >
-                                                <DatePicker
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                    }}
-                                                    label="Date"
-                                                    value={startDate}
-                                                    onChange={(date) => {
-                                                        setStartDate(date);
-                                                        getReservationByTime(
-                                                            date
-                                                                .toISOString()
-                                                                .split("T")[0],
-                                                            editReservation.startTime,
-                                                            editReservation.endTime
-                                                        );
-                                                        setEditReservation(
-                                                            (
-                                                                editReservation
-                                                            ) => ({
-                                                                ...editReservation,
-                                                                date: date
-                                                                    .toLocaleDateString(
-                                                                        "pt-br"
-                                                                    )
-                                                                    .split("/")
-                                                                    .reverse()
-                                                                    .join("-"),
-                                                            })
-                                                        );
-                                                    }}
-                                                />
-                                            </ThemeProvider>
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div className="my-5 w-full">
-                                        <MuiPickersUtilsProvider
-                                            utils={MomentUtils}
-                                        >
-                                            <ThemeProvider
-                                                theme={materialTheme}
-                                            >
-                                                <TimePicker
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                    }}
-                                                    clearable
-                                                    ampm={false}
-                                                    label="Start Time"
-                                                    value={startTime}
-                                                    onChange={(value) => {
-                                                        setStartTime(value);
-                                                        getReservationByTime(
-                                                            editReservation.date,
-                                                            value.format(
-                                                                "HH:mm:ss"
-                                                            ),
-                                                            editReservation.endTime
-                                                        );
-                                                        setEditReservation(
-                                                            (
-                                                                editReservation
-                                                            ) => ({
-                                                                ...editReservation,
-                                                                startTime:
-                                                                    value.format(
-                                                                        "HH:mm:ss"
-                                                                    ),
-                                                            })
-                                                        );
-                                                    }}
-                                                />
-                                            </ThemeProvider>
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div className="my-5 w-full">
-                                        <MuiPickersUtilsProvider
-                                            utils={MomentUtils}
-                                        >
-                                            <ThemeProvider
-                                                theme={materialTheme}
-                                            >
-                                                <TimePicker
-                                                    InputProps={{
-                                                        disableUnderline: true,
-                                                    }}
-                                                    onChange={(value) => {
-                                                        setEndTime(value);
-                                                        getReservationByTime(
-                                                            editReservation.date,
-                                                            editReservation.startTime,
-                                                            value.format(
-                                                                "HH:mm:ss"
-                                                            )
-                                                        );
-                                                        setEditReservation(
-                                                            (
-                                                                editReservation
-                                                            ) => ({
-                                                                ...editReservation,
-                                                                endTime:
-                                                                    value.format(
-                                                                        "HH:mm:ss"
-                                                                    ),
-                                                            })
-                                                        );
-                                                    }}
-                                                    value={endTime}
-                                                    clearable
-                                                    ampm={false}
-                                                    label="End Time"
-                                                />
-                                            </ThemeProvider>
-                                        </MuiPickersUtilsProvider>
-                                    </div>
-                                    <div
-                                        style={{ width: "100%" }}
-                                        className="inline-block rounded"
+                            Reserve Table
+                        </h3>
+                    </div>
+                    <form
+                        onSubmit={submitEditReservation}
+                        className="rounded px-8 pt-6 pb-8 mb-4 w-full"
+                    >
+                        <div className="flex gap-8">
+                            <div className="w-80">
+                                <div className="my-5 w-full">
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
                                     >
-                                        <Select
-                                            styles={selectCustomeStyle}
-                                            defaultValue={availableTables[0]}
-                                            options={availableTables}
-                                            maxMenuHeight={130}
-                                            onChange={(value) =>
-                                                setEditReservation(
-                                                    (editReservation) => ({
-                                                        ...editReservation,
-                                                        table: value.value,
-                                                    })
-                                                )
-                                            }
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-center mt-8">
-                                        <CustomButton
-                                            title="Done"
-                                            customStyle={{
-                                                backgroundColor:
-                                                    theme.backgroundColor,
-                                            }}
-                                            onPress={() => {
-                                                editReservations();
-                                                setEditReservationModal(false);
-                                            }}
-                                        />
-                                    </div>
-                                </form>
+                                        <ThemeProvider theme={materialTheme}>
+                                            <DatePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                label="Date"
+                                                value={selectedDate}
+                                                onChange={(date) =>
+                                                    setSelectedDate(date)
+                                                }
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                                <div className="my-5 w-full">
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                    >
+                                        <ThemeProvider theme={materialTheme}>
+                                            <TimePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                clearable
+                                                ampm={false}
+                                                label="Start Time"
+                                                value={selectedStartTime}
+                                                onChange={(value) =>
+                                                    setSelectedStartTime(value)
+                                                }
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                                <div className="my-5 w-full">
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                    >
+                                        <ThemeProvider theme={materialTheme}>
+                                            <TimePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                clearable
+                                                ampm={false}
+                                                label="End Time"
+                                                value={selectedEndTime}
+                                                onChange={(value) =>
+                                                    setSelectedEndTime(value)
+                                                }
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                            </div>
+                            <div className="w-80">
+                                <div className="mb-2">
+                                    <label
+                                        className="block text-gray-700"
+                                        htmlFor="fullName"
+                                    >
+                                        Customer Name
+                                    </label>
+                                    <input
+                                        required
+                                        value={fullName}
+                                        onChange={(e) =>
+                                            setFullName(e.target.value)
+                                        }
+                                        className="appearance-none border rounded-md border-gray-300 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="fullName"
+                                        type="text"
+                                        placeholder="Enter Customer Name"
+                                    />
+                                </div>
+                                <div className="mb-2">
+                                    <label
+                                        className="rounded-md border-gray-300 block text-gray-700"
+                                        htmlFor="email"
+                                    >
+                                        Email Id
+                                    </label>
+                                    <input
+                                        required
+                                        value={email_id}
+                                        onChange={(e) =>
+                                            setEmail_id(e.target.value)
+                                        }
+                                        className="rounded-md border-gray-300 appearance-none border w-full py-3 px-3 text-gray-700 leading-tight"
+                                        id="email"
+                                        type="email"
+                                        placeholder="Enter Email Id"
+                                    />
+                                </div>
+                                <div className="mb-2">
+                                    <label
+                                        className="block text-gray-700"
+                                        htmlFor="contact"
+                                    >
+                                        Phone Number
+                                    </label>
+                                    <input
+                                        required
+                                        value={contact}
+                                        onChange={(e) =>
+                                            setContact(e.target.value)
+                                        }
+                                        className="rounded-md border-gray-300 appearance-none border w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="contact"
+                                        type="tel"
+                                        placeholder="Enter Phone Number"
+                                    />
+                                </div>
+                                <div
+                                    style={{ width: "100%" }}
+                                    className="inline-block rounded"
+                                >
+                                    <label className="block text-gray-700">
+                                        Table Number
+                                    </label>
+                                    <input
+                                        required
+                                        list="availableTables"
+                                        value={table}
+                                        onChange={(e) =>
+                                            setTable(e.target.value)
+                                        }
+                                        onBlur={(e) =>
+                                            setTable(
+                                                availableTables.find(
+                                                    (it) =>
+                                                        it === e.target.value
+                                                ) || ""
+                                            )
+                                        }
+                                        placeholder="Enter Table Number"
+                                        className="rounded-md border-gray-300 appearance-none border w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                    <datalist id="availableTables">
+                                        {availableTables.map((t) => (
+                                            <option key={t} value={t} />
+                                        ))}
+                                    </datalist>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div className="flex justify-center mt-8">
+                            <button
+                                type="submit"
+                                className="bg-red-500 rounded-md py-2 px-8 font-medium text-white"
+                            >
+                                Done
+                            </button>
+                        </div>
+                    </form>
                 </div>
-            ) : null}
-            {editReservSuccess && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green text-xl">
-                                Table reservation updated successfully!
-                            </p>
-                            <button
-                                className="mt-10 bg-primary px-10 py-2 shadow-lg"
-                                onClick={() =>
-                                    setEditReservationSuccess(
-                                        !editReservSuccess
-                                    )
-                                }
-                            >
-                                Okay
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
-                        setEditReservationSuccess(!editReservSuccess);
-                    }}
+            </Modal>
+            <Modal
+                isOpen={editReservSuccess}
+                controller={setEditReservationSuccess}
+                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto rounded-xl p-14 flex flex-col items-center"
+            >
+                <button
+                    onClick={() => setEditReservationSuccess(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-            )}
-            {warnDeleteReserve && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green text-xl">
-                                Confirm before Deleting Reservation
-                            </p>
-                            <button
-                                className="mt-10 bg-primary px-10 py-2 shadow-lg"
-                                onClick={() => {
-                                    deleteReservations(editReservation._id);
-                                    setWarnDeleteReserve(!warnDeleteReserve);
-                                }}
-                            >
-                                Delete
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
-                        setWarnDeleteReserve(!warnDeleteReserve);
-                    }}
+                <p className="text-xl">
+                    Table reservation updated successfully!
+                </p>
+                <button
+                    className="mt-10 bg-red-500 rounded-md font-medium text-white px-10 py-2"
+                    onClick={() => setEditReservationSuccess(false)}
+                >
+                    Okay
+                </button>
+            </Modal>
+            <Modal
+                isOpen={warnDeleteReserve}
+                controller={setWarnDeleteReserve}
+                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto rounded-xl p-14 flex flex-col items-center"
+            >
+                <button
+                    onClick={() => setWarnDeleteReserve(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-            )}
-            {deleteReservSuccess && (
-                <Popup
-                    content={
-                        <>
-                            <p className="font-bold text-green text-xl">
-                                Table reservation deleted!
-                            </p>
-                            <button
-                                className="mt-10 bg-primary px-10 py-2 shadow-lg"
-                                onClick={() =>
-                                    setDeleteReservSuccess(!deleteReservSuccess)
-                                }
-                            >
-                                Okay
-                            </button>
-                        </>
-                    }
-                    handleClose={() => {
-                        setDeleteReservSuccess(!deleteReservSuccess);
+                <p className="text-xl">Confirm before Deleting Reservation</p>
+                <button
+                    className="mt-10 bg-red-500 rounded-md font-medium text-white px-10 py-2"
+                    onClick={() => {
+                        setWarnDeleteReserve(false);
+                        deleteReservations(itemId);
                     }}
+                >
+                    Delete
+                </button>
+            </Modal>
+            <Modal
+                isOpen={deleteReservSuccess}
+                controller={setDeleteReservSuccess}
+                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto rounded-xl p-14 flex flex-col items-center"
+            >
+                <button
+                    onClick={() => setDeleteReservSuccess(false)}
+                    className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-            )}
+                <p className="text-xl">Table reservation deleted!</p>
+                <button
+                    className="mt-10 bg-red-500 rounded-md font-medium text-white px-10 py-2"
+                    onClick={() => setDeleteReservSuccess(false)}
+                >
+                    Okay
+                </button>
+            </Modal>
         </div>
     );
 };

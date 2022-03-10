@@ -109,7 +109,7 @@ export default function Pos() {
         setFilteredFoodItem(result);
     };
 
-    const debouncedSearch = useDebouncedCallback(searchFoodItem, 3000);
+    const debouncedSearch = useDebouncedCallback(searchFoodItem, 700);
 
     const loadOrder = (order) => {
         let temp = [];
@@ -244,7 +244,7 @@ export default function Pos() {
             pickupTime,
             comments,
         };
-        if (order_id) dataToPost["order_id"] = order_id;
+        if (order_id) dataToPost.order_id = order_id;
         axios
             .post("/app/generatekot", dataToPost)
             .then((res) => {
@@ -393,27 +393,14 @@ export default function Pos() {
                 </div>
                 <div className="col-span-2 flex flex-col h-full">
                     <div className="p-4 flex px-10">
-                        {table && (
-                            <button
-                                onClick={() => setOrderType("Dine In")}
-                                className={`border-2 font-bold mx-3 flex-1 p-2 ${
-                                    orderType === "Dine In"
-                                        ? "text-white bg-red-500"
-                                        : "text-red-500 bg-white"
-                                } rounded-md text-center border-red-500`}
-                            >
-                                Dine In
-                            </button>
-                        )}
+                        <div className="border-2 font-bold mx-3 flex-1 p-2 text-white bg-red-500 rounded-md text-center border-red-500">
+                            {orderType}
+                        </div>
                         <button
-                            onClick={() => setOrderType("Take Away")}
-                            className={`border-2 font-bold mx-3 flex-1 p-2 ${
-                                orderType === "Take Away"
-                                    ? "text-white bg-red-500"
-                                    : "text-red-500 bg-white"
-                            } rounded-md text-center border-red-500`}
+                            onClick={() => navigate("/tables")}
+                            className="border-2 font-bold mx-3 flex-1 p-2 rounded-md text-center bg-green text-white border-green"
                         >
-                            Take Away
+                            New Order
                         </button>
                     </div>
                     <div className="flex">

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext, useRef } from "react";
-import Loader from "./Loader";
+import SpinLoader from "./SpinLoader";
 import { ThemeContext } from "../context/Theme";
 import CustomButton from "./Common/CustomButton";
 import DateFnsUtils from "@date-io/date-fns";
@@ -11,23 +11,19 @@ import {
     MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { ThemeProvider } from "@material-ui/styles";
-import MomentUtils from "@date-io/moment";
-import { useNavigate } from "react-router-dom";
-import { FiRefreshCcw } from "react-icons/fi";
+import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineDelete } from "react-icons/md";
-import Select from "react-select";
 import { Modal } from "./Common/Modal";
 import { materialTheme } from "../styles/clockMaterialTheme";
 import QRCode from "react-qr-code";
 import { TableUIUrl } from "../config";
 import ReactToPdf from "react-to-pdf";
 import { useReactToPrint } from "react-to-print";
-import SpinLoader from "./SpinLoader";
 import axios from "axios";
 import { NotificationContext } from "../context/Notification";
+import { formatDate } from "../Utils";
 
 const Tables = () => {
-    const [componentLoading, setComponentLoading] = useState(false);
     const [displayTable, setDisplayTable] = useState([]);
     const [confirmDeleteTable, setConfirmDeleteTable] = useState(false);
     const [deleteTableId, setDeleteTableId] = useState();
@@ -35,14 +31,18 @@ const Tables = () => {
     const [showModal, setShowModal] = useState(false);
     const [availableTables, setAvailableTables] = useState([]);
     const [allTables, setAllTables] = useState([]);
-    const [startDate, setStartDate] = useState(new Date(Date.now()));
-    const [startTime, setStartTime] = useState(new Date());
-    const [endTime, setEndTime] = useState(new Date());
-    const [newReservation, setNewReservation] = useState({
-        startTime: new Date().toISOString().split("T")[1].split(".")[0],
-        endTime: new Date().toISOString().split("T")[1].split(".")[0],
-        date: new Date().toISOString().split("T")[0],
-    });
+
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedStartTime, setSelectedStartTime] = useState(new Date());
+    const [selectedEndTime, setSelectedEndTime] = useState(new Date());
+    const date = formatDate(selectedDate).split(" ")[0];
+    const startTime = formatDate(selectedStartTime).split(" ")[1];
+    const endTime = formatDate(selectedEndTime).split(" ")[1];
+    const [fullName, setFullName] = useState("");
+    const [email_id, setEmail_id] = useState("");
+    const [contact, setContact] = useState("");
+    const [table, setTable] = useState("");
+
     const [position, setPosition] = useState("");
     const [tableName, setTableName] = useState("");
     const [tableLocation, setTableLocation] = useState("");
@@ -59,43 +59,36 @@ const Tables = () => {
     const [qrCodeIsOpen, setQrCodeIsOpen] = useState(false);
     const [qrModalLoading, setQrModalLoading] = useState(false);
     const notify = useContext(NotificationContext);
+    const theme = useContext(ThemeContext);
     const qrCodeRef = useRef(null);
     const linkToTableUI = `${TableUIUrl}/${clickedTableId || "TakeAway"}`;
     const [locations, setLocations] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState("");
 
+    const resetReservationStates = () => {
+        setSelectedDate(new Date());
+        setSelectedStartTime(new Date());
+        setSelectedEndTime(new Date());
+        setFullName("");
+        setEmail_id("");
+        setContact("");
+        setTable("");
+    };
+
     useEffect(() => {
-        setComponentLoading(true);
+        setLoading(true);
         setShowDeleteTable(false);
-        setShowDeleteTableLocation(false)
-        axios
-            .get(`/app/table`)
-            .then((res) => {
-                setDisplayTable(res.data);
-                var tables = [];
-                for (var i = 0; i < res.data.length; i++) {
-                    tables.push(res.data[i].number);
-                }
-                setAllTables(tables);
-                setLoading(false);
-                setComponentLoading(false);
-            })
-            .catch((err) => {
-                console.log(err);
-                setLoading(false);
-                setComponentLoading(false);
-            });
-        axios
-            .get("/app/tableLocation")
-            .then((res) => {
-                if (res?.data) setLocations(res.data);
+        setShowDeleteTableLocation(false);
+        Promise.all([axios.get("/app/table"), axios.get("/app/tableLocation")])
+            .then(([res1, res2]) => {
+                setDisplayTable(res1.data);
+                setAllTables(res1?.data?.map((t) => t.number));
+                if (res2?.data) setLocations(res2.data);
             })
             .catch((err) =>
-                notify(
-                    err?.response?.data?.message ||
-                        "Unable to fetch table locations"
-                )
-            );
+                notify(err?.response?.data?.message || "Unable to fetch tables")
+            )
+            .finally(() => setLoading(false));
     }, [reload]);
 
     useEffect(() => {
@@ -105,24 +98,42 @@ const Tables = () => {
         return () => clearInterval(interval);
     }, []);
 
-    const submitNewReservation = () => {
-        setComponentLoading(true);
+    const submitNewReservation = (e) => {
+        e.preventDefault();
+        if (startTime > endTime) {
+            notify("End time is less than start time");
+            return;
+        }
+        const newReservation = {
+            startTime,
+            endTime,
+            date,
+            fullName,
+            email_id,
+            contact,
+            table,
+        };
+        setLoading(true);
         axios
             .post(`/app/addReservation`, newReservation)
-            .then((res) => {
+            .then(() => {
                 notify("Table reservation created!");
-                setComponentLoading(false);
                 setReload(!reload);
+                setShowModal(false);
+                resetReservationStates();
             })
             .catch((err) => {
-                notify(err?.response?.data?.message || "Unable to create reservation");
+                notify(
+                    err?.response?.data?.message ||
+                        "Unable to create reservation"
+                );
                 console.log(err);
-                setComponentLoading(false);
-            });
+            })
+            .finally(() => setLoading(false));
     };
 
     const addTable = () => {
-        setComponentLoading(true);
+        setLoading(true);
         axios
             .post(`/app/addTable`, {
                 number: tableName,
@@ -132,23 +143,22 @@ const Tables = () => {
             })
             .then((res) => {
                 notify("Table Added");
-                setComponentLoading(false);
                 setReload(!reload);
             })
             .catch((err) => {
                 console.log(err.response);
                 notify(err?.response?.data?.message || "Unable to add Table");
-                setComponentLoading(false);
-            });
+            })
+            .finally(() => setLoading(false));
     };
 
     const addLocation = () => {
-        setComponentLoading(true);
+        setLoading(true);
         axios
             .post(`/app/tableLocation`, {
                 table_location: tableLocation,
             })
-            .then((res) => {
+            .then(() => {
                 setReload(!reload);
                 notify("Location Added");
                 setLocationIsOpen(false);
@@ -157,44 +167,25 @@ const Tables = () => {
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable to add location")
             )
-            .finally((err) => setComponentLoading(false));
+            .finally(() => setLoading(false));
     };
-
     useEffect(() => {
-        getReservationByTime(
-            newReservation?.date,
-            newReservation?.startTime,
-            newReservation?.endTime
-        );
-    }, [newReservation, allTables]);
+        getReservationByTime(date, startTime, endTime);
+    }, [selectedDate, selectedStartTime, selectedEndTime]);
 
     const getReservationByTime = (date, startTime, endTime) => {
-        setComponentLoading(true);
+        setLoading(true);
         axios
             .get(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
             .then((res) => {
-                var tableList = [];
-                var reservedTable = [];
-                for (var i = 0; i < res.data.length; i++) {
-                    if (res.data[i].table !== undefined)
-                        reservedTable.push(res.data[i].table);
-                }
-                var availableTables = allTables?.filter(function (obj) {
-                    return reservedTable.indexOf(obj) === -1;
-                });
-                for (let i = 0; i < availableTables?.length; i++) {
-                    tableList.push({
-                        label: availableTables[i],
-                        value: availableTables[i],
-                    });
-                }
-                setAvailableTables(tableList);
-                setComponentLoading(false);
+                setAvailableTables(
+                    allTables.filter(
+                        (t) => !res.data?.some((tab) => tab.table === t)
+                    )
+                );
             })
-            .catch((err) => {
-                console.log(err);
-                setComponentLoading(false);
-            });
+            .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
     };
 
     function openModal() {
@@ -213,7 +204,6 @@ const Tables = () => {
         setIsOpen(false);
     }
 
-    const theme = useContext(ThemeContext);
     const deleteTable = async () => {
         axios
             .delete(`/app/removeTable/${deleteTableId}`)
@@ -227,7 +217,7 @@ const Tables = () => {
     };
 
     const handleDeleteLocation = (loc) => {
-        setComponentLoading(true);
+        setLoading(true);
         axios
             .delete(`/app/tableLocation/${loc}`)
             .then(() => {
@@ -239,16 +229,12 @@ const Tables = () => {
                     err?.response?.data?.message || "Unable to delete location"
                 )
             )
-            .finally(() => setComponentLoading(false));
+            .finally(() => setLoading(false));
     };
 
     const handleTableClick = (num) => {
         setQrCodeIsOpen(true);
         setClickedTableId(num);
-    };
-
-    const selectCustomeStyle = {
-        backgroundColor: theme.backgroundColor,
     };
 
     const print = useReactToPrint({
@@ -264,7 +250,7 @@ const Tables = () => {
                     displayTable.find((t) => t._id === clickedTableId)?.number
                 }`
             )
-            .then((res) => notify("Please complete the payment first"))
+            .then(() => notify("Please complete the payment first"))
             .catch((err) => {
                 if (err?.response?.data?.message === "Item not found!") {
                     return axios
@@ -285,59 +271,49 @@ const Tables = () => {
             })
             .finally(() => setQrModalLoading(false));
     };
+
     return (
-        <div className="">
-            {componentLoading ? <Loader /> : null}
-            <div className="flex flex-row justify-between items-center h-20 px-10 border-b-2 border-gray-300">
-                <h2 className="font-semibold text-2xl">Table View</h2>
+        <div>
+            {loading && <SpinLoader className="fixed top-1/2 right-1/2" />}
+            <div className="flex flex-row justify-between items-center h-24 px-6 border-b-2 border-gray-300">
+                <p className="text-2xl text-gray-500 font-bold">Table View</p>
                 <div className="flex flex-row items-center">
-                    <div
-                        style={{ backgroundColor: theme.backgroundColor }}
-                        className="text-white py-2 px-2 rounded-md mx-2"
-                    >
-                        <i
-                            onClick={() => {
-                                setReload(!reload);
-                                setComponentLoading(true);
-                            }}
-                            style={{ cursor: "pointer" }}
-                        >
-                            <FiRefreshCcw size={22} />
-                        </i>
-                    </div>
-                    <CustomButton
-                        title="Actions"
-                        customStyle={{ backgroundColor: theme.backgroundColor }}
-                        onPress={() => {
-                            navigate("/reservations");
-                        }}
-                    />
                     <button
-                        className="bg-yellow-500 text-white py-2 px-10 rounded-md mx-2 font-medium shadow-md"
+                        onClick={() => setReload(!reload)}
+                        className="font-medium leading-4 bg-red-500 mr-6 p-4 text-white rounded-md"
+                    >
+                        <div
+                            className={`fas fa-sync-alt${
+                                loading ? " animate-spin" : ""
+                            }`}
+                        />
+                    </button>
+                    <button
+                        className="font-medium mr-6 py-4 px-6 text-white rounded-md leading-4 bg-yellow-500"
                         onClick={() => handleTableClick()}
                     >
                         Take Away
                     </button>
                     <button
-                        className="bg-red-500 text-white py-2 px-6 rounded-md mx-2 font-medium shadow-md"
-                        onClick={() => setShowDeleteTable(true)}
+                        className="font-medium mr-6 py-4 px-6 text-white rounded-md leading-4 bg-red-500"
+                        onClick={() => setShowDeleteTable((e) => !e)}
                     >
                         {"- Delete Table"}
                     </button>
                     <button
-                        className="bg-green text-white py-2 px-6 rounded-md mx-2 font-medium shadow-md"
+                        className="font-medium mr-6 py-4 px-6 text-white rounded-md leading-4 bg-green"
                         onClick={() => openModal()}
                     >
                         {"+ Add Table"}
                     </button>
                     <button
-                        className="bg-red-500 text-white py-2 px-4 rounded-md mx-2 font-medium shadow-md"
-                        onClick={() => setShowDeleteTableLocation(true)}
+                        className="font-medium bg-red-500 mr-6 py-4 px-6 text-white rounded-md leading-4"
+                        onClick={() => setShowDeleteTableLocation((e) => !e)}
                     >
                         {"- Delete Location"}
                     </button>
                     <button
-                        className="bg-green text-white py-2 px-4 rounded-md mx-2 font-medium shadow-md"
+                        className="font-medium bg-green py-4 px-6 text-white rounded-md leading-4"
                         onClick={() => openLocationModal()}
                     >
                         {"+ Add Location"}
@@ -471,26 +447,37 @@ const Tables = () => {
                     </Modal>
                 </div>
             </div>
-            <div className="my-5 ml-10">
-                <CustomButton
-                    title="+ Table Reservation"
-                    customStyle={{ backgroundColor: theme.backgroundColor }}
-                    onPress={() => setShowModal(true)}
-                />
+            <div className="my-5 ml-6 flex gap-4">
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-red-500 p-4 leading-4 rounded-md font-medium text-white px-8"
+                >
+                    + Table Reservation
+                </button>
+                <Link
+                    to="/reservations"
+                    className="bg-red-500 p-4 leading-4 rounded-md font-medium text-white px-8"
+                >
+                    View Reservations
+                </Link>
             </div>
             <Modal
                 isOpen={showModal}
                 controller={setShowModal}
-                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto w-1/2 lg:w-1/3 rounded-xl"
+                onAfterOpen={() =>
+                    getReservationByTime(date, startTime, endTime)
+                }
+                className="animate-scaleUp relative bg-white max-h-screen overflow-y-auto rounded-xl pt-4 px-6"
+                style={{ content: { maxHeight: "95vh" } }}
             >
                 <button
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => setShowModal(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                <div className="pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="pt-5">
                     <div className="w-full flex items-center justify-center">
                         <h3
-                            className="text-3xl font-bold"
+                            className="text-3xl font-semibold"
                             style={{
                                 color: theme.backgroundColor,
                             }}
@@ -498,199 +485,176 @@ const Tables = () => {
                             Reserve Table
                         </h3>
                     </div>
-                    <form className="rounded px-8 pt-6 pb-8 mb-4 w-full">
-                        <div className="mb-4">
-                            <label
-                                className="block text-gray-700 text-sm font-bold mb-2"
-                                htmlFor="fullName"
-                            >
-                                Enter Customer Name
-                            </label>
-                            <input
-                                onChange={(value) =>
-                                    setNewReservation((newReservation) => ({
-                                        ...newReservation,
-                                        fullName: value.target.value,
-                                    }))
-                                }
-                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="fullName"
-                                type="text"
-                                placeholder="Enter Customer Name"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label
-                                className="block text-gray-700 text-sm font-bold mb-2"
-                                htmlFor="fullName"
-                            >
-                                Enter Email Id
-                            </label>
-                            <input
-                                onChange={(value) =>
-                                    setNewReservation((newReservation) => ({
-                                        ...newReservation,
-                                        email_id: value.target.value,
-                                    }))
-                                }
-                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="fullName"
-                                type="text"
-                                placeholder="Enter Email Id"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label
-                                className="block text-gray-700 text-sm font-bold mb-2"
-                                htmlFor="fullName"
-                            >
-                                Enter Phone Number
-                            </label>
-                            <input
-                                onChange={(value) =>
-                                    setNewReservation((newReservation) => ({
-                                        ...newReservation,
-                                        contact: value.target.value,
-                                    }))
-                                }
-                                className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                id="fullName"
-                                type="text"
-                                placeholder="Enter Phone Number"
-                            />
-                        </div>
-                        <div className="my-5 w-full">
-                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                                <ThemeProvider theme={materialTheme}>
-                                    <DatePicker
-                                        InputProps={{
-                                            disableUnderline: true,
-                                        }}
-                                        label="Date"
-                                        value={startDate}
-                                        onChange={(date) => {
-                                            setStartDate(date);
-                                            setNewReservation(
-                                                (newReservation) => ({
-                                                    ...newReservation,
-                                                    date: date
-                                                        .toISOString()
-                                                        .split("T")[0],
-                                                })
-                                            );
-                                            getReservationByTime(
-                                                date
-                                                    .toISOString()
-                                                    .split("T")[0],
-                                                newReservation.startTime,
-                                                newReservation.endTime
-                                            );
-                                        }}
+                    <form
+                        onSubmit={submitNewReservation}
+                        className="rounded px-8 pt-6 pb-8 mb-4 w-full"
+                    >
+                        <div className="flex gap-8">
+                            <div className="w-80">
+                                <div className="my-5 w-full">
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                    >
+                                        <ThemeProvider theme={materialTheme}>
+                                            <DatePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                label="Date"
+                                                value={selectedDate}
+                                                onChange={(date) =>
+                                                    setSelectedDate(date)
+                                                }
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                                <div className="my-5 w-full">
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                    >
+                                        <ThemeProvider theme={materialTheme}>
+                                            <TimePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                clearable
+                                                ampm={false}
+                                                label="Start Time"
+                                                value={selectedStartTime}
+                                                onChange={(value) =>
+                                                    setSelectedStartTime(value)
+                                                }
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                                <div className="my-5 w-full">
+                                    <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                    >
+                                        <ThemeProvider theme={materialTheme}>
+                                            <TimePicker
+                                                InputProps={{
+                                                    disableUnderline: true,
+                                                }}
+                                                clearable
+                                                ampm={false}
+                                                label="End Time"
+                                                value={selectedEndTime}
+                                                onChange={(value) =>
+                                                    setSelectedEndTime(value)
+                                                }
+                                            />
+                                        </ThemeProvider>
+                                    </MuiPickersUtilsProvider>
+                                </div>
+                            </div>
+                            <div className="w-80">
+                                <div className="mb-2">
+                                    <label
+                                        className="block text-gray-700"
+                                        htmlFor="fullName"
+                                    >
+                                        Customer Name
+                                    </label>
+                                    <input
+                                        required
+                                        value={fullName}
+                                        onChange={(e) =>
+                                            setFullName(e.target.value)
+                                        }
+                                        className="appearance-none border rounded-md border-gray-300 w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="fullName"
+                                        type="text"
+                                        placeholder="Enter Customer Name"
                                     />
-                                </ThemeProvider>
-                            </MuiPickersUtilsProvider>
-                        </div>
-                        <div className="my-5 w-full">
-                            <MuiPickersUtilsProvider utils={MomentUtils}>
-                                <ThemeProvider theme={materialTheme}>
-                                    <TimePicker
-                                        InputProps={{
-                                            disableUnderline: true,
-                                        }}
-                                        clearable
-                                        ampm={false}
-                                        label="Start Time"
-                                        value={startTime}
-                                        onChange={(value) => {
-                                            setStartTime(value);
-                                            setNewReservation(
-                                                (newReservation) => ({
-                                                    ...newReservation,
-                                                    startTime:
-                                                        value.format(
-                                                            "HH:mm:ss"
-                                                        ),
-                                                })
-                                            );
-                                            getReservationByTime(
-                                                newReservation.date,
-                                                value.format("HH:mm:ss"),
-                                                newReservation.endTime
-                                            );
-                                        }}
+                                </div>
+                                <div className="mb-2">
+                                    <label
+                                        className="rounded-md border-gray-300 block text-gray-700"
+                                        htmlFor="email"
+                                    >
+                                        Email Id
+                                    </label>
+                                    <input
+                                        required
+                                        value={email_id}
+                                        onChange={(e) =>
+                                            setEmail_id(e.target.value)
+                                        }
+                                        className="rounded-md border-gray-300 appearance-none border w-full py-3 px-3 text-gray-700 leading-tight"
+                                        id="email"
+                                        type="email"
+                                        placeholder="Enter Email Id"
                                     />
-                                </ThemeProvider>
-                            </MuiPickersUtilsProvider>
-                        </div>
-                        <div className="my-5 w-full">
-                            <MuiPickersUtilsProvider utils={MomentUtils}>
-                                <ThemeProvider theme={materialTheme}>
-                                    <TimePicker
-                                        InputProps={{
-                                            disableUnderline: true,
-                                        }}
-                                        onChange={(value) => {
-                                            setEndTime(value);
-                                            setNewReservation(
-                                                (newReservation) => ({
-                                                    ...newReservation,
-                                                    endTime:
-                                                        value.format(
-                                                            "HH:mm:ss"
-                                                        ),
-                                                })
-                                            );
-                                            getReservationByTime(
-                                                newReservation.date,
-                                                newReservation.startTime,
-                                                value.format("HH:mm:ss")
-                                            );
-                                        }}
-                                        value={endTime}
-                                        clearable
-                                        ampm={false}
-                                        label="End Time"
+                                </div>
+                                <div className="mb-2">
+                                    <label
+                                        className="block text-gray-700"
+                                        htmlFor="contact"
+                                    >
+                                        Phone Number
+                                    </label>
+                                    <input
+                                        required
+                                        value={contact}
+                                        onChange={(e) =>
+                                            setContact(e.target.value)
+                                        }
+                                        className="rounded-md border-gray-300 appearance-none border w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                        id="contact"
+                                        type="tel"
+                                        placeholder="Enter Phone Number"
                                     />
-                                </ThemeProvider>
-                            </MuiPickersUtilsProvider>
-                        </div>
-                        <div
-                            style={{ width: "100%" }}
-                            className="inline-block rounded"
-                        >
-                            <Select
-                                styles={selectCustomeStyle}
-                                defaultValue={availableTables[0]}
-                                options={availableTables}
-                                maxMenuHeight={130}
-                                onChange={(value) =>
-                                    setNewReservation((newReservation) => ({
-                                        ...newReservation,
-                                        table: value.value,
-                                    }))
-                                }
-                            />
+                                </div>
+                                <div
+                                    style={{ width: "100%" }}
+                                    className="inline-block rounded"
+                                >
+                                    <label className="block text-gray-700">
+                                        Table Number
+                                    </label>
+                                    <input
+                                        required
+                                        list="availableTables"
+                                        value={table}
+                                        onChange={(e) =>
+                                            setTable(e.target.value)
+                                        }
+                                        onBlur={(e) =>
+                                            setTable(
+                                                availableTables.find(
+                                                    (it) =>
+                                                        it === e.target.value
+                                                ) || ""
+                                            )
+                                        }
+                                        placeholder="Enter Table Number"
+                                        className="rounded-md border-gray-300 appearance-none border w-full py-3 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    />
+                                    <datalist id="availableTables">
+                                        {availableTables.map((t) => (
+                                            <option key={t} value={t} />
+                                        ))}
+                                    </datalist>
+                                </div>
+                            </div>
                         </div>
                         <div className="flex justify-center mt-8">
-                            <CustomButton
-                                title="Done"
-                                customStyle={{
-                                    backgroundColor: theme.backgroundColor,
-                                }}
-                                onPress={() => {
-                                    submitNewReservation();
-                                    setShowModal(false);
-                                }}
-                            />
+                            <button
+                                type="submit"
+                                className="bg-red-500 rounded-md py-2 px-14 font-medium text-white"
+                            >
+                                Done
+                            </button>
                         </div>
                     </form>
                 </div>
             </Modal>
-            {loading ? (
-                <Loader />
-            ) : (
+            {
                 <div className="flex flex-col">
-                    {locations.map((loc) => (
+                    {locations?.map((loc) => (
                         <div key={loc._id} className="relative">
                             {showDeleteTableLocation ? (
                                 <div className="text-red-500 cursor-pointer absolute top-8 -left-1">
@@ -704,7 +668,7 @@ const Tables = () => {
                                     />
                                 </div>
                             ) : null}
-                            <h2 className="mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
+                            <h2 className="shadow-md mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
                                 {loc.table_location}
                             </h2>
                             <div className="flex flex-wrapw-full justify-evenly">
@@ -717,7 +681,10 @@ const Tables = () => {
                                         )
                                         .map((table) => {
                                             return (
-                                                <div key={table._id} className="relative">
+                                                <div
+                                                    key={table._id}
+                                                    className="relative"
+                                                >
                                                     {showDeleteTable && (
                                                         <MdOutlineDelete
                                                             onClick={() => {
@@ -803,7 +770,7 @@ const Tables = () => {
                                                             "Free"
                                                                 ? "text-white bg-red-400"
                                                                 : "text-gray-500"
-                                                        } m-5 mt-0 rounded border flex items-center justify-center border-red-500`}
+                                                        } shadow-md m-5 mt-0 rounded-md border flex items-center justify-center border-red-500`}
                                                     >
                                                         <button
                                                             onClick={() =>
@@ -825,14 +792,14 @@ const Tables = () => {
                             </div>
                         </div>
                     ))}
-                    {displayTable.some(
+                    {displayTable?.some(
                         (table) =>
-                            !locations.some(
+                            !locations?.some(
                                 (loc) => loc.table_location === table.location
                             )
                     ) && (
                         <div>
-                            <h2 className="mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
+                            <h2 className="shadow mt-8 mb-3 ml-6 font-semibold text-gray-600 text-lg border text-center w-60 p-2 border-gray-500 rounded-md">
                                 No Location
                             </h2>
                             <div className="flex flex-wrapw-full justify-evenly">
@@ -848,7 +815,10 @@ const Tables = () => {
                                         )
                                         .map((table) => {
                                             return (
-                                                <div key={table._id} className="relative">
+                                                <div
+                                                    key={table._id}
+                                                    className="relative"
+                                                >
                                                     {showDeleteTable ? (
                                                         <div className="absolute top-5 -left-1">
                                                             <MdOutlineDelete
@@ -935,7 +905,7 @@ const Tables = () => {
                                                             "Free"
                                                                 ? "text-white bg-red-400"
                                                                 : "text-gray-500"
-                                                        } m-5 mt-0 rounded border flex items-center justify-center border-red-500`}
+                                                        } shadow-md m-5 mt-0 rounded-md border flex items-center justify-center border-red-500`}
                                                     >
                                                         <button
                                                             onClick={() =>
@@ -958,7 +928,7 @@ const Tables = () => {
                         </div>
                     )}
                 </div>
-            )}
+            }
             <Modal
                 isOpen={confirmDeleteTable}
                 controller={setConfirmDeleteTable}

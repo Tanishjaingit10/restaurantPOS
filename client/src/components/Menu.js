@@ -1,6 +1,4 @@
 import React, { useState, useContext, useEffect } from "react";
-
-import { ThemeContext } from "../context/Theme";
 import CategoryInfoButton from "./Menu/CategoryInfoButton";
 import ItemInfoButton from "./Menu/ItemInfoButton";
 import { CategoryContext } from "../context/Category";
@@ -9,13 +7,9 @@ import FoodItemOverlayButton from "./Menu/FoodItemOverlayButton";
 import SpinLoader from "./SpinLoader";
 import CategoryOverlayButton from "./Menu/CategoryOverlayButton";
 import axios from "axios";
-import {
-    nonVegIconImageBase64,
-    vegIconImageBase64,
-} from "../constants";
+import { nonVegIconImageBase64, vegIconImageBase64 } from "../constants";
 
 const Menu = () => {
-    const theme = useContext(ThemeContext);
     const { categories, foodItems, fetchCategories, fetchItems } =
         useContext(CategoryContext);
     const notify = useContext(NotificationContext);
@@ -34,8 +28,8 @@ const Menu = () => {
 
     const handleRefresh = async () => {
         setRefreshLoading(true);
-        setDeleteCategory(false)
-        setDeleteFoodItem(false)
+        setDeleteCategory(false);
+        setDeleteFoodItem(false);
         fetchCategories()
             .then(() => fetchItems())
             .then(() => notify("Menu Updated"))
@@ -73,7 +67,7 @@ const Menu = () => {
                 {loading && <SpinLoader className="fixed top-1/2 left-1/2" />}
                 <div className="">
                     <div className="flex h-24 bg-white items-center justify-between border-b-2 border-gray-300">
-                        <p className="text-2xl text-gray-500 ml-6 font-bold ">
+                        <p className="text-2xl text-gray-500 ml-6 font-bold">
                             Menu
                         </p>
                         <div>
@@ -85,16 +79,13 @@ const Menu = () => {
                                     className={`fas fa-sync-alt${
                                         refreshLoading ? " animate-spin" : ""
                                     }`}
-                                ></div>
+                                />
                             </button>
                             <button
                                 onClick={() =>
                                     setDeleteFoodItem((prev) => !prev)
                                 }
-                                className="mr-6 p-4 text-white rounded-md leading-4"
-                                style={{
-                                    backgroundColor: theme.backgroundColor,
-                                }}
+                                className="mr-6 p-4 text-white rounded-md leading-4 bg-red-500"
                             >
                                 - Delete Food Item
                             </button>
@@ -196,9 +187,7 @@ const Menu = () => {
                         <div>
                             <div className="grid my-1 grid-cols-6">
                                 <div className="flex">
-                                    <div
-                                        className="rounded-md bg-cover bg-center flex-1 mr-4"
-                                    >
+                                    <div className="rounded-md bg-cover bg-center flex-1 mr-4">
                                         <div className="bg-white bg-opacity-80 px-8 py-3 font-bold text-gray-600 text-xl border shadow-md border-black rounded-md">
                                             Uncategorized
                                         </div>

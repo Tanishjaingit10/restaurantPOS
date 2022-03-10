@@ -24,7 +24,7 @@ const Router = () => {
     const location = useLocation()
     return (
         <Routes>
-            <Route element={isAuthenticated ? <Navigate to={location.state||'dashboard'} />:<Outlet/>} >
+            <Route element={isAuthenticated ? <Navigate to={location.state||'pos'} />:<Outlet/>} >
                 <Route path="/" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
             </Route>
