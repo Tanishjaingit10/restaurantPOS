@@ -11,7 +11,7 @@ import {
     MuiPickersUtilsProvider,
 } from "@material-ui/pickers";
 import { ThemeProvider } from "@material-ui/styles";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { MdOutlineDelete } from "react-icons/md";
 import { Modal } from "./Common/Modal";
 import { materialTheme } from "../styles/clockMaterialTheme";
@@ -68,7 +68,8 @@ const Tables = () => {
     const linkToTableUI = `${TableUIUrl}/${clickedTableId || "TakeAway"}`;
     const [locations, setLocations] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState("");
-
+    const location = useLocation();
+    
     const resetReservationStates = () => {
         setSelectedDate(new Date());
         setSelectedStartTime(new Date());
@@ -86,6 +87,8 @@ const Tables = () => {
         Promise.all([axios.get("/app/table"), axios.get("/app/tableLocation")])
             .then(([res1, res2]) => {
                 setDisplayTable(res1.data);
+                const tab = res1.data.find(t=>t.number === location.state)
+                if(location.state)handleTableClick(tab._id)
                 setAllTables(res1?.data?.map((t) => t.number));
                 if (res2?.data) setLocations(res2.data);
             })
@@ -122,7 +125,7 @@ const Tables = () => {
         }, 1000);
         return () => clearInterval(interval);
     }, []);
-
+    
     const submitNewReservation = (e) => {
         e.preventDefault();
         if (startTime > endTime) {

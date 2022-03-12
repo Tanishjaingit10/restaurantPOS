@@ -76,7 +76,7 @@ export default function Pos() {
                             : 0),
                     0
                 )) *
-                item?.quantity,
+            item?.quantity,
         0
     );
     const total =
@@ -176,13 +176,13 @@ export default function Pos() {
                                     setCustomer(res.data[0]?.customer);
                                 }
                             })
-                            .catch(() => {});
+                            .catch(() => { });
                 })
-                .catch(() => {});
+                .catch(() => { });
             axios
                 .get(`/app/orderForTable/${location?.state}`)
                 .then((res) => loadOrder(res?.data))
-                .catch(() => {})
+                .catch(() => { })
                 .finally(() => setLoading(false));
         }
     }, [foodItems]);
@@ -253,8 +253,8 @@ export default function Pos() {
                 subtotal: subTotal,
                 time: item.time?.length
                     ? parseInt(item.time.split(":")[0]) * 3600 +
-                      parseInt(item.time.split(":")[1]) * 60 +
-                      parseInt(item.time.split(":")[2])
+                    parseInt(item.time.split(":")[1]) * 60 +
+                    parseInt(item.time.split(":")[2])
                     : item?.time || 0,
             })),
             payment: {
@@ -278,10 +278,9 @@ export default function Pos() {
             .then((res) => {
                 notify([
                     `Order ${order_id ? "Updated" : "Receieved"}`,
-                    `${
-                        res?.data?.order_id && !order_id
-                            ? `Order Id: ${res?.data?.order_id}`
-                            : ""
+                    `${res?.data?.order_id && !order_id
+                        ? `Order Id: ${res?.data?.order_id}`
+                        : ""
                     }`,
                 ]);
                 loadOrder(res?.data);
@@ -305,11 +304,10 @@ export default function Pos() {
                             className="rounded-md text-gray-600 bg-cover bg-center mb-3 w-full"
                         >
                             <div
-                                className={`${
-                                    categoryFilter === ""
+                                className={`${categoryFilter === ""
                                         ? "text-red-500 border-red-500 bg-opacity-90"
                                         : "text-gray-600 border-black bg-opacity-80"
-                                } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                                    } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
                             >
                                 All Items
                             </div>
@@ -323,11 +321,10 @@ export default function Pos() {
                                 className="bg-cover origin-center rounded-md bg-center mb-3 w-full"
                             >
                                 <div
-                                    className={`${
-                                        categoryFilter === item?.category
+                                    className={`${categoryFilter === item?.category
                                             ? "text-red-500 border-red-500 bg-opacity-90"
                                             : "text-gray-600 border-black bg-opacity-80"
-                                    } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                                        } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
                                 >
                                     {item?.category}
                                 </div>
@@ -339,23 +336,22 @@ export default function Pos() {
                                     (x) => e?.category === x?.category
                                 )
                         ) && (
-                            <button
-                                onClick={() =>
-                                    setCategoryFilter("uncategorized")
-                                }
-                                className="rounded-md bg-cover bg-center mb-2 w-full"
-                            >
-                                <div
-                                    className={`${
-                                        categoryFilter === "uncategorized"
-                                            ? "text-red-500 border-red-500 bg-opacity-90"
-                                            : "text-gray-600 border-black bg-opacity-80"
-                                    } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                                <button
+                                    onClick={() =>
+                                        setCategoryFilter("uncategorized")
+                                    }
+                                    className="rounded-md bg-cover bg-center mb-2 w-full"
                                 >
-                                    Uncategorized
-                                </div>
-                            </button>
-                        )}
+                                    <div
+                                        className={`${categoryFilter === "uncategorized"
+                                                ? "text-red-500 border-red-500 bg-opacity-90"
+                                                : "text-gray-600 border-black bg-opacity-80"
+                                            } bg-white px-8 py-3 font-bold text-xl border shadow-md rounded-md`}
+                                    >
+                                        Uncategorized
+                                    </div>
+                                </button>
+                            )}
                     </div>
                 </div>
                 <div className="col-span-2 border-l border-gray-400 flex flex-col border-r h-full p-4">
@@ -386,8 +382,8 @@ export default function Pos() {
                                         style={
                                             item?.image
                                                 ? {
-                                                      backgroundImage: `url(/app/file/image/${item.image})`,
-                                                  }
+                                                    backgroundImage: `url(/app/file/image/${item.image})`,
+                                                }
                                                 : {}
                                         }
                                     >
@@ -401,11 +397,10 @@ export default function Pos() {
                                             alt=""
                                         />
                                         <div
-                                            className={`${
-                                                item.image
+                                            className={`${item.image
                                                     ? "bg-opacity-80 bg-yellow-50"
                                                     : "bg-yellow-100"
-                                            } h-full items-center justify-center flex p-8`}
+                                                } h-full items-center justify-center flex p-8`}
                                         >
                                             {item?.foodItem}
                                         </div>
@@ -420,8 +415,8 @@ export default function Pos() {
                     )}
                 </div>
                 <div className="col-span-2 flex flex-col h-full">
-                    <div className="p-4 flex px-10">
-                        <div className="border-2 font-bold mx-3 flex-1 p-2 text-white bg-red-500 rounded-md text-center border-red-500">
+                    <div className="p-4 flex flex-col gap-3 px-10">
+                        <div className="border-2 font-bold mx-3 flex-1 p-2 text-red-500 bg-white rounded-md text-center border-red-500">
                             {orderType}
                         </div>
                         <button
@@ -431,11 +426,11 @@ export default function Pos() {
                             New Order
                         </button>
                     </div>
-                    <div className="flex">
+                    <div className="flex px-2 gap-2">
                         {orderType === "Dine In" && (
                             <Link
                                 to="/tables"
-                                className="bg-red-500 flex flex-col items-center justify-center text-white h-14 m-2 mr-0 border-2 flex-1"
+                                className="bg-red-500 flex flex-col items-center justify-center text-white h-14 mr-0 border-2 flex-1"
                             >
                                 <div className="h-4 w-4 fas fa-th-large" />
                                 <div className="text-xs">
@@ -451,7 +446,7 @@ export default function Pos() {
                             setCustomer={setCustomer}
                             currentTable={table}
                             setCurrentTable={setTable}
-                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 ml-2 my-2 border-2 flex-1"
+                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 border-2 flex-1"
                         >
                             <div className="h-4 w-4 far fa-user" />
                             <div className="text-xs">Customer Information</div>
@@ -459,7 +454,7 @@ export default function Pos() {
                         <CommentsOverlayButton
                             comments={comments}
                             setComments={setComments}
-                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 m-2 border-2 flex-1"
+                            className="bg-red-500 flex flex-col items-center justify-center text-white h-14 border-2 flex-1"
                         >
                             <div className="h-4 w-4 far fa-sticky-note" />
                             <div className="text-xs">Comments</div>
@@ -504,9 +499,8 @@ export default function Pos() {
                         <div className="absolute transform -translate-y-full w-full top-0 flex flex-col items-center">
                             <button
                                 onClick={() => setSeeBillDetails((e) => !e)}
-                                className={`fas fa-caret-${
-                                    seeBillDetails ? "down" : "up"
-                                } mx-auto flex items-center justify-center px-7 text-white absolute -top-4 h-4 w-16`}
+                                className={`fas fa-caret-${seeBillDetails ? "down" : "up"
+                                    } mx-auto flex items-center justify-center px-7 text-white absolute -top-4 h-4 w-16`}
                                 style={{ backgroundColor: "#c4c4c4" }}
                             />
                             <div hidden={!seeBillDetails} className="w-full">
@@ -553,9 +547,8 @@ export default function Pos() {
                                         setGST={setGST}
                                         GSTType={GSTType}
                                         setGSTType={setGSTType}
-                                        className={`${
-                                            addGST || "text-gray-300"
-                                        } p-2 text-center w-32 font-semibold rounded-md bg-white`}
+                                        className={`${addGST || "text-gray-300"
+                                            } p-2 text-center w-32 font-semibold rounded-md bg-white`}
                                     >
                                         {`$${(GSTType === percentage
                                             ? (subTotal * GST) / 100
@@ -599,11 +592,10 @@ export default function Pos() {
                                     className="px-2 text-white flex items-center"
                                 >
                                     <span
-                                        className={`${
-                                            addGST
+                                        className={`${addGST
                                                 ? "fas fa-check-square"
                                                 : "far fa-square"
-                                        }`}
+                                            }`}
                                     />
                                     <span className="ml-2 font-semibold">
                                         Add GST
@@ -620,12 +612,11 @@ export default function Pos() {
                                 className="mx-4 flex items-center"
                             >
                                 <span
-                                    className={`far fa-${
-                                        paymentMode === "cash" &&
-                                        !chargeNoPayment
+                                    className={`far fa-${paymentMode === "cash" &&
+                                            !chargeNoPayment
                                             ? "dot-"
                                             : ""
-                                    }circle`}
+                                        }circle`}
                                 />
                                 <span className="font-semibold mx-4">Cash</span>
                             </button>
@@ -634,12 +625,11 @@ export default function Pos() {
                                 className="mx-4 flex items-center"
                             >
                                 <span
-                                    className={`far fa-${
-                                        paymentMode === "card" &&
-                                        !chargeNoPayment
+                                    className={`far fa-${paymentMode === "card" &&
+                                            !chargeNoPayment
                                             ? "dot-"
                                             : ""
-                                    }circle`}
+                                        }circle`}
                                 />
                                 <span className="font-semibold mx-4">Card</span>
                             </button>
@@ -648,12 +638,11 @@ export default function Pos() {
                                 className="mx-4 flex items-center"
                             >
                                 <span
-                                    className={`far fa-${
-                                        paymentMode === "payLater" &&
-                                        !chargeNoPayment
+                                    className={`far fa-${paymentMode === "payLater" &&
+                                            !chargeNoPayment
                                             ? "dot-"
                                             : ""
-                                    }circle`}
+                                        }circle`}
                                 />
                                 <span className="font-semibold mx-4">
                                     Paylater
@@ -664,12 +653,11 @@ export default function Pos() {
                                 className="mx-4 flex items-center"
                             >
                                 <span
-                                    className={`far fa-${
-                                        paymentMode === "online" &&
-                                        !chargeNoPayment
+                                    className={`far fa-${paymentMode === "online" &&
+                                            !chargeNoPayment
                                             ? "dot-"
                                             : ""
-                                    }circle`}
+                                        }circle`}
                                 />
                                 <span className="font-semibold mx-4">
                                     Online
@@ -688,11 +676,10 @@ export default function Pos() {
                                 className="p-2 flex items-center"
                             >
                                 <span
-                                    className={`${
-                                        chargeNoPayment
+                                    className={`${chargeNoPayment
                                             ? "fas fa-check-square"
                                             : "far fa-square"
-                                    }`}
+                                        }`}
                                 />
                                 <span className="mr-5 ml-3 font-semibold">
                                     Charge No Payment
@@ -706,7 +693,7 @@ export default function Pos() {
                             </button>
                             <Modal
                                 isOpen={paymentDoneOverlayIsOpen}
-                                onAfterClose={() => navigate("/tables")}
+                                onAfterClose={() => navigate("/tables", { state: table })}
                                 controller={setPaymentDoneOverlayIsOpen}
                                 className="animate-scaleUp max-h-screen overflow-y-auto py-8 px-12 flex flex-col items-center relative bg-white rounded-xl"
                             >

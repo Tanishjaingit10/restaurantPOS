@@ -243,7 +243,7 @@ function KotCard({ item, setKots }) {
                         </div>
                         <div>{line.split(":-")[1]}</div>
                     </div>
-                ))}
+                )).reverse()}
             </Modal>
         </div>
     );
