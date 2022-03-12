@@ -230,13 +230,20 @@ function KotCard({ item, setKots }) {
             <Modal
                 isOpen={isOpen}
                 controller={setIsOpen}
-                className="animate-scaleUp max-h-screen overflow-y-auto rounded-xl relative py-10 px-20 text-lg bg-white"
+                className="animate-scaleUp max-h-screen max-w-screen-xl overflow-y-auto rounded-xl relative py-10 px-20 text-lg bg-white"
             >
                 <button
                     onClick={() => setIsOpen(false)}
                     className="fas fa-times absolute p-6 text-2xl right-0 top-0 leading-4 rounded-lg"
                 />
-                {item?.comments}
+                {item?.comments?.split("\n")?.map((line) => (
+                    <div key={line} className="mb-2">
+                        <div className="font-medium">
+                            {line.split(":-")[0]} {line.split(":-")[1] && ":-"}
+                        </div>
+                        <div>{line.split(":-")[1]}</div>
+                    </div>
+                ))}
             </Modal>
         </div>
     );
