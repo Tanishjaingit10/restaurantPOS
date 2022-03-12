@@ -88,7 +88,7 @@ function KotCard({ item, setKots }) {
         <div
             className={`${
                 late && status === Processing && "border-red-500 text-white"
-            } border-2 relative h-72 w-56 bg-white m-9 shadow flex flex-col`}
+            } border-2 relative h-80 w-74 bg-white m-9 shadow flex flex-col`}
             key={item?._id}
         >
             {loading && <SpinLoader />}

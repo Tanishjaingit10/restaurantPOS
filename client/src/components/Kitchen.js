@@ -78,7 +78,7 @@ const Kitchen = () => {
                     </button>
                 </div>
                 {kots.length ? (
-                    <div className="grid grid-cols-5 items-center justify-center">
+                    <div className="grid grid-cols-4 items-center justify-center">
                         {kots.map((item) => (
                             <div key={item._id}>
                                 <KotCard setKots={setKots} item={item} />

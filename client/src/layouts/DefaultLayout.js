@@ -6,17 +6,14 @@ import CustomNavBar from "../components/Common/CustomNavBar";
 export const DefaultLayout = () => {
     return (
         <div className="flex flex-row">
-            <div
-                className=""
-                style={{ position: "fixed", zIndex: 999, minHeight: "100vh" }}
-            >
+            <div style={{ position: "fixed", zIndex: 999, minHeight: "100vh" }}>
                 <SideBar />
             </div>
             <div
                 style={{
-                    width: "calc(100vw - 55px)",
+                    width: "100vw",
                     float: "right",
-                    margin: "0 0 0 55px",
+                    margin: "0 0 0 220px",
                     minHeight: "100vh",
                 }}
             >
