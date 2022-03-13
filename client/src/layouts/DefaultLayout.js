@@ -11,14 +11,14 @@ export const DefaultLayout = () => {
             </div>
             <div
                 style={{
-                    width: "100vw",
                     float: "right",
                     margin: "0 0 0 220px",
                     minHeight: "100vh",
                 }}
+                className="flex-1"
             >
                 <CustomNavBar />
-                <div className="pl-3">
+                <div className="pl-3 w-full">
                     <Outlet />
                 </div>
             </div>
