@@ -555,22 +555,22 @@ const AllReservations = () => {
                                                                 }
                                                             </div>
                                                         </td>
-                                                        <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                            <div className="text-base text-gray-500 font-semibold">
+                                                        <td className="px-1 py-1 border border-gray-400 text-center">
+                                                            <div className="text-base text-gray-500 font-semibold break-all">
                                                                 {
                                                                     reservation.fullName
                                                                 }
                                                             </div>
                                                         </td>
-                                                        <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
+                                                        <td className="px-1 py-1 border border-gray-400 text-center">
                                                             <div className="text-base text-gray-500 font-semibold">
                                                                 {
                                                                     reservation.contact
                                                                 }
                                                             </div>
                                                         </td>
-                                                        <td className="px-1 py-1 whitespace-nowrap border border-gray-400 text-center">
-                                                            <div className="text-base text-gray-500 font-semibold">
+                                                        <td className="px-1 py-1 border border-gray-400 text-center">
+                                                            <div className="text-base text-gray-500 font-semibold break-all">
                                                                 {
                                                                     reservation.email_id
                                                                 }
