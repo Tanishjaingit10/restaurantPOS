@@ -11,13 +11,15 @@ function ChooseVariantOverlayButton({
     const [isOpen, setIsOpen] = useState(false);
     const [variants, setVariants] = useState(deepClone(item?.finalVariant));
 
-    const handleSubmit = () => {
+    const handleSubmit = (type) => {
         setSelectedItems((prev) => {
             let temp = [];
             let quantity = item?.key ? 0 : 1;
             let newKey = item?.key;
             const initialFinalVariant = JSON.stringify(item?.finalVariant);
-            const newFinalVariant = JSON.stringify(variants);
+            const newFinalVariant = JSON.stringify(
+                type === "withoutAddons" ? item?.finalVariant : variants
+            );
             prev.forEach((element) => {
                 if (element?._id === item?._id) {
                     const elementFinalVarinat = JSON.stringify(
@@ -37,7 +39,8 @@ function ChooseVariantOverlayButton({
             });
             const addedItem = deepClone({
                 ...item,
-                finalVariant: variants,
+                finalVariant:
+                    type === "withoutAddons" ? item?.finalVariant : variants,
                 quantity,
                 key: newKey || getNewId(),
             });
@@ -89,12 +92,18 @@ function ChooseVariantOverlayButton({
                         </div>
                     ))}
                 </div>
-                <div className="flex justify-center mb-4">
+                <div className="flex justify-center mb-4 gap-4">
                     <button
                         onClick={handleSubmit}
                         className="bg-red-500 p-2 text-white font-semibold px-10 rounded-md"
                     >
                         Continue
+                    </button>
+                    <button
+                        onClick={() => handleSubmit("withoutAddons")}
+                        className="bg-red-500 p-2 text-white font-semibold px-10 rounded-md"
+                    >
+                        Continue without add ons
                     </button>
                 </div>
             </Modal>
