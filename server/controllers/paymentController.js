@@ -44,7 +44,7 @@ const stripe_payment = async (req, res) => {
 };
 
 const stripeWebhook = async (req, res) => {
-    data = {
+    const data = {
         object_id: req?.body?.data?.object?.id,
         payment_method: req?.body?.data?.object?.payment_method,
         payment_intent: req?.body?.data?.object?.payment_intent,
