@@ -49,6 +49,7 @@ const Orders = () => {
             .get("/app/orders")
             .then((res) => {
                 if (res.data) {
+                    res.data = res.data.reverse();
                     setOrders(res.data);
                     setLoading(false);
 

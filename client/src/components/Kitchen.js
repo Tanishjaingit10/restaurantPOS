@@ -83,7 +83,7 @@ const Kitchen = () => {
                             <div key={item._id}>
                                 <KotCard setKots={setKots} item={item} />
                             </div>
-                        ))}
+                        )).reverse()}
                     </div>
                 ) : (
                     <div className="h-40 flex items-center justify-center font-semibold text-gray-400">
