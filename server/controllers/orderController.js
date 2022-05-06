@@ -333,6 +333,7 @@ const getOrderIdByPaymentIntentId = (req,res) => {
 }
 
 const order_online = async (req, res) => {
+  console.log("request",req)
     if (req.body.order) {
         for (let order of req.body.order)
             if (!isValidObjectId(order._id)) order._id = ObjectId();
@@ -340,13 +341,18 @@ const order_online = async (req, res) => {
     order_template_copy
         .findOne({ order_id: req.body?.order_id })
         .then((data) => {
-            if (data === null) {
-                table_template_copy
-                    .findOneAndUpdate(
-                        { number: req?.body?.payment?.table },
-                        { status: "Unavailable", time: Date.now() }
-                    )
-                    .then(() => {});
+          if (data === null) {
+              table_template_copy
+                  .findOne({ number: req?.body?.payment?.table })
+                  .then((data) => {
+                      data.status = "Unavailable";
+                      if (!data.session) data.time = Date.now();
+                      data.session = req?.body?.session;
+                      data.save()
+                          .then(() => {})
+                          .catch((err) => console.log(err));
+                })
+            .catch((err) => console.log(err));
                 const newOrder = new order_template_copy(req.body);
                 newOrder.save().then((data) => {
                     if (
