@@ -1,8 +1,9 @@
 {
+  "homepage": "http://grabagrub.co/",
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:4000",
+  "proxy": "http://15.235.5.58:4000",
   "dependencies": {
     "@craco/craco": "^6.4.3",
     "@date-io/date-fns": "^1.3.13",
