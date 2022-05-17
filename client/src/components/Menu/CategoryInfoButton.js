@@ -6,6 +6,7 @@ import CategoryOverlayButton from "./CategoryOverlayButton";
 import { Modal } from "../Common/Modal";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
+import { BackendUrl } from "../../config";
 
 function CategoryInfoButton({ category, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +17,7 @@ function CategoryInfoButton({ category, children, ...rest }) {
     const handleDeleteCategory = () => {
         setLoading(true);
         axios
-            .delete(`/app/removeCategory/${category._id}`)
+            .delete(`${BackendUrl}/app/removeCategory/${category._id}`)
             .then(() => {
                 setIsOpen(false);
                 notify(`Category Deleted: ${category.category}`);
@@ -69,7 +70,7 @@ function CategoryInfoButton({ category, children, ...rest }) {
                                 className="border object-contain border-red-500 w-40 h-40"
                                 src={
                                     category.image &&
-                                    `/app/file/image/${category.image}`
+                                    `${BackendUrl}/app/file/image/${category.image}`
                                 }
                                 alt=""
                             />

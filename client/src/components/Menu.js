@@ -8,6 +8,7 @@ import SpinLoader from "./SpinLoader";
 import CategoryOverlayButton from "./Menu/CategoryOverlayButton";
 import axios from "axios";
 import { nonVegIconImageBase64, vegIconImageBase64 } from "../constants";
+import { BackendUrl } from "../config";
 
 const Menu = () => {
     const { categories, foodItems, fetchCategories, fetchItems } =
@@ -40,7 +41,7 @@ const Menu = () => {
     const handleDeleteCategory = (item) => {
         setLoading(true);
         axios
-            .delete(`/app/removeCategory/${item._id}`)
+            .delete(`${BackendUrl}/app/removeCategory/${item._id}`)
             .then(() => {
                 notify(`Category Deleted: ${item.category}`);
                 fetchCategories();
@@ -52,7 +53,7 @@ const Menu = () => {
     const handleDeleteFoodItem = (item) => {
         setLoading(true);
         axios
-            .delete(`/app/removeItem/${item._id}`)
+            .delete(`${BackendUrl}/app/removeItem/${item._id}`)
             .then(async () => {
                 notify(`Item Deleted: ${item.foodItem}`);
                 fetchItems();

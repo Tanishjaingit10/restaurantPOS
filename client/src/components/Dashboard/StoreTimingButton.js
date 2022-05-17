@@ -6,6 +6,7 @@ import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
 import days from "../../days";
 import { getNewId } from "../../Utils";
+import { BackendUrl } from "../../config";
 
 function StoreTimingButton() {
     const alwaysOpen = "Always open";
@@ -31,7 +32,7 @@ function StoreTimingButton() {
         if (selectedHours) dataToPost.selectedHours = selectedHours;
         setLoading(true);
         return axios
-            .post("/app/updateStoreInfo", dataToPost)
+            .post(`${BackendUrl}/app/updateStoreInfo`, dataToPost)
             .then(() => {})
             .catch((err) => {})
             .finally(() => setLoading(false));
@@ -43,7 +44,7 @@ function StoreTimingButton() {
     };
 
     useEffect(() => {
-        axios.get("/app/getStoreInfo").then((res) => {
+        axios.get(`${BackendUrl}/app/getStoreInfo`).then((res) => {
             if(res?.data?.timings)
                 setAvailability(res.data.timings);
             if(res?.data?.selectedHours)

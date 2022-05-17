@@ -7,6 +7,7 @@ import axios from "axios";
 import { NotificationContext } from "../context/Notification";
 import { useEffect } from "react";
 import { UserContext } from "../context/User";
+import { BackendUrl } from "../config";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Login = () => {
         e.preventDefault();
         setLoading(true);
         axios
-            .post("/app/signin", {
+            .post(`${BackendUrl}/app/signin`, {
                 position,
                 email_id,
                 password,

@@ -21,6 +21,7 @@ import SinglePaidItem from "./SinglePaidItem";
 import TipOverlayButton from "./Overlay/TipOverlayButton";
 import { Modal } from "../Common/Modal";
 import PrintBillButton from "./PrintBillButton";
+import { BackendUrl } from "../../config";
 
 export default function Pos() {
     const percentage = "percentage";
@@ -150,7 +151,7 @@ export default function Pos() {
         if (location.state && location.state.prevPath === "/takeaways") {
             setOrderType("Take Away");
             setLoading(true);
-            fetch(`/app/orderById/${location?.state?.orderId}`)
+            fetch(`${BackendUrl}/app/orderById/${location?.state?.orderId}`)
                 .then((res) => res.json())
                 .then((json) => {
                     loadOrder(json[0]);
@@ -164,12 +165,12 @@ export default function Pos() {
             setOrderType("Dine In");
             setLoading(true);
             axios
-                .get(`/app/table/${location?.state}`)
+                .get(`${BackendUrl}/app/table/${location?.state}`)
                 .then((res) => {
                     setSession(res.data?.session || getNewId());
                     if (res.data?.session)
                         axios
-                            .get(`/app/orderBySession/${res.data.session}`)
+                            .get(`${BackendUrl}/app/orderBySession/${res.data.session}`)
                             .then((res) => {
                                 setSessionOrders(res.data);
                                 if (res.data?.length) {
@@ -180,7 +181,7 @@ export default function Pos() {
                 })
                 .catch(() => { });
             axios
-                .get(`/app/orderForTable/${location?.state}`)
+                .get(`${BackendUrl}/app/orderForTable/${location?.state}`)
                 .then((res) => loadOrder(res?.data))
                 .catch(() => { })
                 .finally(() => setLoading(false));
@@ -215,7 +216,7 @@ export default function Pos() {
         } else {
             setLoading(true);
             axios
-                .post(`/app/makePayment/${order_id}`, {
+                .post(`${BackendUrl}/app/makePayment/${order_id}`, {
                     mode: chargeNoPayment ? "ChargeNoPayment" : paymentMode,
                 })
                 .then((res) => {
@@ -274,7 +275,7 @@ export default function Pos() {
         if (order_id) dataToPost.order_id = order_id;
         if (session) dataToPost.session = session;
         axios
-            .post("/app/generatekot", dataToPost)
+            .post(`${BackendUrl}/app/generatekot`, dataToPost)
             .then((res) => {
                 notify([
                     `Order ${order_id ? "Updated" : "Receieved"}`,

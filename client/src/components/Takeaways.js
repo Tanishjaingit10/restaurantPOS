@@ -18,6 +18,7 @@ import CustomPagination from "./Common/CustomPagination";
 import { DownloadTable, PrintTable } from "./Common/download_print";
 import OrderDetailComponent from "./Common/orderDetail";
 import { Link, useLocation } from "react-router-dom";
+import { BackendUrl } from "../config";
 
 const TakeAwayOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -42,7 +43,7 @@ const TakeAwayOrders = () => {
     const location = useLocation();
 
     useEffect(() => {
-        fetch("/app/getTakeAwayOrders")
+        fetch(`${BackendUrl}/app/getTakeAwayOrders`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") setOrders(json);
@@ -52,7 +53,7 @@ const TakeAwayOrders = () => {
 
     const getOrdersByInvoices = (invoices) => {
         setComponentLoading(true);
-        fetch(`/app/orderById/${invoices}`)
+        fetch(`${BackendUrl}/app/orderById/${invoices}`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") setOrders(json);
@@ -63,7 +64,7 @@ const TakeAwayOrders = () => {
 
     const getOrderByDate = (startDate, endDate) => {
         setComponentLoading(true);
-        fetch(`/app/getTakeAwayOrderByDate/${startDate}/${endDate}`)
+        fetch(`${BackendUrl}/app/getTakeAwayOrderByDate/${startDate}/${endDate}`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") setOrders(json);

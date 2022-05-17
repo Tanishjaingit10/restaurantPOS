@@ -17,6 +17,7 @@ import CustomTable from "./Common/CustomTable";
 import CustomPagination from "./Common/CustomPagination";
 import { DownloadTable, PrintTable } from "./Common/download_print";
 import OrderDetailComponent from "./Common/orderDetail";
+import { BackendUrl } from "../config";
 
 const Sales = () => {
     const [orders, setOrders] = useState([]);
@@ -44,7 +45,7 @@ const Sales = () => {
     const printOrderDetails = useRef();
 
     useEffect(() => {
-        fetch("/app/getCompletedOrders")
+        fetch(`${BackendUrl}/app/getCompletedOrders`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") {
@@ -78,7 +79,7 @@ const Sales = () => {
 
     const getOrdersByInvoices = (invoices) => {
         setComponentLoading(true);
-        fetch(`/app/orderById/${invoices}`)
+        fetch(`${BackendUrl}/app/orderById/${invoices}`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") setOrders(json);
@@ -92,7 +93,7 @@ const Sales = () => {
 
     const getOrderByDate = (startDate, endDate) => {
         setLoading(true);
-        fetch(`/app/getCompletedOrderByDate/${startDate}/${endDate}`)
+        fetch(`${BackendUrl}/app/getCompletedOrderByDate/${startDate}/${endDate}`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") setOrders(json);

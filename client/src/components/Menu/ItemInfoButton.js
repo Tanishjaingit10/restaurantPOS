@@ -6,6 +6,7 @@ import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
 import FoodItemOverlayButton from "./FoodItemOverlayButton";
+import { BackendUrl } from "../../config";
 
 function ItemInfoButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,7 +17,7 @@ function ItemInfoButton({ item, children, ...rest }) {
     const handleDelete = () => {
         setLoading(true);
         axios
-            .delete(`/app/removeItem/${item?._id}`)
+            .delete(`${BackendUrl}/app/removeItem/${item?._id}`)
             .then(async () => {
                 notify(`Item Deleted: ${item?.foodItem}`);
                 setIsOpen(false);

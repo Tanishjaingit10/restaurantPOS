@@ -15,6 +15,7 @@ import { GrClose } from "react-icons/gr";
 import CustomTable from "../Common/CustomTable";
 import CustomPagination from "../Common/CustomPagination";
 import { DownloadTable, PrintTable } from "../Common/download_print";
+import { BackendUrl } from "../../config";
 
 const ViewAttendance = () => {
     const [users, setUsers] = useState({});
@@ -37,7 +38,7 @@ const ViewAttendance = () => {
 
     useEffect(() => {
         axios
-            .get("/app/users")
+            .get(`${BackendUrl}/app/users`)
             .then((res) => {
                 if (res?.data) {
                     var dict = {};
@@ -45,7 +46,7 @@ const ViewAttendance = () => {
                         dict[res.data[i]["_id"]] = res.data[i];
                     setUsers(dict);
                     return axios
-                        .get("/app/attendance")
+                        .get(`${BackendUrl}/app/attendance`)
                         .then((res) => {
                             if (res?.data) setAttendance(res.data);
                         })
@@ -73,7 +74,7 @@ const ViewAttendance = () => {
     const getAttendanceByDate = (startDate, endDate) => {
         setLoading(true);
         axios
-            .get(`/app/getAttendanceByDate/${startDate}/${endDate}`)
+            .get(`${BackendUrl}/app/getAttendanceByDate/${startDate}/${endDate}`)
             .then((res) => {
                 if (res?.data) setAttendance(res?.data);
             })

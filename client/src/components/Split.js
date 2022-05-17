@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BackendUrl } from "../config";
 import { NotificationContext } from "../context/Notification";
 import { getNewId } from "../Utils";
 import { Modal } from "./Common/Modal";
@@ -24,7 +25,7 @@ function Split() {
     useEffect(() => {
         setLoading(true);
         axios
-            .get(`/app/orderById/${location.state}`)
+            .get(`${BackendUrl}/app/orderById/${location.state}`)
             .then((res) => setOrder(res.data[0]))
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable To Fetch Data")
@@ -95,7 +96,7 @@ function Split() {
         else {
             setLoading(true);
             axios
-                .post(`/app/makePayment/${order?.order_id}`, {
+                .post(`${BackendUrl}/app/makePayment/${order?.order_id}`, {
                     mode: "split",
                 })
                 .then((res) => setPaymentDoneOverlayIsOpen(true))

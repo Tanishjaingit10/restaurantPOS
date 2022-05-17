@@ -18,6 +18,7 @@ import CustomPagination from "./Common/CustomPagination";
 import { DownloadTable, PrintTable } from "./Common/download_print";
 import OrderDetailComponent from "./Common/orderDetail";
 import SpinLoader from "./SpinLoader";
+import { BackendUrl } from "../config";
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
@@ -46,7 +47,7 @@ const Orders = () => {
 
     useEffect(() => {
         axios
-            .get("/app/orders")
+            .get(`${BackendUrl}/app/orders`)
             .then((res) => {
                 if (res.data) {
                     res.data = res.data.reverse();
@@ -81,7 +82,7 @@ const Orders = () => {
     const getOrdersByInvoices = (invoices) => {
         setLoading(true);
         axios
-            .get(`/app/orderById/${invoices}`)
+            .get(`${BackendUrl}/app/orderById/${invoices}`)
             .then((res) => {
                 if (res.data) setOrders(res.data);
             })
@@ -93,11 +94,11 @@ const Orders = () => {
         setLoading(true);
         if (status === "Processing") {
             axios
-                .get(`/app/orderByStatus/Processing`)
+                .get(`${BackendUrl}/app/orderByStatus/Processing`)
                 .then((res) => {
                     if (res.data) setOrders(res.data);
                 })
-                .then(() => axios.get(`/app/orderByStatus/ReadyToServe`))
+                .then(() => axios.get(`${BackendUrl}/app/orderByStatus/ReadyToServe`))
                 .then((res) => {
                     if (res.data) setOrders((prev) => [...prev, ...res.data]);
                 })
@@ -105,7 +106,7 @@ const Orders = () => {
                 .finally(() => setLoading(false));
         } else if (status !== "allOrders") {
             axios
-                .get(`/app/orderByStatus/${status}`)
+                .get(`${BackendUrl}/app/orderByStatus/${status}`)
                 .then((res) => {
                     if (res.data) setOrders(res.data);
                 })
@@ -117,7 +118,7 @@ const Orders = () => {
     const getOrderByDate = (startDate, endDate) => {
         setLoading(true);
         axios
-            .get(`/app/orderByDate/${startDate}/${endDate}`)
+            .get(`${BackendUrl}/app/orderByDate/${startDate}/${endDate}`)
             .then((res) => {
                 if (res.data) setOrders(res.data);
             })

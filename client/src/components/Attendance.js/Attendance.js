@@ -11,6 +11,7 @@ import CustomPagination from "../Common/CustomPagination";
 import { DownloadTable, PrintTable } from "../Common/download_print";
 import Popup from "../Popup";
 import SpinLoader from "../SpinLoader";
+import { BackendUrl } from "../../config";
 
 const Attendance = () => {
     const [users, setUsers] = useState({});
@@ -28,7 +29,7 @@ const Attendance = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios("/app/users")
+        axios(`${BackendUrl}/app/users`)
             .then((res) => {
                 if (res?.data) {
                     var dict = {};
@@ -36,7 +37,7 @@ const Attendance = () => {
                         dict[res.data[i]["_id"]] = res.data[i];
                     setUsers(dict);
                     axios
-                        .get("/app/attendance")
+                        .get(`${BackendUrl}/app/attendance`)
                         .then((res) => {
                             setLoading(false);
                             if (res?.data) setAttendance(res.data);
@@ -70,7 +71,7 @@ const Attendance = () => {
             );
         }
         axios
-            .put(`/app/updateAttendance/${attendance?._id}`, updatedData)
+            .put(`${BackendUrl}/app/updateAttendance/${attendance?._id}`, updatedData)
             .then((res) => setReload(!reload))
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));

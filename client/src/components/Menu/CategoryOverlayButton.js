@@ -4,6 +4,7 @@ import { CategoryContext } from "../../context/Category";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
+import { BackendUrl } from "../../config";
 
 function CategoryOverlayButton({ item, children, ...rest }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -60,7 +61,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
             bodyFormData.append("file", image);
             const config = { headers: { Accept: "application/json" } };
             try {
-                const res = await axios.post("/app/file", bodyFormData, config);
+                const res = await axios.post(`${BackendUrl}/app/file`, bodyFormData, config);
                 postData.image = res.data;
             } catch (err) {
                 notify(
@@ -70,8 +71,8 @@ function CategoryOverlayButton({ item, children, ...rest }) {
         }
 
         (item
-            ? axios.put(`/app/updateCategory/${item._id}`, postData)
-            : axios.post("app/addCategory/", postData)
+            ? axios.put(`${BackendUrl}/app/updateCategory/${item._id}`, postData)
+            : axios.post(`${BackendUrl}/app/addCategory/`, postData)
         )
             .then(() => {
                 notify(`Category ${item ? "Updated" : "Added"}: ${category}`);
@@ -155,7 +156,7 @@ function CategoryOverlayButton({ item, children, ...rest }) {
                                 src={
                                     previewImage ||
                                     (item?.image &&
-                                        `/app/file/image/${item?.image}`)
+                                        `${BackendUrl}/app/file/image/${item?.image}`)
                                 }
                                 alt=""
                             />

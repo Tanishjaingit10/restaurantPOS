@@ -4,6 +4,7 @@ import axios from "axios";
 import Logo from ".././assets/Images/Logo.png";
 import chefLogin from ".././assets/Images/chefLogin.png";
 import { NotificationContext } from "../context/Notification";
+import { BackendUrl } from "../config";
 
 const SignUp = () => {
     const navigate = useNavigate()
@@ -27,7 +28,7 @@ const SignUp = () => {
         e.preventDefault();
         setLoading(true);
         axios
-            .post("/app/signup", user)
+            .post(`${BackendUrl}/app/signup`, user)
             .then((res) => {
                 notify(res?.data?.message || "User Registered Successfully!");
                 navigate('/login')

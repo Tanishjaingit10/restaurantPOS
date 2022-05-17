@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
+import { BackendUrl } from "../../config";
 import { NotificationContext } from "../../context/Notification";
 import { Modal } from "../Common/Modal";
 import SpinLoader from "../SpinLoader";
@@ -21,7 +22,7 @@ function PrintBillButton({ children, order_id, className }) {
     const printTheBill = () => {
         setLoading(true);
         axios
-            .get(`/app/orderById/${order_id}`)
+            .get(`${BackendUrl}/app/orderById/${order_id}`)
             .then((res) => {
                 if (res?.data[0]?.payment?.status === "Completed") {
                     setIsOpen(true);

@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState, createContext, useEffect } from "react";
+import { BackendUrl } from "../config";
 
 export const OrdersContext = createContext();
 
@@ -9,14 +10,14 @@ export const OrdersProvider = (props) => {
 
     const fetchOrders = () => {
         axios
-            .get("/app/orders")
+            .get(`${BackendUrl}/app/orders`)
             .then((res) => setOrders(res.data))
             .catch((err) => console.log("error", err));
     };
 
     const fetchTables = async () => {
         axios
-            .get("/app/table")
+            .get(`${BackendUrl}/app/table`)
             .then((res) => setTables(res.data))
             .catch((err) => console.log("error", err));
     };

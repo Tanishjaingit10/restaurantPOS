@@ -22,6 +22,7 @@ import { DownloadTable, PrintTable } from "./Common/download_print";
 import { Modal } from "./Common/Modal";
 import { formatDate, timeToDate } from "../Utils";
 import { NotificationContext } from "../context/Notification";
+import { BackendUrl } from "../config";
 
 const AllReservations = () => {
     const [allReservations, setAllReservations] = useState([]);
@@ -70,7 +71,7 @@ const AllReservations = () => {
 
     useEffect(() => {
         axios
-            .get("/app/allReservations")
+            .get(`${BackendUrl}/app/allReservations`)
             .then((res) => setAllReservations(res.data))
             .catch((err) =>
                 notify(
@@ -82,7 +83,7 @@ const AllReservations = () => {
                 setLoading(false);
             });
         axios
-            .get(`/app/table`)
+            .get(`${BackendUrl}/app/table`)
             .then((res) => {
                 var tables = [];
                 for (var i = 0; i < res.data?.length; i++) {
@@ -100,7 +101,7 @@ const AllReservations = () => {
         setLoading(true);
         axios
             .get(
-                `/app/getReservationByTime/${date}/${startTime}/${endTime}/${itemId}`
+                `${BackendUrl}/app/getReservationByTime/${date}/${startTime}/${endTime}/${itemId}`
             )
             .then((res) =>
                 setAvailableTables(
@@ -115,7 +116,7 @@ const AllReservations = () => {
 
     const getReservationByTable = (table) => {
         axios
-            .get(`/app/getReservationByTable/${table}`)
+            .get(`${BackendUrl}/app/getReservationByTable/${table}`)
             .then((res) => setAllReservations(res.data))
             .catch((err) => console.log(err));
     };
@@ -123,7 +124,7 @@ const AllReservations = () => {
     const getDayReservations = (date) => {
         setLoading(true);
         axios
-            .get(`/app/getReservationsDate/${date}`)
+            .get(`${BackendUrl}/app/getReservationsDate/${date}`)
             .then((res) => setAllReservations(res.data))
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
@@ -131,7 +132,7 @@ const AllReservations = () => {
 
     const deleteReservations = (reservationId) => {
         axios
-            .delete(`app/removeReservation/${reservationId}`)
+            .delete(`${BackendUrl}app/removeReservation/${reservationId}`)
             .then(() => {
                 setDeleteReservSuccess(true);
                 setReload(!reload);
@@ -152,7 +153,7 @@ const AllReservations = () => {
             date,
         };
         axios
-            .put(`/app/editReservation/${itemId}`, dataToPost)
+            .put(`${BackendUrl}/app/editReservation/${itemId}`, dataToPost)
             .then((res) => {
                 setEditReservationSuccess(true);
                 setReload(!reload);

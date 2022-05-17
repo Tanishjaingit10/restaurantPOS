@@ -17,6 +17,7 @@ import CustomPagination from "./Common/CustomPagination";
 import { DownloadTable, PrintTable } from "./Common/download_print";
 import OrderDetailComponent from "./Common/orderDetail";
 import Popup from "./Popup";
+import { BackendUrl } from "../config";
 
 const Customers = () => {
     const [customers, setCustomers] = useState([]);
@@ -39,7 +40,7 @@ const Customers = () => {
     const printOrderDetails = useRef();
 
     useEffect(() => {
-        fetch("/app/customers")
+        fetch(`${BackendUrl}/app/customers`)
             .then((res) => res.json())
             .then((json) => {
                 if (json !== "undefined") setCustomers(json);
@@ -60,7 +61,7 @@ const Customers = () => {
 
     const getCustomerByValue = (value) => {
         setComponentLoading(true);
-        fetch(`/app/getCustomerByValue/${value}`)
+        fetch(`${BackendUrl}/app/getCustomerByValue/${value}`)
             .then((res) => res.json())
             .then((json) => setCustomers(json))
             .catch((err) => console.log(err))
@@ -69,7 +70,7 @@ const Customers = () => {
 
     const getDayCustomers = (startDate, endDate) => {
         setLoading(true);
-        fetch(`/app/getCustomerByDate/${startDate}/${endDate}`)
+        fetch(`${BackendUrl}/app/getCustomerByDate/${startDate}/${endDate}`)
             .then((res) => res.json())
             .then((json) => setCustomers(json))
             .catch((err) => console.log(err))
@@ -78,7 +79,7 @@ const Customers = () => {
 
     const getOrderById = (id) => {
         setComponentLoading(true);
-        fetch(`/app/orderById/${id}`)
+        fetch(`${BackendUrl}/app/orderById/${id}`)
             .then((response) => response.json())
             .then((json) => {
                 if (json !== undefined && json.length > 0)

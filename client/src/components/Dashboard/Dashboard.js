@@ -23,6 +23,7 @@ import { ThemeContext } from "../../context/Theme";
 import StoreTimingButton from "./StoreTimingButton";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { BackendUrl } from "../../config";
 
 ChartJS.register(
     CategoryScale,
@@ -216,7 +217,7 @@ const Dashboard = () => {
     const FetchOrders = (type) => {
         axios
             .get(
-                `/app/getDashboardOrder/${type}/${startOrdersDate}/${stopOrdersDate}`
+                `${BackendUrl}/app/getDashboardOrder/${type}/${startOrdersDate}/${stopOrdersDate}`
             )
             .then((res) => {
                 if (res?.data) {
@@ -244,7 +245,7 @@ const Dashboard = () => {
     const FetchSales = (type) => {
         axios
             .get(
-                `/app/getDashboardSales/${type}/${startSalesDate}/${stopSalesDate}`
+                `${BackendUrl}/app/getDashboardSales/${type}/${startSalesDate}/${stopSalesDate}`
             )
             .then((res) => {
                 if (res?.data) {
@@ -272,7 +273,7 @@ const Dashboard = () => {
     const FetchReservations = (type) => {
         axios
             .get(
-                `/app/getDashboardReservation/${type}/${startReservationsDate}/${stopReservationsDate}`
+                `${BackendUrl}/app/getDashboardReservation/${type}/${startReservationsDate}/${stopReservationsDate}`
             )
             .then((res) => {
                 if (res?.data) {
@@ -320,7 +321,7 @@ const Dashboard = () => {
     const FetchCustomers = (type) => {
         axios
             .get(
-                `/app/getDashboardCustomer/${type}/${startCustomersDate}/${stopCustomersDate}`
+                `${BackendUrl}/app/getDashboardCustomer/${type}/${startCustomersDate}/${stopCustomersDate}`
             )
             .then((res) => {
                 if (res?.data) {

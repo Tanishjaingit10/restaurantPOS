@@ -69,7 +69,7 @@ const Tables = () => {
     const [locations, setLocations] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState("");
     const location = useLocation();
-    
+
     const resetReservationStates = () => {
         setSelectedDate(new Date());
         setSelectedStartTime(new Date());
@@ -84,11 +84,14 @@ const Tables = () => {
         setLoading(true);
         setShowDeleteTable(false);
         setShowDeleteTableLocation(false);
-        Promise.all([axios.get("/app/table"), axios.get("/app/tableLocation")])
+        Promise.all([
+            axios.get(`${BackendUrl}/app/table`),
+            axios.get(`${BackendUrl}/app/tableLocation`),
+        ])
             .then(([res1, res2]) => {
                 setDisplayTable(res1.data);
-                const tab = res1.data.find(t=>t.number === location.state)
-                if(location.state)handleTableClick(tab._id)
+                const tab = res1.data.find((t) => t.number === location.state);
+                if (location.state) handleTableClick(tab._id);
                 setAllTables(res1?.data?.map((t) => t.number));
                 if (res2?.data) setLocations(res2.data);
             })
@@ -125,7 +128,7 @@ const Tables = () => {
         }, 1000);
         return () => clearInterval(interval);
     }, []);
-    
+
     const submitNewReservation = (e) => {
         e.preventDefault();
         if (startTime > endTime) {
@@ -143,7 +146,7 @@ const Tables = () => {
         };
         setLoading(true);
         axios
-            .post(`/app/addReservation`, newReservation)
+            .post(`${BackendUrl}/app/addReservation`, newReservation)
             .then(() => {
                 notify("Table reservation created!");
                 setReload(!reload);
@@ -163,7 +166,7 @@ const Tables = () => {
     const addTable = () => {
         setLoading(true);
         axios
-            .post(`/app/addTable`, {
+            .post(`${BackendUrl}/app/addTable`, {
                 number: tableName,
                 capacity: maxCapacity,
                 location: selectedLocation,
@@ -183,7 +186,7 @@ const Tables = () => {
     const addLocation = () => {
         setLoading(true);
         axios
-            .post(`/app/tableLocation`, {
+            .post(`${BackendUrl}/app/tableLocation`, {
                 table_location: tableLocation,
             })
             .then(() => {
@@ -204,7 +207,7 @@ const Tables = () => {
     const getReservationByTime = (date, startTime, endTime) => {
         setLoading(true);
         axios
-            .get(`/app/getReservationByTime/${date}/${startTime}/${endTime}`)
+            .get(`${BackendUrl}/app/getReservationByTime/${date}/${startTime}/${endTime}`)
             .then((res) => {
                 setAvailableTables(
                     allTables.filter(
@@ -234,7 +237,7 @@ const Tables = () => {
 
     const deleteTable = async () => {
         axios
-            .delete(`/app/removeTable/${deleteTableId}`)
+            .delete(`${BackendUrl}/app/removeTable/${deleteTableId}`)
             .then((res) => notify("Table Deleted"))
             .catch((err) =>
                 notify(err?.response?.data?.message || "Unable to delete table")
@@ -247,7 +250,7 @@ const Tables = () => {
     const handleDeleteLocation = (loc) => {
         setLoading(true);
         axios
-            .delete(`/app/tableLocation/${loc}`)
+            .delete(`${BackendUrl}/app/tableLocation/${loc}`)
             .then(() => {
                 setReload((e) => !e);
                 notify("Location deleted");
@@ -274,7 +277,7 @@ const Tables = () => {
         setQrModalLoading(true);
         axios
             .get(
-                `/app/orderForTable/${
+                `${BackendUrl}/app/orderForTable/${
                     displayTable.find((t) => t._id === clickedTableId)?.number
                 }`
             )
@@ -282,7 +285,7 @@ const Tables = () => {
             .catch((err) => {
                 if (err?.response?.data?.message === "Item not found!") {
                     return axios
-                        .get(`/app/vacateTable/${clickedTableId}`)
+                        .get(`${BackendUrl}/app/vacateTable/${clickedTableId}`)
                         .then((res) => {
                             setReload(!reload);
                             setQrCodeIsOpen(false);

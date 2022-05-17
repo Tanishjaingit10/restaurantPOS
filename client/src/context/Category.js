@@ -1,5 +1,6 @@
 import React, { useState, createContext, useEffect } from "react";
 import axios from "axios";
+import { BackendUrl } from "../config";
 
 export const CategoryContext = createContext();
 
@@ -8,12 +9,12 @@ export const CategoryProvider = (props) => {
     const [foodItems, setFoodItems] = useState([]);
 
     const fetchCategories = async () => {
-        const res = await axios.get("/app/category");
+        const res = await axios.get(`${BackendUrl}/app/category`);
         if (res?.data) setCategories(res.data);
     };
 
     const fetchItems = async () => {
-        const res = await axios.get("/app/items");
+        const res = await axios.get(`${BackendUrl}/app/items`);
         if (res?.data) setFoodItems(res.data);
     };
 

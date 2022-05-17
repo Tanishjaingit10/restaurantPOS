@@ -8,6 +8,7 @@ import { nonVegIconImageBase64, vegIconImageBase64 } from "../../constants";
 import { NotificationContext } from "../../context/Notification";
 import { Modal } from "../Common/Modal";
 import SpinLoader from "../SpinLoader";
+import { BackendUrl } from "../../config";
 
 function FoodItemOverlayButton({ item, children, className }) {
     const veg = "veg";
@@ -113,7 +114,7 @@ function FoodItemOverlayButton({ item, children, className }) {
             bodyFormData.append("file", image);
             const config = { headers: { Accept: "application/json" } };
             try {
-                const res = await axios.post("/app/file", bodyFormData, config);
+                const res = await axios.post(`${BackendUrl}/app/file`, bodyFormData, config);
                 postData.image = res.data;
             } catch (err) {
                 notify(
@@ -122,8 +123,8 @@ function FoodItemOverlayButton({ item, children, className }) {
             }
         }
         (item
-            ? axios.put(`/app/updateItem/${item._id}`, postData)
-            : axios.post("/app/addItem", postData)
+            ? axios.put(`${BackendUrl}/app/updateItem/${item._id}`, postData)
+            : axios.post(`${BackendUrl}/app/addItem`, postData)
         )
             .then(() => {
                 notify(`Item ${item ? "Updated" : "Added"}: ${foodItem}`);
@@ -381,7 +382,7 @@ function FoodItemOverlayButton({ item, children, className }) {
                                         src={
                                             previewImage ||
                                             (item?.image &&
-                                                `/app/file/image/${item.image}`)
+                                                `${BackendUrl}/app/file/image/${item.image}`)
                                         }
                                         alt=""
                                     />

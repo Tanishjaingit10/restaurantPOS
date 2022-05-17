@@ -4,6 +4,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { NotificationContext } from "../../context/Notification";
 import SpinLoader from "../SpinLoader";
 import { Modal } from "../Common/Modal";
+import { BackendUrl } from "../../config";
 
 const ReadyToServe = "ReadyToServe";
 const Processing = "Processing";
@@ -70,7 +71,7 @@ function KotCard({ item, setKots }) {
             timeTakenToComplete: elapsedTime,
         };
         axios
-            .post(`/app/kotStatus/${card_id}`, dataToPost)
+            .post(`${BackendUrl}/app/kotStatus/${card_id}`, dataToPost)
             .then(() => {
                 setStatus(newStatus);
                 if (newStatus === ReadyToServe)
@@ -264,7 +265,7 @@ function SingleItem({
 
     const toggleStatus = (newStatus) => {
         setStatus(newStatus);
-        axios.post(`/app/kotItemStatus/${card_id}`, {
+        axios.post(`${BackendUrl}/app/kotItemStatus/${card_id}`, {
             itemStatus: newStatus,
             itemId: item._id,
         });

@@ -3,6 +3,7 @@ import { NotificationContext } from "../../../context/Notification";
 import SpinLoader from "../../SpinLoader";
 import { Modal } from "../../Common/Modal";
 import axios from "axios";
+import { BackendUrl } from "../../../config";
 
 function AuthenticateOverlayButton({
     item,
@@ -19,7 +20,7 @@ function AuthenticateOverlayButton({
     const handleSubmit = (e) => {
         e.preventDefault()
         setLoading(true)
-        axios.post('/app/signin',{email_id:e.target.email.value,password:e.target.password.value})
+        axios.post(`${BackendUrl}/app/signin`,{email_id:e.target.email.value,password:e.target.password.value})
         .then(()=>{setIsAuthenticated(true);callback();setIsOpen(false)})
         .catch(err=>notify(err?.response?.data?.message||"Unable to Authenticate, Try again"))
         .finally(()=>setLoading(false))

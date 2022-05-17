@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { BackendUrl } from "../../config";
 import Popup from "../Popup";
 // import signin from '.../popup.js';
 let buttonValue = "Clock In";
@@ -22,7 +23,7 @@ const ClockInOut = () => {
     };
     const loadUser = () => {
         if (user.email_id) {
-            axios.get(`/app/user/${user.email_id}`).then((res) => {
+            axios.get(`${BackendUrl}/app/user/${user.email_id}`).then((res) => {
                 finalUser = res.data;
                 if (res?.data?.attendance?.status === "Clocked In")
                     buttonValue = "Clock Out";
@@ -37,7 +38,7 @@ const ClockInOut = () => {
         e.preventDefault();
 
         axios
-            .post("/app/attendance", {
+            .post(`${BackendUrl}/app/attendance`, {
                 email_id: user.email_id,
                 password: user.password,
             })
@@ -59,7 +60,7 @@ const ClockInOut = () => {
                 };
                 setMsg("Successful!");
                 setIsOpen(!isOpen);
-                return axios.put(`/app/updateUser/${user.email_id}`, {
+                return axios.put(`${BackendUrl}/app/updateUser/${user.email_id}`, {
                     finalUser,
                 });
             })
