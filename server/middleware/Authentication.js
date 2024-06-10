@@ -16,7 +16,7 @@ const AuthenticationMiddleware = async (req, res, next) => {
                 .catch((err) => console.log(err));
         }
     });
-    return res.json("okk");
+    return res.json("ok");
 };
 
 module.exports = {

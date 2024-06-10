@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 const UserContext = React.createContext("light");
 
 function UserProvider(props) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(true);
     const authenticate = () => {
         const token = localStorage.getItem("token");
         if (token) setIsAuthenticated(true);
